@@ -1,7 +1,7 @@
-<?php /* Smarty version 3.1.24, created on 2018-01-04 09:05:25
+<?php /* Smarty version 3.1.24, created on 2016-08-18 13:19:36
          compiled from "/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/html/fixedAssets.html" */ ?>
 <?php
-/*%%SmartyHeaderCode:2000995605a4dee551fa511_30248565%%*/
+/*%%SmartyHeaderCode:193619478857b5b5e86ca7f9_48282097%%*/
 if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
@@ -9,11 +9,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'cde0d8655f076dbec5958b2ee1c73fa4f089c338' => 
     array (
       0 => '/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/html/fixedAssets.html',
-      1 => 1483698229,
+      1 => 1471523677,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '2000995605a4dee551fa511_30248565',
+  'nocache_hash' => '193619478857b5b5e86ca7f9_48282097',
   'variables' => 
   array (
     'sumBasic' => 0,
@@ -101,13 +101,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   ),
   'has_nocache_code' => false,
   'version' => '3.1.24',
-  'unifunc' => 'content_5a4dee559a2a07_23692171',
+  'unifunc' => 'content_57b5b5e9595d39_36853573',
 ),false);
 /*/%%SmartyHeaderCode%%*/
-if ($_valid && !is_callable('content_5a4dee559a2a07_23692171')) {
-function content_5a4dee559a2a07_23692171 ($_smarty_tpl) {
+if ($_valid && !is_callable('content_57b5b5e9595d39_36853573')) {
+function content_57b5b5e9595d39_36853573 ($_smarty_tpl) {
 
-$_smarty_tpl->properties['nocache_hash'] = '2000995605a4dee551fa511_30248565';
+$_smarty_tpl->properties['nocache_hash'] = '193619478857b5b5e86ca7f9_48282097';
 ?>
 <table id="#{idSelf}TableWrap" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%" style="font-size:10px;">
 	<tbody>

@@ -1,7 +1,7 @@
-<?php /* Smarty version 3.1.24, created on 2017-01-06 11:11:57
+<?php /* Smarty version 3.1.24, created on 2016-08-18 12:51:01
          compiled from "/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/js/lib/journalCash.js" */ ?>
 <?php
-/*%%SmartyHeaderCode:642578087586f7b7dc31240_76854300%%*/
+/*%%SmartyHeaderCode:198888395957b5af35cdbfb2_91237514%%*/
 if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
@@ -9,20 +9,20 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '84e5df15b9c7599be9723cd3b8e1d9af4a39a969' => 
     array (
       0 => '/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/js/lib/journalCash.js',
-      1 => 1483698248,
+      1 => 1471523679,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '642578087586f7b7dc31240_76854300',
+  'nocache_hash' => '198888395957b5af35cdbfb2_91237514',
   'has_nocache_code' => false,
   'version' => '3.1.24',
-  'unifunc' => 'content_586f7b7dcb3aa8_93091206',
+  'unifunc' => 'content_57b5af35d60ec9_80739773',
 ),false);
 /*/%%SmartyHeaderCode%%*/
-if ($_valid && !is_callable('content_586f7b7dcb3aa8_93091206')) {
-function content_586f7b7dcb3aa8_93091206 ($_smarty_tpl) {
+if ($_valid && !is_callable('content_57b5af35d60ec9_80739773')) {
+function content_57b5af35d60ec9_80739773 ($_smarty_tpl) {
 
-$_smarty_tpl->properties['nocache_hash'] = '642578087586f7b7dc31240_76854300';
+$_smarty_tpl->properties['nocache_hash'] = '198888395957b5af35cdbfb2_91237514';
 ?>
 
 /*
