@@ -113,7 +113,7 @@ class Code_Else_Lib_Request
      */
     public function getReferer()
     {
-    	if (is_null($_SERVER['HTTP_REFERER'])) {
+    	if (!isset($_SERVER['HTTP_REFERER'])) {
     		return '';
     	}
 

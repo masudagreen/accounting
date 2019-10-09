@@ -562,7 +562,8 @@ class Code_Else_Core_Base_Init
 		//mb_http_output("utf-8");
 		date_default_timezone_set('UTC');
 		ini_set('memory_limit', '128M');
-		error_reporting(0);
+		error_reporting(E_ALL ^ E_NOTICE);
+		ini_set('display_errors', 1);
 		if (FLAG_TEST) {
 			error_reporting(E_ALL ^ E_NOTICE);
 			ini_set('display_errors', 1);

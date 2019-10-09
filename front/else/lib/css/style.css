@@ -316,15 +316,27 @@ select,input{
 	color : orange;
 	font-weight : bold;
 }
+.codeLibBaseFontTypeCaution{
+	font-size : 12px;
+	color : red;
+	font-weight : bold;
+}
+.codeLibBaseFontBold{
+	font-weight : bold;
+}
 
 .codeLibBaseDownloadWrap,
 .codeLibBaseTempWrap{}
 
+.codeLibBaseTableColumnMiddle,
+.codeLibBaseTableColumnRight,
 .codeLibBaseTableColumn {
 	padding: 5px;
 	background: #efefef;
 }
 
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableRowRight,
 .codeLibBaseTableRow {
 	padding: 5px;
 	background: #fff;
@@ -333,6 +345,48 @@ select,input{
 	padding: 5px 5px 15px 5px;
 	background: #fff;
 }
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowSelect {
+	padding: 5px;
+	background: #2472AE;
+	color: #fff;
+}
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableColumnMiddle {
+	text-align : center;
+}
+
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowRight,
+.codeLibBaseTableColumnRight {
+	text-align : right;
+}
+
+a{
+	color: #0088cc;
+}
+
+a:link,a:visited,a:active{
+	text-decoration:none;
+}
+
+.codeLibBaseLinkNormalOver a{
+	color: #0095c6;
+	text-decoration: none;
+}
+.codeLibBaseLinkNormalOver a:hover{
+	color: #0095c6;
+	text-decoration: underline;
+
+}
+
+
+
+
 .codeLibBtn,
 .codeLibBtnMiddle{
 	margin: 0px 0px 0px 0px;
@@ -356,7 +410,7 @@ select,input{
 }
 
 .codeLibBtnText{
-	color: #2A546F;
+	color: #0095c6;
 }
 
 .codeLibBtnTextOver{
@@ -371,12 +425,12 @@ select,input{
 
 .codeLibBtnSearchBox{
 	width: 16px; height: 16px;
-	background: url(../img/btn/icon.png) no-repeat 0px -390px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -260px;
 }
 
 .codeLibBtnSearchBoxOver{
 	width: 16px; height: 16px;
-	background: url(../img/btn/icon.png) no-repeat -16px -390px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -16px -260px;
 }
 
 .codeLibBtnSearchInput{
@@ -384,224 +438,239 @@ select,input{
 }
 
 .codeLibBtnToolWrap,
-.codeLibBtnToolNoactive{}
+.codeLibBtnToolNoactive{
+
+}
+.codeLibBtnToolNoactiveTitle{
+	color: #ccc;
+}
+.codeLibBtnToolOverTitle{
+	color: #888;
+}
 
 .codeLibBtnToolImg{
 	margin: 5px 0px 5px 5px;
-	height: 30px;
-	width: 30px;
+	xpadding: 0px 0px 0px 0px;
+	xheight: 30px;
+	xwidth: 30px;
+}
+.codeLibBtnToolImgTitle{
+	font-size: 10px;
+	text-align: center;
 }
 
 .codeLibBtnPageNow{
 	font-weight: bold;
 	color: #A90A08;
 }
-
+.codeLibBtnImgIdle{
+	height: 20px;
+}
 .codeLibBtnImgReload{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px 0px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px 0px;
 }
 
 .codeLibBtnImgReloadOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px 0px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px 0px;
 }
 
 .codeLibBtnImgReloadNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px 0px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px 0px;
 }
 
 .codeLibBtnImgLoad{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -30px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -20px;
 }
 
 .codeLibBtnImgLoadOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -30px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -20px;
 }
 
 .codeLibBtnImgLoadNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -30px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -20px;
 }
 
 .codeLibBtnImgAdd{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -60px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -40px;
 }
 
 .codeLibBtnImgAddOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -60px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -40px;
 }
 
 .codeLibBtnImgAddNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -60px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -40px;
 }
 
 .codeLibBtnImgEdit{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -90px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -60px;
 }
 
 .codeLibBtnImgEditOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -90px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -60px;
 }
 
 .codeLibBtnImgEditNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -90px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -60px;
 }
 
 .codeLibBtnImgRemove{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -120px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -80px;
 }
 
 .codeLibBtnImgRemoveOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -120px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -80px;
 }
 
 .codeLibBtnImgRemoveNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -120px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -80px;
 }
 
 .codeLibBtnImgDownload{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -150px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -100px;
 }
 
 .codeLibBtnImgDownloadOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -150px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -100px;
 }
 
 .codeLibBtnImgDownloadNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -150px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -100px;
 }
 
 .codeLibBtnImgPreference{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -180px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -120px;
 }
 
 .codeLibBtnImgPreferenceOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -180px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -120px;
 }
 
 .codeLibBtnImgPreferenceNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -180px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -120px;
 }
 
-.codeLibBtnImgAttention{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -210px;
+.codeLibBtnImgSearch{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -140px;
 }
 
-.codeLibBtnImgAttentionOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -210px;
+.codeLibBtnImgSearchOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -140px;
 }
 
-.codeLibBtnImgAttentionNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -210px;
+.codeLibBtnImgSearchNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -140px;
 }
 
 .codeLibBtnImgUpload{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -240px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -160px;
 }
 
 .codeLibBtnImgUploadOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -240px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -160px;
 }
 
 .codeLibBtnImgUploadNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -240px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -160px;
 }
 
 .codeLibBtnImgCopy{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -270px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -180px;
 }
 
 .codeLibBtnImgCopyOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -270px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -180px;
 }
 
 .codeLibBtnImgCopyNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -270px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -180px;
 }
 
 .codeLibBtnImgSwitch{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -360px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -240px;
 }
 
 .codeLibBtnImgSwitchOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -360px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -240px;
 }
 
 .codeLibBtnImgSwitchNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -360px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -240px;
 }
 
 .codeLibBtnImgLink{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -330px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -220px;
 }
 
 .codeLibBtnImgPrint{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat 0px -300px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -200px;
 }
 
 .codeLibBtnImgPrintOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -300px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -200px;
 }
 
 .codeLibBtnImgPrintNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -300px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -200px;
 }
 
 .codeLibBtnImgLinkOver{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -30px -330px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -220px;
 }
 
 .codeLibBtnImgLinkNoactive{
-	width: 30px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -60px -330px;
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -220px;
 }
 
 .codeLibBtnImgMenu{
 	margin : 5px 0px 5px 0px;
-	width: 8px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -0px -406px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -0px -280px;
 }
 
 .codeLibBtnImgMenuOver{
 	margin : 5px 0px 5px 0px;
-	width: 8px; height: 30px;
-	background: url(../img/btn/icon.png) no-repeat -8px -406px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -20px -280px;
 }.codeLibCake{
 	position: absolute;
 	top: 0px;
@@ -627,7 +696,7 @@ select,input{
 
 .codeLibCalenderBoxOver{
 	text-decoration: underline;
-	background: #eee;
+	background: #99ccff;
 }
 
 .codeLibCalenderBoxPoint{
@@ -777,6 +846,24 @@ select,input{
 
 .codeLibFormCommentExplain{
 	margin: 0px 0px 0px 16px;
+}
+
+.codeLibFormSelectBtnWrap{
+	margin: 5px 0px 0px 20px;
+	border: #c2c2c2 solid 1px;
+	cursor: pointer;
+}
+.codeLibFormSelectBtnTitleWrap{
+	margin: 2px 2px 2px 3px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibFormSelectBtn{
+	margin: 2px;
+	padding: 0px 0px 0px 0px;
+	width: 16px;
+	height: 16px;
+	background: url(../img/form/icon.png) no-repeat 0px -112px;
 }
 
 .codeLibFormAreaWrap{
@@ -974,6 +1061,61 @@ select,input{
 
 }
 
+.codeLibFormTempSCWrap{
+	padding : 5px;
+	border: #c2c2c2 solid 1px;
+	background: #fff;
+}
+
+.codeLibFormTempSCTitle{
+
+}
+.codeLibFormTempSCIcon{
+	margin: 0px 0px 0px 4px;
+	height: 16px;
+	width: 16px;
+	background: url(../img/formTemp/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibFormTempSCInputWrap{
+	margin: 5px 0px 0px 0px;
+}
+.codeLibFormTempSCInput{
+
+}
+
+.codeLibFormTempSCInputWrap form,
+.codeLibFormTempSCInputWrap p{
+	float: right;
+}
+
+.codeLibFormTempSCListWrap{
+	margin: 5px 0px 0px 0px;
+}
+
+.codeLibFormTempSCListWrapAuto{
+	overflow : auto;
+}
+
+.codeLibFormTempSCListWrap span{
+	float: left;
+}
+.codeLibFormTempSCListCalcWrap span{
+
+}
+
+.codeLibFormTempSCLine{
+
+}
+
+.codeLibFormTempSCLineNoactive{
+	color: #ccc;
+}
+
+.codeLibFormTempSCLineOver{
+	background: #99ccff;
+}
+
 .codeLibFormTermWrap{
 	xpadding: 10px;
 }
@@ -998,29 +1140,50 @@ select,input{
 
 .codeLibGlobalNaviWrap{
 	position:absolute;
-	width: 32px;
-	height: 24px;
+	xwidth: 44px;
+	xheight: 24px;
+	height: 34px;
 	background: no-repeat;
+	float: left;
+}
+.codeLibGlobalNaviFloat{
+	float: left;
 }
 
 .codeLibGlobalNavi{
-	width: 24px;
-	height: 24px;
-	float: left;
+	xwidth: 24px;
+	xheight: 24px;
+
 	background: no-repeat;
+}
+
+.codeLibGlobalNaviTitleOver{
+	color: #888;
 }
 
 .codeLibGlobalNaviLoad{}
 
 .codeLibGlobalMenu{
-	width: 8px; height: 24px;
+	width: 20px; xheight: 24px;
+	height: 34px;
 	float: left;
-	background: url(../img/global/icon.png) no-repeat 0px 0px;
+	background: url(../img/global/icon.png?v=13650) no-repeat 0px 0px;
 }
 
 .codeLibGlobalMenuOver{
-	width: 8px; height: 24px;
-	background: url(../img/global/icon.png) no-repeat -8px 0px;
+	width: 20px; xheight: 24px;
+	background: url(../img/global/icon.png?v=13650) no-repeat -20px 0px;
+}
+
+.codeLibGlobalNaviTitle{
+	font-size: 10px;
+	text-align: center;
+}
+
+.codeLibGlobalNaviStrCodeName{
+	font-size: 12px;
+	position:absolute;
+	float: left;
 }
 .clearfix:after {
 	content: ".";
@@ -1593,8 +1756,8 @@ select,input{
 	overflow: hidden;
 }
 
-codeLibTableColumnBoxSortColumn,
-codeLibTableColumnBoxResize{
+.codeLibTableColumnBoxSortColumn,
+.codeLibTableColumnBoxResize{
 	height: 16px;
 }
 
@@ -2493,6 +2656,12 @@ codeLibTableColumnBoxResize{
 	background: url(../img/tree/icon.png) no-repeat 0px -143px;
 }
 
+.codeLibTreeBarLink{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -190px;
+}
+
 .codeLibTreeBlock{
 	width: 16px;
 	height: 16px;
@@ -2524,6 +2693,11 @@ codeLibTableColumnBoxResize{
 	background: url(../img/tree/sort.png);
 }
 
+.codeLibTreeColumnTitle{
+	font-size: 10px;
+	margin: 1px 5px 0px 3px;
+}
+
 .codeLibTreeTitle{
 }
 
@@ -2548,6 +2722,11 @@ codeLibTableColumnBoxResize{
 	float: left;
 }
 
+.codeLibTreeLoad{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -174px;
+}
 .codeLibViewBarFold,
 .codeLibViewBarCheck,
 .codeLibViewBarWrap,
@@ -2686,40 +2865,40 @@ codeLibTableColumnBoxResize{
 .codeLibWindowHeaderTopLeft{
 	width: 12px;
 	height: 2px;
-	background: url(../img/window/icon.png) no-repeat 0px 0px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px 0px;
 }
 
 .codeLibWindowHeaderTopMiddle{
 	height: 2px;
-	background: url(../img/window/windowHeaderTopMiddle.png) repeat-x;
+	background: url(../img/window/windowHeaderTopMiddle.png?v=13650) repeat-x;
 }
 
 .codeLibWindowHeaderTopRight{
 	width: 12px;
 	height: 2px;
-	background: url(../img/window/icon.png) no-repeat -13px 0px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px 0px;
 }
 
 .codeLibWindowHeaderBottomLeft{
 	width: 12px;
 	height: 46px;
-	background: url(../img/window/icon.png) no-repeat 0px -3px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -3px;
 }
 
 .codeLibWindowHeaderBottomMiddle{
 	height: 46px;
-	background: url(../img/window/windowHeaderBottomMiddle.png) repeat-x;
+	background: url(../img/window/windowHeaderBottomMiddle.png?v=13650) repeat-x;
 }
 
 .codeLibWindowHeaderBottomRight{
 	width: 12px;
 	height: 46px;
-	background: url(../img/window/icon.png) no-repeat -13px -3px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -3px;
 }
 
 .codeLibWindowBodyTopLeft{
 	width: 12px;
-	background: url(../img/window/windowBodyTopLeft.png) repeat-y;
+	background: url(../img/window/windowBodyTopLeft.png?v=13650) repeat-y;
 }
 
 .codeLibWindowBodyTopMiddle{
@@ -2731,35 +2910,35 @@ codeLibTableColumnBoxResize{
 
 .codeLibWindowBodyTopRight{
 	width: 12px;
-	background: url(../img/window/windowBodyTopRight.png) repeat-y;
+	background: url(../img/window/windowBodyTopRight.png?v=13650) repeat-y;
 }
 
 .codeLibWindowBodyBottomLeft{
 	width: 12px;
 	height: 16px;
-	background: url(../img/window/icon.png) no-repeat 0px -50px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -50px;
 }
 
 .codeLibWindowBodyBottomMiddle{
 	height: 16px;
-	background: url(../img/window/windowBodyBottomMiddle.png) repeat-x;
+	background: url(../img/window/windowBodyBottomMiddle.png?v=13650) repeat-x;
 }
 
 .codeLibWindowBodyBottomRight{
 	width: 12px;
 	height: 16px;
-	background: url(../img/window/icon.png) no-repeat -13px -50px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -50px;
 }
 
 .codeLibWindowHeaderTitleImg{
-	margin: 8px; 
+	margin: 8px;
 	font-weight: bold;
 	padding: 5px 30px 0px 30px;
 	height: 24px;
 }
 
 .codeLibWindowHeaderTitle{
-	margin: 3px; 
+	margin: 3px;
 	font-weight: bold;
 	padding: 0px 0px 0px 0px;
 }
@@ -2767,100 +2946,100 @@ codeLibTableColumnBoxResize{
 .codeLibWindowNaviX{
 	width: 3px;
 	position: absolute;
-	background: url(../img/window/windowNaviX.png);
+	background: url(../img/window/windowNaviX.png?v=13650);
 }
 
 .codeLibWindowNaviY{
 	height: 3px;
 	position: absolute;
-	background: url(../img/window/windowNaviY.png);
+	background: url(../img/window/windowNaviY.png?v=13650);
 }
 
 .codeLibWindowNaviRemove{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
-	background: url(../img/window/icon.png) no-repeat 0px -92px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -92px;
 }
 
 .codeLibWindowNaviRemoveOver{
-	background: url(../img/window/icon.png) no-repeat -25px -92px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -92px;
 }
 
 .codeLibWindowNaviHide{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
-	background: url(../img/window/icon.png) no-repeat 0px -167px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -167px;
 }
 
 .codeLibWindowNaviHideOver{
-	background: url(../img/window/icon.png) no-repeat -25px -167px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -167px;
 }
 
 .codeLibWindowNaviFold{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
 }
 
 .codeLibWindowNaviFoldPlus{
-	background: url(../img/window/icon.png) no-repeat 0px -117px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -117px;
 }
 
 .codeLibWindowNaviFoldPlusOver{
-	background: url(../img/window/icon.png) no-repeat -25px -117px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -117px;
 }
 
 .codeLibWindowNaviFoldMinus{
-	background: url(../img/window/icon.png) no-repeat 0px -142px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -142px;
 }
 
 .codeLibWindowNaviFoldMinusOver{
-	background: url(../img/window/icon.png) no-repeat -25px -142px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -142px;
 }
 
 .codeLibWindowNaviCoverMax{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
-	background: url(../img/window/icon.png) no-repeat 0px -217px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -217px;
 }
 
 .codeLibWindowNaviCoverMaxOver{
-	background: url(../img/window/icon.png) no-repeat -25px -217px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -217px;
 }
 
 .codeLibWindowNaviCoverNormal{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
-	background: url(../img/window/icon.png) no-repeat 0px -192px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -192px;
 }
 
 .codeLibWindowNaviCoverNormalOver{
-	background: url(../img/window/icon.png) no-repeat -25px -192px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -192px;
 }
 
 .codeLibWindowNaviCover{
 }
 
 .codeLibWindowNaviSwitch{
-	margin: 8px 0px 8px 0px; 
+	margin: 8px 0px 8px 0px;
 	height: 24px;
 	width: 24px;
-	background: url(../img/window/icon.png) no-repeat 0px -67px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -67px;
 }
 
 .codeLibWindowNaviSwitchOver{
-	background: url(../img/window/icon.png) no-repeat -25px -67px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -67px;
 }
 
 .codeLibWindowBoot{
 	xposition: absolute;
 	height: 128px;
 	width: 128px;
-	background: url(../img/window/icon.png) no-repeat 0px -242px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -242px;
 }
 
 .codeLibWindowLock{
@@ -2871,7 +3050,7 @@ codeLibTableColumnBoxResize{
 	position:fixed;
 	width: 100%;
 	height: 100%;
-	background: url(../img/window/popBg.png);
+	background: url(../img/window/popBg.png?v=13650);
 	Background: url(../img/window/popBg.gif);
 }
 
