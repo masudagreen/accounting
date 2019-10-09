@@ -1,0 +1,24 @@
+.codeLibPopupWrapAutologout,
+.codeLibPopupWrapLogout{
+	position: fixed;
+	bottom: 120px;
+	right: 220px;
+}
+
+.codeLibPopupWrapReload{
+	position: fixed;
+	bottom: 120px;
+	right: 270px;
+}
+
+.codeLibPopupWrapNews{
+	position: fixed;
+	bottom: 105px;
+	right: 220px;
+}
+
+.codeLibPopupImgConnect{
+	width: 30px;
+	height: 30px;
+	background: url(../img/popup/icon.png) no-repeat 0px 0px;
+}

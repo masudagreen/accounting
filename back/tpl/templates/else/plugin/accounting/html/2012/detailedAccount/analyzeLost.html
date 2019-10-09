@@ -1,0 +1,34 @@
+<table style="margin-top:5px;" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=2>{$strTitle}</td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=2>
+				<p>{$strTitleLost}</p>
+				<p class="codeLibBaseFontSizeSeventy">{$strExplainLost}</p>
+			</td>
+		</tr>
+{if $flagLost}
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" >{$strIdAccountTitleLost}</td>
+			<td class="codePluginAccountingLibTableColumn" >{$strIdSubAccountTitleLost}</td>
+		</tr>
+
+		{foreach from=$arrRowsLost key=key item=value}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.idAccountTitle}</td>
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.idSubAccountTitle}</td>
+			</tr>
+		{/foreach}
+{else}
+		<tr valign="top">
+			{if $flagDone}
+				<td class="codePluginAccountingLibTableRowStr" colspan=2>{$strPast}</td>
+			{else}
+				<td class="codePluginAccountingLibTableRowStr" colspan=2>{$strNoneLost}</td>
+			{/if}
+		</tr>
+{/if}
+	</tbody>
+</table>

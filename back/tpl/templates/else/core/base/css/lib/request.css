@@ -1,0 +1,10 @@
+.codeLibRequestImgLoading{
+	width: 16px; height: 17px;
+	background: url(../img/request/loading.gif) no-repeat;
+}
+
+.codeLibRequestImgLoadingPos{
+	position: absolute;
+	left: 50%;
+	top: 45%;
+}

@@ -1,0 +1,13 @@
+.codePluginAccountingImgIcon{
+	width: 24px; height: 24px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px 0px;
+}
+.codePluginAccountingImgIconOver{
+	width: 24px; height: 24px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px -24px;
+}
+
+.codePluginAccountingImgIconSmall{
+	width: 16px; height: 16px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px -48px;
+}

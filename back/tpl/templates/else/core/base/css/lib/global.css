@@ -1,0 +1,57 @@
+.codeLibGlobalArea{
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	xbackground: #fff;
+	width: 100%;
+	height: 100%;
+}
+
+.codeLibGlobalNaviWrap{
+	position:absolute;
+	xwidth: 44px;
+	xheight: 24px;
+	height: 34px;
+	background: no-repeat;
+	float: left;
+}
+.codeLibGlobalNaviFloat{
+	float: left;
+}
+
+.codeLibGlobalNavi{
+	xwidth: 24px;
+	xheight: 24px;
+
+	background: no-repeat;
+}
+
+.codeLibGlobalNaviTitleOver{
+	color: #888;
+}
+
+.codeLibGlobalNaviLoad{}
+
+.codeLibGlobalMenu{
+	width: 20px; xheight: 24px;
+	height: 34px;
+	float: left;
+	background: url(../img/global/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibGlobalMenuOver{
+	width: 20px; xheight: 24px;
+	background: url(../img/global/icon.png?v=13650) no-repeat -20px 0px;
+}
+
+.codeLibGlobalNaviTitle{
+	font-size: 10px;
+	text-align: center;
+}
+
+.codeLibGlobalNaviStrCodeName{
+	font-size: 12px;
+	position:absolute;
+	float: left;
+}

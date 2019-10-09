@@ -1,0 +1,154 @@
+.codeLibTableLineWrap,
+.codeLibTableColumnWrap,
+.codeLibTableColumn,
+.codeLibTableWrap,
+.codeLibTableLineBtn,
+.codeLibTableLineImg,
+.codeLibTableMove,
+.codeLibTableColumnBoxSortLine{}
+
+.codeLibTableColumnBoxWrap{
+	float: left;
+	height: 17px;
+}
+
+.codeLibTableColumnBoxTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableColumnBox{
+}
+
+.codeLibTableColumnBoxImgUp{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -63px;
+}
+
+.codeLibTableColumnBoxImgDown{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibTableLineLoad{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -109px;
+}
+
+.codeLibTableColumnBoxImgNone{
+}
+
+.codeLibTableColumnBoxImgPoint{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -78px;
+}
+
+.codeLibTableColumnBoxImgMenu{
+	margin: 0px 5px 0px 0px;
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -125px;
+}
+
+.codeLibTableLineTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableColumnBoxSortColumn,
+.codeLibTableColumnBoxResize{
+	height: 16px;
+}
+
+.codeLibTableIdle{
+	width: 10px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableBlock{
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableBlockFirst{
+	margin: 0px 10px 0px 0px;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableLineSort{
+	float: left;
+	height: 2px;
+}
+
+.codeLibTableLineBtnOver{
+	background: #99ccff;
+}
+
+.codeLibTableLine{
+	float: left;
+	height: 16px;
+	xbackground: #eee;
+}
+
+.codeLibTableItem{
+	overflow: hidden;
+}
+
+.codeLibTableLineTitleOver{
+	text-decoration: underline;
+}
+
+.codeLibTableBtnSelect{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibTableNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/table/naviX.png);
+}
+
+.codeLibTableNavi{
+	position: absolute;
+}
+
+.codeLibTableNavi span{
+	float: left;
+}
+
+.codeLibTableSortColumnOver{
+	background: url(../img/table/icon.png) no-repeat 0px -141px;
+}
+
+.codeLibTableMoveSortOver{
+	background: url(../img/table/sortLine.png);
+}
+
+.codeLibTableColumnBoxCheckboxChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibTableColumnBoxCheckboxUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibTableColumnBoxCheckbox{}
+
+
+

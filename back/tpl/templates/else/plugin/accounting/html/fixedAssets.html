@@ -1,0 +1,318 @@
+<table id="{literal}#{idSelf}{/literal}TableWrap" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%" style="font-size:10px;">
+	<tbody>
+		<tr id="{literal}#{idSelf}{/literal}IdAccountTitleWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumBasic}">{$strBasic}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}IdAccountTitleStrTitle" style="width:150px;" >{$strIdAccountTitle} {literal}#{strMust}{/literal}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}IdAccountTitleOffset"><div id="{literal}#{idSelf}{/literal}IdAccountTitle" style="height:16px;text-align:right;">{literal}#{IdAccountTitle}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagDepMethodWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepMethodStrTitle">{$strFlagDepMethod} {literal}#{strMust}{/literal}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepMethodOffset"><div id="{literal}#{idSelf}{/literal}FlagDepMethod" style="height:16px;text-align:right;">{literal}#{FlagDepMethod}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumUsefulLifeWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumUsefulLifeStrTitle">{$strNumUsefulLife}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumUsefulLifeOffset"><div id="{literal}#{idSelf}{/literal}NumUsefulLife" style="height:16px;text-align:right;">{literal}#{NumUsefulLife}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumVolumeWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumVolumeStrTitle">{$strNumVolume}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumVolumeOffset"><div id="{literal}#{idSelf}{/literal}NumVolume" style="height:16px;text-align:right;">{literal}#{NumVolume}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagDepUnitWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepUnitStrTitle">{$strFlagDepUnit}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepUnitOffset"><div id="{literal}#{idSelf}{/literal}FlagDepUnit" style="height:16px;text-align:right;">{literal}#{FlagDepUnit}{/literal}</div></td>
+		</tr>
+		{if $flagIdDepartment}
+			<tr id="{literal}#{idSelf}{/literal}IdDepartmentWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}IdDepartmentStrTitle">{$strIdDepartment}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}IdDepartmentOffset"><div id="{literal}#{idSelf}{/literal}IdDepartment" style="height:16px;text-align:right;">{literal}#{IdDepartment}{/literal}</div></td>
+			</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}IdAccountTitleError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+		<tr id="{literal}#{idSelf}{/literal}FlagTaxFixedWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="2">{$strTax}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagTaxFixedStrTitle" style="width:150px;" >{$strFlagTaxFixed}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagTaxFixedOffset"><div id="{literal}#{idSelf}{/literal}FlagTaxFixed" style="height:16px;text-align:right;">{literal}#{FlagTaxFixed}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagTaxFixedTypeWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagTaxFixedTypeStrTitle">{$strFlagTaxFixedType}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagTaxFixedTypeOffset"><div id="{literal}#{idSelf}{/literal}FlagTaxFixedType" style="height:16px;text-align:right;">{literal}#{FlagTaxFixedType}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagTaxFixedError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+		<tr id="{literal}#{idSelf}{/literal}FlagDepUpWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="2">{$strTaxReason}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepUpStrTitle">{$strFlagDepUp}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepUpOffset"><div id="{literal}#{idSelf}{/literal}FlagDepUp" style="height:16px;text-align:right;">{literal}#{FlagDepUp}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagDepDownWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepDownStrTitle">{$strFlagDepDown}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagDepDownOffset"><div id="{literal}#{idSelf}{/literal}FlagDepDown" style="height:16px;text-align:right;">{literal}#{FlagDepDown}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}FlagDepUpError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+		<tr id="{literal}#{idSelf}{/literal}StampBuyWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="4">{$strTime}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampBuyStrTitle" style="width:150px;" >{$strStampBuy} {literal}#{strMust}{/literal}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampBuyOffset"><div id="{literal}#{idSelf}{/literal}StampBuy" style="height:16px;text-align:right;">{literal}#{StampBuy}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}StampStartWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampStartStrTitle">{$strStampStart}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampStartOffset"><div id="{literal}#{idSelf}{/literal}StampStart" style="height:16px;text-align:right;">{literal}#{StampStart}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}StampDropWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampDropStrTitle">{$strStampDrop}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampDropOffset"><div id="{literal}#{idSelf}{/literal}StampDrop" style="height:16px;text-align:right;">{literal}#{StampDrop}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}StampEndWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampEndStrTitle">{$strStampEnd}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}StampEndOffset"><div id="{literal}#{idSelf}{/literal}StampEnd" style="height:16px;text-align:right;">{literal}#{StampEnd}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}StampBuyError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+		<tr id="{literal}#{idSelf}{/literal}NumValueWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="8">{$strValue}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueStrTitle" style="width:150px;" >{$strNumValue} {literal}#{strMust}{/literal}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueOffset"><div id="{literal}#{idSelf}{/literal}NumValue" style="height:16px;text-align:right;">{literal}#{NumValue}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueCompressionWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueCompressionStrTitle">{$strNumValueCompression}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueCompressionOffset"><div id="{literal}#{idSelf}{/literal}NumValueCompression" style="height:16px;text-align:right;">{literal}#{NumValueCompression}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueNetWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetStrTitle">{$strNumValueNet}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetOffset"><div id="{literal}#{idSelf}{/literal}NumValueNet" style="height:16px;text-align:right;">{literal}#{NumValueNet}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumSurvivalRateWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumSurvivalRateStrTitle" style="width:150px;" >{$strNumSurvivalRate}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumSurvivalRateOffset"><div id="{literal}#{idSelf}{/literal}NumSurvivalRate" style="height:16px;text-align:right;">{literal}#{NumSurvivalRate}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumSurvivalRateLimitWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumSurvivalRateLimitStrTitle">{$strNumSurvivalRateLimit}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumSurvivalRateLimitOffset"><div id="{literal}#{idSelf}{/literal}NumSurvivalRateLimit" style="height:16px;text-align:right;">{literal}#{NumSurvivalRateLimit}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueRemainingBookWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueRemainingBookStrTitle">{$strNumValueRemainingBook}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueRemainingBookOffset"><div id="{literal}#{idSelf}{/literal}NumValueRemainingBook" style="height:16px;text-align:right;">{literal}#{NumValueRemainingBook}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueAccumulatedWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAccumulatedStrTitle">{$strNumValueAccumulated}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAccumulatedOffset"><div id="{literal}#{idSelf}{/literal}NumValueAccumulated" style="height:16px;text-align:right;">{literal}#{NumValueAccumulated}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueNetOpeningWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetOpeningStrTitle">{$strNumValueNetOpening}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetOpeningOffset"><div id="{literal}#{idSelf}{/literal}NumValueNetOpening" style="height:16px;text-align:right;">{literal}#{NumValueNetOpening}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepCalcBaseWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumCurrentDep}">{$strCurrentDep}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCalcBaseStrTitle">{$strNumValueDepCalcBase}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCalcBaseOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepCalcBase" style="height:16px;text-align:right;">{literal}#{NumValueDepCalcBase}{/literal}</div></td>
+		</tr>
+		{if $flagNumValueDepPrevOver}
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepPrevOverWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepPrevOverStrTitle" style="width:150px;" >{$strNumValueDepPrevOver}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepPrevOverOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepPrevOver" style="height:16px;text-align:right;">{literal}#{NumValueDepPrevOver}{/literal}</div></td>
+			</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepCalcWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCalcStrTitle">{$strNumValueDepCalc}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCalcOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepCalc" style="height:16px;text-align:right;">{literal}#{NumValueDepCalc}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}ArrCommaDepMonthWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}ArrCommaDepMonthStrTitle">{$strArrCommaDepMonth}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}ArrCommaDepMonthOffset"><div id="{literal}#{idSelf}{/literal}ArrCommaDepMonth" style="height:16px;text-align:right;">{literal}#{ArrCommaDepMonth}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumRateDepWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRateDepStrTitle">{$strNumRateDep}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRateDepOffset"><div id="{literal}#{idSelf}{/literal}NumRateDep" style="height:16px;text-align:right;">{literal}#{NumRateDep}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueAssuredWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAssuredStrTitle">{$strNumValueAssured}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAssuredOffset"><div id="{literal}#{idSelf}{/literal}NumValueAssured" style="height:16px;text-align:right;">{literal}#{NumValueAssured}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepUpWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepUpStrTitle">{$strNumValueDepUp}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepUpOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepUp" style="height:16px;text-align:right;">{literal}#{NumValueDepUp}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepExtraWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepExtraStrTitle">{$strNumValueDepExtra}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepExtraOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepExtra" style="height:16px;text-align:right;">{literal}#{NumValueDepExtra}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialStrTitle">{$strNumValueDepSpecial}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecial" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecial}{/literal}</div></td>
+		</tr>
+		{if $flagNumValueDepSpecialShortPrev}
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevStrTitle">{$strNumValueDepSpecialShortPrev}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrev" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecialShortPrev}{/literal}</div></td>
+			</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepLimitWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepLimitStrTitle">{$strNumValueDepLimit}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepLimitOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepLimit" style="height:16px;text-align:right;">{literal}#{NumValueDepLimit}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepStrTitle">{$strNumValueDep}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepOffset"><div id="{literal}#{idSelf}{/literal}NumValueDep" style="height:16px;text-align:right;">{literal}#{NumValueDep}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueAccumulatedClosingWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAccumulatedClosingStrTitle">{$strNumValueAccumulatedClosing}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueAccumulatedClosingOffset"><div id="{literal}#{idSelf}{/literal}NumValueAccumulatedClosing" style="height:16px;text-align:right;">{literal}#{NumValueAccumulatedClosing}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumValueNetClosingWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetClosingStrTitle">{$strNumValueNetClosing}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueNetClosingOffset"><div id="{literal}#{idSelf}{/literal}NumValueNetClosing" style="height:16px;text-align:right;">{literal}#{NumValueNetClosing}{/literal}</div></td>
+		</tr>
+		{if $flagNumRatioOperate}
+			<tr id="{literal}#{idSelf}{/literal}NumRatioOperateWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioOperateStrTitle">{$strNumRatioOperate}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioOperateOffset"><div id="{literal}#{idSelf}{/literal}NumRatioOperate" style="height:16px;text-align:right;">{literal}#{NumRatioOperate}{/literal}</div></td>
+			</tr>
+		{/if}
+		{if $flagNumValueDepOperate}
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepOperateWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepOperateStrTitle">{$strNumValueDepOperate}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepOperateOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepOperate" style="height:16px;text-align:right;">{literal}#{NumValueDepOperate}{/literal}</div></td>
+		</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}NumValueDepCalcBaseError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+		{if $flagNumValueDepPrevOver}
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepPrevOverDataWrap">
+				<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="3">{$strDepLawOver}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepPrevOverDataStrTitle" style="width:150px;" >{$strNumValueDepPrevOverData}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepPrevOverDataOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepPrevOverData" style="height:16px;text-align:right;">{literal}#{NumValueDepPrevOverData}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepCurrentOverWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCurrentOverStrTitle">{$strNumValueDepCurrentOver}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepCurrentOverOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepCurrentOver" style="height:16px;text-align:right;">{literal}#{NumValueDepCurrentOver}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepNextOverWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepNextOverStrTitle">{$strNumValueDepNextOver}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepNextOverOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepNextOver" style="height:16px;text-align:right;">{literal}#{NumValueDepNextOver}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepPrevOverDataError" style="display:none;">
+				<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+			</tr>
+		{/if}
+
+		{if $flagNumValueDepSpecialShortCurrent}
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevDataWrap">
+				<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="4">{$strSpecialDepLawShort}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevDataStrTitle">{$strNumValueDepSpecialShortPrevData}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevDataOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevData" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecialShortPrevData}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentStrTitle" style="width:150px;" >{$strNumValueDepSpecialShortCurrent}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrent" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecialShortCurrent}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentCutWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentCutStrTitle">{$strNumValueDepSpecialShortCurrentCut}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentCutOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortCurrentCut" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecialShortCurrentCut}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortNextWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortNextStrTitle">{$strNumValueDepSpecialShortNext}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortNextOffset"><div id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortNext" style="height:16px;text-align:right;">{literal}#{NumValueDepSpecialShortNext}{/literal}</div></td>
+			</tr>
+			<tr id="{literal}#{idSelf}{/literal}NumValueDepSpecialShortPrevDataError" style="display:none;">
+				<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+			</tr>
+		{/if}
+
+
+		<tr id="{literal}#{idSelf}{/literal}LossOnDisposalOfFixedAssetsWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumWrite}">{$strWrite}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}LossOnDisposalOfFixedAssetsStrTitle" style="width:150px;" >{$strLossOnDisposalOfFixedAssets}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}LossOnDisposalOfFixedAssetsOffset"><div id="{literal}#{idSelf}{/literal}LossOnDisposalOfFixedAssets" style="height:16px;text-align:right;">{literal}#{LossOnDisposalOfFixedAssets}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}AccumulatedDepreciationWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}AccumulatedDepreciationStrTitle">{$strAccumulatedDepreciation}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}AccumulatedDepreciationOffset"><div id="{literal}#{idSelf}{/literal}AccumulatedDepreciation" style="height:16px;text-align:right;">{literal}#{AccumulatedDepreciation}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}SellingAdminCostWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}SellingAdminCostStrTitle">{$strSellingAdminCost}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}SellingAdminCostOffset"><div id="{literal}#{idSelf}{/literal}SellingAdminCost" style="height:16px;text-align:right;">{literal}#{SellingAdminCost}{/literal}</div></td>
+		</tr>
+		{if $flagProductsCost}
+			<tr id="{literal}#{idSelf}{/literal}ProductsCostWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}ProductsCostStrTitle">{$strProductsCost}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}ProductsCostOffset"><div id="{literal}#{idSelf}{/literal}ProductsCost" style="height:16px;text-align:right;">{literal}#{ProductsCost}{/literal}</div></td>
+			</tr>
+		{/if}
+		{if $flagNonOperatingExpenses}
+			<tr id="{literal}#{idSelf}{/literal}NonOperatingExpensesWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NonOperatingExpensesStrTitle">{$strNonOperatingExpenses}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NonOperatingExpensesOffset"><div id="{literal}#{idSelf}{/literal}NonOperatingExpenses" style="height:16px;text-align:right;">{literal}#{NonOperatingExpenses}{/literal}</div></td>
+			</tr>
+		{/if}
+		{if $flagAgricultureCost}
+			<tr id="{literal}#{idSelf}{/literal}AgricultureCostWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}AgricultureCostStrTitle">{$strAgricultureCost}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}AgricultureCostOffset"><div id="{literal}#{idSelf}{/literal}AgricultureCost" style="height:16px;text-align:right;">{literal}#{AgricultureCost}{/literal}</div></td>
+			</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}LossOnDisposalOfFixedAssetsError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+
+
+		<tr id="{literal}#{idSelf}{/literal}NumRatioSellingAdminCostWrap">
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumRatio}">{$strRatio}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioSellingAdminCostStrTitle" style="width:150px;" >{$strNumRatioSellingAdminCost}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioSellingAdminCostOffset"><div id="{literal}#{idSelf}{/literal}NumRatioSellingAdminCost" style="height:16px;text-align:right;">{literal}#{NumRatioSellingAdminCost}{/literal}</div></td>
+		</tr>
+		{if $flagNumRatioProductsCost}
+			<tr id="{literal}#{idSelf}{/literal}NumRatioProductsCostWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioProductsCostStrTitle">{$strNumRatioProductsCost}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioProductsCostOffset"><div id="{literal}#{idSelf}{/literal}NumRatioProductsCost" style="height:16px;text-align:right;">{literal}#{NumRatioProductsCost}{/literal}</div></td>
+			</tr>
+		{/if}
+		{if $flagNumRatioNonOperatingExpenses}
+			<tr id="{literal}#{idSelf}{/literal}NumRatioNonOperatingExpensesWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioNonOperatingExpensesStrTitle">{$strNumRatioNonOperatingExpenses}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioNonOperatingExpensesOffset"><div id="{literal}#{idSelf}{/literal}NumRatioNonOperatingExpenses" style="height:16px;text-align:right;">{literal}#{NumRatioNonOperatingExpenses}{/literal}</div></td>
+			</tr>
+		{/if}
+		{if $flagNumRatioAgricultureCost}
+			<tr id="{literal}#{idSelf}{/literal}NumRatioAgricultureCostWrap">
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioAgricultureCostStrTitle">{$strNumRatioAgricultureCost}</td>
+				<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}NumRatioAgricultureCostOffset"><div id="{literal}#{idSelf}{/literal}NumRatioAgricultureCost" style="height:16px;text-align:right;">{literal}#{NumRatioAgricultureCost}{/literal}</div></td>
+			</tr>
+		{/if}
+		<tr id="{literal}#{idSelf}{/literal}FlagFractionWrap">
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagFractionStrTitle">{$strFlagFraction}</td>
+			<td class="codeLibBaseTableRow" id="{literal}#{idSelf}{/literal}FlagFractionOffset"><div id="{literal}#{idSelf}{/literal}FlagFraction" style="height:16px;text-align:right;">{literal}#{FlagFraction}{/literal}</div></td>
+		</tr>
+		<tr id="{literal}#{idSelf}{/literal}NumRatioSellingAdminCostError" style="display:none;">
+			<td class="codeLibBaseTableError codeLibBaseFontRed codeLibBaseFontSizeSeventy" colspan="3"></td>
+		</tr>
+
+
+
+
+
+
+	</tbody>
+</table>

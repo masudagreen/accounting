@@ -1,0 +1,285 @@
+.codeLibBtn,
+.codeLibBtnMiddle{
+	margin: 0px 0px 0px 0px;
+	text-align:center;
+	color: #fff;
+	background: #2A546F;
+}
+
+.codeLibBtnBottom,
+.codeLibBtnTop{
+	margin: 0px 1px 0px 1px;
+	height: 1px;
+	background: #2A546F;
+}
+
+
+
+
+.codeLibBtnOver{
+	background: #FF006C;
+}
+
+.codeLibBtnText{
+	color: #0095c6;
+}
+
+.codeLibBtnTextOver{
+	color: #FF006C;
+	text-decoration: underline;
+}
+
+.codeLibBtnSearch{
+	float: left;
+	padding: 5px 0px 0px 0px;
+}
+
+.codeLibBtnSearchBox{
+	width: 16px; height: 16px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -260px;
+}
+
+.codeLibBtnSearchBoxOver{
+	width: 16px; height: 16px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -16px -260px;
+}
+
+.codeLibBtnSearchInput{
+	margin: 0px 0px 0px 3px;
+}
+
+.codeLibBtnToolWrap,
+.codeLibBtnToolNoactive{
+
+}
+.codeLibBtnToolNoactiveTitle{
+	color: #ccc;
+}
+.codeLibBtnToolOverTitle{
+	color: #888;
+}
+
+.codeLibBtnToolImg{
+	margin: 5px 0px 5px 5px;
+	xpadding: 0px 0px 0px 0px;
+	xheight: 30px;
+	xwidth: 30px;
+}
+.codeLibBtnToolImgTitle{
+	font-size: 10px;
+	text-align: center;
+}
+
+.codeLibBtnPageNow{
+	font-weight: bold;
+	color: #A90A08;
+}
+.codeLibBtnImgIdle{
+	height: 20px;
+}
+.codeLibBtnImgReload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibBtnImgReloadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px 0px;
+}
+
+.codeLibBtnImgReloadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px 0px;
+}
+
+.codeLibBtnImgLoad{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -20px;
+}
+
+.codeLibBtnImgLoadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -20px;
+}
+
+.codeLibBtnImgLoadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -20px;
+}
+
+.codeLibBtnImgAdd{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -40px;
+}
+
+.codeLibBtnImgAddOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -40px;
+}
+
+.codeLibBtnImgAddNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -40px;
+}
+
+.codeLibBtnImgEdit{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -60px;
+}
+
+.codeLibBtnImgEditOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -60px;
+}
+
+.codeLibBtnImgEditNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -60px;
+}
+
+.codeLibBtnImgRemove{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -80px;
+}
+
+.codeLibBtnImgRemoveOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -80px;
+}
+
+.codeLibBtnImgRemoveNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -80px;
+}
+
+.codeLibBtnImgDownload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -100px;
+}
+
+.codeLibBtnImgDownloadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -100px;
+}
+
+.codeLibBtnImgDownloadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -100px;
+}
+
+.codeLibBtnImgPreference{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -120px;
+}
+
+.codeLibBtnImgPreferenceOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -120px;
+}
+
+.codeLibBtnImgPreferenceNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -120px;
+}
+
+.codeLibBtnImgSearch{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -140px;
+}
+
+.codeLibBtnImgSearchOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -140px;
+}
+
+.codeLibBtnImgSearchNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -140px;
+}
+
+.codeLibBtnImgUpload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -160px;
+}
+
+.codeLibBtnImgUploadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -160px;
+}
+
+.codeLibBtnImgUploadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -160px;
+}
+
+.codeLibBtnImgCopy{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -180px;
+}
+
+.codeLibBtnImgCopyOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -180px;
+}
+
+.codeLibBtnImgCopyNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -180px;
+}
+
+.codeLibBtnImgSwitch{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -240px;
+}
+
+.codeLibBtnImgSwitchOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -240px;
+}
+
+.codeLibBtnImgSwitchNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -240px;
+}
+
+.codeLibBtnImgLink{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -220px;
+}
+
+.codeLibBtnImgPrint{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -200px;
+}
+
+.codeLibBtnImgPrintOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -200px;
+}
+
+.codeLibBtnImgPrintNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -200px;
+}
+
+.codeLibBtnImgLinkOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -220px;
+}
+
+.codeLibBtnImgLinkNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -220px;
+}
+
+.codeLibBtnImgMenu{
+	margin : 5px 0px 5px 0px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -0px -280px;
+}
+
+.codeLibBtnImgMenuOver{
+	margin : 5px 0px 5px 0px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -20px -280px;
+}

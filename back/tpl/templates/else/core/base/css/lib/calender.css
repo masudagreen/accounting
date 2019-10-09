@@ -1,0 +1,47 @@
+.codeLibCalenderWrap{
+	width: 206px;
+	border-style: solid 1px;
+}
+
+.codeLibCalenderBoxOver,
+.codeLibCalenderBox{
+	margin: 3px 0px 0px 3px;
+	padding: 2px 0px 0px 0px;
+	height: 19px;
+	width: 26px;
+	text-align: center;
+}
+
+.codeLibCalenderBoxOver{
+	text-decoration: underline;
+	background: #99ccff;
+}
+
+.codeLibCalenderBoxPoint{
+	color: #fff;
+	background: #ccc;
+}
+
+.codeLibCalenderBoxNow{
+	background: #ffffcc;
+}
+
+.codeLibCalenderImgSingleLeftWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 10px;
+	background: url(../img/calender/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibCalenderImgSingleRightWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 10px;
+	background: url(../img/calender/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibCalenderImgDoubleLeftWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 5px;
+	background: url(../img/calender/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibCalenderImgDoubleRightWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 5px;
+	background: url(../img/calender/icon.png) no-repeat 0px -80px;
+}

@@ -1,0 +1,101 @@
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<!--{if $flagType == "straightNew"}-->
+			<tr valign="middle">
+				<td class="codePluginAccountingLibTableColumnTop">{$strPeriod}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strCost}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepRate}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepOne}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepreciation}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strBalance}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strContra}</td>
+			</tr>
+			<!--{foreach from=$arrData key=key item=value}-->
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn">{$strNoBefore}{$value.numPeriod}{$strNoAfter} {$value.strPeriod}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$numCost}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepRateNone}codeLibBaseFontCcc{/if}">{$value.numDepRate}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if !$value.flagDepRateNone}codeLibBaseFontCcc{/if}">{$value.numDepOne}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numDepreciation}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numBalance}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numContra}</td>
+				</tr>
+			<!--{/foreach}-->
+		<!--{elseif $flagType == "decliningNew"}-->
+			<tr valign="middle">
+				<td class="codePluginAccountingLibTableColumnTop">{$strPeriod}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strCostNet}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepRate}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepMin}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepUpdate}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepOne}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepreciation}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strBalance}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strContra}</td>
+			</tr>
+			<!--{foreach from=$arrData key=key item=value}-->
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn">{$strNoBefore}{$value.numPeriod}{$strNoAfter} {$value.strPeriod}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numCostNet}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepRateNone}codeLibBaseFontCcc{/if}">{$value.numDepRate}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepMinNone}codeLibBaseFontCcc{/if}">{$value.numDepMin}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepUpdateNone}codeLibBaseFontCcc{/if}">{$value.numDepUpdate}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepOneNone}codeLibBaseFontCcc{/if}">{$value.numDepOne}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numDepreciation}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numBalance}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numContra}</td>
+				</tr>
+			<!--{/foreach}-->
+		<!--{elseif $flagType == "straightOld"}-->
+			<tr valign="middle">
+				<td class="codePluginAccountingLibTableColumnTop">{$strPeriod}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strCost}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepRate}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepYear}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepOne}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepreciation}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strBalance}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strContra}</td>
+			</tr>
+			<!--{foreach from=$arrData key=key item=value}-->
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn">{$strNoBefore}{$value.numPeriod}{$strNoAfter} {$value.strPeriod}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$numCost}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepRateNone}codeLibBaseFontCcc{/if}">{$value.numDepRate}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepYearNone}codeLibBaseFontCcc{/if}">{$value.numDepYear}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepOneNone}codeLibBaseFontCcc{/if}">{$value.numDepOne}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numDepreciation}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numBalance}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numContra}</td>
+				</tr>
+			<!--{/foreach}-->
+		<!--{elseif $flagType == "decliningOld"}-->
+			<tr valign="middle">
+				<td class="codePluginAccountingLibTableColumnTop">{$strPeriod}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strCostNet}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepRate}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepYear}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepOne}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strDepreciation}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strBalance}</td>
+				<td class="codePluginAccountingLibTableColumnTop">{$strContra}</td>
+			</tr>
+			<!--{foreach from=$arrData key=key item=value}-->
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn">{$strNoBefore}{$value.numPeriod}{$strNoAfter} {$value.strPeriod}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numCostNet}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepRateNone}codeLibBaseFontCcc{/if}">{$value.numDepRate}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepYearNone}codeLibBaseFontCcc{/if}">{$value.numDepYear}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if} {if $value.flagDepOneNone}codeLibBaseFontCcc{/if}">{$value.numDepOne}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numDepreciation}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numBalance}</td>
+					<td class="codePluginAccountingLibTableRowNum {if $value.flagCurrent}codePluginAccountingLibTableRowNumNow{/if}">{$value.numContra}</td>
+				</tr>
+			<!--{/foreach}-->
+		<!--{/if}-->
+
+
+
+
+	</tbody>
+</table>

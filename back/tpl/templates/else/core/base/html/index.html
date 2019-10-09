@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{$strLang}">
+<head>
+<meta charset="utf-8"/>
+<title>{$headTitle}</title>
+<link href="front/else/lib/css/style.css?v={$numVersion}" rel="stylesheet" type="text/css" />
+<link href="front/else/core/base/css/style.css?v={$numVersion}" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="front/else/core/base/img/favicon.ico?v={$numVersion}">
+<script type="text/javascript" src="front/else/lib/ext/prototype.js"></script>
+<script type="text/javascript" src="front/else/lib/ext/protochart.js?v={$numVersion}"></script>
+<script type="text/javascript" src="front/else/lib/ext/scriptaculous.js?load=effects,dragdrop"></script>
+<script type="text/javascript" src="front/else/lib/js/{$strLang}/code.js?v={$numVersion}"></script>
+<script type="text/javascript" src="front/else/core/base/js/{$strLang}/root.js?v={$numVersion}"></script>
+<!--[if IE]><script type="text/javascript" src="front/else/lib/ext/excanvas.js"></script><![endif]-->
+<script type="text/javascript">
+
+var varsStatus = {$jsonStatus};
+var insRoot;
+{literal}
+
+document.observe('dom:loaded',function(){
+	insRoot = new Code_Core_Base_Root({varsStatus: varsStatus});
+});
+
+{/literal}
+</script>
+</head>
+<body id='Root' onunload=''>
+<noscript>{$caution}</noscript>
+</body>
+</html>

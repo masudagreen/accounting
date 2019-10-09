@@ -1,0 +1,389 @@
+html{
+	height:100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	font-weight: normal;
+	list-style: none;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6{
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	border: 0;
+}
+
+body {
+	font-size: 75%;
+	line-height: 1.5;
+	text-align: left;
+	color: #333333;
+}
+
+iframe body{
+	font-size: 12px;
+}
+
+textarea{
+	xpadding: 5px;
+	font-size: 12px;
+	resize : none;
+	border: #c2c2c2 solid 1px;
+}
+
+select,input{
+	xborder: #889abd solid 1px;
+	border: #c2c2c2 solid 1px;
+}
+
+.codeLibBaseFontTwelve{
+	font-size: 12px;
+}
+
+.codeLibBaseFontTen{
+	font-size: 10px;
+}
+
+.codeLibBaseOpacityZero{
+	filter: alpha(opacity=0);
+	-moz-opacity:0;
+	opacity:0;
+}
+
+.codeLibBaseCursorPointer{
+	cursor: pointer;
+}
+
+.codeLibBaseCursorSe-resize{
+	cursor: se-resize;
+}
+
+.codeLibBaseCursorNe-resize{
+	cursor: ne-resize;
+}
+
+.codeLibBaseCursorE-resize{
+	cursor: e-resize;
+}
+
+.codeLibBaseCursorS-resize{
+	cursor: s-resize;
+}
+
+.codeLibBaseCursorSe-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorNe-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorE-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorS-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorMove{
+	cursor: move;
+}
+
+.codeLibBaseCursorDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorWait{
+	cursor: wait;
+}
+
+.codeLibBaseCursorColResize{
+	cursor: col-resize;
+}
+
+.codeLibBaseFontFff{
+	color: #fff;
+}
+
+.codeLibBaseFontOrange{
+	color: orange;
+}
+
+.codeLibBaseFontBrown{
+	color: brown;
+}
+
+.codeLibBaseFontGreen{
+	color: green;
+}
+
+.codeLibBaseFontCcc{
+	color: #ccc;
+}
+
+.codeLibBaseFont666{
+	color: #666;
+}
+
+.codeLibBaseFontBlack{
+	color: black;
+}
+
+.codeLibBaseFontRed{
+	color: #e10101;
+}
+
+.codeLibBaseFontBold{
+	font-weight: bold;
+}
+
+.codeLibBaseBgFff{
+	background: #fff;
+}
+
+.codeLibBaseBgCcc{
+	background: #ccc;
+}
+
+.codeLibBaseBgEee{
+	background: #eee;
+}
+
+.codeLibBaseBgTest{
+	background: #F0FFFF;
+}
+
+.codeLibBaseBgLine{
+	background: #F0FFFF;
+}
+
+.codeLibBaseBgSelect{
+	background: #2472AE;
+}
+
+.codeLibBaseBgYellow{
+	background: #ffdb57;
+}
+
+.codeLibBaseBgNoactive{
+	background: url(../img/base/noactive.png);
+}
+
+.codeLibBaseBgOpacityNine{
+	opacity: 0.9;
+}
+
+.codeLibBaseUnderline{
+	 text-decoration: underline;
+}
+
+.codeLibBaseMarginFive{
+	margin: 5px;
+}
+.codeLibBaseMarginTen{
+	margin: 10px;
+}
+
+.codeLibBaseMarginLeftRightFive{
+	margin: 0px 5px 0px 5px;
+}
+
+.codeLibBaseMarginTopFive{
+	margin: 5px 0px 0px 0px;
+}
+
+.codeLibBaseMarginTopTen{
+	margin: 10px 0px 0px 0px;
+}
+
+.codeLibBaseMarginLeftFive{
+	margin: 0px 0px 0px 5px;
+}
+
+.codeLibBaseMarginLeftTen{
+	margin: 0px 0px 0px 10px;
+}
+
+.codeLibBaseMarginRightFive{
+	margin: 0px 5px 0px 0px;
+}
+.codeLibBaseMarginBottomTwo{
+	margin: 0px 0px 2px 0px;
+}
+
+.codeLibBaseFontSizeSeventy{
+	font-size: 10px;
+}
+
+.codeLibBaseFontSizeTwelve{
+	font-size: 12px;
+}
+
+.codeLibBasePaddingFive{
+	padding: 5px;
+}
+
+.codeLibBaseHeightFive{
+	height: 5px;
+}
+
+.codeLibBaseHeightPerHundred{
+	height:100%;
+}
+
+.codeLibBaseHeightSixteen{
+	height: 16px;
+}
+
+.codeLibBaseWidthPer100{
+	width:100%;
+}
+
+.codeLibBaseFloatLeft ul li{
+	float:left;
+}
+
+.codeLibBaseFloatRight ul li{
+	float:right;
+}
+
+.codeLibBaseImgFolder{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibBaseImgSheet{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -17px;
+}
+
+.codeLibBaseImgDb{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -34px;
+}
+
+.codeLibBaseImgDetail{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -52px;
+}
+
+.codeLibBaseImgBack{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -68px;
+}
+
+.codeLibBaseImgInfo{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -86px;
+}
+
+
+.codeLibBaseImgCheck{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -103px;
+}
+
+.codeLibBaseImgCheckNone{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -120px;
+}
+
+.codeLibBaseImgRemove{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -137px;
+}
+
+.codeLibBaseImgUnloading{
+	width: 16px; height: 17px;
+	background: url(../img/base/icon.png) no-repeat 0px -154px;
+}
+
+.codeLibBaseImgBlank{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -171px;
+}
+
+.codeLibBaseFontTypeCheck{
+	font-size : 12px;
+	color : orange;
+	font-weight : bold;
+}
+.codeLibBaseFontTypeCaution{
+	font-size : 12px;
+	color : red;
+	font-weight : bold;
+}
+.codeLibBaseFontBold{
+	font-weight : bold;
+}
+
+.codeLibBaseDownloadWrap,
+.codeLibBaseTempWrap{}
+
+.codeLibBaseTableColumnMiddle,
+.codeLibBaseTableColumnRight,
+.codeLibBaseTableColumn {
+	padding: 5px;
+	background: #efefef;
+}
+
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableRowRight,
+.codeLibBaseTableRow {
+	padding: 5px;
+	background: #fff;
+}
+.codeLibBaseTableError {
+	padding: 5px 5px 15px 5px;
+	background: #fff;
+}
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowSelect {
+	padding: 5px;
+	background: #2472AE;
+	color: #fff;
+}
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableColumnMiddle {
+	text-align : center;
+}
+
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowRight,
+.codeLibBaseTableColumnRight {
+	text-align : right;
+}
+
+a{
+	color: #0088cc;
+}
+
+a:link,a:visited,a:active{
+	text-decoration:none;
+}
+
+.codeLibBaseLinkNormalOver a{
+	color: #0095c6;
+	text-decoration: none;
+}
+.codeLibBaseLinkNormalOver a:hover{
+	color: #0095c6;
+	text-decoration: underline;
+
+}
+
+
+
+

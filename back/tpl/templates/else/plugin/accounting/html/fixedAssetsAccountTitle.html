@@ -1,0 +1,118 @@
+<table width="100%" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc">
+	<tbody>
+		<tr>
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="1">{$strBasic}</td>
+			<td class="codeLibBaseTableRow" style="width:150px;">{$flagDepMethodColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$flagDepMethodStr}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="2">{$strTax}</td>
+			<td class="codeLibBaseTableRow">{$flagTaxFixedColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$flagTaxFixedStr}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableRow">{$flagTaxFixedTypeColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$flagTaxFixedTypeStr}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumWrite}">{$strWrite}</td>
+			<td class="codeLibBaseTableRow">{$lossOnDisposalOfFixedAssetsColumn}</td>
+			{if $lossOnDisposalOfFixedAssets == "" || $lossOnDisposalOfFixedAssets == "none"}
+				<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+			{else}
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$lossOnDisposalOfFixedAssetsStr}</td>
+			{/if}
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableRow">{$accumulatedDepreciationColumn}</td>
+			{if $accumulatedDepreciation == "" || $accumulatedDepreciation == "none"}
+				<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+			{else}
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$accumulatedDepreciationStr}</td>
+			{/if}
+		</tr>
+		{if $flagSellingAdminCost}
+			<tr>
+				<td class="codeLibBaseTableRow">{$sellingAdminCostColumn}</td>
+				{if $sellingAdminCost == "" || $sellingAdminCost == "none"}
+					<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+				{else}
+					<td class="codeLibBaseTableRow" style="text-align:right;">{$sellingAdminCostStr}</td>
+				{/if}
+				
+			</tr>
+		{/if}
+		{if $flagProductsCost}
+			<tr>
+				<td class="codeLibBaseTableRow">{$productsCostColumn}</td>
+				{if $productsCost == "" || $productsCost == "none"}
+					<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+				{else}
+					<td class="codeLibBaseTableRow" style="text-align:right;">{$productsCostStr}</td>
+				{/if}
+			</tr>
+		{/if}
+		{if $flagNonOperatingExpenses}
+			<tr>
+				<td class="codeLibBaseTableRow">{$nonOperatingExpensesColumn}</td>
+					{if $nonOperatingExpenses == "" || $nonOperatingExpenses == "none"}
+						<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+					{else}
+						<td class="codeLibBaseTableRow" style="text-align:right;">{$nonOperatingExpensesStr}</td>
+					{/if}
+			</tr>
+		{/if}
+		{if $flagAgricultureCost}
+				<tr>
+					<td class="codeLibBaseTableRow">{$agricultureCostColumn}</td>
+					{if $agricultureCost == "" || $agricultureCost == "none"}
+						<td class="codeLibBaseTableRow" style="text-align:right;"></td>
+					{else}
+						<td class="codeLibBaseTableRow" style="text-align:right;">{$agricultureCostStr}</td>
+					{/if}
+				</tr>
+		{/if}
+		<tr>
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="{$sumRatio}">{$strRatio}</td>
+			<td class="codeLibBaseTableRow">{$numRatioSellingAdminCostColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$numRatioSellingAdminCostStr}</td>
+		</tr>
+		{if $flagNumRatioProductsCost}
+			<tr>
+				<td class="codeLibBaseTableRow">{$numRatioProductsCostColumn}</td>
+					<td class="codeLibBaseTableRow" style="text-align:right;">{$numRatioProductsCostStr}</td>
+			</tr>
+		{/if}
+		{if $flagNumRatioNonOperatingExpenses}
+			<tr>
+				<td class="codeLibBaseTableRow">{$numRatioNonOperatingExpensesColumn}</td>
+						<td class="codeLibBaseTableRow" style="text-align:right;">{$numRatioNonOperatingExpensesStr}</td>
+			</tr>
+		{/if}
+		{if $flagNumRatioAgricultureCost}
+			<tr>
+				<td class="codeLibBaseTableRow">{$numRatioAgricultureCostColumn}</td>
+					<td class="codeLibBaseTableRow" style="text-align:right;">{$numRatioAgricultureCostStr}</td>
+			</tr>
+		{/if}
+		{if $flagFlagFraction}
+			<tr>
+				<td class="codeLibBaseTableRow">{$flagFractionColumn}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$flagFractionStr}</td>
+			</tr>
+		{/if}
+		<tr>
+			<td class="codeLibBaseTableColumn" style="width:70px;" rowspan="3">{$strCalc}</td>
+			<td class="codeLibBaseTableRow">{$numSurvivalRateColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$numSurvivalRateStr}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableRow">{$numSurvivalRateLimitColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$numSurvivalRateLimitStr}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableRow">{$numValueRemainingBookColumn}</td>
+			<td class="codeLibBaseTableRow" style="text-align:right;">{$numValueRemainingBookStr}</td>
+		</tr>
+	</tbody>
+</table>

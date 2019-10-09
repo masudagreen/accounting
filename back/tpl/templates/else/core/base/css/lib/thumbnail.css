@@ -1,0 +1,89 @@
+.codeLibThumbnailLogWrap{
+	width: 136px;
+	margin: 10px 0px 0px 10px;
+}
+
+.codeLibThumbnailLogImgWrap{
+	margin: 5px 0px 0px 5px;
+	border: 3px double #ccc;
+	width: 120px;
+	height: 90px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.codeLibThumbnailLogImg{
+	width: 120px;
+	height: 90px;
+}
+
+.codeLibThumbnailLogDetailWrap{
+	margin: 5px 0px 0px 5px;
+}
+
+.codeLibThumbnailNavi{
+	position: absolute;
+}
+
+.codeLibThumbnailNavi span{
+	float: left;
+}
+
+.codeLibThumbnailLogMove{}
+
+.codeLibThumbnailWrap{
+	width: 126px;
+}
+
+.codeLibThumbnailLogImgLoad{
+	margin: 37px 0px 0px 52px;
+}
+
+.codeLibThumbnailBodyWrap{
+	position: relative;
+}
+
+.codeLibThumbnailLogBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibThumbnailLogTitleWrap{
+	padding: 0px 5px 0px 5px;
+	width: 116px;
+	height: 16px;
+}
+
+.codeLibThumbnailLogTitle{
+	height: 16px;
+	width: 95px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogTimeLength{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogTimeRegister{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogSize{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogImg_404{
+	width: 40px;
+	height: 16px;
+	background: url(../img/thumbnail/icon.png) no-repeat 0px 0px;
+}
+

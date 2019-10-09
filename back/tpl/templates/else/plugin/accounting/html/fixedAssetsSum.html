@@ -1,0 +1,30 @@
+<table style="margin-top:5px;font-size:10px;" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr>
+			<td class="codeLibBaseTableRow codeLibBaseFontBold" colspan=6>{$strNumValueDep} = {$numValueDepComma}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableRow codeLibBaseFontBold" colspan=6>{$strNumValueNetClosingSum} = {$numValueNetClosingSumComma}</td>
+		</tr>
+		<tr>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:70px;">{$strPeriod}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:50px;">{$strNumValue}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:50px;">{$strNumValueCompression}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:50px;">{$strNumValueNet}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:50px;">{$strNumValueDepLimit}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:50px;">{$strNumValueNetClosing}</td>
+		</tr>
+		{foreach from=$arrRows key=key item=value}
+			<tr>
+				<td class="codeLibBaseTableRow">{$value.strPeriod}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$value.numValueComma}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$value.numValueCompressionComma}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$value.numValueNetComma}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$value.numValueDepLimitComma}</td>
+				<td class="codeLibBaseTableRow" style="text-align:right;">{$value.numValueNetClosingComma}</td>
+			</tr>
+		{/foreach}
+	</tbody>
+</table>
+
+

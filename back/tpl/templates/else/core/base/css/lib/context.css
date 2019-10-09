@@ -1,0 +1,57 @@
+.codeLibContextWrap{
+	float: left;
+	position: absolute;
+}
+
+.codeLibContextLineBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibContextListWrap{
+	position: absolute;
+}
+
+.codeLibContextLine{
+	xpadding: 1px;
+}
+
+.codeLibContextLineImg{
+	float: left;
+}
+
+.codeLibContextLineCheck{
+	float: left;
+}
+
+.codeLibContextLineChecked{
+	background: url(../img/context/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibContextLineTitle{
+	float: left;
+	height: 16px;
+	overflow : hidden;
+	margin-left: 5px;
+}
+
+.codeLibContextLineTitleNoactive{
+	color: #ccc;
+}
+
+.codeLibContextLineArrow{
+	float: right;
+}
+
+.codeLibContextLineArrowed{
+	background: url(../img/context/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibContextLineOver{
+	xcolor: #fff;
+	xbackground: #2472ae;
+	background: #99ccff;
+}
+
+
+

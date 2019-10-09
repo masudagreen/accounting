@@ -1,0 +1,60 @@
+.codeLibScheduleMonthBodyLineMiddleLogWrap,
+.codeLibScheduleMonthBodyLineBoxMain,
+.codeLibScheduleMonthBodyLineWrap,
+.codeLibScheduleMonthBodyWrap{}
+
+.codeLibScheduleMonthBodyLineTop{
+	height: 16px;
+}
+
+.codeLibScheduleMonthBodyLineMiddle{
+}
+
+.codeLibScheduleMonthBodyLineBottom{
+	height: 16px;
+}
+
+.codeLibScheduleMonthBodyLineSeparate{
+	height: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-x;
+}
+
+.codeLibScheduleMonthBodyLineBoxSeparate{
+	width: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-y;
+}
+
+.codeLibScheduleMonthBodyLineBox,
+.codeLibScheduleMonthLineBox{
+	padding: 0px 5px 0px 5px;
+}
+
+.codeLibScheduleMonthBodyLineBoxTop{
+	height: 16px;
+	text-align: right;
+	overflow: hidden;
+}
+
+.codeLibScheduleMonthBodyLineBoxMiddle{
+
+}
+
+.codeLibScheduleMonthBodyLineBoxBottom{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibScheduleMonthBodyLineBoxNext,
+.codeLibScheduleMonthBodyLineBoxPrev{
+	color: #ccc;
+}
+
+.codeLibScheduleMonthBodyLineBoxOver{
+	background: #eee;
+}
+
+.codeLibScheduleMonthBodyLineBoxOverRange{
+	color: #fff;
+	background: #2472ae;
+}
+

@@ -1,0 +1,453 @@
+.codeLibTemplateCircleBoxWrap{}
+
+.codeLibTemplateCircleBoxTop,
+.codeLibTemplateCircleBoxBottom{
+	height: 1px;
+	margin: 0px 1px 0px 1px;
+}
+
+.codeLibTemplateCircleBoxMiddle{
+	xbackground: #eee;
+	text-align: center;
+}
+/*------------------------------------------------------------------*/
+
+.codeLibTemplateListFormatHeaderGraduation,
+.codeLibTemplateListFormatHeaderGraduationWrap,
+.codeLibTemplateListFormatHeaderNavi,
+.codeLibTemplateListFormatHeaderNaviWrap{
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateListFormat{}
+
+.codeLibTemplateListFormatHeader{
+
+}
+
+.codeLibTemplateListFormatHeaderLeft{
+}
+
+.codeLibTemplateListFormatHeaderRight{
+}
+
+.codeLibTemplateListFormatBody{}
+
+.codeLibTemplateListFormatFooder{}
+
+.codeLibTemplateListFormatFooderLeft{
+}
+
+.codeLibTemplateListFormatFooderRight{
+}
+
+.codeLibTemplateListFormatHeaderImg{
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+	xbackground: no-repeat;
+	xfont-weight: bold;
+}
+
+.codeLibTemplateListFormatHeaderStr{
+	padding: 4px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.codeLibTemplateListFormatFooderImg{
+	height: 18px;
+	padding: 0px 0px 0px 20px;
+	margin: 2px 5px 0px 5px;
+	background: no-repeat;
+}
+
+.codeLibTemplateListFormatFooderStr{
+	padding: 0px 0px 0px 0px;
+	margin: 0px 5px 0px 5px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateNormalFormat{}
+
+.codeLibTemplateNormalFormatHeaderWrap{
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+}
+
+.codeLibTemplateNormalFormatHeader{
+
+}
+
+.codeLibTemplateNormalFormatHeaderLeft{
+	xfloat:left;
+}
+
+.codeLibTemplateNormalFormatHeaderRight{
+	xfloat:right;
+}
+
+.codeLibTemplateNormalFormatBody{}
+
+.codeLibTemplateNormalFormatFooder{}
+
+.codeLibTemplateNormalFormatFooderLeft{
+	xfloat:left;
+}
+
+.codeLibTemplateNormalFormatFooderRight{
+	xfloat:right;
+}
+
+.codeLibTemplateNormalFormatHeaderImg{
+	overflow: hidden;
+	height: 18px;
+	padding: 0px 0px 0px 20px;
+	xbackground: no-repeat;
+	font-weight: bold;
+}
+
+.codeLibTemplateNormalFormatHeaderStr{
+	overflow: hidden;
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.codeLibTemplateNormalFormatFooderImg{
+	overflow: hidden;
+	height: 25px;
+	padding: 0px 0px 0px 20px;
+	margin: 2px 5px 0px 5px;
+	background: no-repeat;
+}
+
+.codeLibTemplateNormalFormatFooderStr{
+	overflow: hidden;
+	height: 25px;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 5px 0px 5px;
+}
+
+.codeLibTemplateNormalFormatHeaderLeftWidthTitle,
+.codeLibTemplateNormalFormatHeaderRightWidthTitle,
+.codeLibTemplateNormalFormatFooderLeftWidthTitle,
+.codeLibTemplateNormalFormatFooderRightWidthTitle{}
+/*------------------------------------------------------------------*/
+.codeLibTemplateNormalBox{}
+
+.codeLibTemplateNormalBoxTop{}
+
+.codeLibTemplateNormalBoxMiddle{}
+
+.codeLibTemplateNormalBoxBottom{}
+
+.codeLibTemplateNormalBoxTopLeft{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateNormalBoxTopMiddle{
+	float: left;
+	height: 3px;
+	background: url(../img/template/normalBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateNormalBoxTopRight{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat -4px 0px;
+}
+
+.codeLibTemplateNormalBoxMiddleLeft{
+	float: left;
+	width: 3px;
+	background: url(../img/template/normalBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateNormalBoxMiddleMiddle{
+	float: left;
+}
+
+.codeLibTemplateNormalBoxMiddleRight{
+	float: left;
+	width: 3px;
+	background: url(../img/template/normalBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateNormalBoxBottomLeft{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat 0px -4px;
+}
+
+.codeLibTemplateNormalBoxBottomMiddle{
+	float: left;
+	height: 3px;
+	background: url(../img/template/normalBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateNormalBoxBottomRight{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat -4px -4px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateShadowBox{
+	float: left;
+}
+
+.codeLibTemplateShadowBoxTop{}
+
+.codeLibTemplateShadowBoxMiddle{}
+
+.codeLibTemplateShadowBoxBottom{}
+
+.codeLibTemplateShadowBoxTopLeft{
+	float: left;
+	width: 6px;
+	height: 8px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateShadowBoxTopMiddle{
+	float: left;
+	height: 8px;
+	background: url(../img/template/shadowBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateShadowBoxTopRight{
+	float: left;
+	width: 6px;
+	height: 8px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat -7px 0px;
+}
+
+.codeLibTemplateShadowBoxMiddleLeft{
+	float: left;
+	width: 6px;
+	background: url(../img/template/shadowBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateShadowBoxMiddleMiddle{
+	float: left;
+	background: #f1f1ed;
+}
+
+.codeLibTemplateShadowBoxMiddleRight{
+	float: left;
+	width: 6px;
+	background: url(../img/template/shadowBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateShadowBoxBottomLeft{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat 0px -9px;
+}
+
+.codeLibTemplateShadowBoxBottomMiddle{
+	float: left;
+	height: 6px;
+	background: url(../img/template/shadowBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateShadowBoxBottomRight{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat -7px -9px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateMenuBox{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxTop span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxMiddle span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxBottom span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxTopLeft{
+	float: left;
+	width: 6px;
+	height: 5px;
+	background: url(../img/template/menuBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateMenuBoxTopMiddle{
+	float: left;
+	height: 5px;
+	background: url(../img/template/menuBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateMenuBoxTopRight{
+	float: left;
+	width: 6px;
+	height: 5px;
+	background: url(../img/template/menuBox/icon.png) no-repeat -7px 0px;
+}
+
+.codeLibTemplateMenuBoxMiddleLeft{
+	float: left;
+	width: 6px;
+	background: url(../img/template/menuBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateMenuBoxMiddleMiddle{
+	float: left;
+	background: #f1f1ed;
+}
+
+.codeLibTemplateMenuBoxMiddleRight{
+	float: left;
+	width: 6px;
+	background: url(../img/template/menuBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateMenuBoxBottomLeft{
+	float: left;
+	width: 6px;
+	height: 10px;
+	background: url(../img/template/menuBox/icon.png) no-repeat 0px -6px;
+}
+
+.codeLibTemplateMenuBoxBottomMiddle{
+	float: left;
+	height: 10px;
+	background: url(../img/template/menuBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateMenuBoxBottomRight{
+	float: left;
+	width: 6px;
+	height: 10px;
+	background: url(../img/template/menuBox/icon.png) no-repeat -7px -6px;
+}
+
+/*------------------------------------------------------------------*/
+.codeLibTemplateWindowBox{
+	position:absolute;
+}
+
+.codeLibTemplateWindowBoxAreaLeft ul li{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxAreaRight ul li{
+	float: right;
+}
+
+.codeLibTemplateWindowBoxHeader{
+}
+
+.codeLibTemplateWindowBoxBody{
+}
+
+.codeLibTemplateWindowBoxHeaderTop span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxHeaderBottom span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxBodyTop span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxBodyBottom span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxHeaderTopLeft{
+	width: 12px;
+	height: 2px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateWindowBoxHeaderTopMiddle{
+	height: 2px;
+	background: url(../img/template/templateWindowBox/headerTopMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxHeaderTopRight{
+	width: 12px;
+	height: 2px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px 0px;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomLeft{
+	width: 12px;
+	height: 46px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -3px;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomMiddle{
+	height: 46px;
+	background: url(../img/template/templateWindowBox/headerBottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomRight{
+	width: 12px;
+	height: 46px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px -3px;
+}
+
+.codeLibTemplateWindowBoxBodyTopLeft{
+	width: 12px;
+	background: url(../img/template/templateWindowBox/bodyTopLeft.png) repeat-y;
+}
+
+.codeLibTemplateWindowBoxBodyTopMiddle{
+}
+
+.codeLibTemplateWindowBoxBodyTopRight{
+	width: 12px;
+	background: url(../img/template/templateWindowBox/bodyTopRight.png) repeat-y;
+}
+
+.codeLibTemplateWindowBoxBodyBottomLeft{
+	width: 12px;
+	height: 16px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -50px;
+}
+
+.codeLibTemplateWindowBoxBodyBottomMiddle{
+	height: 16px;
+	background: url(../img/template/templateWindowBox/bodyBottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxBodyBottomRight{
+	width: 12px;
+	height: 16px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px -50px;
+}
+
+.codeLibTemplateWindowBoxHeaderTitleImg{
+	margin: 8px; 
+	font-weight: bold;
+	padding: 5px 30px 0px 30px;
+}
+
+.codeLibTemplateWindowBoxHeaderTitle{
+	margin: 3px; 
+	font-weight: bold;
+	padding: 0px 0px 0px 0px;
+}
+
+.codeLibTemplateWindowBoxNaviRemove{
+	margin: 8px 0px 8px 0px; 
+	height: 24px;
+	width: 24px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -92px;
+}

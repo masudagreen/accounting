@@ -1,0 +1,84 @@
+.codeLibScheduleGraduationWrap{
+	position: absolute;
+}
+
+.codeLibScheduleWeekLineBox{
+	padding: 0px 5px 0px 5px;
+}
+
+.codeLibScheduleWeekBodyLineTopTitle{
+	margin: 0px 0px 0px 5px;
+}
+
+.codeLibScheduleWeekBodyLineFold,
+.codeLibScheduleWeekBodyLineBody,
+.codeLibScheduleWeekBodyLineBodyWrap,
+.codeLibScheduleWeekBodyWrap,
+.codeLibScheduleWeekBodyLineWrap{}
+
+.codeLibScheduleWeekBodyTopWrap{
+	position: relative;
+	padding: 2px 0px 0px 0px;
+	height: 18px;
+	overflow: hidden;
+}
+
+.codeLibScheduleWeekBodyTop{
+	position: absolute;
+}
+
+.codeLibScheduleWeekBodyLineSeparate{
+	height: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-x;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparate{
+	width: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateDouble{
+	width: 3px;
+	background: url(../img/schedule/lineDouble.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateNow{
+	width: 1px;
+	background: url(../img/schedule/lineSingleOrange.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateDoubleNow{
+	width: 3px;
+	background: url(../img/schedule/lineDoubleOrange.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineMiddleLogWrap{}
+
+.codeLibScheduleWeekBodyLineBoxNow{
+	xbackground: #ffffcc;
+}
+
+.codeLibScheduleWeekBodyLineBoxMain,
+.codeLibScheduleWeekBodyLineWrap,
+.codeLibScheduleWeekBodyWrap{}
+
+.codeLibScheduleWeekBodyLineTop{
+	height: 16px;
+}
+
+.codeLibScheduleWeekBodyLineMiddle{
+}
+
+.codeLibScheduleWeekBodyLineBottom{
+	height: 16px;
+}
+
+.codeLibScheduleWeekBodyLineBoxOverRange{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibScheduleWeekBodyLineBoxMiddle{
+
+}
+

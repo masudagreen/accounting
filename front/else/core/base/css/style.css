@@ -1,0 +1,40 @@
+.codeCoreBaseImgIcon{
+	width: 24px; height: 24px;
+	background: url(../img/icon.png) no-repeat 0px 0px;
+}
+.codeCoreBaseImgIconOver{
+	width: 24px; height: 24px;
+	background: url(../img/icon.png) no-repeat 0px -24px;
+}
+
+.codeCoreBaseImgIconSmall{
+	width: 16px; height: 16px;
+	background: url(../img/icon.png) no-repeat 0px -48px;
+}
+
+
+.codeCoreLogoutImgIcon{
+	width: 24px; height: 24px;
+	background: url(../img/icon.png) no-repeat 0px -64px;
+}
+.codeCoreLogoutImgIconOver{
+	width: 24px; height: 24px;
+	background: url(../img/icon.png) no-repeat 0px -88px;
+}
+
+.codeCoreLogoutImgIconSmall{
+	width: 16px; height: 16px;
+	background: url(../img/icon.png) no-repeat 0px -112px;
+}.codePluginAccountingImgIcon{
+	width: 24px; height: 24px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px 0px;
+}
+.codePluginAccountingImgIconOver{
+	width: 24px; height: 24px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px -24px;
+}
+
+.codePluginAccountingImgIconSmall{
+	width: 16px; height: 16px;
+	background: url(../../../plugin/accounting/img/icon.png) no-repeat 0px -48px;
+}

@@ -1,0 +1,3064 @@
+html{
+	height:100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	font-weight: normal;
+	list-style: none;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6{
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	border: 0;
+}
+
+body {
+	font-size: 75%;
+	line-height: 1.5;
+	text-align: left;
+	color: #333333;
+}
+
+iframe body{
+	font-size: 12px;
+}
+
+textarea{
+	xpadding: 5px;
+	font-size: 12px;
+	resize : none;
+	border: #c2c2c2 solid 1px;
+}
+
+select,input{
+	xborder: #889abd solid 1px;
+	border: #c2c2c2 solid 1px;
+}
+
+.codeLibBaseFontTwelve{
+	font-size: 12px;
+}
+
+.codeLibBaseFontTen{
+	font-size: 10px;
+}
+
+.codeLibBaseOpacityZero{
+	filter: alpha(opacity=0);
+	-moz-opacity:0;
+	opacity:0;
+}
+
+.codeLibBaseCursorPointer{
+	cursor: pointer;
+}
+
+.codeLibBaseCursorSe-resize{
+	cursor: se-resize;
+}
+
+.codeLibBaseCursorNe-resize{
+	cursor: ne-resize;
+}
+
+.codeLibBaseCursorE-resize{
+	cursor: e-resize;
+}
+
+.codeLibBaseCursorS-resize{
+	cursor: s-resize;
+}
+
+.codeLibBaseCursorSe-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorNe-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorE-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorS-resizeDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorMove{
+	cursor: move;
+}
+
+.codeLibBaseCursorDefault{
+	cursor: default;
+}
+
+.codeLibBaseCursorWait{
+	cursor: wait;
+}
+
+.codeLibBaseCursorColResize{
+	cursor: col-resize;
+}
+
+.codeLibBaseFontFff{
+	color: #fff;
+}
+
+.codeLibBaseFontOrange{
+	color: orange;
+}
+
+.codeLibBaseFontBrown{
+	color: brown;
+}
+
+.codeLibBaseFontGreen{
+	color: green;
+}
+
+.codeLibBaseFontCcc{
+	color: #ccc;
+}
+
+.codeLibBaseFont666{
+	color: #666;
+}
+
+.codeLibBaseFontBlack{
+	color: black;
+}
+
+.codeLibBaseFontRed{
+	color: #e10101;
+}
+
+.codeLibBaseFontBold{
+	font-weight: bold;
+}
+
+.codeLibBaseBgFff{
+	background: #fff;
+}
+
+.codeLibBaseBgCcc{
+	background: #ccc;
+}
+
+.codeLibBaseBgEee{
+	background: #eee;
+}
+
+.codeLibBaseBgTest{
+	background: #F0FFFF;
+}
+
+.codeLibBaseBgLine{
+	background: #F0FFFF;
+}
+
+.codeLibBaseBgSelect{
+	background: #2472AE;
+}
+
+.codeLibBaseBgYellow{
+	background: #ffdb57;
+}
+
+.codeLibBaseBgNoactive{
+	background: url(../img/base/noactive.png);
+}
+
+.codeLibBaseBgOpacityNine{
+	opacity: 0.9;
+}
+
+.codeLibBaseUnderline{
+	 text-decoration: underline;
+}
+
+.codeLibBaseMarginFive{
+	margin: 5px;
+}
+.codeLibBaseMarginTen{
+	margin: 10px;
+}
+
+.codeLibBaseMarginLeftRightFive{
+	margin: 0px 5px 0px 5px;
+}
+
+.codeLibBaseMarginTopFive{
+	margin: 5px 0px 0px 0px;
+}
+
+.codeLibBaseMarginTopTen{
+	margin: 10px 0px 0px 0px;
+}
+
+.codeLibBaseMarginLeftFive{
+	margin: 0px 0px 0px 5px;
+}
+
+.codeLibBaseMarginLeftTen{
+	margin: 0px 0px 0px 10px;
+}
+
+.codeLibBaseMarginRightFive{
+	margin: 0px 5px 0px 0px;
+}
+.codeLibBaseMarginBottomTwo{
+	margin: 0px 0px 2px 0px;
+}
+
+.codeLibBaseFontSizeSeventy{
+	font-size: 10px;
+}
+
+.codeLibBaseFontSizeTwelve{
+	font-size: 12px;
+}
+
+.codeLibBasePaddingFive{
+	padding: 5px;
+}
+
+.codeLibBaseHeightFive{
+	height: 5px;
+}
+
+.codeLibBaseHeightPerHundred{
+	height:100%;
+}
+
+.codeLibBaseHeightSixteen{
+	height: 16px;
+}
+
+.codeLibBaseWidthPer100{
+	width:100%;
+}
+
+.codeLibBaseFloatLeft ul li{
+	float:left;
+}
+
+.codeLibBaseFloatRight ul li{
+	float:right;
+}
+
+.codeLibBaseImgFolder{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibBaseImgSheet{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -17px;
+}
+
+.codeLibBaseImgDb{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -34px;
+}
+
+.codeLibBaseImgDetail{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -52px;
+}
+
+.codeLibBaseImgBack{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -68px;
+}
+
+.codeLibBaseImgInfo{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -86px;
+}
+
+
+.codeLibBaseImgCheck{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -103px;
+}
+
+.codeLibBaseImgCheckNone{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -120px;
+}
+
+.codeLibBaseImgRemove{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -137px;
+}
+
+.codeLibBaseImgUnloading{
+	width: 16px; height: 17px;
+	background: url(../img/base/icon.png) no-repeat 0px -154px;
+}
+
+.codeLibBaseImgBlank{
+	width: 16px; height: 16px;
+	background: url(../img/base/icon.png) no-repeat 0px -171px;
+}
+
+.codeLibBaseFontTypeCheck{
+	font-size : 12px;
+	color : orange;
+	font-weight : bold;
+}
+.codeLibBaseFontTypeCaution{
+	font-size : 12px;
+	color : red;
+	font-weight : bold;
+}
+.codeLibBaseFontBold{
+	font-weight : bold;
+}
+
+.codeLibBaseDownloadWrap,
+.codeLibBaseTempWrap{}
+
+.codeLibBaseTableColumnMiddle,
+.codeLibBaseTableColumnRight,
+.codeLibBaseTableColumn {
+	padding: 5px;
+	background: #efefef;
+}
+
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableRowRight,
+.codeLibBaseTableRow {
+	padding: 5px;
+	background: #fff;
+}
+.codeLibBaseTableError {
+	padding: 5px 5px 15px 5px;
+	background: #fff;
+}
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowSelect {
+	padding: 5px;
+	background: #2472AE;
+	color: #fff;
+}
+
+.codeLibBaseTableRowMiddleSelect,
+.codeLibBaseTableRowMiddle,
+.codeLibBaseTableColumnMiddle {
+	text-align : center;
+}
+
+.codeLibBaseTableRowRightSelect,
+.codeLibBaseTableRowRight,
+.codeLibBaseTableColumnRight {
+	text-align : right;
+}
+
+a{
+	color: #0088cc;
+}
+
+a:link,a:visited,a:active{
+	text-decoration:none;
+}
+
+.codeLibBaseLinkNormalOver a{
+	color: #0095c6;
+	text-decoration: none;
+}
+.codeLibBaseLinkNormalOver a:hover{
+	color: #0095c6;
+	text-decoration: underline;
+
+}
+
+
+
+
+.codeLibBtn,
+.codeLibBtnMiddle{
+	margin: 0px 0px 0px 0px;
+	text-align:center;
+	color: #fff;
+	background: #2A546F;
+}
+
+.codeLibBtnBottom,
+.codeLibBtnTop{
+	margin: 0px 1px 0px 1px;
+	height: 1px;
+	background: #2A546F;
+}
+
+
+
+
+.codeLibBtnOver{
+	background: #FF006C;
+}
+
+.codeLibBtnText{
+	color: #0095c6;
+}
+
+.codeLibBtnTextOver{
+	color: #FF006C;
+	text-decoration: underline;
+}
+
+.codeLibBtnSearch{
+	float: left;
+	padding: 5px 0px 0px 0px;
+}
+
+.codeLibBtnSearchBox{
+	width: 16px; height: 16px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -260px;
+}
+
+.codeLibBtnSearchBoxOver{
+	width: 16px; height: 16px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -16px -260px;
+}
+
+.codeLibBtnSearchInput{
+	margin: 0px 0px 0px 3px;
+}
+
+.codeLibBtnToolWrap,
+.codeLibBtnToolNoactive{
+
+}
+.codeLibBtnToolNoactiveTitle{
+	color: #ccc;
+}
+.codeLibBtnToolOverTitle{
+	color: #888;
+}
+
+.codeLibBtnToolImg{
+	margin: 5px 0px 5px 5px;
+	xpadding: 0px 0px 0px 0px;
+	xheight: 30px;
+	xwidth: 30px;
+}
+.codeLibBtnToolImgTitle{
+	font-size: 10px;
+	text-align: center;
+}
+
+.codeLibBtnPageNow{
+	font-weight: bold;
+	color: #A90A08;
+}
+.codeLibBtnImgIdle{
+	height: 20px;
+}
+.codeLibBtnImgReload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibBtnImgReloadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px 0px;
+}
+
+.codeLibBtnImgReloadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px 0px;
+}
+
+.codeLibBtnImgLoad{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -20px;
+}
+
+.codeLibBtnImgLoadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -20px;
+}
+
+.codeLibBtnImgLoadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -20px;
+}
+
+.codeLibBtnImgAdd{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -40px;
+}
+
+.codeLibBtnImgAddOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -40px;
+}
+
+.codeLibBtnImgAddNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -40px;
+}
+
+.codeLibBtnImgEdit{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -60px;
+}
+
+.codeLibBtnImgEditOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -60px;
+}
+
+.codeLibBtnImgEditNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -60px;
+}
+
+.codeLibBtnImgRemove{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -80px;
+}
+
+.codeLibBtnImgRemoveOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -80px;
+}
+
+.codeLibBtnImgRemoveNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -80px;
+}
+
+.codeLibBtnImgDownload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -100px;
+}
+
+.codeLibBtnImgDownloadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -100px;
+}
+
+.codeLibBtnImgDownloadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -100px;
+}
+
+.codeLibBtnImgPreference{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -120px;
+}
+
+.codeLibBtnImgPreferenceOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -120px;
+}
+
+.codeLibBtnImgPreferenceNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -120px;
+}
+
+.codeLibBtnImgSearch{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -140px;
+}
+
+.codeLibBtnImgSearchOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -140px;
+}
+
+.codeLibBtnImgSearchNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -140px;
+}
+
+.codeLibBtnImgUpload{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -160px;
+}
+
+.codeLibBtnImgUploadOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -160px;
+}
+
+.codeLibBtnImgUploadNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -160px;
+}
+
+.codeLibBtnImgCopy{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -180px;
+}
+
+.codeLibBtnImgCopyOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -180px;
+}
+
+.codeLibBtnImgCopyNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -180px;
+}
+
+.codeLibBtnImgSwitch{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -240px;
+}
+
+.codeLibBtnImgSwitchOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -240px;
+}
+
+.codeLibBtnImgSwitchNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -240px;
+}
+
+.codeLibBtnImgLink{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -220px;
+}
+
+.codeLibBtnImgPrint{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat 0px -200px;
+}
+
+.codeLibBtnImgPrintOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -200px;
+}
+
+.codeLibBtnImgPrintNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -200px;
+}
+
+.codeLibBtnImgLinkOver{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -30px -220px;
+}
+
+.codeLibBtnImgLinkNoactive{
+	width: 30px; height: 20px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -60px -220px;
+}
+
+.codeLibBtnImgMenu{
+	margin : 5px 0px 5px 0px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -0px -280px;
+}
+
+.codeLibBtnImgMenuOver{
+	margin : 5px 0px 5px 0px;
+	width: 20px; height: 30px;
+	background: url(../img/btn/icon.png?v=13650) no-repeat -20px -280px;
+}.codeLibCake{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.codeLibCakeEmbed{}
+
+.codeLibCakePending{}
+.codeLibCalenderWrap{
+	width: 206px;
+	border-style: solid 1px;
+}
+
+.codeLibCalenderBoxOver,
+.codeLibCalenderBox{
+	margin: 3px 0px 0px 3px;
+	padding: 2px 0px 0px 0px;
+	height: 19px;
+	width: 26px;
+	text-align: center;
+}
+
+.codeLibCalenderBoxOver{
+	text-decoration: underline;
+	background: #99ccff;
+}
+
+.codeLibCalenderBoxPoint{
+	color: #fff;
+	background: #ccc;
+}
+
+.codeLibCalenderBoxNow{
+	background: #ffffcc;
+}
+
+.codeLibCalenderImgSingleLeftWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 10px;
+	background: url(../img/calender/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibCalenderImgSingleRightWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 10px;
+	background: url(../img/calender/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibCalenderImgDoubleLeftWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 5px;
+	background: url(../img/calender/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibCalenderImgDoubleRightWhite{
+	width: 16px; height: 16px;  margin: 0px 0px 0px 5px;
+	background: url(../img/calender/icon.png) no-repeat 0px -80px;
+}.codeLibCalenderFormNumWrap{
+
+}
+
+.codeLibCalenderFormNumTag{
+	margin: 0px 5px 0px 0px;
+}
+
+.codeLibCalenderFormNumTag select{
+	float: left;
+}
+
+.codeLibCalenderFormNumTagHour{
+	margin: 0px 20px 0px 0px;
+}
+
+.codeLibCalenderFormNumTagHour select{
+	float: left;
+}
+.codeLibContextWrap{
+	float: left;
+	position: absolute;
+}
+
+.codeLibContextLineBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibContextListWrap{
+	position: absolute;
+}
+
+.codeLibContextLine{
+	xpadding: 1px;
+}
+
+.codeLibContextLineImg{
+	float: left;
+}
+
+.codeLibContextLineCheck{
+	float: left;
+}
+
+.codeLibContextLineChecked{
+	background: url(../img/context/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibContextLineTitle{
+	float: left;
+	height: 16px;
+	overflow : hidden;
+	margin-left: 5px;
+}
+
+.codeLibContextLineTitleNoactive{
+	color: #ccc;
+}
+
+.codeLibContextLineArrow{
+	float: right;
+}
+
+.codeLibContextLineArrowed{
+	background: url(../img/context/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibContextLineOver{
+	xcolor: #fff;
+	xbackground: #2472ae;
+	background: #99ccff;
+}
+
+
+
+.codeLibControlNavi{
+	position: absolute;
+}
+
+.codeLibControlNavi span{
+	float: left;
+}
+
+.codeLibFormMust{
+	padding: 0px 0px 0px 20px;
+	background: url(../img/form/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibFormNone{
+	padding: 0px 0px 0px 20px;
+	background: url(../img/form/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibFormComment{
+	padding: 0px 0px 0px 20px;
+	background: url(../img/form/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibFormWrap{
+	margin: 5px 5px 5px 5px;
+}
+
+.codeLibFormValue,
+.codeLibFormTitle{}
+
+.codeLibFormTag,
+.codeLibFormBtn,
+.codeLibFormContent,
+.codeLibFormEditor{
+	margin: 5px 0px 0px 20px;
+}
+
+.codeLibFormError,
+.codeLibFormExplain{
+	margin: 0px 0px 0px 20px;
+}
+
+.codeLibFormCommentExplain{
+	margin: 0px 0px 0px 16px;
+}
+
+.codeLibFormSelectBtnWrap{
+	margin: 5px 0px 0px 20px;
+	border: #c2c2c2 solid 1px;
+	cursor: pointer;
+}
+.codeLibFormSelectBtnTitleWrap{
+	margin: 2px 2px 2px 3px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibFormSelectBtn{
+	margin: 2px;
+	padding: 0px 0px 0px 0px;
+	width: 16px;
+	height: 16px;
+	background: url(../img/form/icon.png) no-repeat 0px -112px;
+}
+
+.codeLibFormAreaWrap{
+	padding: 10px;
+	border: 1px solid #ccc;
+}
+.codeLibFormCheckBtnWrap,
+.codeLibFormCheckWrap{
+}
+
+.codeLibFormCheckBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibFormCheckOn{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -0px;
+}
+
+.codeLibFormCheckOnLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibFormCheckOff{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibFormCheckOffLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibFormCheckColumn{
+	overflow : hidden;
+	padding: 5px 0px 0px 5px;
+	height: 21px;
+}
+
+.codeLibFormCheckColumnDouble{
+	width: 3px;
+	background: url(../img/formCheck/columnDouble.png) repeat-y;
+}
+
+.codeLibFormCheckColumnSingle{
+	width: 1px;
+	background: url(../img/formCheck/lineSingle.png) repeat-y;
+}
+
+.codeLibFormCheckLineDouble{
+	height: 3px;
+	background: url(../img/formCheck/lineDouble.png) repeat-x;
+}
+
+.codeLibFormCheckLineSingle{
+	height: 1px;
+	background: url(../img/formCheck/lineSingle.png) repeat-x;
+}
+
+.codeLibFormCheckLine{
+	height: 26px;
+}
+
+.codeLibFormCheckImgEdit{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibFormCheckImgEditLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -80px;
+}
+
+.codeLibFormCheckImgDetail{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -96px;
+}
+
+.codeLibFormCheckImgDetailLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -112px;
+}
+
+.codeLibFormCheckImgDownload{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -128px;
+}
+
+.codeLibFormCheckImgDownloadLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -144px;
+}
+.codeLibFormCheckImgSheet{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -160px;
+}
+
+.codeLibFormCheckImgSheetLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -176px;
+}.codeLibFormListLineBtnOver{
+	background: #eee;
+}
+
+.codeLibFormListLineTitleOver{
+	text-decoration: underline;
+}
+
+.codeLibFormListLineTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibFormListLineWrap,
+.codeLibFormListInput,
+.codeLibFormListAddWrap,
+.codeLibFormListForm,
+.codeLibFormListTag,
+.codeLibFormListWrap{}
+
+
+.codeLibFormListSort{
+	background: url(../img/form/icon.png) no-repeat 0px -80px;
+}
+
+.codeLibFormListCopy{
+	background: url(../img/form/icon.png) no-repeat 0px -49px;
+}
+
+.codeLibFormListRemove{
+	background: url(../img/form/icon.png) no-repeat 0px -65px;
+}
+
+.codeLibFormListEdit{
+	background: url(../img/form/icon.png) no-repeat 0px -96px;
+}
+
+.codeLibFormListBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibFormListSortLine{
+	float: left;
+	margin: 3px 0px 0px 0px;
+	height: 2px;
+}
+
+.codeLibFormListSortLineOver{
+	background: url(../img/form/sortLine.png);
+}
+
+.codeLibFormListNavi{
+	position: absolute;
+}
+
+.codeLibFormListNavi span{
+	float: left;
+}
+.codeLibFormSensitiveBgActive{
+	background: url(../img/formSensitive/active.png);
+}
+.codeLibFormTempWrap{
+	float: left;
+	position: absolute;
+}
+
+.codeLibFormTempTag{
+
+}
+
+.codeLibFormTempSCWrap{
+	padding : 5px;
+	border: #c2c2c2 solid 1px;
+	background: #fff;
+}
+
+.codeLibFormTempSCTitle{
+
+}
+.codeLibFormTempSCIcon{
+	margin: 0px 0px 0px 4px;
+	height: 16px;
+	width: 16px;
+	background: url(../img/formTemp/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibFormTempSCInputWrap{
+	margin: 5px 0px 0px 0px;
+}
+.codeLibFormTempSCInput{
+
+}
+
+.codeLibFormTempSCInputWrap form,
+.codeLibFormTempSCInputWrap p{
+	float: right;
+}
+
+.codeLibFormTempSCListWrap{
+	margin: 5px 0px 0px 0px;
+}
+
+.codeLibFormTempSCListWrapAuto{
+	overflow : auto;
+}
+
+.codeLibFormTempSCListWrap span{
+	float: left;
+}
+.codeLibFormTempSCListCalcWrap span{
+
+}
+
+.codeLibFormTempSCLine{
+
+}
+
+.codeLibFormTempSCLineNoactive{
+	color: #ccc;
+}
+
+.codeLibFormTempSCLineOver{
+	background: #99ccff;
+}
+
+.codeLibFormTermWrap{
+	xpadding: 10px;
+}
+
+.codeLibFormTermLineMiddle{
+	height: 16px;
+	width: 16px;
+}
+
+.codeLibFormTermLine,
+.codeLibFormTermStart,
+.codeLibFormTermEnd,
+.codeLibFormTermLine{}.codeLibGlobalArea{
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	xbackground: #fff;
+	width: 100%;
+	height: 100%;
+}
+
+.codeLibGlobalNaviWrap{
+	position:absolute;
+	xwidth: 44px;
+	xheight: 24px;
+	height: 34px;
+	background: no-repeat;
+	float: left;
+}
+.codeLibGlobalNaviFloat{
+	float: left;
+}
+
+.codeLibGlobalNavi{
+	xwidth: 24px;
+	xheight: 24px;
+
+	background: no-repeat;
+}
+
+.codeLibGlobalNaviTitleOver{
+	color: #888;
+}
+
+.codeLibGlobalNaviLoad{}
+
+.codeLibGlobalMenu{
+	width: 20px; xheight: 24px;
+	height: 34px;
+	float: left;
+	background: url(../img/global/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibGlobalMenuOver{
+	width: 20px; xheight: 24px;
+	background: url(../img/global/icon.png?v=13650) no-repeat -20px 0px;
+}
+
+.codeLibGlobalNaviTitle{
+	font-size: 10px;
+	text-align: center;
+}
+
+.codeLibGlobalNaviStrCodeName{
+	font-size: 12px;
+	position:absolute;
+	float: left;
+}
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	height: 0;
+	visibility: hidden;
+}
+
+.clearfix {
+	min-height: 1px;
+}
+
+* html .clearfix {
+	height: 1px;
+	/*\*//*/
+	height: auto;
+	overflow: hidden;
+	/**/
+}
+
+.chrome input{
+	margin-top: 3px;
+	vertical-align:baseline;
+}
+
+.firefox input{
+	margin-top: 2px;
+	vertical-align:baseline;
+}
+
+.chrome input[type="checkbox"],
+.chrome input[type="radio"],
+.firefox input[type="checkbox"],
+.firefox input[type="radio"] {
+	vertical-align:text-bottom;
+}
+
+.ie input{
+	vertical-align:middle;
+}
+
+.ie div{
+	background: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../img/backWhite.png", sizingMethod="scale");
+}
+.unselect{
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+}
+
+
+.codeLibLayoutBg{
+	oveflow: hidden;
+	background: url(../img/layout/bg.png) repeat-x;
+}
+
+.codeLibLayoutWrap{
+	xpadding:2px;
+	margin:2px;
+}
+
+.codeLibLayoutNavi{
+	xbackground: #ccc;
+	width: 100%;
+	height: 100%;
+}
+
+.codeLibLayoutNaviXArea{
+
+}
+
+.codeLibLayoutNaviYArea{
+}
+
+.codeLibLayoutNaviX{
+	width: 3px;
+	position: absolute;
+	xbackground: #29b8e1;
+	background: url(../img/layout/naviX.png);
+}
+
+.codeLibLayoutNaviY{
+	height: 3px;
+	position: absolute;
+	xbackground: #29b8e1;
+	background: url(../img/layout/naviY.png);
+}
+
+.codeLibLayoutBoxBg{
+	background: url(../img/template/normalBox/middleMiddle.png) repeat-x;
+}
+
+.codeLibLayoutMoveNavi{
+	position: absolute;
+}
+
+.codeLibLayoutMoveNaviYes{
+	background: url(../img/layout/icon.png) no-repeat 0px -30px;
+}
+
+.codeLibLayoutMoveNaviNo{
+	background: url(../img/layout/icon.png) no-repeat 0px 0px;
+}.codeLibLock{
+	position:absolute;
+	top:0px;
+	left:0px;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+}
+
+.codeLibLockOpacityZero{
+	filter: alpha(opacity=20);
+	-moz-opacity:20;
+	opacity:20;
+}
+
+.codeLibLockCursorWait{
+	cursor: wait;
+}
+
+.codeLibLockBg{
+	background: url(../img/lock/bg.png);
+}
+
+.codeLibLockView{
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	background: url(../img/lock/transprent.png);
+}
+
+.codeLibLockViewNet{
+	position:absolute;
+	top:0px;
+	left:0px;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	background: url(../img/lock/noactive.png);
+}.codeLibPopupWrapAutologout,
+.codeLibPopupWrapLogout{
+	position: fixed;
+	bottom: 120px;
+	right: 220px;
+}
+
+.codeLibPopupWrapReload{
+	position: fixed;
+	bottom: 120px;
+	right: 270px;
+}
+
+.codeLibPopupWrapNews{
+	position: fixed;
+	bottom: 105px;
+	right: 220px;
+}
+
+.codeLibPopupImgConnect{
+	width: 30px;
+	height: 30px;
+	background: url(../img/popup/icon.png) no-repeat 0px 0px;
+}
+.codeLibRequestImgLoading{
+	width: 16px; height: 17px;
+	background: url(../img/request/loading.gif) no-repeat;
+}
+
+.codeLibRequestImgLoadingPos{
+	position: absolute;
+	left: 50%;
+	top: 45%;
+}
+.codeLibScheduleNavi{
+	position: absolute;
+}
+
+.codeLibScheduleNavi span{
+	float: left;
+}
+
+.codeLibScheduleSelect{
+	color: #fff;
+	background: #2472AE;
+}
+
+.codeLibScheduleTemplateTop,
+.codeLibScheduleTemplateBottom{
+	height: 1px;
+	margin: 0px 1px 0px 1px;
+}
+
+.codeLibScheduleTemplateMiddleMove,
+.codeLibScheduleTemplateMiddleIcon{}
+
+.codeLibScheduleTemplateWrap{
+	position: absolute;
+}
+
+.codeLibScheduleTemplateMiddle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibScheduleTemplateMiddleTitle{
+	overflow: hidden;
+}
+
+.codeLibScheduleTemplateMiddleStrTitle{
+
+}
+
+.codeLibScheduleTemplateMiddleLeft{
+	height: 16px;
+	width: 5px;
+	background: url(../img/schedule/icon.png) no-repeat -11px -128px;
+}
+
+.codeLibScheduleTemplateMiddleRight{
+	height: 16px;
+	width: 5px;
+	background: url(../img/schedule/icon.png) no-repeat -6px -128px;
+}
+
+.codeLibScheduleTemplateMiddleResize{
+}
+
+
+.codeLibScheduleNow{
+	background: #ffffcc;
+}
+
+
+.codeLibScheduleGraduationWrap,
+.codeLibScheduleGraduationFold{}
+
+
+
+.codeLibScheduleBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibScheduleFoldClose{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -96px;
+}
+
+.codeLibScheduleFoldOpen{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -112px;
+}
+
+.codeLibScheduleGraduation{
+	width: 1px;
+	height: 16px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -128px;
+}
+
+.codeLibScheduleGraduationDouble{
+	width: 3px;
+	height: 16px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -144px;
+}
+
+.codeLibScheduleNaviWrap{
+	overflow: hidden;
+}
+
+.codeLibScheduleImgSingleLeftWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 13px;
+	background: url(../img/schedule/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibScheduleImgSingleRightWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 13px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibScheduleImgSingleTopWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibScheduleImgSingleBottomWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibScheduleImgDoubleLeftWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibScheduleImgDoubleRightWhite{
+	width: 16px; height: 16px; margin: 0px 0px 0px 5px;
+	background: url(../img/schedule/icon.png) no-repeat 0px -80px;
+}
+
+.codeLibScheduleImgResize{
+	width: 5px;
+	height: 16px;
+	background: url(../img/schedule/icon.png) no-repeat -1px -96px;
+}
+
+.codeLibScheduleImgArrowLeft{
+	width: 5px;
+	height: 16px;
+	background: url(../img/schedule/icon.png) no-repeat -6px -96px;
+}
+
+.codeLibScheduleImgArrowRight{
+	width: 5px;
+	height: 16px;
+	background: url(../img/schedule/icon.png) no-repeat -11px -96px;
+}
+.codeLibScheduleMonthBodyLineMiddleLogWrap,
+.codeLibScheduleMonthBodyLineBoxMain,
+.codeLibScheduleMonthBodyLineWrap,
+.codeLibScheduleMonthBodyWrap{}
+
+.codeLibScheduleMonthBodyLineTop{
+	height: 16px;
+}
+
+.codeLibScheduleMonthBodyLineMiddle{
+}
+
+.codeLibScheduleMonthBodyLineBottom{
+	height: 16px;
+}
+
+.codeLibScheduleMonthBodyLineSeparate{
+	height: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-x;
+}
+
+.codeLibScheduleMonthBodyLineBoxSeparate{
+	width: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-y;
+}
+
+.codeLibScheduleMonthBodyLineBox,
+.codeLibScheduleMonthLineBox{
+	padding: 0px 5px 0px 5px;
+}
+
+.codeLibScheduleMonthBodyLineBoxTop{
+	height: 16px;
+	text-align: right;
+	overflow: hidden;
+}
+
+.codeLibScheduleMonthBodyLineBoxMiddle{
+
+}
+
+.codeLibScheduleMonthBodyLineBoxBottom{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibScheduleMonthBodyLineBoxNext,
+.codeLibScheduleMonthBodyLineBoxPrev{
+	color: #ccc;
+}
+
+.codeLibScheduleMonthBodyLineBoxOver{
+	background: #eee;
+}
+
+.codeLibScheduleMonthBodyLineBoxOverRange{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibScheduleGraduationWrap{
+	position: absolute;
+}
+
+.codeLibScheduleWeekLineBox{
+	padding: 0px 5px 0px 5px;
+}
+
+.codeLibScheduleWeekBodyLineTopTitle{
+	margin: 0px 0px 0px 5px;
+}
+
+.codeLibScheduleWeekBodyLineFold,
+.codeLibScheduleWeekBodyLineBody,
+.codeLibScheduleWeekBodyLineBodyWrap,
+.codeLibScheduleWeekBodyWrap,
+.codeLibScheduleWeekBodyLineWrap{}
+
+.codeLibScheduleWeekBodyTopWrap{
+	position: relative;
+	padding: 2px 0px 0px 0px;
+	height: 18px;
+	overflow: hidden;
+}
+
+.codeLibScheduleWeekBodyTop{
+	position: absolute;
+}
+
+.codeLibScheduleWeekBodyLineSeparate{
+	height: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-x;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparate{
+	width: 1px;
+	background: url(../img/schedule/lineSingle.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateDouble{
+	width: 3px;
+	background: url(../img/schedule/lineDouble.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateNow{
+	width: 1px;
+	background: url(../img/schedule/lineSingleOrange.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineBoxSeparateDoubleNow{
+	width: 3px;
+	background: url(../img/schedule/lineDoubleOrange.png) repeat-y;
+}
+
+.codeLibScheduleWeekBodyLineMiddleLogWrap{}
+
+.codeLibScheduleWeekBodyLineBoxNow{
+	xbackground: #ffffcc;
+}
+
+.codeLibScheduleWeekBodyLineBoxMain,
+.codeLibScheduleWeekBodyLineWrap,
+.codeLibScheduleWeekBodyWrap{}
+
+.codeLibScheduleWeekBodyLineTop{
+	height: 16px;
+}
+
+.codeLibScheduleWeekBodyLineMiddle{
+}
+
+.codeLibScheduleWeekBodyLineBottom{
+	height: 16px;
+}
+
+.codeLibScheduleWeekBodyLineBoxOverRange{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibScheduleWeekBodyLineBoxMiddle{
+
+}
+
+.codeLibSearchItemRest,
+.codeLibSearchItemSecond,
+.codeLibSearchItemFirst,
+.codeLibSearchItemWrap{}
+
+.codeLibSearchItemWrap{
+	margin: 0px 5px 5px 5px;
+}
+
+.codeLibSearchItemBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibSearchItemCopy{
+	width: 16px;
+	height: 16px;
+	background: url(../img/search/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibSearchItemRemove{
+	width: 16px;
+	height: 16px;
+	background: url(../img/search/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibSearchSortSort,
+.codeLibSearchSortItem,
+.codeLibSearchSortLine,
+.codeLibSearchSortLineWrap{}
+
+.codeLibSearchRecentRecordWrap{
+	margin: 0px 0px 0px 20px;
+}
+
+.codeLibSearchMyRecordWrap{
+	margin: 0px 0px 0px 20px;
+}
+
+
+
+.codeLibTableLineWrap,
+.codeLibTableColumnWrap,
+.codeLibTableColumn,
+.codeLibTableWrap,
+.codeLibTableLineBtn,
+.codeLibTableLineImg,
+.codeLibTableMove,
+.codeLibTableColumnBoxSortLine{}
+
+.codeLibTableColumnBoxWrap{
+	float: left;
+	height: 17px;
+}
+
+.codeLibTableColumnBoxTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableColumnBox{
+}
+
+.codeLibTableColumnBoxImgUp{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -63px;
+}
+
+.codeLibTableColumnBoxImgDown{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibTableLineLoad{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -109px;
+}
+
+.codeLibTableColumnBoxImgNone{
+}
+
+.codeLibTableColumnBoxImgPoint{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -78px;
+}
+
+.codeLibTableColumnBoxImgMenu{
+	margin: 0px 5px 0px 0px;
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -125px;
+}
+
+.codeLibTableLineTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableColumnBoxSortColumn,
+.codeLibTableColumnBoxResize{
+	height: 16px;
+}
+
+.codeLibTableIdle{
+	width: 10px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableBlock{
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableBlockFirst{
+	margin: 0px 10px 0px 0px;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableLineSort{
+	float: left;
+	height: 2px;
+}
+
+.codeLibTableLineBtnOver{
+	background: #99ccff;
+}
+
+.codeLibTableLine{
+	float: left;
+	height: 16px;
+	xbackground: #eee;
+}
+
+.codeLibTableItem{
+	overflow: hidden;
+}
+
+.codeLibTableLineTitleOver{
+	text-decoration: underline;
+}
+
+.codeLibTableBtnSelect{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibTableNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/table/naviX.png);
+}
+
+.codeLibTableNavi{
+	position: absolute;
+}
+
+.codeLibTableNavi span{
+	float: left;
+}
+
+.codeLibTableSortColumnOver{
+	background: url(../img/table/icon.png) no-repeat 0px -141px;
+}
+
+.codeLibTableMoveSortOver{
+	background: url(../img/table/sortLine.png);
+}
+
+.codeLibTableColumnBoxCheckboxChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibTableColumnBoxCheckboxUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/table/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibTableColumnBoxCheckbox{}
+
+
+
+.codeLibTableTreeColumnBoxSortLine,
+.codeLibTableTreeLineImg,
+.codeLibTableTreeLineTop,
+.codeLibTableTreeBtn,
+.codeLibTableTreeColumnBox,
+.codeLibTableTreeFold,
+.codeLibTableTreeItemIdle,
+.codeLibTableTreeItemWrap,
+.codeLibTableTreeColumn,
+.codeLibTableTreeColumnWrap{}
+
+.codeLibTableTreeColumnBoxImgMenu{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTableTreeFoldClose{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibTableTreeFoldOpen{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibTableTreeColumnBoxWrap{
+	float: left;
+	height: 17px;
+}
+
+.codeLibTableTreeBlock{
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableTreeColumnBoxSortColumn,
+.codeLibTableTreeColumnBoxResize{
+	height: 16px;
+}
+
+.codeLibTableTreeColumnBoxCheckboxChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibTableTreeColumnBoxCheckboxUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibTableTreeColumnBoxCheckbox{}
+
+.codeLibTableTreeColumnBoxTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableTreeNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/tableTree/naviX.png);
+}
+
+.codeLibTableTreeNavi{
+	position: absolute;
+}
+
+.codeLibTableTreeNavi span{
+	float: left;
+}
+
+.codeLibTableTreeSortColumnOver{
+	background: url(../img/tableTree/icon.png) no-repeat 0px -81px;
+}
+
+.codeLibTableTreeLineSort{
+	float: left;
+	height: 2px;
+}
+
+.codeLibTableTreeIdle{
+	width: 10px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+.codeLibTableTreeItem{
+
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableTreeLineTitleOver{
+	text-decoration: underline;
+}
+.codeLibTableTreeLineBtnOver{
+	background: #99ccff;
+}
+.codeLibTableTreeBtnSelect{
+	background: #2472ae;
+	color: #fff;
+}
+
+
+.codeLibTableTreeSortOver{
+	background: url(../img/tableTree/sortLine.png);
+}
+
+.codeLibTableTreeTitleInsert{
+	color: #fff;
+	background: #2472ae;
+}
+.codeLibTableTreeTitleTree{
+	padding: 0px 0px 0px 5px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibTableTreeTitle{
+}
+
+.codeLibTableTreeLineTitle{
+	margin: 0px 0px 0px 5px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibTableTreeLine{
+	float: left;
+	height: 16px;
+	xbackground: #eee;
+}
+.codeLibTableTreeIdleFive{
+	width: 5px;
+	height: 16px;
+	background: no-repeat;
+}
+.codeLibTableTreeSeparateDouble{
+	width: 5px;
+	height: 16px;
+	background: url(../img/tableTree/lineDouble.png) repeat-y;
+}
+.codeLibTableTreeSeparateNone{
+	width: 10px;
+	height: 16px;
+}
+.codeLibTableTreeSeparateDoubleSort{
+	width: 5px;
+	height: 2px;
+	background: url(../img/tableTree/lineDouble.png) repeat-y;
+}
+.codeLibTableTreeSeparate{
+	height: 2px;
+}
+.codeLibTemplateCircleBoxWrap{}
+
+.codeLibTemplateCircleBoxTop,
+.codeLibTemplateCircleBoxBottom{
+	height: 1px;
+	margin: 0px 1px 0px 1px;
+}
+
+.codeLibTemplateCircleBoxMiddle{
+	xbackground: #eee;
+	text-align: center;
+}
+/*------------------------------------------------------------------*/
+
+.codeLibTemplateListFormatHeaderGraduation,
+.codeLibTemplateListFormatHeaderGraduationWrap,
+.codeLibTemplateListFormatHeaderNavi,
+.codeLibTemplateListFormatHeaderNaviWrap{
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateListFormat{}
+
+.codeLibTemplateListFormatHeader{
+
+}
+
+.codeLibTemplateListFormatHeaderLeft{
+}
+
+.codeLibTemplateListFormatHeaderRight{
+}
+
+.codeLibTemplateListFormatBody{}
+
+.codeLibTemplateListFormatFooder{}
+
+.codeLibTemplateListFormatFooderLeft{
+}
+
+.codeLibTemplateListFormatFooderRight{
+}
+
+.codeLibTemplateListFormatHeaderImg{
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+	xbackground: no-repeat;
+	xfont-weight: bold;
+}
+
+.codeLibTemplateListFormatHeaderStr{
+	padding: 4px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.codeLibTemplateListFormatFooderImg{
+	height: 18px;
+	padding: 0px 0px 0px 20px;
+	margin: 2px 5px 0px 5px;
+	background: no-repeat;
+}
+
+.codeLibTemplateListFormatFooderStr{
+	padding: 0px 0px 0px 0px;
+	margin: 0px 5px 0px 5px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateNormalFormat{}
+
+.codeLibTemplateNormalFormatHeaderWrap{
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+}
+
+.codeLibTemplateNormalFormatHeader{
+
+}
+
+.codeLibTemplateNormalFormatHeaderLeft{
+	xfloat:left;
+}
+
+.codeLibTemplateNormalFormatHeaderRight{
+	xfloat:right;
+}
+
+.codeLibTemplateNormalFormatBody{}
+
+.codeLibTemplateNormalFormatFooder{}
+
+.codeLibTemplateNormalFormatFooderLeft{
+	xfloat:left;
+}
+
+.codeLibTemplateNormalFormatFooderRight{
+	xfloat:right;
+}
+
+.codeLibTemplateNormalFormatHeaderImg{
+	overflow: hidden;
+	height: 18px;
+	padding: 0px 0px 0px 20px;
+	xbackground: no-repeat;
+	font-weight: bold;
+}
+
+.codeLibTemplateNormalFormatHeaderStr{
+	overflow: hidden;
+	height: 18px;
+	padding: 4px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.codeLibTemplateNormalFormatFooderImg{
+	overflow: hidden;
+	height: 25px;
+	padding: 0px 0px 0px 20px;
+	margin: 2px 5px 0px 5px;
+	background: no-repeat;
+}
+
+.codeLibTemplateNormalFormatFooderStr{
+	overflow: hidden;
+	height: 25px;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 5px 0px 5px;
+}
+
+.codeLibTemplateNormalFormatHeaderLeftWidthTitle,
+.codeLibTemplateNormalFormatHeaderRightWidthTitle,
+.codeLibTemplateNormalFormatFooderLeftWidthTitle,
+.codeLibTemplateNormalFormatFooderRightWidthTitle{}
+/*------------------------------------------------------------------*/
+.codeLibTemplateNormalBox{}
+
+.codeLibTemplateNormalBoxTop{}
+
+.codeLibTemplateNormalBoxMiddle{}
+
+.codeLibTemplateNormalBoxBottom{}
+
+.codeLibTemplateNormalBoxTopLeft{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateNormalBoxTopMiddle{
+	float: left;
+	height: 3px;
+	background: url(../img/template/normalBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateNormalBoxTopRight{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat -4px 0px;
+}
+
+.codeLibTemplateNormalBoxMiddleLeft{
+	float: left;
+	width: 3px;
+	background: url(../img/template/normalBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateNormalBoxMiddleMiddle{
+	float: left;
+}
+
+.codeLibTemplateNormalBoxMiddleRight{
+	float: left;
+	width: 3px;
+	background: url(../img/template/normalBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateNormalBoxBottomLeft{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat 0px -4px;
+}
+
+.codeLibTemplateNormalBoxBottomMiddle{
+	float: left;
+	height: 3px;
+	background: url(../img/template/normalBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateNormalBoxBottomRight{
+	float: left;
+	width: 3px;
+	height: 3px;
+	background: url(../img/template/normalBox/icon.png) no-repeat -4px -4px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateShadowBox{
+	float: left;
+}
+
+.codeLibTemplateShadowBoxTop{}
+
+.codeLibTemplateShadowBoxMiddle{}
+
+.codeLibTemplateShadowBoxBottom{}
+
+.codeLibTemplateShadowBoxTopLeft{
+	float: left;
+	width: 6px;
+	height: 8px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateShadowBoxTopMiddle{
+	float: left;
+	height: 8px;
+	background: url(../img/template/shadowBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateShadowBoxTopRight{
+	float: left;
+	width: 6px;
+	height: 8px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat -7px 0px;
+}
+
+.codeLibTemplateShadowBoxMiddleLeft{
+	float: left;
+	width: 6px;
+	background: url(../img/template/shadowBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateShadowBoxMiddleMiddle{
+	float: left;
+	background: #f1f1ed;
+}
+
+.codeLibTemplateShadowBoxMiddleRight{
+	float: left;
+	width: 6px;
+	background: url(../img/template/shadowBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateShadowBoxBottomLeft{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat 0px -9px;
+}
+
+.codeLibTemplateShadowBoxBottomMiddle{
+	float: left;
+	height: 6px;
+	background: url(../img/template/shadowBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateShadowBoxBottomRight{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background: url(../img/template/shadowBox/icon.png) no-repeat -7px -9px;
+}
+/*------------------------------------------------------------------*/
+.codeLibTemplateMenuBox{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxTop span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxMiddle span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxBottom span{
+	float: left;
+}
+
+.codeLibTemplateMenuBoxTopLeft{
+	float: left;
+	width: 6px;
+	height: 5px;
+	background: url(../img/template/menuBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateMenuBoxTopMiddle{
+	float: left;
+	height: 5px;
+	background: url(../img/template/menuBox/topMiddle.png) repeat-x;
+}
+
+.codeLibTemplateMenuBoxTopRight{
+	float: left;
+	width: 6px;
+	height: 5px;
+	background: url(../img/template/menuBox/icon.png) no-repeat -7px 0px;
+}
+
+.codeLibTemplateMenuBoxMiddleLeft{
+	float: left;
+	width: 6px;
+	background: url(../img/template/menuBox/middleLeft.png) repeat-y;
+}
+
+.codeLibTemplateMenuBoxMiddleMiddle{
+	float: left;
+	background: #f1f1ed;
+}
+
+.codeLibTemplateMenuBoxMiddleRight{
+	float: left;
+	width: 6px;
+	background: url(../img/template/menuBox/middleRight.png) repeat-y;
+}
+
+.codeLibTemplateMenuBoxBottomLeft{
+	float: left;
+	width: 6px;
+	height: 10px;
+	background: url(../img/template/menuBox/icon.png) no-repeat 0px -6px;
+}
+
+.codeLibTemplateMenuBoxBottomMiddle{
+	float: left;
+	height: 10px;
+	background: url(../img/template/menuBox/bottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateMenuBoxBottomRight{
+	float: left;
+	width: 6px;
+	height: 10px;
+	background: url(../img/template/menuBox/icon.png) no-repeat -7px -6px;
+}
+
+/*------------------------------------------------------------------*/
+.codeLibTemplateWindowBox{
+	position:absolute;
+}
+
+.codeLibTemplateWindowBoxAreaLeft ul li{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxAreaRight ul li{
+	float: right;
+}
+
+.codeLibTemplateWindowBoxHeader{
+}
+
+.codeLibTemplateWindowBoxBody{
+}
+
+.codeLibTemplateWindowBoxHeaderTop span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxHeaderBottom span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxBodyTop span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxBodyBottom span{
+	float: left;
+}
+
+.codeLibTemplateWindowBoxHeaderTopLeft{
+	width: 12px;
+	height: 2px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTemplateWindowBoxHeaderTopMiddle{
+	height: 2px;
+	background: url(../img/template/templateWindowBox/headerTopMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxHeaderTopRight{
+	width: 12px;
+	height: 2px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px 0px;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomLeft{
+	width: 12px;
+	height: 46px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -3px;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomMiddle{
+	height: 46px;
+	background: url(../img/template/templateWindowBox/headerBottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxHeaderBottomRight{
+	width: 12px;
+	height: 46px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px -3px;
+}
+
+.codeLibTemplateWindowBoxBodyTopLeft{
+	width: 12px;
+	background: url(../img/template/templateWindowBox/bodyTopLeft.png) repeat-y;
+}
+
+.codeLibTemplateWindowBoxBodyTopMiddle{
+}
+
+.codeLibTemplateWindowBoxBodyTopRight{
+	width: 12px;
+	background: url(../img/template/templateWindowBox/bodyTopRight.png) repeat-y;
+}
+
+.codeLibTemplateWindowBoxBodyBottomLeft{
+	width: 12px;
+	height: 16px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -50px;
+}
+
+.codeLibTemplateWindowBoxBodyBottomMiddle{
+	height: 16px;
+	background: url(../img/template/templateWindowBox/bodyBottomMiddle.png) repeat-x;
+}
+
+.codeLibTemplateWindowBoxBodyBottomRight{
+	width: 12px;
+	height: 16px;
+	background: url(../img/template/windowBox/icon.png) no-repeat -13px -50px;
+}
+
+.codeLibTemplateWindowBoxHeaderTitleImg{
+	margin: 8px; 
+	font-weight: bold;
+	padding: 5px 30px 0px 30px;
+}
+
+.codeLibTemplateWindowBoxHeaderTitle{
+	margin: 3px; 
+	font-weight: bold;
+	padding: 0px 0px 0px 0px;
+}
+
+.codeLibTemplateWindowBoxNaviRemove{
+	margin: 8px 0px 8px 0px; 
+	height: 24px;
+	width: 24px;
+	background: url(../img/template/windowBox/icon.png) no-repeat 0px -92px;
+}.codeLibTextDoubleLine{
+	height: 3px;
+	background: #fff url(../img/text/doubleLine.png) repeat-x;
+}
+
+.codeLibTextDotLine{
+	height: 1px;
+	background: url(../img/text/dotLine.png) repeat-x;
+}
+
+.codeLibTextLine{
+	height: 1px;
+	background: url(../img/text/line.png) repeat-x;
+}
+
+.codeLibTextDoubleLineIdle{
+	height: 4px;
+	background: url(../img/text/doubleLineIdle.png) repeat-x;
+}.codeLibThumbnailLogWrap{
+	width: 136px;
+	margin: 10px 0px 0px 10px;
+}
+
+.codeLibThumbnailLogImgWrap{
+	margin: 5px 0px 0px 5px;
+	border: 3px double #ccc;
+	width: 120px;
+	height: 90px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.codeLibThumbnailLogImg{
+	width: 120px;
+	height: 90px;
+}
+
+.codeLibThumbnailLogDetailWrap{
+	margin: 5px 0px 0px 5px;
+}
+
+.codeLibThumbnailNavi{
+	position: absolute;
+}
+
+.codeLibThumbnailNavi span{
+	float: left;
+}
+
+.codeLibThumbnailLogMove{}
+
+.codeLibThumbnailWrap{
+	width: 126px;
+}
+
+.codeLibThumbnailLogImgLoad{
+	margin: 37px 0px 0px 52px;
+}
+
+.codeLibThumbnailBodyWrap{
+	position: relative;
+}
+
+.codeLibThumbnailLogBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibThumbnailLogTitleWrap{
+	padding: 0px 5px 0px 5px;
+	width: 116px;
+	height: 16px;
+}
+
+.codeLibThumbnailLogTitle{
+	height: 16px;
+	width: 95px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogTimeLength{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogTimeRegister{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogSize{
+	padding: 0px 5px 0px 5px;
+	height: 16px;
+	width: 116px;
+	overflow: hidden;
+}
+
+.codeLibThumbnailLogImg_404{
+	width: 40px;
+	height: 16px;
+	background: url(../img/thumbnail/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTreeBarWrap,
+.codeLibTreeBarCheck,
+.codeLibTreeBarAdd,
+.codeLibTreeBarRemove,
+.codeLibTreeBarEdit,
+.codeLibTreeBarFold,
+.codeLibTreeCheck,
+.codeLibTreeForm,
+.codeLibTreeFormTag,
+.codeLibTreeCheckTag,
+
+.codeLibTree,
+.codeLibTreeWrap{}
+
+.codeLibTreeFoldPoint{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -47px;
+}
+
+.codeLibTreeFoldOpen{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -62px;
+}
+
+.codeLibTreeFoldClose{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibTreeBarCheckChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTreeBarCheckUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibTreeBarAdd{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -79px;
+}
+
+.codeLibTreeEdit{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -95px;
+}
+
+.codeLibTreeBarEdit{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibTreeBarEditOn{
+	background: url(../img/tree/icon.png) no-repeat 0px -95px;
+}
+
+.codeLibTreeBarEditOff{
+	background: url(../img/tree/icon.png) no-repeat 0px -111px;
+}
+
+.codeLibTreeRemove{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -127px;
+}
+
+.codeLibTreeBarRemove{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibTreeBarRemoveOn{
+	background: url(../img/tree/icon.png) no-repeat 0px -127px;
+}
+
+.codeLibTreeBarRemoveOff{
+	background: url(../img/tree/icon.png) no-repeat 0px -143px;
+}
+
+.codeLibTreeBarLink{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -190px;
+}
+
+.codeLibTreeBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibTreeBtn{
+	height: 16px;
+	xborder-bottom: solid #ddd 2px;
+}
+
+.codeLibTreeBtnOver{
+	background: #99ccff;
+}
+
+.codeLibTreeBtnSelect{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibTreeSort{
+	width: 100%;
+	height: 2px;
+	xbackground: #ccc;
+}
+
+.codeLibTreeSortOver{
+	width: 100%;
+	height: 2px;
+	background: url(../img/tree/sort.png);
+}
+
+.codeLibTreeColumnTitle{
+	font-size: 10px;
+	margin: 1px 5px 0px 3px;
+}
+
+.codeLibTreeTitle{
+}
+
+.codeLibTreeTitleOver{
+	text-decoration: underline;
+}
+
+.codeLibTreeTitleInsert{
+	color: #fff;
+	background: #2472ae;
+}
+
+.codeLibTreeFold,
+.codeLibTreeImg,
+.codeLibTreeMoveNavi{}
+
+.codeLibTreeNavi{
+	position: absolute;
+}
+
+.codeLibTreeNavi span{
+	float: left;
+}
+
+.codeLibTreeLoad{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tree/icon.png) no-repeat 0px -174px;
+}
+.codeLibViewBarFold,
+.codeLibViewBarCheck,
+.codeLibViewBarWrap,
+.codeLibViewLineHeaderWrap,
+.codeLibViewLineBodyWrap,
+.codeLibViewLineWrap{}
+
+.codeLibViewLineSeparate{
+	height: 1px;
+	background: url(../img/view/lineSingle.png) repeat-x;
+}
+
+.codeLibViewLineSeparateDot{
+	height: 1px;
+	background: url(../img/view/dotLine.png) repeat-x;
+}
+
+.codeLibViewLine{
+
+}
+
+.codeLibViewLineFoldOpen{
+	width: 16px;
+	height: 16px;
+	background: url(../img/view/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibViewLineFoldClose{
+	width: 16px;
+	height: 16px;
+	background: url(../img/view/icon.png) no-repeat 0px -47px;
+}
+
+.codeLibViewBarCheckChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/view/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibViewBarCheckUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/view/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibViewLineHeader{
+	height: 20px;
+	padding: 5px 0px 0px 0px;
+	overflow: hidden;
+}
+
+.codeLibViewLineBodyValue,
+.codeLibViewLineBodyValue,
+.codeLibViewLineBody{
+}
+
+.codeLibViewLineContent{
+	overflow : auto;
+	padding : 10px;
+}
+
+.codeLibViewLineValue{
+	padding: 5px 5px 5px 10px;
+}
+
+.codeLibViewLineBodyStatusWrap{
+
+}
+
+.codeLibViewLineBodyStatus{
+	height: 16px;
+}
+
+.codeLibViewLineBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibViewLineTitle span{
+	xfloat: none;
+}
+
+.codeLibViewLineValue span{
+	xfloat: none;
+}
+
+.codeLibViewFindMark{
+	background: #e10101;
+	color: #fff;
+}
+
+
+.codeLibWindow{
+	position:absolute;
+}
+
+.codeLibWrap{
+	float: left;
+}
+
+.codeLibWindowAreaLeft ul li{
+	float: left;
+}
+
+.codeLibWindowAreaRight ul li{
+	float: right;
+}
+
+.codeLibWindowHeaderWidthTitle{
+	height: 20px;
+	overflow: hidden;
+}
+
+.codeLibWindowHeader{
+}
+
+.codeLibWindowBody{
+}
+
+.codeLibWindowHeaderTop span{
+	float: left;
+}
+
+.codeLibWindowHeaderBottom span{
+	float: left;
+}
+
+.codeLibWindowBodyTop span{
+	float: left;
+}
+
+.codeLibWindowBodyBottom span{
+	float: left;
+}
+
+.codeLibWindowHeaderTopLeft{
+	width: 12px;
+	height: 2px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibWindowHeaderTopMiddle{
+	height: 2px;
+	background: url(../img/window/windowHeaderTopMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowHeaderTopRight{
+	width: 12px;
+	height: 2px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px 0px;
+}
+
+.codeLibWindowHeaderBottomLeft{
+	width: 12px;
+	height: 46px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -3px;
+}
+
+.codeLibWindowHeaderBottomMiddle{
+	height: 46px;
+	background: url(../img/window/windowHeaderBottomMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowHeaderBottomRight{
+	width: 12px;
+	height: 46px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -3px;
+}
+
+.codeLibWindowBodyTopLeft{
+	width: 12px;
+	background: url(../img/window/windowBodyTopLeft.png?v=13650) repeat-y;
+}
+
+.codeLibWindowBodyTopMiddle{
+	background: #fff;
+}
+
+.codeLibWindowBodyTopMiddleWrap{
+}
+
+.codeLibWindowBodyTopRight{
+	width: 12px;
+	background: url(../img/window/windowBodyTopRight.png?v=13650) repeat-y;
+}
+
+.codeLibWindowBodyBottomLeft{
+	width: 12px;
+	height: 16px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -50px;
+}
+
+.codeLibWindowBodyBottomMiddle{
+	height: 16px;
+	background: url(../img/window/windowBodyBottomMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowBodyBottomRight{
+	width: 12px;
+	height: 16px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -50px;
+}
+
+.codeLibWindowHeaderTitleImg{
+	margin: 8px;
+	font-weight: bold;
+	padding: 5px 30px 0px 30px;
+	height: 24px;
+}
+
+.codeLibWindowHeaderTitle{
+	margin: 3px;
+	font-weight: bold;
+	padding: 0px 0px 0px 0px;
+}
+
+.codeLibWindowNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/window/windowNaviX.png?v=13650);
+}
+
+.codeLibWindowNaviY{
+	height: 3px;
+	position: absolute;
+	background: url(../img/window/windowNaviY.png?v=13650);
+}
+
+.codeLibWindowNaviRemove{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -92px;
+}
+
+.codeLibWindowNaviRemoveOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -92px;
+}
+
+.codeLibWindowNaviHide{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -167px;
+}
+
+.codeLibWindowNaviHideOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -167px;
+}
+
+.codeLibWindowNaviFold{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+}
+
+.codeLibWindowNaviFoldPlus{
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -117px;
+}
+
+.codeLibWindowNaviFoldPlusOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -117px;
+}
+
+.codeLibWindowNaviFoldMinus{
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -142px;
+}
+
+.codeLibWindowNaviFoldMinusOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -142px;
+}
+
+.codeLibWindowNaviCoverMax{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -217px;
+}
+
+.codeLibWindowNaviCoverMaxOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -217px;
+}
+
+.codeLibWindowNaviCoverNormal{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -192px;
+}
+
+.codeLibWindowNaviCoverNormalOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -192px;
+}
+
+.codeLibWindowNaviCover{
+}
+
+.codeLibWindowNaviSwitch{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -67px;
+}
+
+.codeLibWindowNaviSwitchOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -67px;
+}
+
+.codeLibWindowBoot{
+	xposition: absolute;
+	height: 128px;
+	width: 128px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -242px;
+}
+
+.codeLibWindowLock{
+	float: left;
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	background: url(../img/window/popBg.png?v=13650);
+	Background: url(../img/window/popBg.gif);
+}
+
+.codeLibWindowCover{
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+}

@@ -1,0 +1,52 @@
+.codeLibLayoutBg{
+	oveflow: hidden;
+	background: url(../img/layout/bg.png) repeat-x;
+}
+
+.codeLibLayoutWrap{
+	xpadding:2px;
+	margin:2px;
+}
+
+.codeLibLayoutNavi{
+	xbackground: #ccc;
+	width: 100%;
+	height: 100%;
+}
+
+.codeLibLayoutNaviXArea{
+
+}
+
+.codeLibLayoutNaviYArea{
+}
+
+.codeLibLayoutNaviX{
+	width: 3px;
+	position: absolute;
+	xbackground: #29b8e1;
+	background: url(../img/layout/naviX.png);
+}
+
+.codeLibLayoutNaviY{
+	height: 3px;
+	position: absolute;
+	xbackground: #29b8e1;
+	background: url(../img/layout/naviY.png);
+}
+
+.codeLibLayoutBoxBg{
+	background: url(../img/template/normalBox/middleMiddle.png) repeat-x;
+}
+
+.codeLibLayoutMoveNavi{
+	position: absolute;
+}
+
+.codeLibLayoutMoveNaviYes{
+	background: url(../img/layout/icon.png) no-repeat 0px -30px;
+}
+
+.codeLibLayoutMoveNaviNo{
+	background: url(../img/layout/icon.png) no-repeat 0px 0px;
+}

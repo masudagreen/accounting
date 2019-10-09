@@ -1,0 +1,52 @@
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	height: 0;
+	visibility: hidden;
+}
+
+.clearfix {
+	min-height: 1px;
+}
+
+* html .clearfix {
+	height: 1px;
+	/*\*//*/
+	height: auto;
+	overflow: hidden;
+	/**/
+}
+
+.chrome input{
+	margin-top: 3px;
+	vertical-align:baseline;
+}
+
+.firefox input{
+	margin-top: 2px;
+	vertical-align:baseline;
+}
+
+.chrome input[type="checkbox"],
+.chrome input[type="radio"],
+.firefox input[type="checkbox"],
+.firefox input[type="radio"] {
+	vertical-align:text-bottom;
+}
+
+.ie input{
+	vertical-align:middle;
+}
+
+.ie div{
+	background: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../img/backWhite.png", sizingMethod="scale");
+}
+.unselect{
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+}
+
+

@@ -1,0 +1,14 @@
+
+.codeLibFormTermWrap{
+	xpadding: 10px;
+}
+
+.codeLibFormTermLineMiddle{
+	height: 16px;
+	width: 16px;
+}
+
+.codeLibFormTermLine,
+.codeLibFormTermStart,
+.codeLibFormTermEnd,
+.codeLibFormTermLine{}

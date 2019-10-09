@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="{$strLang}">
+<head>
+<META NAME="ROBOTS,Google,BingBot,Slurp,Baiduspider" CONTENT="NOINDEX,NOFOLLOW,NOARCHIVE,NOSNIPPET,NOODP,NOYDIR,NOPREVIEW,NOIMAGEINDEX"> 
+<meta charset="utf-8"/>
+<title>{$headTitle}</title>
+<link href="front/else/lib/css/style.css" rel="stylesheet" type="text/css" />
+<link href="front/else/core/login/css/style.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="front/else/core/base/img/favicon.ico">
+<script type="text/javascript" src="front/else/lib/ext/prototype.js"></script>
+<script type="text/javascript" src="front/else/lib/ext/scriptaculous.js?load=effects,dragdrop"></script>
+<script type="text/javascript" src="front/else/lib/js/{$strLang}/code.js"></script>
+<script type="text/javascript" src="front/else/core/login/js/{$strLang}/index.js"></script>
+<script type="text/javascript">
+var insRoot;
+{literal}
+	document.observe('dom:loaded', function()
+	{
+		insRoot = new Code_Core_Login();
+	});
+{/literal}
+</script>
+</head>
+<body id='Root' onunload=''>
+<noscript>{$caution}</noscript>
+</body>
+</html>

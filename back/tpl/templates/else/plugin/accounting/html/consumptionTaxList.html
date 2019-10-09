@@ -1,0 +1,44 @@
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%" style="font-size:10px;">
+	<tbody>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnTop" rowspan=2>{$strTitle}</td>
+			<td class="codePluginAccountingLibTableColumnTop" rowspan=2>{$flagTax}</td>
+			<td class="codePluginAccountingLibTableColumnTop" colspan=2>{$strDebit}</td>
+
+			<td class="codePluginAccountingLibTableColumnTop" colspan=2>{$strCredit}</td>
+
+		</tr>
+		<tr valign="middle">
+
+			<td class="codePluginAccountingLibTableColumnTop">{$strBody}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strTax}</td>
+
+			<td class="codePluginAccountingLibTableColumnTop">{$strBody}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strTax}</td>
+
+		</tr>
+		<!--{foreach from=$arrData key=key item=value}-->
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableColumn" >{$value.strTitle}</div></td>
+				<td class="codePluginAccountingLibTableRow">{$value.strTax}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}NumBodyDebit{$value.id}Wrap">{$value.numBodyDebit}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}NumTaxDebit{$value.id}Wrap">{$value.numTaxDebit}</td>
+
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}NumBodyCredit{$value.id}Wrap">{$value.numBodyCredit}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}NumTaxCredit{$value.id}Wrap">{$value.numTaxCredit}</td>
+			</tr>
+		<!--{/foreach}-->
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnTop" colspan=2 rowspan=2>{$strSum}</td>
+			<td class="codePluginAccountingLibTableRowNum">{$sumBodyDebit}</td>
+			<td class="codePluginAccountingLibTableRowNum">{$sumTaxDebit}</td>
+			<td class="codePluginAccountingLibTableRowNum">{$sumBodyCredit}</td>
+			<td class="codePluginAccountingLibTableRowNum">{$sumTaxCredit}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableRowNum" colspan=2>{$sumDebit}</td>
+			<td class="codePluginAccountingLibTableRowNum" colspan=2>{$sumCredit}</td>
+		</tr>
+	</tbody>
+</table>
+<div style="font-size:8px;">{$strCaution}</div>

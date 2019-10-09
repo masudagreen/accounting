@@ -1,0 +1,70 @@
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%" style="font-size:10px;">
+	<tbody>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnTop" colspan="2">{$strItem}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strIn}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strOut}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strOther}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strInclude}</td>
+			<td class="codePluginAccountingLibTableColumnTop">{$strTotal}</td>
+		</tr>
+		<!--{foreach from=$arrData key=key item=value}-->
+			<!--{if $value.flagTax}-->
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn" rowspan="2" style="font-weight:bold;color: #666;">{$value.strTitle}</td>
+					<td class="codePluginAccountingLibTableColumn">{$strBody}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.inBody}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.outBody}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.otherBody}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.includeBody}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.totalBody}</td>
+				</tr>
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn">{$strTax}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.inTax}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.outTax}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.otherTax}</td>
+					<td class="codePluginAccountingLibTableRowNum">-</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.totalTax}</td>
+				</tr>
+				<tr valign="top">
+					<td class="codePluginAccountingLibTableColumn" colspan="2">{$strSum}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.inSum}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.outSum}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.otherSum}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.includeSum}</td>
+					<td class="codePluginAccountingLibTableRowNum">{$value.totalSum}</td>
+				</tr>
+			<!--{else}-->
+				<!--{if $value.value == "free-Securities" || $value.value == "free-MonetaryClaim"}-->
+					<tr valign="top">
+						<td class="codePluginAccountingLibTableColumn" rowspan="2" style="font-weight:bold;color: #666;">{$value.strTitle}</td>
+						<td class="codePluginAccountingLibTableColumn">{$strSecurities5}</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">{$value.totalSum5}</td>
+					</tr>
+					<tr valign="top">
+						<td class="codePluginAccountingLibTableColumn">{$strSecurities}</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">{$value.totalSum}</td>
+					</tr>
+				<!--{else}-->
+					<tr valign="top">
+						<td class="codePluginAccountingLibTableColumn" colspan="2" style="font-weight:bold;color: #666;">{$value.strTitle}</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">-</td>
+						<td class="codePluginAccountingLibTableRowNum">{$value.totalSum}</td>
+					</tr>
+				<!--{/if}-->
+			<!--{/if}-->
+		<!--{/foreach}-->
+	</tbody>
+</table>

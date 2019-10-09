@@ -1,0 +1,66 @@
+<table style="" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=10>{$strTitle}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:60px" rowspan=2>{$strCategory}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:160px" colspan=2>{$strAddressGoods}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:60px" colspan=2 rowspan=2>{$strSales}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:40px" rowspan=2>{$strAbout}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:190px" >{$strName}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:60px" rowspan=2>{$strSize}<br>{$strUnitSize}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:120px">{$strValue}<br>{$strUnit}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:60px" rowspan=2>{$strYearGet}<br>{$strUnitYear}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:80px">{$strType}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:80px">{$strAllSize}<br>{$strUnitSize}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle" >{$strAddress}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle" >{$strValueMargin}<br>{$strUnit}</td>
+		</tr>
+		{foreach from=$arrRows key=key item=value}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextCategory{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextCategory{$value.id}" >{literal}#{valueTextCategory{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextAddressGoods{$value.id}Offset" colspan=2><div id="{literal}#{idSelf}{/literal}TextAddressGoods{$value.id}" >{literal}#{valueTextAddressGoods{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextYear{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextYear{$value.id}" >{literal}#{valueTextYear{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextMonth{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextMonth{$value.id}" >{literal}#{valueTextMonth{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextName{$value.id}Offset" colspan=2><div id="{literal}#{idSelf}{/literal}TextName{$value.id}" >{literal}#{valueTextName{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextSize{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextSize{$value.id}" >{literal}#{valueTextSize{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValue{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextValue{$value.id}" >{literal}#{valueTextValue{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextYearGet{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextYearGet{$value.id}" >{literal}#{valueTextYearGet{/literal}{$value.id}{literal}}{/literal}</div></td>
+			</tr>
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextType{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextType{$value.id}" >{literal}#{valueTextType{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextAllSize{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextAllSize{$value.id}" >{literal}#{valueTextAllSize{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextAddress{$value.id}Offset" colspan=2><div id="{literal}#{idSelf}{/literal}TextAddress{$value.id}" >{literal}#{valueTextAddress{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueMargin{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextValueMargin{$value.id}" >{literal}#{valueTextValueMargin{/literal}{$value.id}{literal}}{/literal}</div></td>
+
+			</tr>
+		{/foreach}
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle" rowspan=2>{$strSum}</td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2 colspan=2></td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2></td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2 ></td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2 colspan=2></td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2></td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextSumOffset" ><div id="{literal}#{idSelf}{/literal}TextSum" >{literal}#{valueTextSum}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableColumn" rowspan=2></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextSumMarginOffset" ><div id="{literal}#{idSelf}{/literal}TextSumMargin" >{literal}#{valueTextSumMargin}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=10>
+				<p>{$strCautionMark}</p>
+				<p>{$strCaution1}</p>
+				<p>{$strCaution2}</p>
+				<p>{$strCaution3}</p>
+				<p>{$strCaution4}</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+

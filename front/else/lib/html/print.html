@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<link href="../../core/base/css/style.css" rel="stylesheet" type="text/css" />
+<link href="../css/stylePrint.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="../../core/base/img/favicon.ico">
+<script type="text/javascript" src="../ext/prototype.js"></script>
+<script type="text/javascript" src="../js/print.js"></script>
+<script type="text/javascript">
+document.observe('dom:loaded',function(){
+	var insRoot = window.opener.insRoot;
+	var insPrint = new Code_Lib_Print({vars : insRoot._varsPrint.data});
+	insRoot.eventPrintEnd({vars : insRoot._varsPrint});
+});
+</script>
+</head>
+<body id='Root' onunload=''>
+<p class="codeLibRequestImgLoading"></p>
+</body>
+</html>

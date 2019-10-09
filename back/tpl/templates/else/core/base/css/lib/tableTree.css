@@ -1,0 +1,160 @@
+.codeLibTableTreeColumnBoxSortLine,
+.codeLibTableTreeLineImg,
+.codeLibTableTreeLineTop,
+.codeLibTableTreeBtn,
+.codeLibTableTreeColumnBox,
+.codeLibTableTreeFold,
+.codeLibTableTreeItemIdle,
+.codeLibTableTreeItemWrap,
+.codeLibTableTreeColumn,
+.codeLibTableTreeColumnWrap{}
+
+.codeLibTableTreeColumnBoxImgMenu{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibTableTreeFoldClose{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibTableTreeFoldOpen{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibTableTreeColumnBoxWrap{
+	float: left;
+	height: 17px;
+}
+
+.codeLibTableTreeBlock{
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+
+.codeLibTableTreeColumnBoxSortColumn,
+.codeLibTableTreeColumnBoxResize{
+	height: 16px;
+}
+
+.codeLibTableTreeColumnBoxCheckboxChecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibTableTreeColumnBoxCheckboxUnchecked{
+	width: 16px;
+	height: 16px;
+	background: url(../img/tableTree/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibTableTreeColumnBoxCheckbox{}
+
+.codeLibTableTreeColumnBoxTitle{
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableTreeNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/tableTree/naviX.png);
+}
+
+.codeLibTableTreeNavi{
+	position: absolute;
+}
+
+.codeLibTableTreeNavi span{
+	float: left;
+}
+
+.codeLibTableTreeSortColumnOver{
+	background: url(../img/tableTree/icon.png) no-repeat 0px -81px;
+}
+
+.codeLibTableTreeLineSort{
+	float: left;
+	height: 2px;
+}
+
+.codeLibTableTreeIdle{
+	width: 10px;
+	height: 16px;
+	overflow: hidden;
+	background: no-repeat;
+}
+.codeLibTableTreeItem{
+
+	height: 16px;
+	overflow: hidden;
+}
+
+.codeLibTableTreeLineTitleOver{
+	text-decoration: underline;
+}
+.codeLibTableTreeLineBtnOver{
+	background: #99ccff;
+}
+.codeLibTableTreeBtnSelect{
+	background: #2472ae;
+	color: #fff;
+}
+
+
+.codeLibTableTreeSortOver{
+	background: url(../img/tableTree/sortLine.png);
+}
+
+.codeLibTableTreeTitleInsert{
+	color: #fff;
+	background: #2472ae;
+}
+.codeLibTableTreeTitleTree{
+	padding: 0px 0px 0px 5px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibTableTreeTitle{
+}
+
+.codeLibTableTreeLineTitle{
+	margin: 0px 0px 0px 5px;
+	height: 16px;
+	overflow: hidden;
+}
+.codeLibTableTreeLine{
+	float: left;
+	height: 16px;
+	xbackground: #eee;
+}
+.codeLibTableTreeIdleFive{
+	width: 5px;
+	height: 16px;
+	background: no-repeat;
+}
+.codeLibTableTreeSeparateDouble{
+	width: 5px;
+	height: 16px;
+	background: url(../img/tableTree/lineDouble.png) repeat-y;
+}
+.codeLibTableTreeSeparateNone{
+	width: 10px;
+	height: 16px;
+}
+.codeLibTableTreeSeparateDoubleSort{
+	width: 5px;
+	height: 2px;
+	background: url(../img/tableTree/lineDouble.png) repeat-y;
+}
+.codeLibTableTreeSeparate{
+	height: 2px;
+}

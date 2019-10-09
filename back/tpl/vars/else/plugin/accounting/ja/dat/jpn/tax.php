@@ -1,0 +1,177 @@
+<?php
+
+$vars = array(
+
+
+
+	//比例配分
+	'generalProration' => array(
+		array( 'value' => 'none', 'strTitle' => '対象外', ),
+		array( 'value' => 'tax', 'strTitle' => '課税売上', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-Back', 'strTitle' => '課税売上返還', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Bad', 'strTitle' => '課税売上貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Getback', 'strTitle' => '課税売上貸倒回収', 'flagDebit' => 0, ),
+		array( 'value' => 'exemption', 'strTitle' => '輸出売上', 'flagDebit' => 0, ),
+		array( 'value' => 'exemption-Back', 'strTitle' => '輸出売上返還', 'flagDebit' => 1, ),
+		array( 'value' => 'exemption-Bad', 'strTitle' => '輸出売上貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'free', 'strTitle' => '非課税売上', 'flagDebit' => 0, ),
+		array( 'value' => 'free-Back', 'strTitle' => '非課税返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-Bad', 'strTitle' => '非課税貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'free-Assets', 'strTitle' => '非課税資産輸出', 'flagDebit' => 0, ),
+		array( 'value' => 'free-AssetsBack', 'strTitle' => '非課税資産輸出返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-AssetsBad', 'strTitle' => '非課税資産輸出貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'none-Sales', 'strTitle' => '対象外売上', 'flagDebit' => 0, ),
+		array( 'value' => 'free-Securities', 'strTitle' => '有価証券譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'free-MonetaryClaim', 'strTitle' => '金銭債権譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'taxDebit', 'strTitle' => '課税対応仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'taxDebit-Getback', 'strTitle' => '課税対応仕入返還', 'flagDebit' => 0, ),
+		array( 'value' => 'else-Body', 'strTitle' => '課税対応輸入本体', 'flagDebit' => 1, ),
+		array( 'value' => 'else-Tax', 'strTitle' => '課税対応輸入消費税', 'flagDebit' => 1, ),
+		array( 'value' => 'else-TaxLocal', 'strTitle' => '地方消費税貨物割', 'flagDebit' => 1, ),
+		array( 'value' => 'freeDebit', 'strTitle' => '非課税仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'none-Stock', 'strTitle' => '対象外仕入', 'flagDebit' => 1, ),
+	),
+	'generalProrationChange' => array(
+		'tax' => array( 'generalEach' => 'tax', 'simple' => 'tax-unknown', ),
+		'tax-Back' => array( 'generalEach' => 'tax-Back', 'simple' => 'tax-Back-unknown', ),
+	),
+	//個別
+	'generalEach' => array(
+		array( 'value' => 'none', 'strTitle' => '対象外', ),
+		array( 'value' => 'tax', 'strTitle' => '課税売上', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-Back', 'strTitle' => '課税売上返還', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Bad', 'strTitle' => '課税売上貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Getback', 'strTitle' => '課税売上貸倒回収', 'flagDebit' => 0, ),
+		array( 'value' => 'exemption', 'strTitle' => '輸出売上', 'flagDebit' => 0, ),
+		array( 'value' => 'exemption-Back', 'strTitle' => '輸出売上返還', 'flagDebit' => 1, ),
+		array( 'value' => 'exemption-Bad', 'strTitle' => '輸出売上貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'free', 'strTitle' => '非課税売上', 'flagDebit' => 0, ),
+		array( 'value' => 'free-Back', 'strTitle' => '非課税返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-Bad', 'strTitle' => '非課税貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'free-Assets', 'strTitle' => '非課税資産輸出', 'flagDebit' => 0, ),
+		array( 'value' => 'free-AssetsBack', 'strTitle' => '非課税資産輸出返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-AssetsBad', 'strTitle' => '非課税資産輸出貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'none-Sales', 'strTitle' => '対象外売上', 'flagDebit' => 0, ),
+		array( 'value' => 'free-Securities', 'strTitle' => '有価証券譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'free-MonetaryClaim', 'strTitle' => '金銭債権譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'taxDebit', 'strTitle' => '課税対応仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'taxDebit-Getback', 'strTitle' => '課税対応仕入返還', 'flagDebit' => 0, ),
+
+		array( 'value' => 'taxDebit-Free', 'strTitle' => '非課税対応仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'taxDebit-FreeGetback', 'strTitle' => '非課税対応仕入返還', 'flagDebit' => 0, ),
+
+		array( 'value' => 'taxDebit-Common', 'strTitle' => '共通対応仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'taxDebit-CommonGetback', 'strTitle' => '共通対応仕入返還', 'flagDebit' => 0, ),
+
+		array( 'value' => 'else-Body', 'strTitle' => '課税対応輸入本体', 'flagDebit' => 1, ),
+		array( 'value' => 'else-FreeBody', 'strTitle' => '非課対応輸入本体', 'flagDebit' => 1, ),
+		array( 'value' => 'else-CommonBody', 'strTitle' => '共通対応輸入本体', 'flagDebit' => 1, ),
+
+		array( 'value' => 'else-Tax', 'strTitle' => '課税対応輸入消費税', 'flagDebit' => 1, ),
+		array( 'value' => 'else-FreeTax', 'strTitle' => '非課対応輸入消費税', 'flagDebit' => 1, ),
+		array( 'value' => 'else-CommonTax', 'strTitle' => '共通対応輸入消費税', 'flagDebit' => 1, ),
+
+		array( 'value' => 'else-TaxLocal', 'strTitle' => '地方消費税貨物割', 'flagDebit' => 1, ),
+		array( 'value' => 'freeDebit', 'strTitle' => '非課税仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'none-Stock', 'strTitle' => '対象外仕入', 'flagDebit' => 1, ),
+	),
+	'generalEachChange' => array(
+		'tax' => array( 'generalProration' => 'tax', 'simple' => 'tax-unknown', ),
+		'tax-Back' => array( 'generalProration' => 'tax-Back', 'simple' => 'tax-Back-unknown', ),
+		'taxDebit-Free' => array( 'generalProration' => 'taxDebit', 'simple' => 'taxDebit', ),
+		'taxDebit-FreeGetback' => array( 'generalProration' => 'taxDebit-Getback', 'simple' => 'taxDebit-Getback', ),
+		'taxDebit-Common' => array( 'generalProration' => 'taxDebit', 'simple' => 'taxDebit', ),
+		'taxDebit-CommonGetback' => array( 'generalProration' => 'taxDebit-Getback', 'simple' => 'taxDebit-Getback', ),
+		'else-FreeBody' => array( 'generalProration' => 'else-Body', 'simple' => 'else-Body', ),
+		'else-CommonBody' => array( 'generalProration' => 'else-Body', 'simple' => 'else-Body', ),
+		'else-FreeTax' => array( 'generalProration' => 'else-Tax', 'simple' => 'else-Tax', ),
+		'else-CommonTax' => array( 'generalProration' => 'else-Tax', 'simple' => 'else-Tax', ),
+	),
+	'simple' => array(
+		array( 'value' => 'none', 'strTitle' => '対象外', ),
+
+		array( 'value' => 'tax-1', 'strTitle' => '課税売上簡易一種', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-2', 'strTitle' => '課税売上簡易二種', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-3', 'strTitle' => '課税売上簡易三種', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-4', 'strTitle' => '課税売上簡易四種', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-5', 'strTitle' => '課税売上簡易五種', 'flagDebit' => 0, ),
+		array( 'value' => 'tax-unknown', 'strTitle' => '課税売上簡易売上不明', 'flagDebit' => 0, ),
+
+		array( 'value' => 'tax-Back-1', 'strTitle' => '課税売上返還簡易返還一種', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Back-2', 'strTitle' => '課税売上返還簡易返還二種', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Back-3', 'strTitle' => '課税売上返還簡易返還三種', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Back-4', 'strTitle' => '課税売上返還簡易返還四種', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Back-5', 'strTitle' => '課税売上返還簡易返還五種', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Back-unknown', 'strTitle' => '課税売上返還簡易売返還不明', 'flagDebit' => 1, ),
+
+		array( 'value' => 'tax-Bad', 'strTitle' => '課税売上貸倒', 'flagDebit' => 1, ),
+		array( 'value' => 'tax-Getback', 'strTitle' => '課税売上貸倒回収', 'flagDebit' => 0, ),
+
+		array( 'value' => 'exemption', 'strTitle' => '輸出売上', 'flagDebit' => 0, ),
+		array( 'value' => 'exemption-Back', 'strTitle' => '輸出売上返還', 'flagDebit' => 1, ),
+		array( 'value' => 'exemption-Bad', 'strTitle' => '輸出売上貸倒', 'flagDebit' => 1, ),
+
+		array( 'value' => 'free', 'strTitle' => '非課税売上', 'flagDebit' => 0, ),
+		array( 'value' => 'free-Back', 'strTitle' => '非課税返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-Bad', 'strTitle' => '非課税貸倒', 'flagDebit' => 1, ),
+
+		array( 'value' => 'free-Assets', 'strTitle' => '非課税資産輸出', 'flagDebit' => 0, ),
+		array( 'value' => 'free-AssetsBack', 'strTitle' => '非課税資産輸出返還', 'flagDebit' => 1, ),
+		array( 'value' => 'free-AssetsBad', 'strTitle' => '非課税資産輸出貸倒', 'flagDebit' => 1, ),
+
+		array( 'value' => 'none-Sales', 'strTitle' => '対象外売上', 'flagDebit' => 0, ),
+
+		array( 'value' => 'free-Securities', 'strTitle' => '有価証券譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'free-MonetaryClaim', 'strTitle' => '金銭債権譲渡', 'flagDebit' => 0, ),
+		array( 'value' => 'taxDebit', 'strTitle' => '課税対応仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'taxDebit-Getback', 'strTitle' => '課税対応仕入返還', 'flagDebit' => 0, ),
+
+		array( 'value' => 'else-Body', 'strTitle' => '課税対応輸入本体', 'flagDebit' => 1, ),
+		array( 'value' => 'else-Tax', 'strTitle' => '課税対応輸入消費税', 'flagDebit' => 1, ),
+
+		array( 'value' => 'else-TaxLocal', 'strTitle' => '地方消費税貨物割', 'flagDebit' => 1, ),
+
+		array( 'value' => 'freeDebit', 'strTitle' => '非課税仕入', 'flagDebit' => 1, ),
+		array( 'value' => 'none-Stock', 'strTitle' => '対象外仕入', 'flagDebit' => 1, ),
+	),
+	'simpleChange' => array(
+		'tax-1' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-2' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-3' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-4' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-5' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-unknown' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+		'tax-Back-1' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+		'tax-Back-2' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+		'tax-Back-3' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+		'tax-Back-4' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+		'tax-Back-5' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+		'tax-Back-unknown' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+	),
+	'arrStrGeneralProration' => array(),
+	'arrStrGeneralEach' => array(),
+	'arrStrSimple' => array(),
+	'arrStrWithoutCalc' => array(
+		'1' => '内税',
+		'2' => '外税',
+		'3' => '別記',
+	),
+	'arrStrRate' => array(
+		'5' => '5%',
+		'8' => '8%',
+		'10' => '10%',
+	),
+	'arrStr' => array(
+		'strItem' => '項目',
+		'strTotal' => '合計',
+		'strIn' => '内税',
+		'strOut' => '外税',
+		'strOther' => '別記',
+		'strInclude' => '税込',
+		'strSum' => '小計',
+		'strBody' => '本体価額',
+		'strTax' => '税額',
+		'strSecurities5' => '5%相当',
+		'strSecurities' => '譲渡額',
+	),
+);

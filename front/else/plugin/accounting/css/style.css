@@ -1,0 +1,175 @@
+.codePluginAccountingLibWrapSummary,
+.codePluginAccountingLibLineBlockDebitKey,
+.codePluginAccountingLibLineSum,
+.codePluginAccountingLibLineSumTax,
+.codePluginAccountingLibLineBlockCreditKey,
+.codePluginAccountingLibBarFold,
+.codePluginAccountingLibBarSortUp,
+.codePluginAccountingLibBarSortDown,
+.codePluginAccountingLibBarSortSide,
+.codePluginAccountingLibBarRemove,
+.codePluginAccountingLibDetailWrap,
+.codePluginAccountingLibDetailMainWrap,
+.codePluginAccountingLibDetailSubWrap,
+.codePluginAccountingLibWrap{
+
+}
+
+.codePluginAccountingLibSubTitle{
+	margin-right:5px;
+	margin-left:3px;
+	margin-top:1px;
+	font-size:10px;
+}
+
+.codePluginAccountingLibDetailBarWrap,
+.codePluginAccountingLibSummaryBarWrap{
+	height: 26px;
+
+}
+
+.codePluginAccountingLibDetailBar,
+.codePluginAccountingLibSummaryBar{
+	padding: 5px 5px 5px 5px;
+}
+
+.codePluginAccountingLibWrapDetail{
+	margin: 0px 0px 0px 0px;
+}
+
+
+
+.codePluginAccountingLibColumnDouble{
+	width: 3px;
+	background: url(../img/journal/columnDouble.png) repeat-y;
+}
+
+.codePluginAccountingLibColumnSingle{
+	width: 1px;
+	background: url(../img/journal/lineSingle.png) repeat-y;
+}
+
+.codePluginAccountingLibLineDouble{
+	height: 3px;
+	background: url(../img/journal/lineDouble.png) repeat-x;
+}
+
+.codePluginAccountingLibLineSingle{
+	height: 1px;
+	background: url(../img/journal/lineSingle.png) repeat-x;
+}
+
+.codePluginAccountingLibLine{
+	height: 26px;
+}
+
+.codePluginAccountingLibLineSummary{
+
+}
+
+.codePluginAccountingLibLineBlock{
+	overflow : hidden;
+	height   : 16px;
+	margin  : 5px;
+}
+
+.codePluginAccountingLibLineBlockCreditValue,
+.codePluginAccountingLibLineBlockDebitValue{
+	text-align  : right;
+}
+
+
+.codePluginAccountingLibRemove{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -0px;
+}
+
+.codePluginAccountingLibCopy{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -16px;
+}
+
+.codePluginAccountingLibFoldClose{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -32px;
+}
+
+.codePluginAccountingLibFoldOpen{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -48px;
+}
+
+.codePluginAccountingLibSortUp{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -64px;
+}
+
+.codePluginAccountingLibSortDown{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -80px;
+}
+
+.codePluginAccountingLibSortSide{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -96px;
+}
+
+.codePluginAccountingLibAdd{
+	width: 16px;
+	height: 16px;
+	background: url(../img/journal/icon.png) no-repeat 0px -112px;
+}
+
+.codePluginAccountingLibBtnOver{
+	xbackground: orange;
+}
+.codePluginAccountingLibBgActive{
+	background: url(../img/journal/active.png);
+}
+
+.codePluginAccountingLibTableColumnMiddle,
+.codePluginAccountingLibTableColumnTop,
+.codePluginAccountingLibTableColumn {
+	width: 150px;
+	padding: 5px;
+	background: #efefef;
+}
+.codePluginAccountingLibTableColumnMiddle {
+	text-align : center;
+}
+.codePluginAccountingLibTableColumnTop {
+	text-align : center;
+	font-weight : bold;
+	color: #666;
+}
+
+.codePluginAccountingLibTableRowStrRight,
+.codePluginAccountingLibTableRowStr,
+.codePluginAccountingLibTableRowNum,
+.codePluginAccountingLibTableRow {
+	padding: 5px;
+	background: #fff;
+}
+
+.codePluginAccountingLibTableRowNum {
+	text-align : right;
+}
+
+.codePluginAccountingLibTableRowNumNow{
+	background: #ffffcc;
+}
+
+.codePluginAccountingLibTableRowStr {
+	width: 150px;
+}
+.codePluginAccountingLibTableRowStrRight {
+	width: 150px;
+	text-align : right;
+}

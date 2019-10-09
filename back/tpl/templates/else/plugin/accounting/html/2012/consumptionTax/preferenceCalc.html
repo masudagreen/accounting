@@ -1,0 +1,22 @@
+<table style="" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=2>{$strTitle}</td>
+		</tr>
+{if $flagGeneralRule}
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn">{$strSelectGeneralSales}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}SelectGeneralSalesOffset"><div id="{literal}#{idSelf}{/literal}SelectGeneralSales" >{literal}#{valueSelectGeneralSales}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn">{$strSelectGeneralStock}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}SelectGeneralStockOffset"><div id="{literal}#{idSelf}{/literal}SelectGeneralStock" >{literal}#{valueSelectGeneralStock}{/literal}</div></td>
+		</tr>
+{else}
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn">{$strSelectSimpleSale}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}SelectSimpleSaleOffset"><div id="{literal}#{idSelf}{/literal}SelectSimpleSale" >{literal}#{valueSelectSimpleSale}{/literal}</div></td>
+		</tr>
+{/if}
+	</tbody>
+</table>

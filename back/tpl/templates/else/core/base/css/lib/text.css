@@ -1,0 +1,19 @@
+.codeLibTextDoubleLine{
+	height: 3px;
+	background: #fff url(../img/text/doubleLine.png) repeat-x;
+}
+
+.codeLibTextDotLine{
+	height: 1px;
+	background: url(../img/text/dotLine.png) repeat-x;
+}
+
+.codeLibTextLine{
+	height: 1px;
+	background: url(../img/text/line.png) repeat-x;
+}
+
+.codeLibTextDoubleLineIdle{
+	height: 4px;
+	background: url(../img/text/doubleLineIdle.png) repeat-x;
+}

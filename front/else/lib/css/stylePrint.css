@@ -1,0 +1,72 @@
+body {
+	font-size: 12px;
+	-webkit-print-color-adjust: exact;
+	word-break: normal;
+	word-wrap: break-word;
+}
+
+table {
+	margin-left:auto;
+	margin-right:auto;
+	xtable-layout:fixed;
+}
+
+hr {
+	visibility:hidden;
+	height:1px;
+	page-break-before: always;
+}
+
+.codeLibPrintTitle{
+	font-size: 18px;
+	border-bottom: solid 1px #222;
+	padding-bottom:2px;
+}
+.codeLibPrintSelect{
+	border: solid 2px #222;
+}
+.codeLibPrintTitleBold{
+	font-size:13px;
+	font-weight: bold;
+}
+.codeLibPrintTitleNone{
+	font-size: 18px;
+}
+
+.codeLibPrintRight{
+	padding : 5px;
+	text-align : right;
+	background: #fff;
+}
+.codeLibPrintLeft{
+	padding : 5px;
+	text-align : left;
+	background: #fff;
+}
+
+.codeLibPrintMiddle{
+	padding : 5px;
+	text-align : center;
+	background: #fff;
+}
+
+.codeLibPrintColumnMiddle,
+.codeLibPrintColumnCenter{
+	padding : 5px;
+	text-align : center;
+	background: #ddd;
+}
+.codeLibPrintColumnLeft{
+	padding : 5px;
+	text-align : left;
+	background: #ddd;
+}
+.codeLibPrintColumnRight{
+	padding : 5px;
+	text-align : right;
+	background: #ddd;
+}
+.codeLibPrintFloat div{
+	float:left;
+}
+

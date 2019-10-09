@@ -1,0 +1,244 @@
+
+.codeLibWindow{
+	position:absolute;
+}
+
+.codeLibWrap{
+	float: left;
+}
+
+.codeLibWindowAreaLeft ul li{
+	float: left;
+}
+
+.codeLibWindowAreaRight ul li{
+	float: right;
+}
+
+.codeLibWindowHeaderWidthTitle{
+	height: 20px;
+	overflow: hidden;
+}
+
+.codeLibWindowHeader{
+}
+
+.codeLibWindowBody{
+}
+
+.codeLibWindowHeaderTop span{
+	float: left;
+}
+
+.codeLibWindowHeaderBottom span{
+	float: left;
+}
+
+.codeLibWindowBodyTop span{
+	float: left;
+}
+
+.codeLibWindowBodyBottom span{
+	float: left;
+}
+
+.codeLibWindowHeaderTopLeft{
+	width: 12px;
+	height: 2px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px 0px;
+}
+
+.codeLibWindowHeaderTopMiddle{
+	height: 2px;
+	background: url(../img/window/windowHeaderTopMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowHeaderTopRight{
+	width: 12px;
+	height: 2px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px 0px;
+}
+
+.codeLibWindowHeaderBottomLeft{
+	width: 12px;
+	height: 46px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -3px;
+}
+
+.codeLibWindowHeaderBottomMiddle{
+	height: 46px;
+	background: url(../img/window/windowHeaderBottomMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowHeaderBottomRight{
+	width: 12px;
+	height: 46px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -3px;
+}
+
+.codeLibWindowBodyTopLeft{
+	width: 12px;
+	background: url(../img/window/windowBodyTopLeft.png?v=13650) repeat-y;
+}
+
+.codeLibWindowBodyTopMiddle{
+	background: #fff;
+}
+
+.codeLibWindowBodyTopMiddleWrap{
+}
+
+.codeLibWindowBodyTopRight{
+	width: 12px;
+	background: url(../img/window/windowBodyTopRight.png?v=13650) repeat-y;
+}
+
+.codeLibWindowBodyBottomLeft{
+	width: 12px;
+	height: 16px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -50px;
+}
+
+.codeLibWindowBodyBottomMiddle{
+	height: 16px;
+	background: url(../img/window/windowBodyBottomMiddle.png?v=13650) repeat-x;
+}
+
+.codeLibWindowBodyBottomRight{
+	width: 12px;
+	height: 16px;
+	background: url(../img/window/icon.png?v=13650) no-repeat -13px -50px;
+}
+
+.codeLibWindowHeaderTitleImg{
+	margin: 8px;
+	font-weight: bold;
+	padding: 5px 30px 0px 30px;
+	height: 24px;
+}
+
+.codeLibWindowHeaderTitle{
+	margin: 3px;
+	font-weight: bold;
+	padding: 0px 0px 0px 0px;
+}
+
+.codeLibWindowNaviX{
+	width: 3px;
+	position: absolute;
+	background: url(../img/window/windowNaviX.png?v=13650);
+}
+
+.codeLibWindowNaviY{
+	height: 3px;
+	position: absolute;
+	background: url(../img/window/windowNaviY.png?v=13650);
+}
+
+.codeLibWindowNaviRemove{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -92px;
+}
+
+.codeLibWindowNaviRemoveOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -92px;
+}
+
+.codeLibWindowNaviHide{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -167px;
+}
+
+.codeLibWindowNaviHideOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -167px;
+}
+
+.codeLibWindowNaviFold{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+}
+
+.codeLibWindowNaviFoldPlus{
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -117px;
+}
+
+.codeLibWindowNaviFoldPlusOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -117px;
+}
+
+.codeLibWindowNaviFoldMinus{
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -142px;
+}
+
+.codeLibWindowNaviFoldMinusOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -142px;
+}
+
+.codeLibWindowNaviCoverMax{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -217px;
+}
+
+.codeLibWindowNaviCoverMaxOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -217px;
+}
+
+.codeLibWindowNaviCoverNormal{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -192px;
+}
+
+.codeLibWindowNaviCoverNormalOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -192px;
+}
+
+.codeLibWindowNaviCover{
+}
+
+.codeLibWindowNaviSwitch{
+	margin: 8px 0px 8px 0px;
+	height: 24px;
+	width: 24px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -67px;
+}
+
+.codeLibWindowNaviSwitchOver{
+	background: url(../img/window/icon.png?v=13650) no-repeat -25px -67px;
+}
+
+.codeLibWindowBoot{
+	xposition: absolute;
+	height: 128px;
+	width: 128px;
+	background: url(../img/window/icon.png?v=13650) no-repeat 0px -242px;
+}
+
+.codeLibWindowLock{
+	float: left;
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	background: url(../img/window/popBg.png?v=13650);
+	Background: url(../img/window/popBg.gif);
+}
+
+.codeLibWindowCover{
+	position:absolute;
+	top:0;
+	left:0;
+	position:fixed;
+	width: 100%;
+	height: 100%;
+}

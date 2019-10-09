@@ -1,0 +1,40 @@
+<table style="margin-top:5px;" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=4>{$strTitle}</td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=4>
+				<p>{$strTitleOld}</p>
+				<p class="codeLibBaseFontSizeSeventy">{$strExplainOld}</p>
+			</td>
+		</tr>
+{if $flagOld}
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" >{$strPageOld}</td>
+			<td class="codePluginAccountingLibTableColumn" >{$strRowOld}</td>
+
+			<td class="codePluginAccountingLibTableColumn" >{$strValueSaveOld}</td>
+			<td class="codePluginAccountingLibTableColumn" >{$strValueUpdateOld}</td>
+		</tr>
+
+		{foreach from=$arrRowsOld key=key item=value}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.numPage}</td>
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.numRow}</td>
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.numValueSave}</td>
+				<td class="codePluginAccountingLibTableRowStrRight">{$value.numValueUpdate}</td>
+			</tr>
+		{/foreach}
+{else}
+		<tr valign="top">
+			{if $flagDone}
+				<td class="codePluginAccountingLibTableRowStr" colspan=4>{$strPast}</td>
+			{else}
+				<td class="codePluginAccountingLibTableRowStr" colspan=4>{$strNoneOld}</td>
+			{/if}
+
+		</tr>
+{/if}
+	</tbody>
+</table>

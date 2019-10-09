@@ -1,0 +1,28 @@
+<table style="" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn"  colspan=2 style="font-weight: bold;">{$str17} {$strUnit}</td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" rowspan=2>{$strMonthly}</td>
+			<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}StrTitle1Offset" style="width:750px;"><div id="{literal}#{idSelf}{/literal}StrTitle1"  >{literal}#{strTitle1}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}StrTitle2Offset"><div id="{literal}#{idSelf}{/literal}StrTitle2"  >{literal}#{strTitle2}{/literal}</div></td>
+		</tr>
+		{foreach from=$arrRows key=key item=value}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableColumn" >{$value.strMonth}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}NumValue{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}NumValue{$value.id}"  >{literal}#{numValue{/literal}{$value.id}{literal}}{/literal}</div></td>
+			</tr>
+		{/foreach}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableColumn "  >{$strSum}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}SumOffset"><div id="{literal}#{idSelf}{/literal}Sum"  >{literal}#{sum}{/literal}</div></td>
+			</tr>
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableColumn"  >{$strSumPrev}</td>
+				<td class="codePluginAccountingLibTableRowNum" id="{literal}#{idSelf}{/literal}SumPrevOffset"><div id="{literal}#{idSelf}{/literal}SumPrev"  >{literal}#{sumPrev}{/literal}</div></td>
+			</tr>
+	</tbody>
+</table>

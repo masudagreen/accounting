@@ -1,0 +1,14 @@
+<table style="margin-top:5px;" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold" style="width:100px;">{$strTitle}</td>
+			<td class="codeLibBaseTableColumn codeLibBaseFontBold">{$strComment}</td>
+		</tr>
+		{foreach from=$arrRows key=key item=value}
+			<tr valign="top">
+				<td class="codeLibBaseTableRow">{$value.strTitle}</td>
+				<td class="codeLibBaseTableRow">{$value.strComment}</td>
+			</tr>
+		{/foreach}
+	</tbody>
+</table>

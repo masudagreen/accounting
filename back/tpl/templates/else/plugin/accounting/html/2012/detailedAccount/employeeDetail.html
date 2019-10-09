@@ -1,0 +1,101 @@
+<table style="" cellspacing="1" cellpadding="3" border="0" bgcolor="#cccccc" width="100%">
+	<tbody>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=11>{$strTitle}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:70px;" rowspan=3>{$strPosition}<br>{$strUnitHuman}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:175px;" rowspan=2>{$strName}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:60px;font-size:8px;" rowspan=2>{$strRelation}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:40px;font-size:8px;" rowspan=3>{$strType}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;" rowspan=3>{$strValueRewardSum}<br>{$strUnit}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:275px;" colspan=5>{$strDetail}{$strUnit}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;" rowspan=3>{$strValue}<br>{$strUnit}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;" rowspan=2>{$strValueEmployee}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:220px;" colspan=4>{$strEmployeeElse}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle" colspan=2>{$strAddress}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;">{$strValueEmployeeRegular}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;">{$strValueEmployeePrev}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;">{$strValueEmployeeProfit}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle"  style="width:55px;">{$strValueOthers}</td>
+		</tr>
+		{foreach from=$arrRows key=key item=value}
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextPosition{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextPosition{$value.id}" >{literal}#{valueTextPosition{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextName{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextName{$value.id}" >{literal}#{valueTextName{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextRelation{$value.id}Offset"><div id="{literal}#{idSelf}{/literal}TextRelation{$value.id}" >{literal}#{valueTextRelation{/literal}{$value.id}{literal}}{/literal}</div></td>
+
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}SelectType{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}SelectType{$value.id}" >{literal}#{valueSelectType{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueRewardSum{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueRewardSum{$value.id}" >{literal}#{valueTextValueRewardSum{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueEmployee{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueEmployee{$value.id}" >{literal}#{valueTextValueEmployee{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueEmployeeRegular{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueEmployeeRegular{$value.id}" >{literal}#{valueTextValueEmployeeRegular{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueEmployeePrev{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueEmployeePrev{$value.id}" >{literal}#{valueTextValueEmployeePrev{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueEmployeeProfit{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueEmployeeProfit{$value.id}" >{literal}#{valueTextValueEmployeeProfit{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValueOthers{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValueOthers{$value.id}" >{literal}#{valueTextValueOthers{/literal}{$value.id}{literal}}{/literal}</div></td>
+				<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextValue{$value.id}Offset" rowspan=2><div id="{literal}#{idSelf}{/literal}TextValue{$value.id}" >{literal}#{valueTextValue{/literal}{$value.id}{literal}}{/literal}</div></td>
+			</tr>
+			<tr valign="top">
+				<td class="codePluginAccountingLibTableRowStr" id="{literal}#{idSelf}{/literal}TextAddress{$value.id}Offset" colspan=2><div id="{literal}#{idSelf}{/literal}TextAddress{$value.id}" >{literal}#{valueTextAddress{/literal}{$value.id}{literal}}{/literal}</div></td>
+			</tr>
+		{/foreach}
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle" >{$strSum}</td>
+			<td class="codePluginAccountingLibTableColumn" colspan=2></td>
+			<td class="codePluginAccountingLibTableColumn" ></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumRewardSumOffset" ><div id="{literal}#{idSelf}{/literal}TextSumRewardSum" >{literal}#{valueTextSumRewardSum}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumEmployeeOffset" ><div id="{literal}#{idSelf}{/literal}TextSumEmployee" >{literal}#{valueTextSumEmployee}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumEmployeeRegularOffset" ><div id="{literal}#{idSelf}{/literal}TextSumEmployeeRegular" >{literal}#{valueTextSumEmployeeRegular}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumEmployeePrevOffset" ><div id="{literal}#{idSelf}{/literal}TextSumEmployeePrev" >{literal}#{valueTextSumEmployeePrev}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumEmployeeProfitOffset" ><div id="{literal}#{idSelf}{/literal}TextSumEmployeeProfit" >{literal}#{valueTextSumEmployeeProfit}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumOthersOffset" ><div id="{literal}#{idSelf}{/literal}TextSumOthers" >{literal}#{valueTextSumOthers}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight"  style="font-size:8px;" id="{literal}#{idSelf}{/literal}TextSumOffset" ><div id="{literal}#{idSelf}{/literal}TextSum" >{literal}#{valueTextSum}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=11>{$strTitleLaborCost}</td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle" colspan=3>{$strCategory}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle" colspan=4>{$strValueAll}<br>{$strUnit}</td>
+			<td class="codePluginAccountingLibTableColumnMiddle" colspan=4>{$strValueAllElse}<br>{$strUnit}</td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=3>{$strDirectors}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAll1Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAll1" >{literal}#{valueTextValueAll1}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAllElse1Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAllElse1" >{literal}#{valueTextValueAllElse1}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" rowspan=2>{$strLabor}</td>
+			<td class="codePluginAccountingLibTableColumn" colspan=2>{$strLaborValue}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAll2Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAll2" >{literal}#{valueTextValueAll2}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAllElse2Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAllElse2" >{literal}#{valueTextValueAllElse2}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=2>{$strWagesValue}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAll3Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAll3" >{literal}#{valueTextValueAll3}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextValueAllElse3Offset" colspan=4><div id="{literal}#{idSelf}{/literal}TextValueAllElse3" >{literal}#{valueTextValueAllElse3}{/literal}</div></td>
+		</tr>
+		<tr valign="middle">
+			<td class="codePluginAccountingLibTableColumnMiddle" colspan=3>{$strSum}</td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextSumAllOffset" colspan=4><div id="{literal}#{idSelf}{/literal}TextSumAll" >{literal}#{valueTextSumAll}{/literal}</div></td>
+			<td class="codePluginAccountingLibTableRowStrRight" id="{literal}#{idSelf}{/literal}TextSumAllElseOffset" colspan=4><div id="{literal}#{idSelf}{/literal}TextSumAllElse" >{literal}#{valueTextSumAllElse}{/literal}</div></td>
+		</tr>
+		<tr valign="top">
+			<td class="codePluginAccountingLibTableColumn" colspan=11>
+				<p>{$strCautionMark}</p>
+				<p>{$strCaution1}</p>
+				<p>{$strCaution2}</p>
+				<p>{$strCaution3}</p>
+				<p>{$strCaution4}</p>
+				<p>{$strCaution5}</p>
+				<p>{$strCaution6}</p>
+				<p>{$strCaution7}</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+

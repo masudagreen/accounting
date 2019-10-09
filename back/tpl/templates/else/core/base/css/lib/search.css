@@ -1,0 +1,41 @@
+.codeLibSearchItemRest,
+.codeLibSearchItemSecond,
+.codeLibSearchItemFirst,
+.codeLibSearchItemWrap{}
+
+.codeLibSearchItemWrap{
+	margin: 0px 5px 5px 5px;
+}
+
+.codeLibSearchItemBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibSearchItemCopy{
+	width: 16px;
+	height: 16px;
+	background: url(../img/search/icon.png) no-repeat 0px 0px;
+}
+
+.codeLibSearchItemRemove{
+	width: 16px;
+	height: 16px;
+	background: url(../img/search/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibSearchSortSort,
+.codeLibSearchSortItem,
+.codeLibSearchSortLine,
+.codeLibSearchSortLineWrap{}
+
+.codeLibSearchRecentRecordWrap{
+	margin: 0px 0px 0px 20px;
+}
+
+.codeLibSearchMyRecordWrap{
+	margin: 0px 0px 0px 20px;
+}
+
+
+

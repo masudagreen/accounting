@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{$strLang}">
+<head>
+<meta charset="utf-8"/>
+<title>{$headTitle}</title>
+<link href="front/else/lib/css/style.css" rel="stylesheet" type="text/css" />
+<link href="front/else/core/confirm/css/style.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="front/else/core/base/img/favicon.ico">
+<script type="text/javascript" src="front/else/lib/ext/prototype.js"></script>
+<script type="text/javascript" src="front/else/lib/ext/scriptaculous.js?load=effects,dragdrop"></script>
+<script type="text/javascript" src="front/else/lib/js/{$strLang}/code.js"></script>
+<script type="text/javascript" src="front/else/core/confirm/js/{$strLang}/index.js"></script>
+<script type="text/javascript">
+var insRoot;
+{literal}
+	document.observe('dom:loaded', function()
+	{
+		insRoot = new Code_Core_Confirm();
+	});
+{/literal}
+</script>
+</head>
+<body id='Root' onunload=''>
+<noscript>{$caution}</noscript>
+</body>
+</html>

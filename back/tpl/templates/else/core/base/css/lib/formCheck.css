@@ -1,0 +1,121 @@
+.codeLibFormCheckBtnWrap,
+.codeLibFormCheckWrap{
+}
+
+.codeLibFormCheckBlock{
+	width: 16px;
+	height: 16px;
+}
+
+.codeLibFormCheckOn{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -0px;
+}
+
+.codeLibFormCheckOnLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -16px;
+}
+
+.codeLibFormCheckOff{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -32px;
+}
+
+.codeLibFormCheckOffLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -48px;
+}
+
+.codeLibFormCheckColumn{
+	overflow : hidden;
+	padding: 5px 0px 0px 5px;
+	height: 21px;
+}
+
+.codeLibFormCheckColumnDouble{
+	width: 3px;
+	background: url(../img/formCheck/columnDouble.png) repeat-y;
+}
+
+.codeLibFormCheckColumnSingle{
+	width: 1px;
+	background: url(../img/formCheck/lineSingle.png) repeat-y;
+}
+
+.codeLibFormCheckLineDouble{
+	height: 3px;
+	background: url(../img/formCheck/lineDouble.png) repeat-x;
+}
+
+.codeLibFormCheckLineSingle{
+	height: 1px;
+	background: url(../img/formCheck/lineSingle.png) repeat-x;
+}
+
+.codeLibFormCheckLine{
+	height: 26px;
+}
+
+.codeLibFormCheckImgEdit{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -64px;
+}
+
+.codeLibFormCheckImgEditLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -80px;
+}
+
+.codeLibFormCheckImgDetail{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -96px;
+}
+
+.codeLibFormCheckImgDetailLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -112px;
+}
+
+.codeLibFormCheckImgDownload{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -128px;
+}
+
+.codeLibFormCheckImgDownloadLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -144px;
+}
+.codeLibFormCheckImgSheet{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -160px;
+}
+
+.codeLibFormCheckImgSheetLock{
+	width: 16px;
+	height: 16px;
+	margin: 0px 0px 0px 5px;
+	background: url(../img/formCheck/icon.png) no-repeat 0px -176px;
+}
