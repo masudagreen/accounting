@@ -34,6 +34,13 @@ $vars = array(
 			'strMissNumValue' => '金額がないようです。',
 			'strMissStrTitle' => '理由がないようです。',
 			'strTime' => '当期の会計期間に属さないようです。',
+			/*
+			 * 20191001 start
+			 */
+		    'strRateConsumptionTaxReduced' => '軽減税率施行前の日付のため登録できないようです。',
+		    /*
+		     * 20191001 end
+		     */
 			'strNumMin' => '金額は、0以下は設定できないようです。',
 			'strNumMax' => '金額の上限は、11桁までとなっているようです。',
 			'strFormat' => '日付のフォーマットが正しくないようです。',
@@ -271,7 +278,7 @@ $vars = array(
 						'flagCommentUse' => 1, 'strCommentTitle' => '', 'strComment' => '',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 						'varsTmpl' => array(
 							'strComment' => '【 経由 】 : <%flagType%><br>【 記録日時 】 : <%stampRegister%><br>【 更新日時 】 : <%stampUpdate%><br>【 不一致数 】 : <%numAll%>件'
@@ -289,7 +296,7 @@ $vars = array(
 						'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 						'varsSpace' => array(
 							'varsStatus' => array(
@@ -368,7 +375,7 @@ $vars = array(
 						'flagCommentUse' => 1, 'strCommentTitle' => '', 'strComment' => '処理が無事完了しました。',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					),
 					array(
@@ -381,7 +388,7 @@ $vars = array(
 						'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 						'varsSpace' => array(
 							'varsStatus' => array(

@@ -7,7 +7,7 @@
 class Code_Else_Core_Base_Init
 {
 	protected $_self = array(
-		'numVersion'            => '1.47.00',
+		'numVersion'            => '1.48.00',
 		'flagConfig'            => 0,
 		'flagAPI'               => 0,
 		'flagRequest'           => 'post',

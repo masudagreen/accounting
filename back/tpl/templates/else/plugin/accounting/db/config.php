@@ -319,6 +319,7 @@ $vars = array(
 				array( 'column' => 'jsonJgaapFSCS', 'type' => 'longtext',),
 
 				/*
+				 * 軽減税率と軽減税率ではないのみを合算した集計値
 					'{
 						f1 : {
 							tax      : 0,
@@ -328,6 +329,29 @@ $vars = array(
 					}'
 				*/
 				array( 'column' => 'jsonConsumptionTax', 'type' => 'longtext',),
+
+				/*
+				 * 20191001 start
+				 */
+                /*
+                 '{
+                     軽減税率のみ合算した集計値
+                     varsReduecd : {
+                         f1 : {
+                             tax      : 0,
+                             tax-Back : 0,
+                             ...
+                         },
+                     },
+                     軽減税率ではないのみ合算した集計値
+                     varsOther : {
+                     },
+                 }'
+                 */
+	            array( 'column' => 'jsonConsumptionTaxDetail', 'type' => 'longtext',),
+    	        /*
+    	         * 20191001 end
+    	         */
 	    ),
 	),
 	array(
@@ -958,7 +982,16 @@ $vars = array(
 				array( 'column' => 'idSubAccountTitleContra',     'type' => 'int unsigned',),
 				array( 'column' => 'numValue', 'type' => 'decimal(19, 0) unsigned',),
 
-				//科目別消費税集計表
+				/*
+				 * 20191001 start
+				 * 元帳の軽減税率フラグ
+				 */
+				array( 'column' => 'flagRateConsumptionTaxReduced', 'type' => 'int unsigned default 0',),
+				/*
+				 * 20191001 end
+				 */
+
+				//科目別消費税集計表 20191001確認　現在使用されず
 				array( 'column' => 'numValueConsumptionTax', 'type' => 'decimal(19, 0) default 0',),
 				array( 'column' => 'numRateConsumptionTax', 'type' => 'int unsigned',),
 				array( 'column' => 'flagConsumptionTax', 'type' => 'text',),
@@ -1445,7 +1478,7 @@ $vars = array(
 				array( 'column' => 'stampUpdate', 'type' => 'bigint not null',),
 				array( 'column' => 'idEntity',     'type' => 'int unsigned not null',),
 				array( 'column' => 'numFiscalPeriod', 'type' => 'int unsigned default 1',),
-				
+
 				//2014
 				array( 'column' => 'numYearSheet', 'type' => 'int unsigned not null',),
 

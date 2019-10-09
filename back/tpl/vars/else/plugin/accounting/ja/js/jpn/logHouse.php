@@ -383,11 +383,12 @@ $vars = array(
 									array( 'strTitle' => '5%', 'value' => 5, ),
 									array( 'strTitle' => '8%', 'value' => 8, ),
 									/*
-									 * 2014-2015 start
+									 * 20191001 start
 									*/
-									//array( 'strTitle' => '10%', 'value' => 10, ),
+								    array( 'strTitle' => '8%(軽)', 'value' => '8_reduced', ),
+									array( 'strTitle' => '10%', 'value' => 10, ),
 									/*
-									 * 2014-2015 end
+									 * 20191001 end
 									*/
 								),
 								'commaDepartment' => array(),
@@ -1075,11 +1076,18 @@ $vars = array(
 										'value' => 3,
 									),
 								),
+								/*
+								 * 20191001 start
+								 */
 								'numRateConsumptionTax' => array(
 									array('strTitle' => '5%','value' => 5,),
 									array('strTitle' => '8%','value' => 8,),
-									//array('strTitle' => '10%','value' => 10,),
+								    array('strTitle' => '8%(軽)','value' => '8_reduced',),
+									array('strTitle' => '10%','value' => 10,),
 								),
+								/*
+								 * 20191001 end
+								 */
 								'varsBtnDictionary' => array(),
 							),
 							'varsStrTitle' => array(
@@ -1092,11 +1100,12 @@ $vars = array(
 									'5' => '5%',
 									'8' => '8%',
 									/*
-									 * 2014-2015 start
+									 * 20191001 start
 									*/
-									//'10' => '10%',
+								    '8_reduced' => '8%(軽)',
+									'10' => '10%',
 									/*
-									 * 2014-2015 end
+									 * 20191001 end
 									*/
 								),
 							),
@@ -1121,6 +1130,13 @@ $vars = array(
 									'numValue' => '',
 									'numValueConsumptionTax' => '',
 									'numRateConsumptionTax' => '',
+									/*
+									 * 20191001 start
+									 */
+								    'flagRateConsumptionTaxReduced' => '',
+								    /*
+								     * 20191001 end
+								     */
 									'idDepartment' => '',
 									'idSubAccountTitle' => '',
 									'flagConsumptionTaxFree' => '',
@@ -1136,6 +1152,13 @@ $vars = array(
 									'numValue' => '',
 									'numValueConsumptionTax' => '',
 									'numRateConsumptionTax' => '',
+									/*
+									 * 20191001 start
+									 */
+								    'flagRateConsumptionTaxReduced' => '',
+								    /*
+								     * 20191001 end
+								     */
 									'idDepartment' => '',
 									'idSubAccountTitle' => '',
 									'flagConsumptionTaxFree' => '',

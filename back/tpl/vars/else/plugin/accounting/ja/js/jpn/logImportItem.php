@@ -71,6 +71,13 @@ $vars = array(
 			'strMissNumValue' => '金額がないようです。',
 			'strMissStrTitle' => '理由がないようです。',
 			'strTime' => '当期の会計期間に属さないようです。',
+			/*
+			 * 20191001 start
+			 */
+		    'strRateConsumptionTaxReduced' => '軽減税率施行前の日付のため登録できないようです。',
+		    /*
+		     * 20191001 end
+		     */
 			'strNumMin' => '金額は、0以下は設定できないようです。',
 			'strNumMax' => '金額の上限は、11桁までとなっているようです。',
 			'strMonetaryClaim' => '消費税区分「金銭債権譲渡」は2014年4月1日以後から設定できるようです。',
@@ -123,7 +130,7 @@ $vars = array(
 						'flagCommentUse' => 1, 'strCommentTitle' => '', 'strComment' => '処理が完了しました。',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 						'flagHideUse' => 1, 'flagHideNow' => 0,
 					),
@@ -137,7 +144,7 @@ $vars = array(
 						'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 						'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 						'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-						'arrayOption' => array(), 
+						'arrayOption' => array(),
 						'flagFoldUse' => 0, 'flagFoldNow' => 0,
 						'varsSpace' => array(
 							'varsStatus' => array(
@@ -181,7 +188,7 @@ $vars = array(
 					'flagCommentUse' => 1, 'strCommentTitle' => '【お知らせ】', 'strComment' => '<span class="codeLibBaseFontOrange" style="float:none;">※ 既にデータが確定しているため使用できません。</span>',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 100,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 1, 'flagFoldNow' => 0,
 				),
 				array(
@@ -201,7 +208,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'file', 'numMaxlength' => 0, 'flagMultiple' => 1,
 					'numWidth' => 90, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'arrayHidden' => array(),
 					'arrFileType' => array('csv' => 1,),
 				),

@@ -880,6 +880,7 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 				$arrayCsv[] = array($varsData['strNumExt']);
 				$arrayCsv[] = array($varsData['strPeriodExt']);
 				$arrayCsv[] = array($varsData['strUnit']);
+				$arrayCsv[] = array($varsData['strReduced']);
 			}
 		}
 
@@ -944,6 +945,7 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 			$arrayCsv[] = array($arr['varsData']['strNumExt']);
 			$arrayCsv[] = array($arr['varsData']['strPeriodExt']);
 			$arrayCsv[] = array($arr['varsData']['strUnit']);
+			$arrayCsv[] = array($arr['varsData']['strReduced']);
 		}
 
 		$arrayCsv[] = array();
@@ -1035,6 +1037,16 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 
 				$rowData[] = $classEscape->toComma(array('data' => $value['strTitle']));
 
+				/*
+				 * 20191001 start
+				 */
+
+				$rowData[] = $classEscape->toComma(array('data' => $value['varsColumnDetail']['flagRateConsumptionTaxReduced']));
+				/*
+				 * 20191001 start
+				 */
+
+
 				$rowData[] = $value['vars']['flagDebit'];
 				$rowData[] = $value['vars']['flagCredit'];
 				$rowData[] = $value['vars']['numBalance'];
@@ -1060,6 +1072,7 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 		$rowData[] = $arr['varsData']['strSubAccountTitleColumn'];
 
 		$rowData[] = $arr['varsData']['strMemo'];
+		$rowData[] = $arr['varsData']['strReduced'];
 
 		$rowData[] = $arr['varsData']['strDebit'];
 		$rowData[] = $arr['varsData']['strCredit'];

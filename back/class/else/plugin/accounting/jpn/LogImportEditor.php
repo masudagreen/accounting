@@ -208,6 +208,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportEditor extends Code_Else_Plugin_A
 			'values' => $varsTarget
 		));
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
+
 		$classCalcLog = $this->_getClassCalc(array('flagType' => 'Log'));
 		$this->_checkValueDetail(array(
 			'arrValue'     => $arrValue,
@@ -693,10 +705,20 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportEditor extends Code_Else_Plugin_A
 						break;
 					}
 
+
 					if ($value[$strSide]['numRateConsumptionTax'] != '') {
-						$flag = __LINE__;
-						break;
+					    /*
+					     * 20191001 start
+					     */
+					    if (!($value[$strSide]['flagRateConsumptionTaxReduced'] && $value[$strSide]['numRateConsumptionTax'] == 8)) {
+					        $flag = __LINE__;
+					        break;
+					    }
+					    /*
+					     * 20191001 end
+					     */
 					}
+
 
 					$idSubAccountTitle = $value[$strSide]['idSubAccountTitle'];
 					if ($idSubAccountTitle) {
@@ -905,6 +927,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportEditor extends Code_Else_Plugin_A
 		$arrValue = $this->checkValue(array(
 			'values' => $varsTarget,
 		));
+
+		/*
+		* 20191001 start
+		*/
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
 
 		$classCalcLog = $this->_getClassCalc(array('flagType' => 'Log'));
 

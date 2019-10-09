@@ -1439,6 +1439,14 @@ class Code_Else_Plugin_Accounting_Jpn_Cash extends Code_Else_Plugin_Accounting_J
 		global $classCheck;
 		global $classEscape;
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		/*
+		 * 20191001 end
+		 */
+
 		$array = $arr['value'];
 		$arrayNew = array();
 		$num = 1;
@@ -1465,7 +1473,16 @@ class Code_Else_Plugin_Accounting_Jpn_Cash extends Code_Else_Plugin_Accounting_J
 				'vars'  => $arr['vars'],
 				'value' => $value['jsonPermitHistory'],
 			));
-
+			/*
+			 * 20191001 start
+			 */
+			$value['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+			    'flagStatus' => 'sendValueConsumptionTaxReduced',
+			    'jsonDetail'   => $value['jsonDetail'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$data['jsonDetail'] = $value['jsonDetail'];
 			$data['strVersion'] = 'Ver.' . $num;
 			$data['numVersion'] = $num;

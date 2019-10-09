@@ -163,15 +163,16 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 			$varsAccountTitleFSList[$value] = $varsAccountTitle['arrStrTitle'];
 		}
 
-		$varsFSValues = array();
+
 		$flagFiscalPeriod = $arr['varsFlag']['flagFiscalPeriod'];
-		$varsFSValues = $varsFSValue['jsonConsumptionTax'][$flagFiscalPeriod];
 
 		$varsConsumptionTax = $this->_getVarsConsumptionTax(array());
 
 		$data = array(
 			'arrAccountTitle'        => $arrAccountTitle,
-			'varsFS'                 => $varsFSValues,
+		    'varsFS'                 => $varsFSValue['jsonConsumptionTax'][$flagFiscalPeriod],
+		    'varsFSDetailReduced'    => $varsFSValue['jsonConsumptionTaxDetail']['varsReduced'][$flagFiscalPeriod],
+		    'varsFSDetailOther'      => $varsFSValue['jsonConsumptionTaxDetail']['varsOther'][$flagFiscalPeriod],
 			'varsConsumptionTax'     => $varsConsumptionTax,
 			'varsEntityNation'       => $varsEntityNation,
 			'varsAccountTitleList'   => $varsAccountTitleList,
@@ -321,13 +322,34 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 	{
 		global $classSmarty;
 
-		$flagConsumptionTaxIncluding = (int) $arr['varsEntityNation']['flagConsumptionTaxIncluding'];
-		$varsValue = $arr['varsItem']['varsFS'];
+
 		$flagFiscalPeriod = $arr['varsFlag']['flagFiscalPeriod'];
 		$numRateConsumptionTax = $arr['varsFlag']['numRateConsumptionTax'];
+
+		$varsValue = $arr['varsItem']['varsFS'];
+		/*
+		 * 20191001 start
+		 */
+		if ($numRateConsumptionTax == '8_reduced') {
+		    $varsValue = $arr['varsItem']['varsFSDetailReduced'];
+		    $numRateConsumptionTax = 8;
+
+		} else if ($numRateConsumptionTax == '8_other') {
+		    $varsValue = $arr['varsItem']['varsFSDetailOther'];
+		    $numRateConsumptionTax = 8;
+		}
+
+//var_dump($arr['varsFlag']['numRateConsumptionTax']);exit;
+
+
+		/*
+		 * 20191001 end
+		 */
+
+
 		$arrayRate = array(5, 8, 10);
 		if ($numRateConsumptionTax) {
-			$arrayRate = array($numRateConsumptionTax);;
+			$arrayRate = array($numRateConsumptionTax);
 		}
 
 		$varsData = $arr['varsItem']['varsConsumptionTax']['arrStr'];
@@ -341,6 +363,8 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 				$str = 'generalProration';
 			}
 		}
+
+		$flagConsumptionTaxIncluding = (int) $arr['varsEntityNation']['flagConsumptionTaxIncluding'];
 
 		$varsIni = array();
 		$varsIni['inBody'] = 0;
@@ -426,6 +450,7 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 				$arrayNew[] = $value;
 			}
 		}
+
 		$varsData['arrData'] = $arrayNew;
 		if ($arr['flagOutput']) {
 			return $varsData;
@@ -560,6 +585,8 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 			'flagFiscalPeriod' => $arr['varsFlag']['flagFiscalPeriod'],
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
+
+
         /*20190401 start*/
 		/*
 		$str = $arr['vars']['varsItem']['strPeriod'];
@@ -577,11 +604,25 @@ class Code_Else_Plugin_Accounting_Jpn_ConsumptionTaxSheet extends Code_Else_Plug
 		$arrayCsv[] = array($strPeriod);
 
 		//strRate
-		if ((int) $arr['varsFlag']['numRateConsumptionTax'] != 0) {
-			$strNumRep = $arr['varsFlag']['numRateConsumptionTax'];
-			$strNum = str_replace('<%replace%>', $strNumRep, $arr['vars']['varsItem']['strRate']);
-			$arrayCsv[] = array($strNum);
+		/*
+		 * 20191001 start
+		 */
+		if ($arr['varsFlag']['numRateConsumptionTax']) {
+		    $strNumRep = $arr['varsFlag']['numRateConsumptionTax'];
+		    $strTarget = $arr['varsFlag']['numRateConsumptionTax'] . '';
+		    if ($strTarget == '8_reduced') {
+		        $strNum = str_replace('<%replace%>', $strNumRep, $arr['vars']['varsItem']['strRate8Reduced']);
+		    } else if ($strTarget == '8_other') {
+		        $strNum = str_replace('<%replace%>', $strNumRep, $arr['vars']['varsItem']['strRate8Other']);
+		    } else {
+		        $strNum = str_replace('<%replace%>', $strNumRep, $arr['vars']['varsItem']['strRate']);
+		    }
+
+		    $arrayCsv[] = array($strNum);
 		}
+		/*
+		 * 20191001 end
+		 */
 
 		//strUnit
 		$arrayCsv[] = array($arr['vars']['varsItem']['strUnit']);

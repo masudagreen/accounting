@@ -1399,6 +1399,36 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogImport extends Code_Else_Plugin_Acc
 				$arr['varsStatus']['arrError'][] = 'strMonetaryClaim';
 			}
 		}
+		/*
+		 * 20191001 start
+		 */
+		if (!$flagError) {
+		    $varsVersion = end($arr['varsTarget']['varsImport']['jsonVersion']);
+		    $varsRequest = $arr['varsRequest'];
+		    $varsRequest['jsonDetail'] = $varsVersion['jsonDetail'];
+		    $varsDetail = end($varsRequest['jsonDetail']['varsDetail']);
+		    $flag = $this->_chechVarsFlagRateConsumptionTaxReduced(array(
+		        'vars'      => $varsDetail['arrDebit'],
+		        'stampBook' => $stampBook,
+		    ));
+		    if ($flag) {
+		        $flagError = __LINE__;
+		        $arr['varsStatus']['arrErrorNumRow'][] = $arr['numRow'];
+		        $arr['varsStatus']['arrError'][] = 'strRateConsumptionTaxReduced';
+		    }
+		    $flag = $this->_chechVarsFlagRateConsumptionTaxReduced(array(
+		        'vars'      => $varsDetail['arrCredit'],
+		        'stampBook' => $stampBook,
+		    ));
+		    if ($flag) {
+		        $flagError = __LINE__;
+		        $arr['varsStatus']['arrErrorNumRow'][] = $arr['numRow'];
+		        $arr['varsStatus']['arrError'][] = 'strRateConsumptionTaxReduced';
+		    }
+		}
+		/*
+		 * 20191001 end
+		 */
 
 		if ($flagError) {
 			return $arr;
@@ -1444,7 +1474,6 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogImport extends Code_Else_Plugin_Acc
 			'stampBook'        => $stampBook,
 			'varsEntityNation' => $varsVersion['jsonDetail']['varsEntityNation'],
 		));
-
 		$varsRequest['jsonDetail']['varsDetail'] = array();
 		$varsRequest['jsonDetail']['varsDetail'][] = $varsDetail;
 
@@ -1524,6 +1553,43 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogImport extends Code_Else_Plugin_Acc
 			}
 		}
 	}
+
+
+	/*
+	 * 20191001 start
+	 */
+	/**
+	(array(
+	'vars'             => $varsDetail['arrDebit'],
+	'varsEntityNation' => $varsVersion['jsonDetail']['varsEntityNation'],
+	))
+	*/
+	protected function _chechVarsFlagRateConsumptionTaxReduced($arr)
+	{
+	    global $classTime;
+
+	    $flagConsumptionTax = $this->_getCalcFlagConsumptionTax(array('vars' => $arr['vars'],));
+
+	    if (!(preg_match( "/^tax/", $flagConsumptionTax)
+	        || preg_match( "/^else/", $flagConsumptionTax)
+	        )) {
+	            return;
+        }
+
+        $numRate = $classTime->checkRateConsumptionTax(array('stamp' => $arr['stampBook']));
+        /*
+         * 20191001 start
+         */
+        if ($arr['vars']['flagRateConsumptionTaxReduced']) {
+            if ($numRate != 10) {
+                return 1;
+            }
+        }
+	}
+
+	  /*
+	* 20191001 end
+	*/
 
 	/**
 		(array(
@@ -1655,13 +1721,17 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogImport extends Code_Else_Plugin_Acc
 
 		$numRate = $classTime->checkRateConsumptionTax(array('stamp' => $arr['stampBook']));
 /*
- * 2014-2015 start
+ * 20191001 start
  */
 		if ($numRate == 10) {
-			$numRate = 8;
+		    if ($arr['vars']['numRateConsumptionTax'] == 8 && $arr['vars']['flagRateConsumptionTaxReduced']) {
+		        $numRate = 8;
+		    }
 		}
+
+
 /*
- * 2014-2015 end
+ * 20191001 end
 */
 		return $numRate;
 	}

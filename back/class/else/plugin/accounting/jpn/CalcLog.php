@@ -189,6 +189,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 								'numValue' => '',
 								'numValueConsumptionTax' => '',
 								'numRateConsumptionTax' => '',
+								'flagRateConsumptionTaxReduced' => '',
 								'idDepartment' => '',
 								'idSubAccountTitle' => '',
 								'flagConsumptionTaxFree' => '',
@@ -204,6 +205,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 								'numValue' => '',
 								'numValueConsumptionTax' => '',
 								'numRateConsumptionTax' => '',
+								'flagRateConsumptionTaxReduced' => '',
 								'idDepartment' => '',
 								'idSubAccountTitle' => '',
 								'flagConsumptionTaxFree' => '',
@@ -731,19 +733,34 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					if ($value[$strSide]['numRateConsumptionTax'] != '') {
 						$flagRate = 1;
 						/*
-						 * 2014-2015 start
+						 * 20191001 start
 						 */
-						//if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
-						if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						if ($value[$strSide]['flagRateConsumptionTaxReduced'] == 1) {
+						    if ($value[$strSide]['numRateConsumptionTax'] != 8) {
+						        $flag = 'numRateConsumptionTax';
+						        break;
+						    }
+						}
+
+						if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						//if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
 						/*
-						 * 2014-2015 end
+						 * 20191001 end
 						*/
 							$flag = 'numRateConsumptionTax';
 							break;
 
 						} else {
-							if ($numRate == 8) {
-								if ($value[$strSide]['numRateConsumptionTax'] == 10) {
+						    if ($numRate == 8) {
+								if ($value[$strSide]['numRateConsumptionTax'] == 10
+								/*
+								 * 20191001 start
+								 */
+								    || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+								/*
+								 * 20191001 start
+								 */
+								  ) {
 									$flag = 'numRateConsumptionTax';
 									break;
 								}
@@ -751,6 +768,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 							} elseif ($numRate == 5) {
 								if ($value[$strSide]['numRateConsumptionTax'] == 8
 									|| $value[$strSide]['numRateConsumptionTax'] == 10
+									/*
+									 * 20191001 start
+									 */
+								    || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+								    /*
+								     * 20191001 start
+								     */
 								) {
 									$flag = 'numRateConsumptionTax';
 									break;
@@ -1439,6 +1463,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 				$numValue = '';
 				$numValueConsumptionTax = '';
 				$numRateConsumptionTax = '';
+				/*
+				 * 20191001 start
+				 */
+				$flagRateConsumptionTaxReduced = '';
+				/*
+				 * 20191001 end
+				 */
 				$idDepartment = '';
 				$idSubAccountTitle = '';
 				$flagConsumptionTaxGeneralRuleProration = '';
@@ -1458,6 +1489,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					$numValue = $value[$strSide]['numValue'];
 					$numValueConsumptionTax = $value[$strSide]['numValueConsumptionTax'];
 					$numRateConsumptionTax = ($value[$strSide]['numRateConsumptionTax'])? $value[$strSide]['numRateConsumptionTax'] : '';
+					/*
+					 * 20191001 start
+					 */
+					$flagRateConsumptionTaxReduced = ($value[$strSide]['flagRateConsumptionTaxReduced'])? $value[$strSide]['flagRateConsumptionTaxReduced'] : '';
+					/*
+					 * 20191001 end
+					 */
 					$idDepartment = ($value[$strSide]['idDepartment'])? $value[$strSide]['idDepartment'] : '';
 					$idSubAccountTitle = ($value[$strSide]['idSubAccountTitle'])? $value[$strSide]['idSubAccountTitle'] : '';
 					$flagConsumptionTaxGeneralRuleProration = ($value[$strSide]['flagConsumptionTaxGeneralRuleProration'])? $value[$strSide]['flagConsumptionTaxGeneralRuleProration'] : '';
@@ -1564,7 +1602,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					if ($idAccountTitle == 'suspensePaymentConsumptionTaxes') {
 						if ($strConsumptionTax) {
 							if ($numRateConsumptionTax) {
-								$varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    /*
+							     * 20191001 start
+							     */
+							    if ($numRateConsumptionTax == 8 && $flagRateConsumptionTaxReduced) {
+							        $varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax . '_reduced';
+							    } else {
+							        $varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    }
+							    /*
+							    * 20191001 end
+							    */
+
 							} else {
 								$varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_';
 							}
@@ -1577,7 +1626,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 							&& $flagDebit
 						) {
 							if ($strConsumptionTax) {
-								$varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    /*
+							     * 20191001 start
+							     */
+							    if ($numRateConsumptionTax == 8 && $flagRateConsumptionTaxReduced) {
+							        $varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax . '_reduced';
+							    } else {
+							        $varsCollect['arrCommaTaxPayment' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    }
+							    /*
+							     * 20191001 end
+							     */
+
 							}
 						}
 					}
@@ -1585,7 +1645,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					if ($idAccountTitle == 'suspenseReceiptOfConsumptionTaxes') {
 						if ($strConsumptionTax) {
 							if ($numRateConsumptionTax) {
-								$varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    /*
+							     * 20191001 start
+							     */
+							    if ($numRateConsumptionTax == 8 && $flagRateConsumptionTaxReduced) {
+							        $varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax . '_reduced';
+							    } else {
+							        $varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    }
+							    /*
+							     * 20191001 end
+							     */
+
 							} else {
 								$varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_';
 							}
@@ -1598,7 +1669,17 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 							&& !$flagDebit
 						) {
 							if ($strConsumptionTax) {
-								$varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    /*
+							     * 20191001 start
+							     */
+							    if ($numRateConsumptionTax == 8 && $flagRateConsumptionTaxReduced) {
+							        $varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax . '_reduced';
+							    } else {
+							        $varsCollect['arrCommaTaxReceipt' . $valueStr][] = $idDepartment . '_' . $strConsumptionTax . '_' . $numRateConsumptionTax;
+							    }
+							    /*
+							     * 20191001 end
+							     */
 							}
 						}
 					}
@@ -1609,6 +1690,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					'numValue'                               => $numValue,
 					'numValueConsumptionTax'                 => $numValueConsumptionTax,
 					'numRateConsumptionTax'                  => $numRateConsumptionTax,
+					/*
+					 * 20191001 start
+					 */
+				    'flagRateConsumptionTaxReduced'          => $flagRateConsumptionTaxReduced,
+				    /*
+				     * 20191001 end
+				     */
 					'idDepartment'                           => (int) $idDepartment,
 					'idSubAccountTitle'                      => $idSubAccountTitle,
 					'flagConsumptionTaxFree'                 => $flagConsumptionTaxFree,
@@ -1633,7 +1721,17 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 					$arrayIdSubAccountTitle[] = $idSubAccountTitle;
 				}
 				if ($numRateConsumptionTax) {
-					$varsCollect['rateConsumptionTax' . $valueStr][] = $numRateConsumptionTax;
+				    /*
+				     * 20191001 start
+				     */
+				    if ($numRateConsumptionTax == 8 && $flagRateConsumptionTaxReduced) {
+				        $varsCollect['rateConsumptionTax' . $valueStr][] = $numRateConsumptionTax . '_reduced';
+				    } else {
+				        $varsCollect['rateConsumptionTax' . $valueStr][] = $numRateConsumptionTax;
+				    }
+				    /*
+				     * 20191001 end
+				     */
 				}
 				if ($strConsumptionTax) {
 					$varsCollect['consumptionTax' . $valueStr][] = $strConsumptionTax;
@@ -1654,7 +1752,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLog extends Code_Else_Plugin_Accountin
 			'arrCommaIdAccountTitle'    => $classEscape->joinCommaArray(array('arr' => $arrayIdAccountTitle)),
 			'arrCommaIdSubAccountTitle' => $classEscape->joinCommaArray(array('arr' => $arrayIdSubAccountTitle)),
 		);
-
+//var_dump($varsCollect);exit;
 		foreach ($arrayStr as $keyStr => $valueStr) {
 			$data['arrCommaIdDepartment' . $valueStr] = $classEscape->joinCommaArray(array('arr' => $varsCollect['idDepartment' . $valueStr]));
 			$data['arrCommaIdAccountTitle' . $valueStr] = $classEscape->joinCommaArray(array('arr' => $varsCollect['idAccountTitle' . $valueStr]));

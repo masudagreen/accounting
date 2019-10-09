@@ -1265,6 +1265,14 @@ class Code_Else_Plugin_Accounting_Jpn_Log extends Code_Else_Plugin_Accounting_Jp
 		global $classCheck;
 		global $classEscape;
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		/*
+		 * 20191001 end
+		 */
+
 		$array = $arr['value'];
 		$arrayNew = array();
 		$num = 1;
@@ -1284,6 +1292,16 @@ class Code_Else_Plugin_Accounting_Jpn_Log extends Code_Else_Plugin_Accounting_Jp
 				'varsAuthority'  => $arr['varsAuthority'],
 				'flagFileAccess' => $arr['flagFileAccess'],
 			));
+			/*
+			 * 20191001 start
+			 */
+			$value['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+			    'flagStatus' => 'sendValueConsumptionTaxReduced',
+			    'jsonDetail'   => $value['jsonDetail'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$data['jsonDetail'] = $value['jsonDetail'];
 			$data['strVersion'] = 'Ver.' . $num;
 			$data['numVersion'] = $num;
@@ -1675,12 +1693,12 @@ class Code_Else_Plugin_Accounting_Jpn_Log extends Code_Else_Plugin_Accounting_Jp
 
 				if ($numRateConsumptionTax) {
 					/*
-					 * 2014-2015 start
+					 * 20191001 start
 					 */
-					//if (!preg_match("/^(5|8|10)$/", $flagConsumptionTax)) {
-					if (!preg_match("/^(5|8)$/", $numRateConsumptionTax)) {
+				    if (!preg_match("/^(5|8|8_reduced|10)$/", $numRateConsumptionTax)) {
+					//if (!preg_match("/^(5|8)$/", $numRateConsumptionTax)) {
 					/*
-					 * 2014-2015 end
+					 * 20191001 end
 					*/
 						if (FLAG_TEST) {
 							var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);

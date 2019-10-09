@@ -194,6 +194,19 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			'values' => $varsTarget
 		));
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
+
+
 		$this->_checkValueDetail(array(
 			'vars'     => $vars,
 			'arrValue' => $arrValue,
@@ -210,6 +223,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			'flagAuthority' => 'select',
 			'idTarget'      => $this->_extSelf['idCash'],
 		));
+
 
 		$classCalcCashPay = $this->_getClassCalc(array('flagType' => 'CashPay'));
 		$classCalcCash = $this->_getClassCalc(array('flagType' => 'Cash'));
@@ -424,6 +438,8 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 			'varsItem'        => &$arr['vars']['varsRule'],
 		));
+
+
 		if ($flag) {
 			if ($flag == 'term' || $flag == 'noneFile') {
 				$this->sendVars(array(
@@ -621,6 +637,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$arrValue = $this->checkValue(array(
 			'values' => $varsTarget['vars']['varsDetail']
 		));
+
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
 
 		$this->_checkValueDetail(array(
 			'vars'     => $vars,

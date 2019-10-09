@@ -290,12 +290,28 @@ $vars = array(
 								array( 'strTitle' => '借方補助科目/通番', 'value' => 'comma-arrCommaIdSubAccountTitleDebit', ),
 								array( 'strTitle' => '借方部門', 'value' => 'commaDepartment-arrCommaIdDepartmentDebit-commaDepartment', ),
 								array( 'strTitle' => '借方税区分', 'value' => 'commaTax-arrCommaConsumptionTaxDebit-commaTax', ),
+								/*
+								 * 20191001 start
+								 */
+							    array( 'strTitle' => '借方税率', 'value' => 'commaTaxRate-arrCommaRateConsumptionTaxDebit-commaTaxRate', ),
+							    /*
+							     * 20191001 end
+							     */
 								array( 'strTitle' => '借方税入力', 'value' => 'commaTaxWithoutCalc-arrCommaConsumptionTaxWithoutCalcDebit-commaTaxWithoutCalc', ),
 
-								array( 'strTitle' => '貸方勘定科目', 'value' => 'commaFs-arrCommaIdAccountTitleCredit-commaFs', ),
+
+
+							    array( 'strTitle' => '貸方勘定科目', 'value' => 'commaFs-arrCommaIdAccountTitleCredit-commaFs', ),
 								array( 'strTitle' => '貸方補助科目/通番', 'value' => 'comma-arrCommaIdSubAccountTitleCredit', ),
 								array( 'strTitle' => '貸方部門', 'value' => 'commaDepartment-arrCommaIdDepartmentCredit-commaDepartment', ),
 								array( 'strTitle' => '貸方税区分', 'value' => 'commaTax-arrCommaConsumptionTaxCredit-commaTax', ),
+								/*
+								 * 20191001 start
+								 */
+							    array( 'strTitle' => '貸方税率', 'value' => 'commaTaxRate-arrCommaRateConsumptionTaxCredit-commaTaxRate', ),
+							    /*
+							     * 20191001 end
+							     */
 								array( 'strTitle' => '貸方税入力', 'value' => 'commaTaxWithoutCalc-arrCommaConsumptionTaxWithoutCalcCredit-commaTaxWithoutCalc', ),
 
 								array( 'strTitle' => '日付・列', 'value' => 'num-numColStampBook', ),
@@ -314,6 +330,10 @@ $vars = array(
 							'commaTaxWithoutCalcOption' => array(
 								array( 'strTitle' => '～と一致。', 'value' => 'like', ),
 								array( 'strTitle' => '～と不一致。', 'value' => 'notlike', ),
+							),
+						    'commaTaxRateOption' => array(
+							    array( 'strTitle' => '～と一致。', 'value' => 'like', ),
+							    array( 'strTitle' => '～と不一致。', 'value' => 'notlike', ),
 							),
 							'commaDepartmentOption' => array(
 								array( 'strTitle' => '～と一致。', 'value' => 'like', ),
@@ -368,6 +388,15 @@ $vars = array(
 									array( 'strTitle' => '照合文字を含む。', 'value' => 'like', ),
 									array( 'strTitle' => '照合文字で始まる。', 'value' => 'start', ),
 									array( 'strTitle' => '照合文字で終わる。', 'value' => 'end', ),
+								),
+							    'commaTaxRate' => array(
+								    /*
+								     * 20191001 start
+								     */
+								    array( 'strTitle' => '8%(軽)', 'value' => '8_reduced', ),
+								    /*
+								     * 20191001 end
+								     */
 								),
 							),
 						),
@@ -1023,6 +1052,16 @@ $vars = array(
 										'value' => 3,
 									),
 								),
+								/*
+								* 20191001 start
+								*/
+							    'numRateConsumptionTax' => array(
+							        array('strTitle' => '指定なし','value' => '',),
+							        array('strTitle' => '8%(軽)','value' => '8_reduced',),
+							    ),
+							    /*
+							     * 20191001 end
+							     */
 								'varsBtnDictionary' => array(),
 							),
 							'varsStrTitle' => array(
@@ -1030,6 +1069,13 @@ $vars = array(
 									'1' => '内税',
 									'2' => '外税',
 									'3' => '別記',
+								),
+							    'numRateConsumptionTax' => array(
+								    /*
+								     * 20191001 start
+								     */
+							        '' => '',
+								    '8_reduced' => '8%(軽)',
 								),
 							),
 							'varsBlank' => array(
@@ -1052,7 +1098,14 @@ $vars = array(
 									'idAccountTitle' => '',
 									'numValue' => '',
 									'numValueConsumptionTax' => '',
-									'numRateConsumptionTax' => '',
+								    'numRateConsumptionTax' => '',
+								    /*
+								     * 20191001 start
+								     */
+								    'flagRateConsumptionTaxReduced' => '',
+								    /*
+								     * 20191001 end
+								     */
 									'idDepartment' => '',
 									'idSubAccountTitle' => '',
 									'flagConsumptionTaxFree' => '',
@@ -1067,7 +1120,14 @@ $vars = array(
 									'idAccountTitle' => '',
 									'numValue' => '',
 									'numValueConsumptionTax' => '',
-									'numRateConsumptionTax' => '',
+								    'numRateConsumptionTax' => '',
+								    /*
+								     * 20191001 start
+								     */
+								    'flagRateConsumptionTaxReduced' => '',
+								    /*
+								     * 20191001 end
+								     */
 									'idDepartment' => '',
 									'idSubAccountTitle' => '',
 									'flagConsumptionTaxFree' => '',

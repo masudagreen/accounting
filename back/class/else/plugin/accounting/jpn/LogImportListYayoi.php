@@ -184,6 +184,21 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportListYayoi extends Code_Else_Plugi
 						$row['numRateConsumptionTax'] = $keyRate;
 						$row['flagConsumptionTaxWithoutCalc'] = $flagConsumptionTaxWithoutCalc;
 						$varsNew[$row['strYayoi']] = $row;
+						/*
+						 * 20191001 start
+						 */
+						if ($keyRate == 8) {
+						    $strTitle = $strTitleTmpl;
+						    $strTitle = str_replace('[]',  $varsStr['varsRateConsumptionTaxReduced'][$str], $strTitle);
+						    $row = $tmpl;
+						    $row['strYayoi'] = $strTitle;
+						    $row['numRateConsumptionTax'] = $keyRate . $varsStr['strRateConsumptionTaxReduced'];
+						    $row['flagConsumptionTaxWithoutCalc'] = $flagConsumptionTaxWithoutCalc;
+						    $varsNew[$row['strYayoi']] = $row;
+						}
+						/*
+						 * 20191001 end
+						 */
 					}
 
 				} else {
@@ -225,8 +240,25 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportListYayoi extends Code_Else_Plugi
 							$row = $tmpl;
 							$row['strYayoi'] = $strTitle;
 							$row['numRateConsumptionTax'] = $keyRate;
+							$row['flagRateConsumptionTaxReduced'] = 0;
 							$row['flagConsumptionTaxWithoutCalc'] = $keyWithoutCalc;
 							$varsNew[$row['strYayoi']] = $row;
+							/*
+							 * 20191001 start
+							 */
+							if ($keyRate == 8) {
+							    $strTitle = $strTitleTmpl2;
+							    $strTitle = str_replace('[]', $varsStr['varsRateConsumptionTaxReduced'][$str], $strTitle);
+							    $row = $tmpl;
+							    $row['strYayoi'] = $strTitle;
+							    $row['numRateConsumptionTax'] = $keyRate . $varsStr['strRateConsumptionTaxReduced'];
+							    $row['flagConsumptionTaxWithoutCalc'] = $keyWithoutCalc;
+							    $varsNew[$row['strYayoi']] = $row;
+							}
+							/*
+							 * 20191001 end
+							 */
+
 						}
 					}
 
@@ -268,7 +300,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportListYayoi extends Code_Else_Plugi
 		}
 		$strLost = $arr['varsYayoiConvert']['varsCheck']['strLost'];
 		unset($varsNew[$strLost]);
-
+//var_dump($varsNew);exit;
 		return $varsNew;
 	}
 
@@ -319,7 +351,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportListYayoi extends Code_Else_Plugi
 	}
 
 	/**
-
+弥生からRUCAROcsvに変換
 	 */
 	protected function _updateYayoiArrayCSV($arr)
 	{
@@ -498,6 +530,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportListYayoi extends Code_Else_Plugi
 					$strColumn = $value[$keyId];
 					$arrTemp[] = $varsTaxConvert[$value[$keyId]]['strTitle'];
 					$arrTemp[] = $varsTaxConvert[$value[$keyId]]['numRateConsumptionTax'];
+					/*
+					 * 20191001 start
+					 */
+					//$arrTemp[] = $varsTaxConvert[$value[$keyId]]['flagRateConsumptionTaxReduced'];
+					/*
+					 * 20191001 end
+					 */
 					$flagConsumptionTaxWithoutCalc = $varsTaxConvert[$value[$keyId]]['flagConsumptionTaxWithoutCalc'];
 					$arrTemp[] = $varsYayoiConvert['varsStr']['varsWithoutCalc2'][$flagConsumptionTaxWithoutCalc];
 

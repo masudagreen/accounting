@@ -225,16 +225,34 @@ var Code_Lib_CheckTime = Class.create({
 		var objTime = obj.insTimeZone.adjustTime({
 			stamp : stamp
 		});
+
+		/*
+		 * 20191001 start
+		 */
+
 		var num = 5;
 		var stamp20140401 = 1396278000 * 1000;
 		var stamp20151001 = 1443625200 * 1000;
+		var stamp20191001 = 1569855600 * 1000;
 		var stamp = objTime.stamp;
+		/*
 		if (stamp20140401 <= stamp && stamp < stamp20151001) {
 			num = 8;
 
 		} else if (stamp20151001 <= stamp) {
 			num = 10;
+		}*/
+
+		if (stamp20140401 <= stamp && stamp < stamp20191001) {
+			num = 8;
+
+		} else if (stamp20191001 <= stamp) {
+			num = 10;
 		}
+		/*
+		 * 20191001 end
+		 */
+
 
 		return num;
 	},

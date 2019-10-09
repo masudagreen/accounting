@@ -1369,11 +1369,20 @@ var Code_Plugin_Accounting_LogEditor = Class.create(Code_Lib_ExtEditor,
 			insTimeZone : this.insRoot.insTimeZone,
 			stamp       : obj.stamp * 1000
 		});
+
 		obj.arr = obj.vars;
 		for (var i = 0; i < obj.arr.length; i++) {
 			if (numRate == 8) {
 				if (parseFloat(obj.arr[i].arrDebit.numRateConsumptionTax) == 10
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 10
+					/*
+					 * 20191001 start
+					*/
+					|| obj.arr[i].arrDebit.numRateConsumptionTax == '8_reduced'
+					|| obj.arr[i].arrCredit.numRateConsumptionTax == '8_reduced'
+					/*
+					 * 20191001 end
+					*/
 				) {
 					return 'strConsumptionTax';
 				}
@@ -1383,6 +1392,14 @@ var Code_Plugin_Accounting_LogEditor = Class.create(Code_Lib_ExtEditor,
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 8
 					|| parseFloat(obj.arr[i].arrDebit.numRateConsumptionTax) == 10
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 10
+					/*
+					 * 20191001 start
+					*/
+					|| obj.arr[i].arrDebit.numRateConsumptionTax == '8_reduced'
+					|| obj.arr[i].arrCredit.numRateConsumptionTax == '8_reduced'
+					/*
+					 * 20191001 end
+					*/
 				) {
 					return 'strConsumptionTax';
 				}

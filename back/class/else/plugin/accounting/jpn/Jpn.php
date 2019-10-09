@@ -1145,6 +1145,14 @@ class Code_Else_Plugin_Accounting_Jpn_Jpn extends Code_Else_Plugin_Accounting_Ac
 				$idDepartment = ($value[$strSide]['idDepartment'])? $value[$strSide]['idDepartment'] : null;
 				$idSubAccountTitle = ($value[$strSide]['idSubAccountTitle'])? $value[$strSide]['idSubAccountTitle'] : null;
 
+				/*
+    			 * 20191001 start
+    			 */
+				$flagRateConsumptionTaxReduced = ($value[$strSide]['flagRateConsumptionTaxReduced'])? 1 : 0;
+				/*
+				 * 20191001 end
+				 */
+
 				$flagConsumptionTaxIncluding = $value[$strSide]['flagConsumptionTaxIncluding'];
 				$flagConsumptionTaxGeneralRuleEach = $value[$strSide]['flagConsumptionTaxGeneralRuleEach'];
 				$flagConsumptionTaxGeneralRuleProration = $value[$strSide]['flagConsumptionTaxGeneralRuleProration'];
@@ -1172,22 +1180,29 @@ class Code_Else_Plugin_Accounting_Jpn_Jpn extends Code_Else_Plugin_Accounting_Ac
 
 				if ($idAccountTitle) {
 					$data = array(
-						'idLog'                   => $idLog,
-						'stampRegister'           => $stampRegister,
-						'stampBook'               => $stampBook,
-						'idEntity'                => $idEntity,
-						'numFiscalPeriod'         => $numFiscalPeriod,
-						'idAccount'               => $idAccount,
-						'strTitle'                => $strTitle,
-						'flagFiscalReport'        => $flagFiscalReport,
-						'flagDebit'               => $flagDebit,
-						'idAccountTitle'          => $idAccountTitle,
-						'idAccountTitleContra'    => $idAccountTitleContra,
-						'idDepartmentContra'      => $idDepartmentContra,
-						'idSubAccountTitleContra' => $idSubAccountTitleContra,
-						'numValue'                => $numValue,
-						'idDepartment'            => $idDepartment,
-						'idSubAccountTitle'       => $idSubAccountTitle,
+						'idLog'                         => $idLog,
+						'stampRegister'                 => $stampRegister,
+						'stampBook'                     => $stampBook,
+						'idEntity'                      => $idEntity,
+						'numFiscalPeriod'               => $numFiscalPeriod,
+						'idAccount'                     => $idAccount,
+						'strTitle'                      => $strTitle,
+						'flagFiscalReport'              => $flagFiscalReport,
+						'flagDebit'                     => $flagDebit,
+						'idAccountTitle'                => $idAccountTitle,
+						'idAccountTitleContra'          => $idAccountTitleContra,
+						'idDepartmentContra'            => $idDepartmentContra,
+						'idSubAccountTitleContra'       => $idSubAccountTitleContra,
+						'numValue'                      => $numValue,
+						/*
+						 * 20191001 start
+						 */
+					    'flagRateConsumptionTaxReduced' => $flagRateConsumptionTaxReduced,
+					    /*
+					     * 20191001 end
+					     */
+						'idDepartment'                  => $idDepartment,
+						'idSubAccountTitle'             => $idSubAccountTitle,
 					);
 					$arrayData = $data;
 					$arrColumn = array();
@@ -1362,6 +1377,14 @@ class Code_Else_Plugin_Accounting_Jpn_Jpn extends Code_Else_Plugin_Accounting_Ac
 						$numValueConsumptionTax =  $value[$strSide]['numValueConsumptionTax'];
 
 						$data['numRateConsumptionTax'] = $value[$strSide]['numRateConsumptionTax'];
+
+						/*
+						 * 20191001 start
+						 */
+						$data['flagRateConsumptionTaxReduced'] = $value[$strSide]['flagRateConsumptionTaxReduced'];
+						/*
+						 * 20191001 end
+						 */
 
 						$flagConsumptionTaxCalc = $value[$strSide]['flagConsumptionTaxCalc'];
 						$flagConsumptionTaxWithoutCalc = $value[$strSide]['flagConsumptionTaxWithoutCalc'];

@@ -195,6 +195,18 @@ class Code_Else_Plugin_Accounting_Jpn_CashEditor extends Code_Else_Plugin_Accoun
 			'values' => $varsTarget
 		));
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
+
 		$arrValue['arr']['flagFiscalReport'] = 'none';
 		$this->_checkValueDetail(array(
 			'vars'     => $vars,
@@ -506,15 +518,36 @@ class Code_Else_Plugin_Accounting_Jpn_CashEditor extends Code_Else_Plugin_Accoun
 					$flagRateTax = 0;
 					if ($value[$strSide]['numRateConsumptionTax'] != '') {
 						$flagRate = 1;
-						//----2014-2015---//
-						//if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
-						if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						/*
+						 * 20191001 start
+						 */
+						if ($value[$strSide]['flagRateConsumptionTaxReduced'] == 1) {
+						    if ($value[$strSide]['numRateConsumptionTax'] != 8) {
+						        $flag = 'numRateConsumptionTax';
+						        break;
+						    }
+						}
+
+						if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						//if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
 							$flag = __LINE__;
 							break;
+						/*
+						 * 20191001 end
+						 */
 
 						} else {
-							if ($numRate == 8) {
-								if ($value[$strSide]['numRateConsumptionTax'] == 10) {
+						    if ($numRate == 8) {
+
+						        if ($value[$strSide]['numRateConsumptionTax'] == 10
+						        /*
+						         * 20191001 start
+						         */
+						            || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+						            /*
+						             * 20191001 start
+						             */
+						        ) {
 									$flag = __LINE__;
 									break;
 								}
@@ -522,6 +555,13 @@ class Code_Else_Plugin_Accounting_Jpn_CashEditor extends Code_Else_Plugin_Accoun
 							} elseif ($numRate == 5) {
 								if ($value[$strSide]['numRateConsumptionTax'] == 8
 									|| $value[$strSide]['numRateConsumptionTax'] == 10
+									/*
+									 * 20191001 start
+									 */
+								    || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+								    /*
+								     * 20191001 start
+								     */
 								) {
 									$flag = __LINE__;
 									break;
@@ -1150,6 +1190,18 @@ class Code_Else_Plugin_Accounting_Jpn_CashEditor extends Code_Else_Plugin_Accoun
 		$arrValue = $this->checkValue(array(
 			'values' => $varsTarget['vars']['varsDetail']
 		));
+
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
 
 		$arrValue['arr']['flagFiscalReport'] = 'none';
 		$this->_checkValueDetail(array(

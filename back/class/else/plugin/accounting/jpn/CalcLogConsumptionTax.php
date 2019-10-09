@@ -1261,6 +1261,14 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
+			/*
+			 * 20191001 start
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
+			/*
+			 * 20191001 end
+			 */
+
 
 		//＜update2:課税・本則・個別・税込＞
 		} elseif (preg_match("/^(2)$/", $arr['flagUpdate'])) {
@@ -1275,6 +1283,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -1292,6 +1310,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1310,6 +1338,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -1327,6 +1365,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1349,6 +1397,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -1369,6 +1427,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1396,6 +1464,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -1410,6 +1479,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -1426,6 +1505,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1450,6 +1539,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -1472,6 +1571,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1499,6 +1608,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -1524,6 +1643,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -1552,6 +1681,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -1566,6 +1696,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -1582,6 +1722,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update6:課税・本則・比例・税込＞
@@ -1602,6 +1752,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -1624,6 +1784,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -1647,6 +1817,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -1672,6 +1852,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -1696,6 +1886,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -1711,6 +1902,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -1728,6 +1929,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update6:課税・本則・比例・税込＞
@@ -1748,6 +1959,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -1771,6 +1992,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -1794,6 +2025,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -1820,6 +2061,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -1844,6 +2095,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -1858,6 +2110,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -1874,6 +2136,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update6:課税・本則・比例・税込＞
@@ -1894,6 +2166,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -1916,6 +2198,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -1939,6 +2231,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -1964,6 +2266,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -1988,6 +2300,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -2008,6 +2321,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -2030,6 +2353,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2048,6 +2381,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -2064,6 +2407,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2093,6 +2446,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -2118,6 +2481,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2146,6 +2519,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -2166,6 +2540,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2189,6 +2573,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2204,6 +2598,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2221,6 +2625,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2245,6 +2659,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -2270,6 +2694,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -2294,6 +2728,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2315,6 +2750,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2339,6 +2784,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2354,6 +2809,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2371,6 +2836,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -2394,6 +2869,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2420,6 +2905,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -2444,6 +2939,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -2464,6 +2960,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -2486,6 +2992,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update6:課税・本則・比例・税込＞
@@ -2500,6 +3016,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -2516,6 +3042,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -2539,6 +3075,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -2564,6 +3110,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -2588,6 +3144,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -2608,6 +3165,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -2630,6 +3197,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2654,6 +3231,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -2676,6 +3263,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2694,6 +3291,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -2710,6 +3317,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$numValueConsumptionTax = $this->_getCalcConsumptionTax(array(
 				'varsEntityNation' => $arr['varsEntityNationUpdate'],
 				'vars'             => $arr['vars'],
@@ -2738,6 +3355,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -2758,6 +3376,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -2780,6 +3408,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2801,6 +3439,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2824,6 +3472,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2839,6 +3497,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2856,6 +3524,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -2880,6 +3558,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2901,6 +3580,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2925,6 +3614,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 
@@ -2946,6 +3645,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -2969,6 +3678,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -2983,6 +3702,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValue'] += $arr['vars']['numValueConsumptionTax'];
 			$arr['vars']['numValueConsumptionTax'] = '';
 
@@ -3000,6 +3729,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -3024,6 +3763,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			$arr['vars']['flagConsumptionTaxSimpleRule'] = '';
 			$arr['vars']['flagConsumptionTaxWithoutCalc'] = 1;
 			$arr['vars']['numRateConsumptionTax'] = '';
+			$arr['vars']['flagRateConsumptionTaxReduced'] = '';
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update2:課税・本則・個別・税込＞
@@ -3044,6 +3784,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update3:課税・本則・個別・税抜・内税＞
@@ -3066,6 +3816,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update6:課税・本則・比例・税込＞
@@ -3086,6 +3846,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update7:課税・本則・比例・税抜・内税＞
@@ -3108,6 +3878,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update10:課税・簡易・税込＞
@@ -3122,6 +3902,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$arr['vars']['numValueConsumptionTax'] = '';
 
 		//＜update11:課税・簡易・税抜・内税＞
@@ -3138,6 +3928,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 				'vars'      => $arr['vars'],
 				'stampBook' => $arr['stampBook'],
 			));
+			/*
+			 * 20191001 start $this->_getCalcRateConsumptionTaxのnumRateConsumptionTaxの結果を受けて処理が始まるので順序注意
+			 */
+			$arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			//$arr['vars']['numValueConsumptionTax'] = '';
 
 		}
@@ -3261,6 +4061,41 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 		return $numValueConsumptionTax;
 	}
 
+	/*
+	* 20191001 start
+	*/
+	/**
+            $arr['vars']['flagRateConsumptionTaxReduced'] = $this->_getCalcFlagRateConsumptionTaxReduced(array(
+			    'vars'      => $arr['vars'],
+			    'stampBook' => $arr['stampBook'],
+			));
+
+			function _getCalcRateConsumptionTax の結果を受けての処理
+	 */
+	protected function _getCalcFlagRateConsumptionTaxReduced($arr)
+	{
+	    global $classTime;
+
+	    $flagRateConsumptionTaxReduced = '';
+
+	    if ($arr['vars']['numRateConsumptionTax'] != '') {
+
+	        $flagRateConsumptionTaxReduced = 0;
+
+	        if ($arr['vars']['numRateConsumptionTax'] == 8) {
+	            if ($arr['vars']['flagRateConsumptionTaxReduced']) {
+	                $flagRateConsumptionTaxReduced = 1;
+	            }
+	        }
+	    }
+
+	    return $flagRateConsumptionTaxReduced;
+	}
+
+	/*
+	* 20191001 end
+	*/
+
 	/**
 	 (array(
 		'flagConsumptionTax' => $flagConsumptionTaxGeneralRuleEach,
@@ -3285,6 +4120,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			return $numRateConsumptionTax;
 		}
 
+		//消費税率自動挿入
 		if ($arr['stampBook']) {
 			$numRate = $classTime->checkRateConsumptionTax(array('stamp' => $arr['stampBook']));
 
@@ -3293,13 +4129,15 @@ class Code_Else_Plugin_Accounting_Jpn_CalcLogConsumptionTax extends Code_Else_Pl
 			return '';
 		}
 /*
- * 2014-2015 start
+ * 20191001 start
  */
 		if ($numRate == 10) {
-			$numRate = 8;
+		    if ($arr['vars']['flagRateConsumptionTaxReduced']) {
+		        $numRate = 8;
+		    }
 		}
 /*
- * 2014-2015 end
+ * 20191001 end
 */
 		return $numRate;
 	}

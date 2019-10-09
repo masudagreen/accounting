@@ -670,7 +670,18 @@ var Code_Plugin_Accounting_LogImport = Class.create(Code_Lib_ExtPortal,
 			varsTmpl.flagCondition = 'like';
 			varsTmpl.value = ',' + obj.vars.vars[str] + ',';
 			varsData.push(varsTmpl);
-
+			/*
+			 * 20191001 start
+			*/
+		} else if (str.match(/^arrCommaRateConsumptionTax/)) {
+			varsTmpl.flagType = 'commaTaxRate';
+			varsTmpl.strColumn = str;
+			varsTmpl.flagCondition = 'like';
+			varsTmpl.value = ',' + obj.vars.vars[str] + ',';
+			varsData.push(varsTmpl);
+			/*
+			 * 20191001 end
+			*/
 		} else if (str.match(/^arrComma/)) {
 			varsTmpl.flagType = 'comma';
 			varsTmpl.strColumn = str;
@@ -1170,7 +1181,22 @@ var Code_Plugin_Accounting_LogImport = Class.create(Code_Lib_ExtPortal,
 				temp.vars.idTarget = str;
 				this.bootAutoSearch({vars : temp});
 			}
-
+			/*
+			 * 20191001 start
+			*/
+		} else if (obj.vars.vars.flagRow == 'mainConsumptionTax') {
+			if (obj.vars.vars.flagCol == 'key') {
+				var numRateConsumptionTax = obj.vars.vars['arr' + strDebit].numRateConsumptionTax;
+				var str = 'arrCommaRateConsumptionTax' + strDebit;
+				var temp = {};
+				temp.vars = {};
+				temp.vars[str] = numRateConsumptionTax;
+				temp.vars.idTarget = str;
+				this.bootAutoSearch({vars : temp});
+			}
+			/*
+			 * 20191001 end
+			*/
 		} else if (obj.vars.vars.flagRow == 'subConsumptionTax') {
 			if (obj.vars.vars.flagCol == 'key') {
 				var flagConsumptionTaxRule = obj.vars.vars['arr' + strDebit].flagConsumptionTaxRule;

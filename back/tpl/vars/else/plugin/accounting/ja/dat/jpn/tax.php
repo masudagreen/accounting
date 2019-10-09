@@ -95,6 +95,7 @@ $vars = array(
 		array( 'value' => 'tax-3', 'strTitle' => '課税売上簡易三種', 'flagDebit' => 0, ),
 		array( 'value' => 'tax-4', 'strTitle' => '課税売上簡易四種', 'flagDebit' => 0, ),
 		array( 'value' => 'tax-5', 'strTitle' => '課税売上簡易五種', 'flagDebit' => 0, ),
+	    array( 'value' => 'tax-6', 'strTitle' => '課税売上簡易六種', 'flagDebit' => 0, ),
 		array( 'value' => 'tax-unknown', 'strTitle' => '課税売上簡易売上不明', 'flagDebit' => 0, ),
 
 		array( 'value' => 'tax-Back-1', 'strTitle' => '課税売上返還簡易返還一種', 'flagDebit' => 1, ),
@@ -102,6 +103,7 @@ $vars = array(
 		array( 'value' => 'tax-Back-3', 'strTitle' => '課税売上返還簡易返還三種', 'flagDebit' => 1, ),
 		array( 'value' => 'tax-Back-4', 'strTitle' => '課税売上返還簡易返還四種', 'flagDebit' => 1, ),
 		array( 'value' => 'tax-Back-5', 'strTitle' => '課税売上返還簡易返還五種', 'flagDebit' => 1, ),
+	    array( 'value' => 'tax-Back-6', 'strTitle' => '課税売上返還簡易返還六種', 'flagDebit' => 1, ),
 		array( 'value' => 'tax-Back-unknown', 'strTitle' => '課税売上返還簡易売返還不明', 'flagDebit' => 1, ),
 
 		array( 'value' => 'tax-Bad', 'strTitle' => '課税売上貸倒', 'flagDebit' => 1, ),
@@ -140,12 +142,14 @@ $vars = array(
 		'tax-3' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
 		'tax-4' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
 		'tax-5' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
+	    'tax-6' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
 		'tax-unknown' => array( 'generalEach' => 'tax', 'generalProration' => 'tax', ),
 		'tax-Back-1' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 		'tax-Back-2' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 		'tax-Back-3' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 		'tax-Back-4' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 		'tax-Back-5' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
+	    'tax-Back-6' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 		'tax-Back-unknown' => array( 'generalEach' => 'tax-Back', 'generalProration' => 'tax-Back', ),
 	),
 	'arrStrGeneralProration' => array(),
@@ -161,6 +165,7 @@ $vars = array(
 		'8' => '8%',
 		'10' => '10%',
 	),
+
 	'arrStr' => array(
 		'strItem' => '項目',
 		'strTotal' => '合計',

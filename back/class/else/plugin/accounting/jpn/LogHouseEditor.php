@@ -206,6 +206,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouseEditor extends Code_Else_Plugin_Ac
 			'values' => $varsTarget
 		));
 
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
+
 		$stampBook = $varsItem['varsStampFiscalPeriod']['f1']['stampMax'];
 		$arrValue['arr']['stampBook'] = $stampBook;
 		$arrValue['arr']['flagFiscalReport'] = 'f1';
@@ -601,19 +613,34 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouseEditor extends Code_Else_Plugin_Ac
 					if ($value[$strSide]['numRateConsumptionTax'] != '') {
 						$flagRate = 1;
 						/*
-						 * 2014-2015 start
+						 * 20191001 start
 						 */
-						//if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
-						if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						if ($value[$strSide]['flagRateConsumptionTaxReduced'] == 1) {
+						    if ($value[$strSide]['numRateConsumptionTax'] != 8) {
+						        $flag = 'numRateConsumptionTax';
+						        break;
+						    }
+						}
+						if (!preg_match("/^(5|8|10)$/", $value[$strSide]['numRateConsumptionTax'])) {
+						//if (!preg_match("/^(5|8)$/", $value[$strSide]['numRateConsumptionTax'])) {
 						/*
-						 * 2014-2015 end
+						 * 20191001 end
 						*/
 							$flag = 'numRateConsumptionTax';
 							break;
 
 						} else {
-							if ($numRate == 8) {
-								if ($value[$strSide]['numRateConsumptionTax'] == 10) {
+						    if ($numRate == 8) {
+								if ($value[$strSide]['numRateConsumptionTax'] == 10
+    								/*
+    								 * 20191001 start
+    								 */
+								    || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+								    /*
+								     * 20191001 start
+								     */
+
+								) {
 									$flag = 'numRateConsumptionTax';
 									break;
 								}
@@ -621,6 +648,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouseEditor extends Code_Else_Plugin_Ac
 							} elseif ($numRate == 5) {
 								if ($value[$strSide]['numRateConsumptionTax'] == 8
 									|| $value[$strSide]['numRateConsumptionTax'] == 10
+									/*
+									 * 20191001 start
+									 */
+								    || $value[$strSide]['flagRateConsumptionTaxReduced'] == 1
+								    /*
+								     * 20191001 start
+								     */
 								) {
 									$flag = 'numRateConsumptionTax';
 									break;
@@ -870,6 +904,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouseEditor extends Code_Else_Plugin_Ac
 		$arrValue = $this->checkValue(array(
 			'values' => $varsTarget,
 		));
+
+		/*
+		 * 20191001 start
+		 */
+		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
+		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+		));
+		/*
+		 * 20191001 end
+		 */
 
 		$stampBook = $varsItem['varsStampFiscalPeriod']['f1']['stampMax'];
 		$arrValue['arr']['stampBook'] = $stampBook;

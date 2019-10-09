@@ -14,6 +14,14 @@ $vars = array(
 	    /*20190401 end*/
 		'strUnit' => '単位(円)',
 		'strRate' => '税率(<%replace%>%)',
+		/*
+		 * 20191001 start
+		 */
+	    'strRate8Reduced' => '税率(8%(軽))',
+	    'strRate8Other' => '税率(8%)',
+	    /*
+	     * 20191001 end
+	     */
 		'varsMenu' => array(
 			'strList' => '消費税集計表',
 		),
@@ -75,13 +83,16 @@ $vars = array(
 					'arrayOption' => array(
 						array( 'strTitle' => '指定なし', 'value' => 0, ),
 						array( 'strTitle' => '5%', 'value' => 5, ),
-						array( 'strTitle' => '8%', 'value' => 8, ),
+					    //array( 'strTitle' => '8%', 'value' => 8, ),
 						/*
-						 * 2014-2015 start
+						 * 20191001 start
 						*/
-						//array( 'strTitle' => '10%', 'value' => 10, ),
+					    array( 'strTitle' => '8%', 'value' => '8_other', ),
+					    array( 'strTitle' => '8%(軽)', 'value' => '8_reduced', ),
+
+						array( 'strTitle' => '10%', 'value' => 10, ),
 						/*
-						 * 2014-2015 end
+						 * 20191001 end
 						*/
 					),
 				),

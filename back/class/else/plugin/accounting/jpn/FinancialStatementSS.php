@@ -428,6 +428,8 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 	protected function _getAccountTitleValueColumn($arr)
 	{
 		global $classEscape;
+		global $varsPluginAccountingAccount;
+		global $varsPluginAccountingEntity;
 
 		$array = &$arr['varsFS'];
 
@@ -470,15 +472,38 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 			if (!is_null($array[$key]['vars']['varsValue'])) {
 				$array[$key]['strClass'] = $arr['vars']['varsItem']['strClassParent'];
 
+				//当期残高にある期末残高
 				$sumNext = $this->_getVarsNumValue(array(
 					'varsFlag' => $arr['varsFlag'],
 					'num'      => $arr['varsItem']['varsFSBSValue'][$flagFiscalPeriod][$idTarget]['sumNext'],
 				));
 
+				//当期残高にある期首残高
+				$sumNextPrev = $this->_getVarsNumValue(array(
+				    'varsFlag' => $arr['varsFlag'],
+				    'num'      => $arr['varsItem']['varsFSBSValue'][$flagFiscalPeriod][$idTarget]['sumPrev'],
+				));
+
+				//前期残高にある期末残高
 				$sumPrev = $this->_getVarsNumValue(array(
 					'varsFlag' => $arr['varsFlag'],
 					'num'      => $arr['varsItem']['varsFSBSValuePrev'][$flagFiscalPeriod][$idTarget]['sumNext'],
 				));
+
+
+				//前期残高にある期末残高がない場合あり＝期首残高が発現する年の場合
+				//期首残高を入力した場合は当期を参照するようにしないといけない
+				$idEntity = $varsPluginAccountingAccount['idEntityCurrent'];
+				if ($varsPluginAccountingAccount['numFiscalPeriodCurrent'] == $varsPluginAccountingEntity[$idEntity]['numFiscalPeriodStart']) {
+				    if ($sumNextPrev != $sumPrev) {
+				        $sumPrev = $sumNextPrev;
+				    }
+				}
+/*
+if ($idTarget == 'netAssetsSum') {
+    var_dump($idEntity,$varsPluginAccountingAccount['numFiscalPeriodCurrent'] , $varsPluginAccountingEntity[$idEntity]['numFiscalPeriodStart'],$sumNext,$sumNextPrev,$sumPrev);exit;
+}
+*/
 
 				$arrId = $arr['varsItem']['varsJgaapFS']['arrIdAccountTitle'][$idTarget];
 				if (!$arrId) {
@@ -489,7 +514,15 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 					|| $idTarget == 'unappropriatedRetainedEarnings'
 					|| ($value['vars']['flagCalc'] && $sumNext != $sumPrev)
 				) {
-					$varsChild = $varsTmpl;
+/*
+$numPrev = 0;
+$numInOut = 0;
+$numNext = 0;
+*/
+
+
+				    //期首残高
+				    $varsChild = $varsTmpl;
 					$varsChild['strTitle'] = $arr['vars']['varsItem']['strPrev'];
 					$varsChild['vars']['varsValue']['numValue'] = $sumPrev;
 					$varsChild['vars']['varsValue']['strReason'] = '';
@@ -506,6 +539,9 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 					}
 					$array[$key]['child'][] = $varsChild;
 
+//$numPrev = $sumPrev;
+
+					//当期増減
 					$arrayLog = $varsUseLog;
 					foreach ($arrayLog as $keyLog => $valueLog) {
 						$varsChild = $varsTmpl;
@@ -538,7 +574,11 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 						$varsChild['varsPrint']['sumNext'] = number_format($varsChild['vars']['varsValue']['numValue']);
 						$varsChild['varsPrint']['strReason'] = $varsChild['varsColumnDetail']['strReason'];
 						$array[$key]['child'][] = $varsChild;
+
+//$numInOut = $numValue;
 					}
+
+					//繰越利益剰余金
 					if ($idTarget == 'unappropriatedRetainedEarnings') {
 						$varsChild = $varsTmpl;
 						if (count($array[$key]['child']) > 1) {
@@ -567,6 +607,7 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 						$varsChild['varsPrint']['strReason'] = $varsChild['varsColumnDetail']['strReason'];
 						$array[$key]['child'][] = $varsChild;
 					}
+
 					if (!$varsUseLog && ($value['vars']['flagCalc'] && $sumNext != $sumPrev)) {
 						$varsChild = $varsTmpl;
 						if (count($array[$key]['child']) > 1) {
@@ -597,6 +638,7 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 						$array[$key]['child'][] = $varsChild;
 					}
 
+					//期末残高
 					$varsChild = $varsTmpl;
 					$varsChild['strTitle'] = $arr['vars']['varsItem']['strNext'];
 					$varsChild['vars']['varsValue']['numValue'] = $sumNext;
@@ -613,6 +655,9 @@ class Code_Else_Plugin_Accounting_Jpn_FinancialStatementSS extends Code_Else_Plu
 					$varsChild['varsPrint']['sumNext'] = number_format($varsChild['vars']['varsValue']['numValue']);
 					$varsChild['varsPrint']['strReason'] = $varsChild['varsColumnDetail']['strReason'];
 					$array[$key]['child'][] = $varsChild;
+
+//$numNext = $sumNext;
+
 
 				} else {
 					$varsChild = $varsTmpl;

@@ -383,15 +383,32 @@ $classTime->getDisplay(array(
 	{
 		$stamp = $arr['stamp'];
 		$stamp20140401 = 1396278000;
-		$stamp20151001 = 1443625200;
 
+		//20191001
+
+
+		/*
+		 * 20191001 start
+		 */
+		//$stamp20151001 = 1443625200;
+		$stamp20191001 = 1569855600;
+		/*
 		$num = 5;
 		if ($stamp20140401 <= $stamp && $stamp < $stamp20151001) {
 			$num = 8;
 
 		} else if ($stamp20151001 <= $stamp) {
 			$num = 10;
+		}*/
+		if ($stamp20140401 <= $stamp && $stamp < $stamp20191001) {
+		    $num = 8;
+
+		} else if ($stamp20191001 <= $stamp) {
+		    $num = 10;
 		}
+		/*
+		 * 20191001 end
+		 */
 
 		return $num;
 	}

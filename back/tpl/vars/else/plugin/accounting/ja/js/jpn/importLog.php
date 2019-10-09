@@ -4,7 +4,8 @@ $vars = array(
 	'varsRule'  => array(),
 	'varsCheck'  => array(),
 	'varsItem'  => array(
-		'varsId' => array(
+
+	    'varsId' => array(
 			'id' => '識別番号',
 			'stampBook' => '取引日時',
 			'flagFiscalReport' => '決算整理仕訳',

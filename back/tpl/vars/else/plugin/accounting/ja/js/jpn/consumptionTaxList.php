@@ -47,7 +47,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 10,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 1, 'flagFoldNow' => 0,
 					'varsFormCalender' => array(
 						'varsStatus' => array(
@@ -84,7 +84,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 10,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 1, 'flagFoldNow' => 0,
 					'varsFormCalender' => array(
 						'varsStatus' => array(
@@ -163,11 +163,12 @@ $vars = array(
 						array( 'strTitle' => '5%', 'value' => 5, ),
 						array( 'strTitle' => '8%', 'value' => 8, ),
 						/*
-						 * 2014-2015 start
+						 * 20191001 start
 						*/
-						//array( 'strTitle' => '10%', 'value' => 10, ),
+					    array( 'strTitle' => '8%(軽)', 'value' => '8_reduced', ),
+						array( 'strTitle' => '10%', 'value' => 10, ),
 						/*
-						 * 2014-2015 end
+						 * 20191001 end
 						*/
 					),
 				),

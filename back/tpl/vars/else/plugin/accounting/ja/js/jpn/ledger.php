@@ -22,6 +22,13 @@ $vars = array(
 		'strPrevMonth' => '前月繰越',
 		'strFlagFiscalReport1' => '年度決算整理仕訳',
 		'strFlagFiscalReport2' => '中間決算整理仕訳',
+		/*
+		 * 20191001 start
+		 */
+	    'strMarkReduced' => '※',
+	    /*
+	     * 20191001 end
+	     */
 
 		'varsOutput' => array(
 			'strEntityExt' => '事業体(<%replace%>)',
@@ -57,6 +64,14 @@ $vars = array(
 			'strDebit' => '借方',
 			'strCredit' => '貸方',
 			'strBalance' => '残高',
+			/*
+			 * 20191001 start
+			 */
+		    'strReduced' => '※軽減税率対象品目',
+		    /*
+		     * 20191001 end
+		     */
+
 		),
 	),
 	'varsRule' => array(
@@ -300,6 +315,13 @@ $vars = array(
 					'flagCredit' => '',
 					'numBalance' => '',
 					'flagFiscalReport' => '',
+					/*
+					 * 20191001 start
+					 */
+				    'flagRateConsumptionTaxReduced' => '',
+				    /*
+				     * 20191001 end
+				     */
 					'idLog' => '',
 					'idDepartment' => '',
 					'idSubAccountTitle' => '',
@@ -528,6 +550,30 @@ $vars = array(
 							'vars' => array(),
 							'child' => array(),
 						),
+						/*
+						 * 20191001 start
+						 */
+					    array(
+						    'flagUse' => 1,
+						    'flagCheckUse' => 1,
+						    'flagCheckNow' => 1,
+						    'id' => 'FlagRateConsumptionTaxReduced',
+						    'flagSortColumnLineUse' => 0,
+						    'flagSortColumnLineNow' => 0,
+						    'strTitle' => '※軽減税率対象品目',
+						    'numSort' => 6,
+						    'numWidth' => 50,
+						    'numWidthMin' => 26,
+						    'flagType' => 'str',
+						    'flagTimeType' => '',
+						    'flagAllCheckbox' => 0,
+						    'flagAllCheckboxNow' => 0,
+						    'vars' => array(),
+						    'child' => array(),
+						),
+						/*
+						 * 20191001 end
+						 */
 						array(
 							'flagUse' => 1,
 							'flagCheckUse' => 1,
@@ -536,7 +582,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '摘要',
-							'numSort' => 6,
+							'numSort' => 7,
 							'numWidth' => 100,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -554,7 +600,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '部門',
-							'numSort' => 7,
+							'numSort' => 8,
 							'numWidth' => 80,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -572,7 +618,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '補助科目',
-							'numSort' => 8,
+							'numSort' => 9,
 							'numWidth' => 80,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -590,7 +636,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '借方',
-							'numSort' => 9,
+							'numSort' => 10,
 							'numWidth' => 80,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -608,7 +654,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '貸方',
-							'numSort' => 10,
+							'numSort' => 11,
 							'numWidth' => 80,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -627,7 +673,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '残高',
-							'numSort' => 11,
+							'numSort' => 12,
 							'numWidth' => 80,
 							'numWidthMin' => 26,
 							'flagType' => 'str',
@@ -646,7 +692,7 @@ $vars = array(
 							'flagSortColumnLineUse' => 0,
 							'flagSortColumnLineNow' => 0,
 							'strTitle' => '仕訳通番',
-							'numSort' => 12,
+							'numSort' => 13,
 							'numWidth' => 50,
 							'numWidthMin' => 26,
 							'flagType' => 'str',

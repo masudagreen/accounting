@@ -36,6 +36,101 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 		}
 	}
 
+	/*
+	 * 20191001 start
+	 */
+
+	/*
+	 *
+	 * 受信時処理
+	(array(
+	'flagStatus' => 'receiveValueConsumptionTaxReduced',
+	'jsonDetail'   => $arrValue['arr']['jsonDetail],
+	))
+	*/
+	protected function _iniReceiveValueConsumptionTaxReduced($arr)
+	{
+	    $arr['jsonDetail'] = $this->_getReceiveValueConsumptionTaxReduced(array(
+	        'jsonDetail'   => $arr['jsonDetail'],
+	    ));
+
+	    return $arr['jsonDetail'];
+
+	}
+
+	protected function _getReceiveValueConsumptionTaxReduced($arr)
+	{
+	    $array = $arr['jsonDetail']['varsDetail'];
+
+	    foreach ($array as $key => $value) {
+	        $arrayStr = array('Debit', 'Credit');
+	        foreach ($arrayStr as $keyStr => $valueStr) {
+	            $strSide = 'arr' . $valueStr;
+	            $array[$key][$strSide]['flagRateConsumptionTaxReduced'] = '';
+	            if ($value[$strSide]['numRateConsumptionTax'] != '') {
+	                $array[$key][$strSide]['flagRateConsumptionTaxReduced'] = 0;
+
+                    //数字 == 文字だと通過するため　文字で統一
+	                $strTarget = $value[$strSide]['numRateConsumptionTax'] . '';
+	                if ($strTarget == '8_reduced') {
+
+	                    $array[$key][$strSide]['numRateConsumptionTax'] = 8;
+	                    $array[$key][$strSide]['flagRateConsumptionTaxReduced'] = 1;
+                    }
+	            }
+	        }
+	    }
+
+
+ //exit;
+
+	    $arr['jsonDetail']['varsDetail'] = $array;
+
+	    return $arr['jsonDetail'];
+	}
+
+	/*
+	*
+	* 送信時処理
+	(array(
+	'flagStatus' => 'sendValueConsumptionTaxReduced',
+	'jsonDetail'   => $arrValue['arr']['jsonDetail],
+	))
+	*/
+	protected function _iniSendValueConsumptionTaxReduced($arr)
+	{
+	    $arr['jsonDetail'] = $this->_getSendValueConsumptionTaxReduced(array(
+	        'jsonDetail'   => $arr['jsonDetail'],
+	    ));
+
+	    return $arr['jsonDetail'];
+
+	}
+
+	protected function _getSendValueConsumptionTaxReduced($arr)
+	{
+	    $array = $arr['jsonDetail']['varsDetail'];
+	    foreach ($array as $key => $value) {
+	        $arrayStr = array('Debit', 'Credit');
+	        foreach ($arrayStr as $keyStr => $valueStr) {
+	            $strSide = 'arr' . $valueStr;
+	            if ($array[$key][$strSide]['flagRateConsumptionTaxReduced']) {
+	                $array[$key][$strSide]['numRateConsumptionTax'] = '8_reduced';
+	            }
+	            $array[$key][$strSide]['flagRateConsumptionTaxReduced'] = '';
+	        }
+	    }
+
+	    $arr['jsonDetail']['varsDetail'] = $array;
+
+	    return $arr['jsonDetail'];
+	}
+
+
+
+	/*
+	 * 20191001 end
+	 */
 
 	/**
 		(array(
@@ -76,21 +171,103 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 		if ($varsItem['varsEntityNation']['flagConsumptionTaxFree']) {
 			return;
 		}
+
+		/*
+		 * 20191001 start
+		 */
+		$arrRows = $arr['arrRows'];
+		$varsConsumptionTax = $this->_getValueAdd(array(
+		    'arrRows'  => $arrRows,
+		    'varsItem' => $varsItem,
+		    'varsFS'   => $varsItem['varsFS'],
+		));
+		$jsonConsumptionTax = json_encode($varsConsumptionTax);
+
+		$arrRows = $arr['arrRows'];
+		$temp = $this->_getVarsConsumptionTaxDetail(array(
+		    'arrRows'  => $arrRows,
+		));
+
+		//軽減税率の消費税率（5%,8%,10%）、5%,10%は軽減税率とは関係ないがプログラムが汚れる可能性があるので残して処理
+		$varsReduced = $this->_getValueAdd(array(
+		    'arrRows'  => $temp['arrRowsReduced'],
+		    'varsItem' => $varsItem,
+		    'varsFS'   => $varsItem['varsFSDetail']['varsReduced'],
+		));
+
+		//軽減税率以外の消費税率（5%,8%,10%）
+		$varsOther = $this->_getValueAdd(array(
+		    'arrRows'  => $temp['arrRowsOther'],
+		    'varsItem' => $varsItem,
+		    'varsFS'   => $varsItem['varsFSDetail']['varsOther'],
+		));
+
+		$varsConsumptionTaxDetail = array(
+		    'varsReduced' => $varsReduced,
+		    'varsOther'   => $varsOther,
+		);
+
+		$jsonConsumptionTaxDetail = json_encode($varsConsumptionTaxDetail);
+		$flag = $this->_updateDb(array(
+		    'jsonConsumptionTax'       => $jsonConsumptionTax,
+		    'jsonConsumptionTaxDetail' => $jsonConsumptionTaxDetail,
+		    'varsItem'                 => $varsItem,
+		));
+
+		/*
+		$arrRows = $arr['arrRows'];
 		$varsValue = $this->_getValueAdd(array(
-			'arrRows'  => $arr['arrRows'],
-			'varsItem' => $varsItem,
+		    'arrRows'  => $arrRows,
+		    'varsItem' => $varsItem,
 		));
 
 		$flag = $this->_updateDb(array(
-			'varsValue' => $varsValue,
-			'varsItem'  => $varsItem,
+		    'varsValue' => $varsValue,
+		    'varsItem'  => $varsItem,
 		));
+		*/
+		/*
+		 * 20191001 end
+		 */
+
 		if ($flag == 'errorDataMax') {
-			return $flag;
+		    return $flag;
 		}
 
 		$this->_updateDbPreferenceStamp(array('strColumn' => 'fsValue'));
 	}
+
+	/*
+	 * 20191001 start
+	 */
+
+
+	/**
+	(array(
+        'arrRows'    => array,
+	))
+	*/
+	protected function _getVarsConsumptionTaxDetail($arr)
+	{
+	    $arrayRowsNew = array();
+	    $arrayRowsNew['arrRowsReduced'] = array();
+	    $arrayRowsNew['arrRowsOther'] = array();
+
+	    $arrayRows = $arr['arrRows'];
+	    foreach ($arrayRows as $keyRows => $valueRows) {
+	        if ($valueRows['flagRateConsumptionTaxReduced']) {
+	            $arrayRowsNew['arrRowsReduced'][] = $valueRows;
+	        } else {
+	            $arrayRowsNew['arrRowsOther'][] = $valueRows;
+	        }
+	    }
+
+	    return $arrayRowsNew;
+	}
+
+	/*
+	 * 20191001 end
+	 */
 
 
 	/**
@@ -162,7 +339,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 				),
 			),
 		));
-		$str = 'jsonConsumptionTax';
+
 		$varsFS = $rows['arrRows'][0];
 
 		$varsConsumptionTax = $this->_getVarsConsumptionTax(array(
@@ -186,7 +363,14 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 		}
 
 		$data = array(
-			'varsFS'             => $varsFS[$str],
+		    'varsFS'             => $varsFS['jsonConsumptionTax'],
+		    /*
+		     * 20191001 start
+		     */
+		    'varsFSDetail'       => $varsFS['jsonConsumptionTaxDetail'],
+		    /*
+		     * 20191001 end
+		     */
 			'varsConsumptionTax' => $varsConsumptionTax,
 			'varsEntityNation'   => $varsEntityNation,
 			'varsFiscalPeriod'   => $varsFiscalPeriod,
@@ -209,7 +393,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 		$array = $arr['varsItem']['varsFiscalPeriod'];
 
 		foreach ($array as $key => $value) {
-			$arrayNew[$key] = ($arr['varsItem']['varsFS'][$key])? $arr['varsItem']['varsFS'][$key] : array();
+			$arrayNew[$key] = ($arr['varsFS'][$key])? $arr['varsFS'][$key] : array();
 			$arrayRowsNew = array();
 			$arrayRows = &$arr['arrRows'];
 			foreach ($arrayRows as $keyRows => $valueRows) {
@@ -222,11 +406,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 				$arrayNew[$key] = $this->_getValueAddLoop(array(
 					'arrRows'   => $arrayRowsNew,
 					'varsItem'  => $arr['varsItem'],
-					'varsValue' => $arr['varsItem']['varsFS'][$key],
+					'varsValue' => $arr['varsFS'][$key],
 				));
-
 			}
-
 		}
 
 
@@ -458,7 +640,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 
 		$strNation = ucwords(PLUGIN_ACCOUNTING_STR_NATION);
 
-		$jsonConsumptionTax = json_encode($arr['varsValue']);
+		$jsonConsumptionTax = $arr['jsonConsumptionTax'];
 		$flag = $this->checkTextSize(array(
 			'flagReturn' => 1,
 			'str'        => $jsonConsumptionTax,
@@ -467,10 +649,19 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 			return 'errorDataMax';
 		}
 
+		$jsonConsumptionTaxDetail = $arr['jsonConsumptionTaxDetail'];
+		$flag = $this->checkTextSize(array(
+		    'flagReturn' => 1,
+		    'str'        => $jsonConsumptionTaxDetail,
+		));
+		if ($flag) {
+		    return 'errorDataMax';
+		}
+
 		$classDb->updateRow(array(
 			'idModule' => 'accounting',
 			'strTable' => 'accountingFSValue' . $strNation,
-			'arrColumn' => array('jsonConsumptionTax'),
+			'arrColumn' => array('jsonConsumptionTax', 'jsonConsumptionTaxDetail'),
 			'flagAnd'   => 1,
 			'arrWhere'  => array(
 				array(
@@ -486,7 +677,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcConsumptionTax extends Code_Else_Plugi
 					'value'         => $arr['varsItem']['numFiscalPeriod'],
 				),
 			),
-			'arrValue'  => array($jsonConsumptionTax),
+		    'arrValue'  => array($jsonConsumptionTax, $jsonConsumptionTaxDetail),
 		));
 
 	}

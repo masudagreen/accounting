@@ -45,11 +45,15 @@ $vars = array(
 			</tbody>
 		</table>
 	',
+
+	/*
+	 * 20191001 start
+	 */
 	'tmplColumn' => '
 		<tr valign="top">
 			<td class="codeLibPrintColumnCenter"  style="width:40px;">{$strDate}</td>
 			<td class="codeLibPrintColumnCenter"  style="width:145px;">{$strContra}{$strAccountTitleColumn}</td>
-			<td class="codeLibPrintColumnCenter"  style="width:145px;">{$strBlank}</td>
+			<td class="codeLibPrintColumnCenter"  style="width:145px;">{$strReduced}</td>
 			<td class="codeLibPrintColumnCenter"  style="width:150px;" rowspan=3 valign="middle">{$strMemo}</td>
 			<td class="codeLibPrintColumnCenter"  style="width:100px;" rowspan=3 valign="middle">{$strDebit}</td>
 			<td class="codeLibPrintColumnCenter"  style="width:100px;" rowspan=3 valign="middle">{$strCredit}</td>
@@ -66,6 +70,10 @@ $vars = array(
 			<td class="codeLibPrintColumnCenter" >{$strSubAccountTitleColumn}</td>
 		</tr>
 	',
+	/*
+	 * 20191001 end
+	 */
+
 	'tmplPage' => '
 		<table cellspacing="1" cellpadding="3" border="0"  bgcolor="" width="750px" >
 			<tbody>
@@ -101,17 +109,23 @@ $vars = array(
 				<td class="codeLibPrintColumnRight" >{$value.numBalance}</td>
 			</tr>
 		',
+		/*
+		 * 20191001 start
+		 */
 		'tmplTr1' => '
 			<tr id="row#{idRow}_#{idTr1}" valign="top">
 				<td class="codeLibPrintMiddle" >{$value.strDate}</td>
 				<td class="codeLibPrintLeft" >{$value.idAccountTitleContra}</td>
-				<td class="codeLibPrintLeft" >{$strBlank}</td>
+				<td class="codeLibPrintLeft" >{$value.flagRateConsumptionTaxReduced}</td>
 				<td class="codeLibPrintLeft"  rowspan=3>{$value.strMemo}</td>
 				<td class="codeLibPrintRight" rowspan=3 valign="bottom">{$value.flagDebit}</td>
 				<td class="codeLibPrintRight" rowspan=3 valign="bottom">{$value.flagCredit}</td>
 				<td class="codeLibPrintRight" rowspan=3 valign="bottom">{$value.numBalance}</td>
 			</tr>
 		',
+		/*
+		 * 20191001 end
+		 */
 		'tmplTr2' => '
 			<tr id="row#{idRow}_#{idTr2}" valign="top">
 				<td class="codeLibPrintMiddle" >{$value.flagFiscalReportCut}</td>

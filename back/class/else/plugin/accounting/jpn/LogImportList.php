@@ -1464,6 +1464,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 						if ($value[$id] == '') {
 							$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strMust'], 'strUrl' => $arr['strUrl'],));
 						}
+
 						$flag = $classCheck->checkValueWord(array(
 							'flagType' => 'num',
 							'value'    => $value[$id]
@@ -1471,6 +1472,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 						if ($flag) {
 							$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strFormat'], 'strUrl' => $arr['strUrl'],));
 						}
+
 						$numValueConsumptionTax =  $value[$id];
 						$varsDetail['arr' . $valueStr]['numValueConsumptionTax'] = (!$numValueConsumptionTax)? '': $numValueConsumptionTax;
 
@@ -1592,18 +1594,29 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 						}
 
 						$id = 'numRateConsumptionTax' . $valueStr;
+						/*
+						 * 20191001 start
+						 */
+						$varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = '';
 						if ($value[$id] != '') {
+
+						    $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = 0;
+							if (!preg_match("/^(5|8|10)$/", $value[$id])) {
+							//if (!preg_match("/^(5|8)$/", $value[$id])) {
+
+                                $strRateConsumptionTaxReduced = 8 . $arr['vars']['varsItem']['strRateConsumptionTaxReduced'];
+                                if ($value[$id] != $strRateConsumptionTaxReduced) {
+							        $this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRate'] . __LINE__, 'strUrl' => $arr['strUrl'],));
+							    }
+							    $value[$id] = 8;
+							    $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = 1;
+    						}
+
 							/*
-							 * 2014-2015 start
+							 * 20191001 end
 							 */
-							//if (!preg_match("/^(5|8|10)$/", $value[$id])) {
-							if (!preg_match("/^(5|8)$/", $value[$id])) {
-							/*
-							 * 2014-2015 end
-							*/
-								$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRate'], 'strUrl' => $arr['strUrl'],));;
-							}
 						}
+
 						if ($flagConsumptionTaxFree) {
 							$varsDetail['arr' . $valueStr]['numRateConsumptionTax'] = '';
 
@@ -1611,14 +1624,29 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 							if (preg_match("/^tax/", $flagConsumptionTax)
 								|| preg_match("/^else/", $flagConsumptionTax)
 							) {
-								if ($numRate == 8) {
-									if ($value[$id] == 10) {
+							    if ($numRate == 8) {
+									if ($value[$id] == 10
+    									/*
+    									 * 20191001 start
+    									 */
+									    || $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced']
+									    /*
+									     * 20191001 end
+									     */
+									    ) {
 										$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
 									}
 
 								} elseif ($numRate == 5) {
 									if ($value[$id] == 8
 										|| $value[$id] == 10
+										/*
+										 * 20191001 start
+										 */
+									    || $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced']
+									    /*
+									     * 20191001 end
+									     */
 									) {
 										$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
 									}
@@ -1701,6 +1729,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 					if ($value[$id] == '') {
 						$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strMust'], 'strUrl' => $arr['strUrl'],));
 					}
+
 					$flag = $classCheck->checkValueWord(array(
 						'flagType' => 'num',
 						'value'    => $value[$id]
@@ -1708,6 +1737,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 					if ($flag) {
 						$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strFormat'], 'strUrl' => $arr['strUrl'],));
 					}
+
 					$numValueConsumptionTax =  $value[$id];
 					$varsDetail['arr' . $valueStr]['numValueConsumptionTax'] = (!$numValueConsumptionTax)? '': $numValueConsumptionTax;
 
@@ -1830,17 +1860,26 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 						}
 
 						$id = 'numRateConsumptionTax' . $valueStr;
+						/*
+						 * 20191001 start
+						 */
+						$varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = '';
 						if ($value[$id] != '') {
-							/*
-							 * 2014-2015 start
-							 */
-							//if (!preg_match("/^(5|8|10)$/", $value[$id])) {
-							if (!preg_match("/^(5|8)$/", $value[$id])) {
-							/*
-							 * 2014-2015 end
-							*/
-								$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRate'], 'strUrl' => $arr['strUrl'],));
+
+
+						    $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = 0;
+							if (!preg_match("/^(5|8|10)$/", $value[$id])) {
+							    //if (!preg_match("/^(5|8)$/", $value[$id])) {
+							    $strRateConsumptionTaxReduced = 8 . $arr['vars']['varsItem']['strRateConsumptionTaxReduced'];
+							    if ($value[$id] != $strRateConsumptionTaxReduced) {
+							        $this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRate'], 'strUrl' => $arr['strUrl'],));
+							    }
+							    $value[$id] = 8;
+							    $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced'] = 1;
 							}
+							/*
+							 * 20191001 end
+							 */
 						}
 
 						if ($flagConsumptionTaxFree) {
@@ -1851,16 +1890,32 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 								|| preg_match("/^else/", $flagConsumptionTax)
 							) {
 								if ($numRate == 8) {
-									if ($value[$id] == 10) {
-										$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
-									}
+								    if ($value[$id] == 10
+								        /*
+								         * 20191001 start
+								         */
+								        || $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced']
+								        /*
+								         * 20191001 end
+								         */
+								    ) {
+								            $this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
+								    }
 
 								} elseif ($numRate == 5) {
-									if ($value[$id] == 8
-										|| $value[$id] == 10
-									) {
-										$this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
-									}
+								    if ($value[$id] == 8
+								        || $value[$id] == 10
+								        /*
+								         * 20191001 start
+								         */
+								        || $varsDetail['arr' . $valueStr]['flagRateConsumptionTaxReduced']
+								        /*
+								         * 20191001 end
+								         */
+								    ) {
+								            $this->_sendError(array('comment' => $strStatus . $varsId[$id] . $varsComment['strTaxRatePre'], 'strUrl' => $arr['strUrl'],));
+								    }
+
 								}
 								$varsDetail['arr' . $valueStr]['numRateConsumptionTax'] = $value[$id];
 
@@ -2246,7 +2301,25 @@ class Code_Else_Plugin_Accounting_Jpn_LogImportList extends Code_Else_Plugin_Acc
 			$numYear -= 12;
 			$numHour = 0;
 			$numMin = 0;
+			/*
+			 * 20191001 start
+			 */
+		} elseif (preg_match( "/^R\.([0-9]{1,3})\/([0-9]{1,2})\/([0-9]{1,2})$/", $strStamp)) {
+		    preg_match( "/^R\.([0-9]{1,3})\/([0-9]{1,2})\/([0-9]{1,2})$/", $strStamp, $arrMatch);
+		    list($strDummy, $numYear, $numMonth, $numDate) = $arrMatch;
+		    $numYear += 18;
+		    $numHour = 0;
+		    $numMin = 0;
 
+		} elseif (preg_match( "/^R([0-9]{1,3})\/([0-9]{1,2})\/([0-9]{1,2})$/", $strStamp)) {
+		    preg_match( "/^R([0-9]{1,3})\/([0-9]{1,2})\/([0-9]{1,2})$/", $strStamp, $arrMatch);
+		    list($strDummy, $numYear, $numMonth, $numDate) = $arrMatch;
+		    $numYear += 18;
+		    $numHour = 0;
+		    $numMin = 0;
+		    /*
+		     * 20191001 end
+		     */
 		} else {
 			return 0;
 		}

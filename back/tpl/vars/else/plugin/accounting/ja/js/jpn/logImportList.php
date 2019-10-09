@@ -4,7 +4,14 @@ $vars = array(
 	'varsRule'  => array(),
 	'varsCheck'  => array(),
 	'varsItem'  => array(
-		'varsId' => array(
+    	/*
+    	 * 20191001 start
+    	 */
+	    'strRateConsumptionTaxReduced' => '軽',
+	    /*
+	     * 20191001 end
+	     */
+	    'varsId' => array(
 			'id' => '識別番号',
 			'stampBook' => '取引日時',
 			'flagFiscalReport' => '決算整理仕訳',

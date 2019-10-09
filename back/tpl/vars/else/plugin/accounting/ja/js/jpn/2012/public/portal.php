@@ -425,6 +425,7 @@ $vars = array(
 												array( 'strTitle' => '第三種事業', 'value' => 3, ),
 												array( 'strTitle' => '第四種事業', 'value' => 4, ),
 												array( 'strTitle' => '第五種事業', 'value' => 5, ),
+											    array( 'strTitle' => '第六種事業', 'value' => 6, ),
 											),
 											'numSize' => 5,
 											'flagDisabled' => 0,

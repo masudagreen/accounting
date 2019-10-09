@@ -35,13 +35,13 @@ var Code_Plugin_Accounting_Portal = Class.create(Code_Lib_ExtPreference,
 		this._iniChild({
 			strTitleParent : this.insWindow.vars.strTitle,
 			strTitleChild  : '',
-			strExt         : 'BlueSheet',
+			strExt         : 'LogImport',
 			strClass       : 'Plugin',
 			strChild       : '',
 			idModule       : 'Accounting'
 		});
-
 */
+
 	},
 
 	/**

@@ -659,6 +659,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 						continue;
 					}
 
+
 					$numValue = $this->_getNumValueTemp(array(
 						'varsFlag' => array(
 							'flagFS'            => $vars['varsRule']['arrAccountTitle']['arrStrTitle'][$idAccountTitle]['flagFS'],
@@ -666,8 +667,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 							'idSubAccountTitle' => $idSubAccountTitle,
 							'idDepartment'      => $idDepartment,
 							'flagFiscalPeriod'  => 'f1',
+							/*
+							 * 20191001 start
+							 */
+						    'flagRateConsumptionTaxReduced'  => $valueDetail['arr' . $valueSide]['flagRateConsumptionTaxReduced'],
+						    'numRateConsumptionTax'  => $valueDetail['arr' . $valueSide]['numRateConsumptionTax'],
+						    /*
+						     * 20191001 end
+						     */
 						),
 					));
+
+
 					$arrayDetail[$keyDetail]['numSum'] = $numValue;
 
 					$numValue = floor($numValue *  $value['numRatio'] / 100);
@@ -1015,13 +1026,15 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 
 	/**
 		(array(
-			'varsFlag' => array(
-				'flagBS'            => $valueDetail['arr' . $valueSide]['flagBS'],
-				'idAccountTitle'    => $idAccountTitle,
-				'idSubAccountTitle' => $idSubAccountTitle,
-				'idDepartment'      => $idDepartment,
-				'flagFiscalPeriod'  => 'f1',
-			),
+            'varsFlag' => array(
+    			'flagFS'            => $vars['varsRule']['arrAccountTitle']['arrStrTitle'][$idAccountTitle]['flagFS'],
+    			'idAccountTitle'    => $idAccountTitle,
+    			'idSubAccountTitle' => $idSubAccountTitle,
+    			'idDepartment'      => $idDepartment,
+    			'flagFiscalPeriod'  => 'f1',
+    		    'flagRateConsumptionTaxReduced'  => $valueDetail['arr' . $valueSide]['flagRateConsumptionTaxReduced'],
+    		    'numRateConsumptionTax'  => $valueDetail['arr' . $valueSide]['numRateConsumptionTax'],
+    		),
 		))
 	 */
 	protected function _getNumValueTemp($arr)
@@ -1059,6 +1072,30 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 			'flagCondition' => 'like',
 			'value'         => ',' . $arr['varsFlag']['idAccountTitle'] . ',',
 		);
+
+		/*
+		 * 20191001 start
+		 */
+		if ($arr['varsFlag']['flagRateConsumptionTaxReduced']) {
+		    $arrWhere[] = array(
+		        'flagType'      => '',
+		        'strColumn'     => 'arrCommaRateConsumptionTaxDebit',
+		        'flagCondition' => 'like',
+		        'value'         => ',8_reduced,',
+		    );
+
+		} else {
+		    $arrWhere[] = array(
+		        'flagType'      => '',
+		        'strColumn'     => 'arrCommaRateConsumptionTaxDebit',
+		        'flagCondition' => 'like',
+		        'value'         => ',' . $arr['varsFlag']['numRateConsumptionTax'] . ',',
+		    );
+		}
+
+		/*
+		 * 20191001 end
+		 */
 
 		$arrLogDebitTemp = $this->_extSelf['arrLogDebitTemp'][$idAccountTitle];
 		if (!$arrLogDebitTemp) {
@@ -1118,6 +1155,31 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 			'flagCondition' => 'like',
 			'value'         => ',' . $arr['varsFlag']['idAccountTitle'] . ',',
 		);
+
+
+		/*
+		* 20191001 start
+		*/
+		if ($arr['varsFlag']['flagRateConsumptionTaxReduced']) {
+		    $arrWhere[] = array(
+		        'flagType'      => '',
+		        'strColumn'     => 'arrCommaRateConsumptionTaxCredit',
+		        'flagCondition' => 'like',
+		        'value'         => ',8_reduced,',
+		    );
+
+		} else {
+		    $arrWhere[] = array(
+		        'flagType'      => '',
+		        'strColumn'     => 'arrCommaRateConsumptionTaxCredit',
+		        'flagCondition' => 'like',
+		        'value'         => ',' . $arr['varsFlag']['numRateConsumptionTax'] . ',',
+		    );
+		}
+
+		/*
+		 * 20191001 end
+		 */
 
 		$arrLogCreditTemp = $this->_extSelf['arrLogCreditTemp'][$idAccountTitle];
 		if (!$arrLogCreditTemp) {
@@ -1264,6 +1326,9 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 		'flagConsumptionTax' => $flagConsumptionTaxGeneralRuleEach,
 		'vars'               => $arr['vars'],
 		'stampBook'          => $arr['stampBook'],
+		//20191001
+		※使用していない可能性あり
+
 	 ));
 	 */
 	protected function _getCalcRateConsumptionTax($arr)
@@ -1280,13 +1345,15 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 
 		$numRate = $classTime->checkRateConsumptionTax(array('stamp' => $arr['stampBook']));
 /*
- * 2014-2015 start
+ * 20191001 start
  */
 		if ($numRate == 10) {
-			$numRate = 8;
+		    if ($arr['vars']['numRateConsumptionTax'] == 8 && $arr['vars']['flagRateConsumptionTaxReduced']) {
+		        $numRate = 8;
+		    }
 		}
 /*
- * 2014-2015 end
+ * 20191001 end
 */
 		return $numRate;
 	}
@@ -1497,13 +1564,31 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouse extends Code_Else_Plugin_Accounti
 	 */
 	protected function _updateSearchJsonVersion($arr)
 	{
-		$array = $arr['value'];
+	    /*
+	     * 20191001 start
+	     */
+	    $classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
+	    /*
+	     * 20191001 end
+	     */
+
+	    $array = $arr['value'];
 		$arrayNew = array();
 		$num = 1;
 		foreach ($array as $key => $value) {
 			$data = array();
 			$data['stampRegister'] = $value['stampRegister'];
 			$data['stampUpdate'] = $value['stampUpdate'];
+			/*
+			 * 20191001 start
+			 */
+			$value['jsonDetail'] = $classCalcConsumptionTax->allot(array(
+			    'flagStatus' => 'sendValueConsumptionTaxReduced',
+			    'jsonDetail'   => $value['jsonDetail'],
+			));
+			/*
+			 * 20191001 end
+			 */
 			$data['jsonDetail'] = $value['jsonDetail'];
 			$data['strVersion'] = 'Ver.' . $num;
 			$data['numVersion'] = $num;

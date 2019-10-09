@@ -354,6 +354,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					$rowData['strNumRateConsumptionTax' . $valueSide] = '';
 					$rowData['strSubAccountTitle' . $valueSide] = '';
 					$rowData['strConsumptionTax' . $valueSide] = '';
+					/*
+					 * 20191001 start
+					 */
+					$rowData['strRateConsumptionTaxReduced' . $valueSide] = '';
+					/*
+					 * 20191001 end
+					 */
 					$rowData['strNumValueConsumptionTax' . $valueSide] = '';
 					$rowData['numValueConsumptionTax' . $valueSide] = '';
 					$rowData['strConsumptionTaxCalc' . $valueSide] = '';
@@ -363,6 +370,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					$numValue = $valueDetail['arr' . $valueSide]['numValue'];
 					$numValueConsumptionTax = $valueDetail['arr' . $valueSide]['numValueConsumptionTax'];
 					$numRateConsumptionTax = $valueDetail['arr' . $valueSide]['numRateConsumptionTax'];
+					/*
+					 * 20191001 start
+					 */
+					$flagRateConsumptionTaxReduced = $valueDetail['arr' . $valueSide]['flagRateConsumptionTaxReduced'];
+					/*
+					 * 20191001 end
+					 */
 					$idDepartment = $valueDetail['arr' . $valueSide]['idDepartment'];
 					$idSubAccountTitle = $valueDetail['arr' . $valueSide]['idSubAccountTitle'];
 					$flagConsumptionTaxGeneralRuleEach = $valueDetail['arr' . $valueSide]['flagConsumptionTaxGeneralRuleEach'];
@@ -498,6 +512,16 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 							}
 							if ($flagRate) {
 								$rowData['strNumRateConsumptionTax' . $valueSide] = $numRateConsumptionTax . '%';
+
+								/*
+								 * 20191001 start
+								 */
+								if ($flagRateConsumptionTaxReduced) {
+								    $rowData['strNumRateConsumptionTax' . $valueSide] .= $vars['varsItem']['varsOutput']['strRateConsumptionTaxReduced'];
+								}
+								/*
+								 * 20191001 end
+								 */
 							}
 						}
 						//strDepartment
@@ -1250,6 +1274,9 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 			$numRate = $arr['valueDetail']['numRateConsumptionTax' . $arr['valueStr']];
 			if ($numRate) {
 				$numRate .= '%';
+				if ($arr['valueDetail']['flagRateConsumptionTaxReduced' . $arr['valueStr']]) {
+				    $numRate = $arr['varsStr']['strRateConsumptionTaxReduced2'] . $numRate;
+				}
 				$flagConsumptionTax= str_replace('[]', $numRate, $flagConsumptionTax);
 			}
 
@@ -1261,7 +1288,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					if ($numRate == 10) {
 						$str = '2.2%';
 					} elseif ($numRate == 8) {
-						$str = '1.7%';
+					    /*
+					     * 20191001 start
+					     */
+					    if ($arr['valueDetail']['flagRateConsumptionTaxReduced' . $arr['valueStr']]) {
+					        $str = '1.76%';
+					    } else {
+				        /*
+				         * 20191001 end
+				         */
+					        $str = '1.7%';
+					    }
+
 					} elseif ($numRate == 5) {
 						$str = '1%';
 					}
@@ -1269,7 +1307,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					if ($numRate == 10) {
 						$str = '7.8%';
 					} elseif ($numRate == 8) {
-						$str = '6.3%';
+					    /*
+					     * 20191001 start
+					     */
+					    if ($arr['valueDetail']['flagRateConsumptionTaxReduced' . $arr['valueStr']]) {
+					        $str = '6.24%';
+					    } else {
+					        /*
+					         * 20191001 start
+					         */
+
+					        $str = '6.3%';
+					    }
 					} elseif ($numRate == 5) {
 						$str = '4%';
 					}
@@ -1462,6 +1511,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					}
 
 					$data['numValueConsumptionTax' . $valueStr] = 0;
+					/*
+					 * 20191001 start
+					 */
+					$data['flagRateConsumptionTaxReduced' . $valueStr] = 0;
+					/*
+					 * 20191001 end
+					 */
 					$data['numRateConsumptionTax' . $valueStr] = '';
 					$data['flagConsumptionTax' . $valueStr] = '';
 					$data['flagConsumptionTaxWithoutCalc' . $valueStr] = '';
@@ -1536,9 +1592,23 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 							$data['numValue' . $valueStr] = $value[$str]['numValue'] + $numValueConsumptionTax;
 						}
 					}
+
+					/*
+					 * 20191001 start
+					 */
+					/*
+					if ($flagRate) {
+					    $data['numRateConsumptionTax' . $valueStr] = $value[$str]['numRateConsumptionTax'];
+					}*/
 					if ($flagRate) {
 						$data['numRateConsumptionTax' . $valueStr] = $value[$str]['numRateConsumptionTax'];
+						if ($value[$str]['flagRateConsumptionTaxReduced']) {
+						    $data['flagRateConsumptionTaxReduced' . $valueStr] = $value[$str]['flagRateConsumptionTaxReduced'];
+						}
 					}
+					/*
+					 * 20191001 end
+					 */
 
 				} else {
 					$data['idAccountTitle' . $valueStr] = '';
@@ -1546,6 +1616,13 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 					$data['numValue' . $valueStr] = 0;
 					$data['numValueConsumptionTax' . $valueStr] = 0;
 					$data['numRateConsumptionTax' . $valueStr] = '';
+					/*
+					 * 20191001 start
+					 */
+					$data['flagRateConsumptionTaxReduced' . $valueStr] = '';
+					/*
+					 * 20191001 end
+					 */
 					$data['idSubAccountTitle' . $valueStr] = '';
 					$data['idDepartment' . $valueStr] = '';
 					$data['flagConsumptionTax' . $valueStr] = '';
@@ -1644,7 +1721,20 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 
 					$rowCsv[] = $valueDetail['flagConsumptionTax' . $valueStr];
 
-					$rowCsv[] = $valueDetail['numRateConsumptionTax' . $valueStr];
+					//$rowCsv[] = $valueDetail['numRateConsumptionTax' . $valueStr];
+
+					/*
+					 * 20191001 start
+					 */
+					if ($valueDetail['flagRateConsumptionTaxReduced' . $valueStr]) {
+					    $rowCsv[] = $valueDetail['numRateConsumptionTax' . $valueStr] . $vars['varsItem']['varsOutput']['strRateConsumptionTaxReduced'];
+
+					} else {
+					    $rowCsv[] = $valueDetail['numRateConsumptionTax' . $valueStr];
+					}
+					/*
+					 * 20191001 end
+					 */
 
 					$rowCsv[] = $valueDetail['flagConsumptionTaxWithoutCalc' . $valueStr];
 

@@ -1248,6 +1248,14 @@ var Code_Plugin_Accounting_CashEditor = Class.create(Code_Lib_ExtEditor,
 			if (numRate == 8) {
 				if (parseFloat(obj.arr[i].arrDebit.numRateConsumptionTax) == 10
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 10
+					/*
+					 * 20191001 start
+					*/
+					|| obj.arr[i].arrDebit.numRateConsumptionTax == '8_reduced'
+					|| obj.arr[i].arrCredit.numRateConsumptionTax == '8_reduced'
+					/*
+					 * 20191001 end
+					*/
 				) {
 					return 'strConsumptionTax';
 				}
@@ -1257,6 +1265,14 @@ var Code_Plugin_Accounting_CashEditor = Class.create(Code_Lib_ExtEditor,
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 8
 					|| parseFloat(obj.arr[i].arrDebit.numRateConsumptionTax) == 10
 					|| parseFloat(obj.arr[i].arrCredit.numRateConsumptionTax) == 10
+					/*
+					 * 20191001 start
+					*/
+					|| obj.arr[i].arrDebit.numRateConsumptionTax == '8_reduced'
+					|| obj.arr[i].arrCredit.numRateConsumptionTax == '8_reduced'
+					/*
+					 * 20191001 end
+					*/
 				) {
 					return 'strConsumptionTax';
 				}

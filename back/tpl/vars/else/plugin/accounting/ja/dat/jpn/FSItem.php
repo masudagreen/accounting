@@ -27,6 +27,13 @@ $vars = array(
 				'numValue' => '',
 				'numValueConsumptionTax' => '',
 				'numRateConsumptionTax' => '',
+				/*
+				 * 20191001 start
+				 */
+			    'flagRateConsumptionTaxReduced' => '',
+			    /*
+			     * 20191001 end
+			     */
 				'idDepartment' => '',
 				'idSubAccountTitle' => '',
 				'flagConsumptionTaxFree' => '',
@@ -42,6 +49,13 @@ $vars = array(
 				'numValue' => '',
 				'numValueConsumptionTax' => '',
 				'numRateConsumptionTax' => '',
+				/*
+				 * 20191001 start
+				 */
+			    'flagRateConsumptionTaxReduced' => '',
+			    /*
+			     * 20191001 end
+			     */
 				'idDepartment' => '',
 				'idSubAccountTitle' => '',
 				'flagConsumptionTaxFree' => '',
@@ -63,6 +77,13 @@ $vars = array(
 				'numValue' => '',
 				'numValueConsumptionTax' => '',
 				'numRateConsumptionTax' => '',
+				/*
+				 * 20191001 start
+				 */
+			    'flagRateConsumptionTaxReduced' => '',
+			    /*
+			     * 20191001 end
+			     */
 				'idDepartment' => '',
 				'idSubAccountTitle' => '',
 				'flagConsumptionTaxFree' => '',
@@ -78,6 +99,13 @@ $vars = array(
 				'numValue' => '',
 				'numValueConsumptionTax' => '',
 				'numRateConsumptionTax' => '',
+				/*
+				 * 20191001 start
+				 */
+			    'flagRateConsumptionTaxReduced' => '',
+			    /*
+			     * 20191001 end
+			     */
 				'idDepartment' => '',
 				'idSubAccountTitle' => '',
 				'flagConsumptionTaxFree' => '',

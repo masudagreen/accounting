@@ -262,8 +262,19 @@ class Code_Else_Plugin_Accounting_Jpn_LogHouseWrite extends Code_Else_Plugin_Acc
 							'idSubAccountTitle' => $idSubAccountTitle,
 							'idDepartment'      => $idDepartment,
 							'flagFiscalPeriod'  => 'f1',
+							/*
+							 * 20191001 start
+							 */
+						    'flagRateConsumptionTaxReduced'  => $valueDetail['arr' . $valueSide]['flagRateConsumptionTaxReduced'],
+						    'numRateConsumptionTax'  => $valueDetail['arr' . $valueSide]['numRateConsumptionTax'],
+        					/*
+        					 * 20191001 end
+        					 */
 						),
 					));
+
+
+
 					$arrayDetail[$keyDetail]['numSum'] = $numValue;
 
 					$numValue = floor($numValue *  $value['numRatio'] / 100);

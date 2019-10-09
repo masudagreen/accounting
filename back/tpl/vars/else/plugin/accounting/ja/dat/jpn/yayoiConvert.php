@@ -92,6 +92,7 @@ $vars = array(
 		array( 'value' => 'tax-3', 'strTitle' => '課税売上簡易三種', 'strYayoi' => '課税売上<>三[]', ),
 		array( 'value' => 'tax-4', 'strTitle' => '課税売上簡易四種', 'strYayoi' => '課税売上<>四[]', ),
 		array( 'value' => 'tax-5', 'strTitle' => '課税売上簡易五種', 'strYayoi' => '課税売上<>五[]', ),
+	    array( 'value' => 'tax-6', 'strTitle' => '課税売上簡易六種', 'strYayoi' => '課税売上<>六[]', ),
 		array( 'value' => 'tax-unknown', 'strTitle' => '課税売上簡易売上不明', 'strYayoi' => '課税売上<>[]', ),
 
 		array( 'value' => 'tax-Back-1', 'strTitle' => '課税売上返還簡易返還一種', 'strYayoi' => '課税売返<>一[]', ),
@@ -99,6 +100,7 @@ $vars = array(
 		array( 'value' => 'tax-Back-3', 'strTitle' => '課税売上返還簡易返還三種', 'strYayoi' => '課税売返<>三[]', ),
 		array( 'value' => 'tax-Back-4', 'strTitle' => '課税売上返還簡易返還四種', 'strYayoi' => '課税売返<>四[]', ),
 		array( 'value' => 'tax-Back-5', 'strTitle' => '課税売上返還簡易返還五種', 'strYayoi' => '課税売返<>五[]', ),
+	    array( 'value' => 'tax-Back-6', 'strTitle' => '課税売上返還簡易返還六種', 'strYayoi' => '課税売返<>六[]', ),
 		array( 'value' => 'tax-Back-unknown', 'strTitle' => '課税売上返還簡易売返還不明', 'strYayoi' => '課税売返<>[]', ),
 
 		array( 'value' => 'tax-Bad', 'strTitle' => '課税売上貸倒', 'strYayoi' => '課税売倒<>[]', ),
@@ -131,6 +133,14 @@ $vars = array(
 	),
 	'varsStr' => array(
 		'strIncluding' => '込',
+		/*
+		 * 20191001 start
+		 */
+	    'strRateConsumptionTaxReduced' => '軽',
+	    'varsRateConsumptionTaxReduced' =>  array('tax' => '軽減8%', 'else-TaxLocal'=> '1.76%', 'else'=> '6.24%'),
+	    /*
+	     * 20191001 end
+	     */
 		'varsWithoutCalc' => array( '1' => '内', '2' => '外', '3' => '別'),
 		'varsWithoutCalc2' => array( '1' => '内税', '2' => '外税', '3' => '別記'),
 		'varsRate' => array(

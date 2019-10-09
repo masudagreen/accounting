@@ -862,6 +862,7 @@ class Code_Else_Plugin_Accounting_Jpn_Ledger extends Code_Else_Plugin_Accounting
 			$varsTmpl['numSort'] = (int) $key;
 			$varsTmpl['strTitle'] = $value['strTitle'];
 
+
 			$varsTmpl['vars']['flagFirstRow'] = 0;
 			if ($flagFirstRow) {
 				$varsTmpl['vars']['flagFirstRow'] = 1;
@@ -871,6 +872,19 @@ class Code_Else_Plugin_Accounting_Jpn_Ledger extends Code_Else_Plugin_Accounting
 			$varsTmpl['strClassLoad'] = '';
 
 			$strTitle = ($varsTmpl['strTitle'])? $varsTmpl['strTitle'] : '-';
+
+			/*
+			 * 20191001 start
+			 */
+			$varsTmpl['varsColumnDetail']['flagRateConsumptionTaxReducedPrint'] = '';
+			$varsTmpl['varsColumnDetail']['flagRateConsumptionTaxReduced'] = '';
+			if ($value['flagRateConsumptionTaxReduced']) {
+			    $varsTmpl['vars']['flagRateConsumptionTaxReduced'] = $value['flagRateConsumptionTaxReduced'];
+			    $varsTmpl['varsColumnDetail']['flagRateConsumptionTaxReduced'] = $vars['varsItem']['strMarkReduced'];
+			}
+			/*
+			 * 20191001 end
+			 */
 
 			$strDepartment = $varsItem['varsDepartment']['arrStrTitle'][$value['idDepartment']]['strTitle'];
 			$strDepartment = ($strDepartment)? $strDepartment : '';
@@ -949,6 +963,7 @@ class Code_Else_Plugin_Accounting_Jpn_Ledger extends Code_Else_Plugin_Accounting
 			$varsTmpl['varsColumnDetail']['numBalance'] = number_format($numBalance);
 
 			$varsTmpl['varsColumnDetail']['idLog'] = $value['idLog'];
+
 
 			$varsTmpl['varsColumnDetail']['strTitle'] = $strTitle;
 			$varsTmpl['varsColumnDetail']['stampRegister'] = $value['stampRegister'];

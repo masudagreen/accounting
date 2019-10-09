@@ -1803,7 +1803,9 @@ if (!FLAG_TEST) {
 }
 
 //var_dump(__LINE__);
-
+if (FLAG_TEST) {
+   // exit;
+}
 
 if (!FLAG_TEST) {
 			if (file_exists(PATH_CONFIG_FILE)) {
@@ -1813,9 +1815,7 @@ if (!FLAG_TEST) {
 			$this->_deleteUpdateVersion();
 //var_dump(__LINE__);
 }
-if (FLAG_TEST) {
-	//exit;
-}
+
 		$num = NUM_VERSION;
 
 

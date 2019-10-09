@@ -1244,6 +1244,7 @@ return;
 	{
 		this._setDetailWrap();
 		this._setDetail({arr : this.vars.varsDetail.varsDetail});
+
 	},
 
 	/**
@@ -2080,20 +2081,24 @@ return;
 	 */
 	_getNumRateConsumptionTax : function()
 	{
+		/*
+		 * 20191001 start
+		 */
+		/*自動税率挿入処理追加*/
+		var stamp20191001 = 1569855600 * 1000;
+
 		var insCheckTime = new Code_Lib_CheckTime();
 		var numRate = insCheckTime.checkRateConsumptionTax({
 			insTimeZone : this.insRoot.insTimeZone,
-			stamp       : (this.stampBook)? this.stampBook : new Date().getTime()
+			stamp       : (this.stampBook)? this.stampBook : stamp20191001
 		});
-
 		/*
-		 * 2014-2015 start
-		 */
 		if (numRate == 10) {
 			numRate = 8;
-		}
+		}*/
+
 		/*
-		 * 2014-2015 end
+		 * 20191001 end
 		 */
 
 		return numRate;
