@@ -96,12 +96,12 @@ if ($varsRequest['query']['module'] != 'Login') {
 				$strTopUrl = $varsPreference['strTopUrl'];
 				$strTopUrl = preg_quote($strTopUrl);
 				$strTopUrl = str_replace('/', '\/', $strTopUrl);
-//				if (!preg_match("/^$strTopUrl/", $referer)) {
-//					if (FLAG_TEST) {
-//						var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
-//					}
-//					exit;
-//				}
+				if (!preg_match("/^$strTopUrl/", $referer)) {
+					if (FLAG_TEST) {
+						var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
+					}
+					exit;
+				}
 			}
 		}
 		$this->_checkRejectIp();
