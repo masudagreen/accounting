@@ -1,7 +1,7 @@
-<?php /* Smarty version 3.1.24, created on 2016-08-18 12:50:43
+<?php /* Smarty version 3.1.24, created on 2019-06-16 09:02:14
          compiled from "/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/core/base/js/portal.js" */ ?>
 <?php
-/*%%SmartyHeaderCode:160949635657b5af23547278_40237522%%*/
+/*%%SmartyHeaderCode:13558533645d060596c61923_67239573%%*/
 if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
@@ -9,11 +9,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'ac6f8a8e6f90dc22072aeda6d78a04abd0038aaf' => 
     array (
       0 => '/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/core/base/js/portal.js',
-      1 => 1471523677,
+      1 => 1560675138,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '160949635657b5af23547278_40237522',
+  'nocache_hash' => '13558533645d060596c61923_67239573',
   'variables' => 
   array (
     'varsLoad' => 0,
@@ -21,13 +21,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   ),
   'has_nocache_code' => false,
   'version' => '3.1.24',
-  'unifunc' => 'content_57b5af236b4a17_32301951',
+  'unifunc' => 'content_5d060596cfd0b5_36236598',
 ),false);
 /*/%%SmartyHeaderCode%%*/
-if ($_valid && !is_callable('content_57b5af236b4a17_32301951')) {
-function content_57b5af236b4a17_32301951 ($_smarty_tpl) {
+if ($_valid && !is_callable('content_5d060596cfd0b5_36236598')) {
+function content_5d060596cfd0b5_36236598 ($_smarty_tpl) {
 
-$_smarty_tpl->properties['nocache_hash'] = '160949635657b5af23547278_40237522';
+$_smarty_tpl->properties['nocache_hash'] = '13558533645d060596c61923_67239573';
 ?>
 
 /*
@@ -709,7 +709,7 @@ strDomainMail<?php echo '%>'; ?>
 			}
 			if (!this._numVersionTry) {
 				this._numVersionTry = 1;
-				this._sendDetailConnect();
+				this._insTimerPortal = setInterval(this._setSleepInterval.bind(this), 15 * 1000);
 			}
 
 		} else if (obj.json.flag == 'strSiteMailPc') {
@@ -722,6 +722,15 @@ strDomainMail<?php echo '%>'; ?>
 				this.insDetail.showFormAttestError({flagType : obj.json.flag});
 			}
 		}
+	},
+
+	/**
+	 *
+	*/
+	_setSleepInterval : function()
+	{
+		clearInterval(this._insTimerPortal);
+		this._sendDetailConnect();
 	},
 
 	/**

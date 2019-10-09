@@ -1397,7 +1397,10 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput_2012_Public extends Code
 			'flagFiscalPeriod' => 'f1',
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
-		$str = $vars['varsItem']['varsOutput']['strPeriodExt'];
+
+		/*20190401 start*/
+/*
+        $str = $vars['varsItem']['varsOutput']['strPeriodExt'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
@@ -1408,6 +1411,32 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput_2012_Public extends Code
 		$strPoint = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $str);
 		$strPoint = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPoint);
 		$varsData['strPointExt'] = $strPoint;
+
+ * */
+		$str = $vars['varsItem']['varsOutput']['strPeriodExt20190401'];
+		$strPeriod = str_replace('<%flagStartNengo%>', $varsPeriod['flagStartNengo'], $str);
+		$strPeriod = str_replace('<%flagEndNengo%>', $varsPeriod['flagEndNengo'], $strPeriod);
+		if ($varsPeriod['flagStartNengo'] == 'Reiwa' && $varsPeriod['numStartNengoYear'] == 1) {
+		    $strPeriod = str_replace('<%numStartNengoYear%>', $vars['varsItem']['varsOutput']['strYearGan'], $strPeriod);
+		    $strPeriod = str_replace('<%numEndNengoYear%>', $vars['varsItem']['varsOutput']['strYearGan'], $strPeriod);
+		} else {
+		    $strPeriod = str_replace('<%numStartNengoYear%>', $varsPeriod['numStartNengoYear'], $strPeriod);
+		    $strPeriod = str_replace('<%numEndNengoYear%>', $varsPeriod['numEndNengoYear'], $strPeriod);
+		}
+		$varsData['strPeriodExt'] = $strPeriod;
+
+
+		$str = $arr['vars']['varsItem']['varsOutput']['strPointExt20190401'];
+		if ($varsPeriod['flagStartNengo'] == 'Reiwa' && $varsPeriod['numStartNengoYear'] == 1) {
+		    $strPoint = str_replace('<%flagEndNengo%>', $varsPeriod['flagEndNengo'], $str);
+		    $strPoint = str_replace('<%numEndNengoYear%>', $vars['varsItem']['varsOutput']['strYearGan'], $strPoint);
+		} else {
+		    $strPoint = str_replace('<%flagEndNengo%>', $varsPeriod['flagEndNengo'], $str);
+		    $strPoint = str_replace('<%numEndNengoYear%>', $varsPeriod['numEndNengoYear'], $strPoint);
+		}
+		$strPoint = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPoint);
+		$varsData['strPointExt'] = $strPoint;
+		/*20190401 end*/
 
 		return $varsData;
 	}

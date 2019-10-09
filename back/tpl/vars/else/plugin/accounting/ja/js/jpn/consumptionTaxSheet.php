@@ -8,7 +8,10 @@ $vars = array(
 	'varsItem'  => array(
 		'strEntity' => '事業体(<%replace%>)',
 		'strNum' => '会期(第<%replace%>期)',
+	    /*20190401 start*/
 		'strPeriod' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+	    'strPeriod20190401' => '会計期間(自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日)',
+	    /*20190401 end*/
 		'strUnit' => '単位(円)',
 		'strRate' => '税率(<%replace%>%)',
 		'varsMenu' => array(

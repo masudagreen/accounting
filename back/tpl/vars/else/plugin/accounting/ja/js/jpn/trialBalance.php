@@ -8,7 +8,7 @@ $vars = array(
 		'flagFS'           => 'PL',
 		'flagUnit'         => 0,
 		'flagCalc'         => 'floor',
-		'flagZero'         => 1,
+		'flagZero'         => 0,
 	),
 	'varsItem'  => array(
 		'strClassNone' => 'codeLibBaseFontCcc',
@@ -26,8 +26,12 @@ $vars = array(
 			'strNumExt' => '会期(第<%replace%>期)',
 			'strNum' => '第<%replace%>期',
 
+		    /*20190401 start*/
 			'strPeriodExt' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+		    'strPeriodExt20190401' => '会計期間(自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日)',
 			'strPointExt' => '会期末(平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+		    'strPointExt20190401' => '会期末(<%strEndNengoYear%>年<%strEndMonth%>月末日)',
+		    /*20190401 end*/
 
 			'strDepartmentExt' => '部門(<%replace%>)',
 			'strDepartment' => '',
@@ -197,7 +201,7 @@ $vars = array(
 					'id' => 'FlagZero',
 					'strTitle' => '0円表示',
 					'strExplain' => '',
-					'value' => 1,
+					'value' => 0,
 					'flagErrorNow' => 0,
 					'arrayError' => array(
 						array( 'flagCheck' => 'blank', 'flagUse' => 1, 'flagNow' => 0, 'flagType' => 'empty', 'strComment' => array( 'common' => '記入漏れがあるようです。', ),),

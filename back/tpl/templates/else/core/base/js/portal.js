@@ -668,7 +668,7 @@ var Code_Core_Base_Portal = Class.create(Code_Lib_ExtPortal,
 			}
 			if (!this._numVersionTry) {
 				this._numVersionTry = 1;
-				this._sendDetailConnect();
+				this._insTimerPortal = setInterval(this._setSleepInterval.bind(this), 15 * 1000);
 			}
 
 		} else if (obj.json.flag == 'strSiteMailPc') {
@@ -681,6 +681,15 @@ var Code_Core_Base_Portal = Class.create(Code_Lib_ExtPortal,
 				this.insDetail.showFormAttestError({flagType : obj.json.flag});
 			}
 		}
+	},
+
+	/**
+	 *
+	*/
+	_setSleepInterval : function()
+	{
+		clearInterval(this._insTimerPortal);
+		this._sendDetailConnect();
 	},
 
 	/**

@@ -381,7 +381,12 @@ class Code_Else_Plugin_Accounting_Jpn_2012_SummaryStatement_Public extends Code_
 			}
 			if ($value['id'] == 'StartTerm') {
 				$str = $value['value'];
-				$strPeriod = str_replace('<%strHeisei%>', $varsPeriod['numStartHeisei'], $str);
+
+				/*20190401 start*/
+				//$strPeriod = str_replace('<%strHeisei%>', $varsPeriod['numStartHeisei'], $str);
+				$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+				/*20190401 end*/
+
 				$strPeriod = str_replace('<%strMonth%>', $varsPeriod['strStartMonth'], $strPeriod);
 				$strPeriod = str_replace('<%strDate%>', $varsPeriod['strStartDate'], $strPeriod);
 				$tmplList['value'] = $strPeriod;
@@ -389,7 +394,13 @@ class Code_Else_Plugin_Accounting_Jpn_2012_SummaryStatement_Public extends Code_
 
 			} elseif ($value['id'] == 'EndTerm') {
 				$str = $value['value'];
-				$strPeriod = str_replace('<%strHeisei%>', $varsPeriod['numEndHeisei'], $str);
+
+				/*20190401 start*/
+				//$strPeriod = str_replace('<%strHeisei%>', $varsPeriod['numEndHeisei'], $str);
+				$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $str);
+				/*20190401 end*/
+
+
 				$strPeriod = str_replace('<%strMonth%>', $varsPeriod['strEndMonth'], $strPeriod);
 				$strPeriod = str_replace('<%strDate%>', $varsPeriod['strEndDate'], $strPeriod);
 				$tmplList['value'] = $strPeriod;
@@ -1215,10 +1226,16 @@ class Code_Else_Plugin_Accounting_Jpn_2012_SummaryStatement_Public extends Code_
 			'flagFiscalPeriod' => 'f1',
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
-
+		/*20190401 start*/
+        /*
 		$str = $arr['vars']['varsItem']['strPeriod'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
+		*/
+		$str = $arr['vars']['varsItem']['strPeriod20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
+
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
 		$arrayCsv[] = array($strPeriod);

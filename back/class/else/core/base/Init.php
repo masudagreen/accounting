@@ -7,7 +7,7 @@
 class Code_Else_Core_Base_Init
 {
 	protected $_self = array(
-		'numVersion'            => '1.43.11',
+		'numVersion'            => '1.47.00',
 		'flagConfig'            => 0,
 		'flagAPI'               => 0,
 		'flagRequest'           => 'post',
@@ -59,7 +59,6 @@ class Code_Else_Core_Base_Init
 	  */
 	protected function _setAbstract()
 	{
-
 		require_once(PATH_BACK_CLASS_ELSE_CORE_BASE . 'ModuleAbstract.php');
 	}
 
@@ -563,8 +562,7 @@ class Code_Else_Core_Base_Init
 		//mb_http_output("utf-8");
 		date_default_timezone_set('UTC');
 		ini_set('memory_limit', '128M');
-		//error_reporting(0);
-ini_set('display_errors', 1);
+		error_reporting(0);
 		if (FLAG_TEST) {
 			error_reporting(E_ALL ^ E_NOTICE);
 			ini_set('display_errors', 1);

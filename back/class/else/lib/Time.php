@@ -261,6 +261,50 @@ $classTime->getDisplay(array(
 	}
 
 	/*
+	(array(
+	'stamp' => num
+	'numYear' => num
+	))
+	* */
+	public function getStrNengoYear($arr)
+	{
+	    $numYear = $arr['numYear'];
+	    $flag = $this->getFlagNengo(array('stamp' => $arr['stamp']));
+	    if ($flag == 'Meiji') {
+	        $numYear -= 1867;
+
+	    } elseif ($flag == 'Taishou') {
+	        $numYear -= 1911;
+
+	    } elseif ($flag == 'Shouwa') {
+	        $numYear -= 1925;
+
+	        /*20190401 start*/
+	    } elseif ($flag == 'Heisei') {
+	        $numYear -= 1988;
+
+	    } elseif ($flag == 'Reiwa') {
+	        $numYear -= 2018;
+	    }
+	    /*20190401 end*/
+
+	    if ($numYear < 1) {
+	        return '';
+	    }
+
+
+	    $strYear = $numYear;
+	    if ($numYear == 1) {
+	        $strYear = $this->_self['varsLoad']['strGan'];
+	    }
+
+	    $flagNengo = 'str' . $flag;
+	    $strNengoYear = $this->_self['varsLoad'][$flagNengo] . $strYear;
+
+	    return $strNengoYear;
+	}
+
+	/*
 		(array(
 			'stamp' => num
 			'numYear' => num
@@ -279,9 +323,14 @@ $classTime->getDisplay(array(
 		} elseif ($flag == 'Shouwa') {
 			$numYear -= 1925;
 
+		/*20190401 start*/
 		} elseif ($flag == 'Heisei') {
 			$numYear -= 1988;
+
+		} elseif ($flag == 'Reiwa') {
+		    $numYear -= 2018;
 		}
+		/*20190401 end*/
 
 		if ($numYear < 1) {
 			return '';
@@ -295,6 +344,7 @@ $classTime->getDisplay(array(
 		taishou 1912/07/30 -1812186000
 		shouwa 1926/12/25 -1357635600
 		heisei 1989/01/08   600188400
+		reiwa 2019/05/01   1556636400
 		(array(
 			'stamp' => num
 		))
@@ -311,9 +361,14 @@ $classTime->getDisplay(array(
 		} elseif (-1357635600 <= $stamp && $stamp < 600188400) {
 			return 'Shouwa';
 
-		} elseif (600188400 <= $stamp) {
-			return 'Heisei';
+		/*20190401 start*/
+		} elseif (600188400 <= $stamp && $stamp < 1556636400) {
+		    return 'Heisei';
+
+		} elseif (1556636400 <= $stamp) {
+		    return 'Reiwa';
 		}
+		/*20190401 end*/
 
 		return '';
 	}

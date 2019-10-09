@@ -44,8 +44,20 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 			'flagFiscalPeriod' => 'f1',
 		));
 
-		if ($varsFiscalPeriod['numStartYear'] >= 2015) {
+
+
+		/*変更を加えるときに>=　と== があるので注意*/
+		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2016) {
+			$this->_extSelf['numYearSheet'] = '2016';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
+			$this->_extSelf['numYearSheet'] = '2017';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		    $this->_extSelf['numYearSheet'] = '2018';
 		}
 
 		$this->_checkEntity();
@@ -485,13 +497,23 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 				}
 			}
 			if ($value['id'] == 'DummyNoneVersion') {
-				if ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014 && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015) {
+				if ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014
+					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015
+					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
+					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
+				    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+					) {
 					$arrayNew[] = $value;
 				}
 				continue;
 			}
 
-			if ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014 && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015) {
+			if ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+				) {
 				continue;
 			}
 
@@ -530,7 +552,13 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 
 		//tempNext
 		if (preg_match("/^(tempNext)$/", $flag)
-			|| ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014 && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015)
+			|| (
+				$arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
+				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+			)
 		) {
 			$arr['vars']['portal']['varsDetail']['varsDetail']['varsHtml'] = '';
 			$arr['vars']['portal']['varsNavi']['varsBtn'] = array();

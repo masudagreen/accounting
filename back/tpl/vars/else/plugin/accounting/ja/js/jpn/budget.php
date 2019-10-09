@@ -20,7 +20,10 @@ $vars = array(
 			'strEntity' => '',
 			'strEntityExt' => '事業体(<%replace%>)',
 			'strNumExt' => '会期(第<%replace%>期)',
-			'strPeriodExt' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+			/*20190401 start*/
+		    'strPeriodExt' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+		    'strPeriodExt20190401' => '会計期間(自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日)',
+		    /*20190401 end*/
 			'strDepartmentExt' => '部門(<%replace%>)',
 			'strUnitExt' => '単位(円)',
 		),
@@ -595,6 +598,32 @@ $vars = array(
 						'strMonth' => '月期予算',
 					),
 					'numSize' => 5,
+				),
+				array(
+					'flagMustUse' => 1,
+					'id' => 'FlagSplit',
+					'strTitle' => '年間予算均等分割', 'strExplain' => '年間予算を均等分割した値を全予算期間に設定できます。<br>※端数各期切り捨て',
+					'value' => 0,
+					'flagErrorNow' => 0,
+					'arrayError' => array(
+						array( 'flagCheck' => 'attest', 'flagUse' => 1, 'strComment' => array(
+							'strBlank' => '必ず選択する必要があるようです。',
+						),),
+					),
+					'flagContentUse' => 0,
+					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
+					'flagTag' => 'select', 'flagInputType' => '', 'numMaxlength' => 0,
+					'numWidth' => 40, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
+					'flagMultiple' => 0,
+					'arrayOption' => array(),
+					'varsTmpl' => array(
+						'arrayOption' => array(
+							array( 'strTitle' => '均等分割する', 'value' => 1,),
+							array( 'strTitle' => '均等分割しない', 'value' => 0, ),
+						),
+					),
+					'flagHideUse' => 1,
+					'flagHideNow' => 0,
 				),
 				array(
 					'flagMustUse' => 1,

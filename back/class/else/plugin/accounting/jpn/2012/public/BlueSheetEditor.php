@@ -36,8 +36,17 @@
 			'flagFiscalPeriod' => 'f1',
 		));
 
-		if ($varsFiscalPeriod['numStartYear'] >= 2015) {
+		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2016) {
+			$this->_extSelf['numYearSheet'] = '2016';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
+			$this->_extSelf['numYearSheet'] = '2017';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		    $this->_extSelf['numYearSheet'] = '2018';
 		}
 
 		$flag = $this->_getCurrentFlagNow(array());

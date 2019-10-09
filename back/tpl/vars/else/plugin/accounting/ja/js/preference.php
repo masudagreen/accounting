@@ -224,7 +224,13 @@ $vars = array(
 											'varsDetail' => array(),
 										),
 										'varsTmplItem' => '　　【 <%strTitle%> 】　<%strValue%><br>',
-										'varsTmplTerm' => '(自)平成<%strStartHeisei%>年<%strStartMonth%>月1日 ～ (至)平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+
+										/*20190401 start*/
+									    'varsTmplTerm' => '(自)平成<%strStartHeisei%>年<%strStartMonth%>月1日 ～ (至)平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+									    'varsTmplTerm20190401' => '(自)<%strStartNengoYear%>年<%strStartMonth%>月1日 ～ (至)<%strEndNengoYear%>年<%strEndMonth%>月末日)',
+									    /*20190401 end*/
+
+
 										'varsTmpl' => '作業する任意の事業体を選択してください。<br>　※ 設定後、ページを<span class="codeLibBaseFontTypeCheck" style="float:none;">自動更新</span>します。<br>　※ 現在、作業中の事業体は、<span class="codeLibBaseFontTypeCheck" style="float:none;">『 <%idEntityCurrent%>　-　第<%numFiscalPeriodCurrent%>期 』</span> です。<br><%item%>',
 										'varsTmplDetail' => array(
 											'numFiscalPeriodCurrent' => array(

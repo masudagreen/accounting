@@ -238,9 +238,18 @@ class Code_Else_Plugin_Accounting_Jpn_LogOutput extends Code_Else_Plugin_Account
 			'flagFiscalPeriod' => 'f1',
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
+
+		/*
 		$str = $vars['varsItem']['varsOutput']['strPeriodExt'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
+		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
+		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
+		$varsData['strPeriodExt'] = $strPeriod;
+		*/
+		$str = $vars['varsItem']['varsOutput']['strPeriodExt20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
 		$varsData['strPeriodExt'] = $strPeriod;

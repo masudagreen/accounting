@@ -12,6 +12,10 @@ $vars = array(
 	'strTaishou' =>  '大正',
 	'strShouwa' =>  '昭和',
 	'strHeisei' =>  '平成',
+	/*20190401 start*/
+    'strReiwa' =>  '令和',
+    'strGan' =>  '元',
+    /*20190401 end*/
 );
 
 

@@ -7,7 +7,10 @@ $vars = array(
 			'strTitleFile' => '財務分析',
 			'strEntityExt' => '事業体(<%replace%>)',
 			'strNumExt' => '会期(第<%replace%>期)',
-			'strPeriodExt' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+			/*20190401 start*/
+		    'strPeriodExt' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+		    'strPeriodExt20190401' => '会計期間(自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日)',
+		    /*20190401 end*/
 		),
 		'varsRow' => array(
 			'numRoa' => 'ROA（総資本利益率）',
@@ -99,7 +102,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					'varsSpace' => array(
 						'varsStatus' => array(
@@ -129,7 +132,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					'varsSpace' => array(
 						'varsStatus' => array(
@@ -182,7 +185,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					'varsSpace' => array(
 						'varsStatus' => array(
@@ -235,7 +238,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					'varsSpace' => array(
 						'varsStatus' => array(
@@ -288,7 +291,7 @@ $vars = array(
 					'flagCommentUse' => 0, 'strCommentTitle' => '', 'strComment' => '',
 					'flagTag' => 'input', 'flagInputType' => 'text', 'numMaxlength' => 0,
 					'numWidth' => 80, 'unitWidth' => '%', 'numHeight' => 0, 'unitHeight' => '',
-					'arrayOption' => array(), 
+					'arrayOption' => array(),
 					'flagFoldUse' => 0, 'flagFoldNow' => 0,
 					'varsSpace' => array(
 						'varsStatus' => array(

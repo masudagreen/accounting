@@ -760,8 +760,19 @@ class Code_Else_Plugin_Accounting_Jpn_2012_ConsumptionTax_General extends Code_E
 		));
 
 		$str = $arr['vars']['varsItem']['strPeriod'];
+
+		/*20190401 start*/
+		/*
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
+		*/
+
+		$strPeriod = str_replace('<%flagStartNengo%>', $varsPeriod['flagStartNengo'], $str);
+		$strPeriod = str_replace('<%flagEndNengo%>', $varsPeriod['flagEndNengo'], $strPeriod);
+		$strPeriod = str_replace('<%numStartNengoYear%>', $varsPeriod['numStartNengoYear'], $strPeriod);
+		$strPeriod = str_replace('<%numEndNengoYear%>', $varsPeriod['numEndNengoYear'], $strPeriod);
+		/*20190401 end*/
+
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
 		$arrayCsv[] = array($strPeriod);

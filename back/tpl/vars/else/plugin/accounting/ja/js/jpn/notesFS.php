@@ -16,8 +16,10 @@ $vars = array(
 
 			'strNumExt' => '会期(第<%replace%>期)',
 			'strNum' => '第<%replace%>期',
-
-			'strPeriodExt' => '自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+			/*20190401 start*/
+		    'strPeriodExt' => '自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+		    'strPeriodExt20190401' => '自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日',
+		    /*20190401 end*/
 		),
 	),
 	'varsPrint' => array(

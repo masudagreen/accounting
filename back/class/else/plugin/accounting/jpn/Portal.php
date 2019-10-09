@@ -60,11 +60,14 @@ class Code_Else_Plugin_Accounting_Jpn_Portal extends Code_Else_Plugin_Accounting
 		$vars = $this->_getVarsJs();
 
 		$vars['token'] = $this->setToken();
+
+		/*20190401 start*/
 		$vars['strTitle'] = $this->_getStrTitle(array(
-			'strTitle'       => $vars['strTitle'],
+			'strTitle'       => $vars['strTitle20190401'],
 			'strTitleConfig' => $vars['strTitleConfig'],
 			'varsItem'       => $vars['varsItem'],
 		));
+		/*20190401 end*/
 
 		$array = array('Log', 'File', 'Banks', 'Cash', 'FixedAssets');
 		foreach ($array as $key => $value) {
@@ -139,10 +142,14 @@ class Code_Else_Plugin_Accounting_Jpn_Portal extends Code_Else_Plugin_Accounting
 						$arr['strTitle'] = $arr['strTitleConfig'];
 					}
 				}
+
 				$arr['strTitle'] = $this->_getStrTitleData(array(
 					'strTitle' => $arr['strTitle'],
 					'varsItem' => $arr['varsItem'],
 				));
+
+
+
 
 			} else {
 				$arr['strTitle'] = '';
@@ -183,9 +190,11 @@ class Code_Else_Plugin_Accounting_Jpn_Portal extends Code_Else_Plugin_Accounting
 		}
 		$arr['strTitle'] = str_replace('<%strStatus%>', $strStatus, $arr['strTitle']);
 		$arr['strTitle'] = str_replace('<%strStartYear%>', $varsPeriod['numStartYear'], $arr['strTitle']);
-		$arr['strTitle'] = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $arr['strTitle']);
 		$arr['strTitle'] = str_replace('<%strEndYear%>', $varsPeriod['numEndYear'], $arr['strTitle']);
-		$arr['strTitle'] = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $arr['strTitle']);
+
+		$arr['strTitle'] = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $arr['strTitle']);
+		$arr['strTitle'] = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $arr['strTitle']);
+
 		$arr['strTitle'] = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $arr['strTitle']);
 		$arr['strTitle'] = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $arr['strTitle']);
 
@@ -1036,6 +1045,24 @@ class Code_Else_Plugin_Accounting_Jpn_Portal extends Code_Else_Plugin_Accounting
 						$strTerm = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strTerm);
 						$strTerm = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strTerm);
 						$strTerm = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strTerm);
+
+						/*20190401 start*/
+						/*
+						 $str = $value['varsTmplTerm'];
+						 $strTerm = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
+						 $strTerm = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strTerm);
+						 $strTerm = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strTerm);
+						 $strTerm = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strTerm);
+						 */
+						$str = $value['varsTmplTerm20190401'];
+						$strTerm = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+						$strTerm = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strTerm);
+
+						$strTerm = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strTerm);
+						$strTerm = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strTerm);
+						/*20190401 end*/
+
+
 
 						$strItem .= $this->_getVarsIdEntityCurrentStrTitle(array(
 							'vars'       => $varsEntityConfig,

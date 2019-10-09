@@ -1,7 +1,7 @@
-<?php /* Smarty version 3.1.24, created on 2016-08-18 13:19:37
+<?php /* Smarty version 3.1.24, created on 2019-07-06 10:40:42
          compiled from "/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/js/jpn/fixedAssets.js" */ ?>
 <?php
-/*%%SmartyHeaderCode:103300085957b5b5e972a236_73581185%%*/
+/*%%SmartyHeaderCode:7006167635d207aaa859854_65173031%%*/
 if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
@@ -9,11 +9,11 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'c75c33a6470f9d39c06ae5aa137afc71a3687d4a' => 
     array (
       0 => '/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/plugin/accounting/js/jpn/fixedAssets.js',
-      1 => 1471523678,
+      1 => 1560675145,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '103300085957b5b5e972a236_73581185',
+  'nocache_hash' => '7006167635d207aaa859854_65173031',
   'variables' => 
   array (
     'varsLoad' => 0,
@@ -21,13 +21,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   ),
   'has_nocache_code' => false,
   'version' => '3.1.24',
-  'unifunc' => 'content_57b5b5e982e4c4_04924236',
+  'unifunc' => 'content_5d207aaa86a650_71613703',
 ),false);
 /*/%%SmartyHeaderCode%%*/
-if ($_valid && !is_callable('content_57b5b5e982e4c4_04924236')) {
-function content_57b5b5e982e4c4_04924236 ($_smarty_tpl) {
+if ($_valid && !is_callable('content_5d207aaa86a650_71613703')) {
+function content_5d207aaa86a650_71613703 ($_smarty_tpl) {
 
-$_smarty_tpl->properties['nocache_hash'] = '103300085957b5b5e972a236_73581185';
+$_smarty_tpl->properties['nocache_hash'] = '7006167635d207aaa859854_65173031';
 ?>
 
 /*
@@ -1705,10 +1705,12 @@ var Code_Plugin_Accounting_FixedAssets = Class.create(Code_Lib_ExtPortal,
 						insTimeZone : this.insRoot.insTimeZone
 					});
 					var arrTime = str.split('/');
-					var strNengo = insDisplay.getStrNengo({
+					/*20190401 start*/
+					var strNengo = insDisplay.getStrNengoYear({
 						stamp   : stamp,
 						numYear : arrTime[0]
 					});
+					/*20190401 end*/
 					objData[obj.arr[i].id] = '('+ strNengo +') ' + str;
 					var temp = {};
 					temp.id = obj.arr[i].id;

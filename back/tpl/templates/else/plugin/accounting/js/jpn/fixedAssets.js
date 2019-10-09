@@ -1672,10 +1672,12 @@ var Code_Plugin_Accounting_FixedAssets = Class.create(Code_Lib_ExtPortal,
 						insTimeZone : this.insRoot.insTimeZone
 					});
 					var arrTime = str.split('/');
-					var strNengo = insDisplay.getStrNengo({
+					/*20190401 start*/
+					var strNengo = insDisplay.getStrNengoYear({
 						stamp   : stamp,
 						numYear : arrTime[0]
 					});
+					/*20190401 end*/
 					objData[obj.arr[i].id] = '('+ strNengo +') ' + str;
 					var temp = {};
 					temp.id = obj.arr[i].id;

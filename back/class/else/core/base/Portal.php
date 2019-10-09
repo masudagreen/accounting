@@ -222,6 +222,7 @@ exit;
 				'vars' => $vars['portal']['varsNavi']['tree']['varsDetail']['varsDetail']
 			));
 			if ($varsTarget['vars']['idTarget'] == 'version' && !is_null($arrValue['arr']['dummyChange'])) {
+				//バージョン更新
 				$varsTarget['vars']['flagVersion'] = 'dll';
 			}
 			if ($varsTarget['vars']['idTarget'] == 'version') {
@@ -229,6 +230,7 @@ exit;
 				//vars.FlagVersionUpdate = 1; version info on
 				//vars.FlagVersionUpdate = 2; version info off
 
+				//バージョン更新有効指示があったら
 				$flag = (int) $varsRequest['query']['jsonValue']['vars']['FlagVersionUpdate'];
 				if ($flag > 0) {
 					$varsTarget['vars']['flagVersion'] = 'flagVersionUpdate';
@@ -676,6 +678,8 @@ exit;
 		if ($numDBVersion < $numFileVersion) {
 			$flagUpdate = 1;
 		}
+
+		//バージョン更新が有効か無効か
 		if ($vars['vars']['flagVersion']) {
 			$flagUpdate = 1;
 
@@ -1633,7 +1637,7 @@ if (FLAG_TEST) {
 			unlink($pathZip);
 			$this->_sendVersionError(__LINE__);
 		}
-
+		sleep(5);
 	}
 
 		/**
@@ -1677,6 +1681,7 @@ if (FLAG_TEST) {
 		global $varsPreference;
 		global $varsRequest;
 
+		//バージョン更新機能有効選択画面だったら
 		$flag = (int) $varsRequest['query']['jsonValue']['vars']['FlagVersionUpdate'];
 		if ($flag > 0) {
 			$flagVersionUpdate = ($flag == 1)? 1 : 0;
@@ -1691,6 +1696,10 @@ if (FLAG_TEST) {
 		}
 
 		$flagUpdateVersion = $this->_checkUpdateVersion();
+
+
+
+
 		if (!$flagUpdateVersion) {
 			if ($varsPreference['flagVersionUpdate'] === '0') {
 if (!FLAG_TEST) {
@@ -1706,8 +1715,9 @@ if (!FLAG_TEST) {
 
 if (!FLAG_TEST) {
 
+
 		//get update file
-		//second time
+		//1巡目 zipを入手し展開する
 		if (NUM_VERSION == $varsPreference['strVersion']) {
 			if (!is_null($arr['arr']['dummyChange'])) {
 				$this->_getVersionFile(array(
@@ -1718,7 +1728,15 @@ if (!FLAG_TEST) {
 			}
 		}
 }
+//error_reporting(E_ALL ^ E_NOTICE);
+//ini_set('display_errors', 1);
 
+//var_dump(__LINE__,NUM_VERSION,$varsPreference);
+
+
+		//2巡目 データの再構築
+
+		//キャッシュクリア
 		$array = scandir($this->_extSelf['pathCacheDat']);
 		foreach ($array as $key => $value) {
 			if ( preg_match( "/^\.{1,2}$/", $value)) {
@@ -1727,7 +1745,7 @@ if (!FLAG_TEST) {
 			$strFile = $value;
 			unlink($this->_extSelf['pathCacheDat'] . $strFile);
 		}
-
+//var_dump(__LINE__);
 		$arrVersion = preg_split("/\./", $varsPreference['strVersion']);
 		$numVersion = (int) join('', $arrVersion);
 		$array = scandir(PATH_BACK_DAT_VERSION);
@@ -1744,6 +1762,7 @@ if (!FLAG_TEST) {
 			}
 			$arrayNew[] = (int) $numVer;
 		}
+//var_dump(__LINE__);
 		sort($arrayNew);
 		$array = $arrayNew;
 		foreach ($array as $key => $value) {
@@ -1769,7 +1788,12 @@ if (!FLAG_TEST) {
 				rename($path, $pathName);
 }
 		}
+
+//var_dump(__LINE__);
+
 if (!FLAG_TEST) {
+
+		//front file reload
 		$array = array('Css', 'Js');
 		foreach ($array as $key => $value) {
 			$classRebuild->run(array(
@@ -1777,16 +1801,26 @@ if (!FLAG_TEST) {
 			));
 		}
 }
+
+//var_dump(__LINE__);
+
+
 if (!FLAG_TEST) {
 			if (file_exists(PATH_CONFIG_FILE)) {
 				unlink(PATH_CONFIG_FILE);
 			}
+//var_dump(__LINE__);
 			$this->_deleteUpdateVersion();
+//var_dump(__LINE__);
 }
 if (FLAG_TEST) {
 	//exit;
 }
 		$num = NUM_VERSION;
+
+
+
+//var_dump(__LINE__,NUM_VERSION,$varsPreference);
 
 		$varsPreference['jsonVersion'][$num] = TIMESTAMP;
 
@@ -1797,6 +1831,11 @@ if (!FLAG_TEST) {
 			'arrValue'  => array(NUM_VERSION, $jsonVersion),
 		));
 }
+
+//var_dump(__LINE__,NUM_VERSION,$varsPreference);
+//exit;
+
+
 	}
 
 	/**

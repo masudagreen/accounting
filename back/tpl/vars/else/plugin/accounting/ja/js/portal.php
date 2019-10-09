@@ -4,8 +4,13 @@ $vars = array(
 	'token' => '',
 	'strClass' => 'Plugin',
 	'idModule' => 'Accounting',
-	'strTitle' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%> 自<%strStartYear%>年(平成<%strStartHeisei%>年)<%strStartMonth%>月1日 至<%strEndYear%>年(平成<%strEndHeisei%>年)<%strEndMonth%>月末日',
-	'strTitleConfigAdmin' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%> 要初期設定',
+
+	/*20190401 start*/
+    'strTitle' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%> 自<%strStartYear%>年(平成<%strStartHeisei%>年)<%strStartMonth%>月1日 至<%strEndYear%>年(平成<%strEndHeisei%>年)<%strEndMonth%>月末日',
+    'strTitle20190401' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%> 自<%strStartYear%>年(<%strStartNengoYear%>年)<%strStartMonth%>月1日 至<%strEndYear%>年(<%strEndNengoYear%>年)<%strEndMonth%>月末日',
+    /*20190401 end*/
+
+    'strTitleConfigAdmin' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%> 要初期設定',
 	'strTitleConfig' => ' - <%idEntityCurrent%> 第<%numFiscalPeriodCurrent%>期<%strStatus%>',
 	'varsItem'  => array(
 		'strLock' => '(確定済)',
@@ -194,7 +199,13 @@ $vars = array(
 											'varsDetail' => array(),
 										),
 										'varsTmplItem' => '　　【 <%strTitle%> 】　<%strValue%><br>',
-										'varsTmplTerm' => '(自)平成<%strStartHeisei%>年<%strStartMonth%>月1日 ～ (至)平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+
+										/*20190401 start*/
+									    'varsTmplTerm' => '(自)平成<%strStartHeisei%>年<%strStartMonth%>月1日 ～ (至)平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+									    'varsTmplTerm20190401' => '(自)<%strStartNengoYear%>年<%strStartMonth%>月1日 ～ (至)<%strEndNengoYear%>年<%strEndMonth%>月末日)',
+									    /*20190401 end*/
+
+
 										'varsTmpl' => '作業する任意の事業体を選択してください。<br>　※ 保存後、ページを<span class="codeLibBaseFontTypeCheck" style="float:none;">自動更新</span>します。<br>　※ 現在、作業中の事業体は、<span class="codeLibBaseFontTypeCheck" style="float:none;">『 <%idEntityCurrent%>　-　第<%numFiscalPeriodCurrent%>期 』</span> です。<br><%item%>',
 										'varsTmplDetail' => array(
 											'numFiscalPeriodCurrent' => array(

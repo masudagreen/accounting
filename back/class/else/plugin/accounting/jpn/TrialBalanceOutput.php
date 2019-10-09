@@ -305,9 +305,18 @@ class Code_Else_Plugin_Accounting_Jpn_TrialBalanceOutput extends Code_Else_Plugi
 			'flagFiscalPeriod' => 'f1',
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
+
+		/*20190401 start*/
+		/*
 		$str = $arr['vars']['varsItem']['varsOutput']['strPeriodExt'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
+		*/
+		$str = $arr['vars']['varsItem']['varsOutput']['strPeriodExt20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
+		/*20190401 end*/
+
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
 		$varsData['strPeriodExt'] = $strPeriod;
@@ -339,8 +348,16 @@ class Code_Else_Plugin_Accounting_Jpn_TrialBalanceOutput extends Code_Else_Plugi
 
 		//
 		if ($arr['varsFlag']['flagFS'] == 'BS') {
-			$str = $arr['vars']['varsItem']['varsOutput']['strPointExt'];
+
+		    /*20190401 start*/
+		    /*
+		    $str = $arr['vars']['varsItem']['varsOutput']['strPointExt'];
 			$strPoint = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $str);
+			*/
+		    $str = $arr['vars']['varsItem']['varsOutput']['strPointExt20190401'];
+		    $strPoint = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $str);
+			/*20190401 end*/
+
 			$strPoint = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPoint);
 			$varsData['strPointExt'] = $strPoint;
 		}

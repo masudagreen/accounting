@@ -387,9 +387,10 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsPreference extends Code_Else_Pl
 			'numFiscalPeriod'  => $arr['numFiscalPeriod'],
 		));
 
+		/*20190401 start*/
 		$str = '('
-			. $arr['varsTmpl']['strHeisei']
-			. $varsPeriod['numStartHeisei']
+			//. $arr['varsTmpl']['strHeisei']
+			. $varsPeriod['strStartNengoYear']
 			. ')'
 			. ' '
 			. $varsPeriod['numStartYear']
@@ -400,8 +401,8 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsPreference extends Code_Else_Pl
 		$str .= ' ~ ';
 
 		$str .= '('
-			. $arr['varsTmpl']['strHeisei']
-			. $varsPeriod['numEndHeisei']
+			//. $arr['varsTmpl']['strHeisei']
+			. $varsPeriod['strEndNengoYear']
 			. ')'
 			. ' '
 			. $varsPeriod['numEndYear']
@@ -409,6 +410,9 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsPreference extends Code_Else_Pl
 			. $varsPeriod['numEndMonth']
 			. '/'
 			. $arr['varsTmpl']['strPeriodEnd'];
+		/*20190401 end*/
+
+
 
 		return $str;
 	}
@@ -660,12 +664,22 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsPreference extends Code_Else_Pl
 			'flagFiscalPeriod' => $arr['varsFlag']['flagFiscalPeriod'],
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
-
+		/*20190401 start*/
+/*
 		$str = $arr['vars']['varsItem']['strPeriod'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
+		*/
+		$str = $arr['vars']['varsItem']['strPeriod20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
+		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
+		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
+		/*20190401 end*/
+
+
 		$arrayCsv[] = array($strPeriod);
 
 		//strUnit

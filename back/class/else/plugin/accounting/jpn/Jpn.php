@@ -946,9 +946,29 @@ class Code_Else_Plugin_Accounting_Jpn_Jpn extends Code_Else_Plugin_Accounting_Ac
 		$arrStartDate = $classTime->getLocal(array('stamp' => $data['stampMin']));
 		$arrEndDate = $classTime->getLocal(array('stamp' => $data['stampMax']));
 
+		/*20190401 start*/
+		$flagStartNengo = $classTime->getFlagNengo(array('stamp' => $data['stampMin']));
+		$flagEndNengo = $classTime->getFlagNengo(array('stamp' => $data['stampMax']));
+		$numStartNengoYear = $classTime->getNengoYear(array('stamp' => $data['stampMin'], 'numYear' => $numStartYear));
+		$numEndNengoYear = $classTime->getNengoYear(array('stamp' => $data['stampMax'], 'numYear' => $numEndYear));
+
+		$strStartNengoYear = $classTime->getStrNengoYear(array('stamp' => $data['stampMin'], 'numYear' => $numStartYear));
+		$strEndNengoYear = $classTime->getStrNengoYear(array('stamp' => $data['stampMax'], 'numYear' => $numEndYear));
+
+		/*20190401 end*/
+
 		$data = array(
 			'stampStart'     => $data['stampMin'],
 			'stampEnd'       => $data['stampMax'],
+
+			/*20190401 start*/
+		    'flagStartNengo'    => $flagStartNengo,
+		    'flagEndNengo'      => $flagEndNengo,
+		    'numStartNengoYear' => $numStartNengoYear,
+		    'numEndNengoYear'   => $numEndNengoYear,
+		    'strStartNengoYear' => $strStartNengoYear,
+		    'strEndNengoYear'   => $strEndNengoYear,
+		    /*20190401 end*/
 
 			'numStartHeisei' => $numStartHeisei,
 			'numStartYear'   => $numStartYear,

@@ -382,9 +382,13 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput extends Code_Else_Plugin
 
 						$numYear = $classTime->getNengoYear(array('stamp' => $data, 'numYear' => $arrDate['year']));
 						$flagNengo = $classTime->getFlagNengo(array('stamp' => $data));
+						/*20190401 start*/
+						$strNengoYear = $classTime->getStrNengoYear(array('stamp' => $data, 'numYear' => $arrDate['year']));
 
-						$rowData[$keyId . 'Ext'] = str_replace('<%replace%>', $numYear, $vars['varsItem']['varsOutput']['str' . $flagNengo]);
+						$rowData[$keyId . 'Ext'] = str_replace('<%replace%>', $strNengoYear, $vars['varsItem']['varsOutput']['strNengo']);
+						/*20190401 end*/
 						$rowData[$keyId . 'Ext'] .= $str;
+
 					}
 
 				} elseif (preg_match("/^arrCommaDepMonth$/", $keyId)) {
@@ -430,8 +434,11 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput extends Code_Else_Plugin
 
 				$numYear = $classTime->getNengoYear(array('stamp' => $data, 'numYear' => $arrDate['year']));
 				$flagNengo = $classTime->getFlagNengo(array('stamp' => $data));
+				/*20190401 start*/
+				$strNengoYear = $classTime->getStrNengoYear(array('stamp' => $data, 'numYear' => $arrDate['year']));
 
-				$rowData[$valueStr . 'PeriodExt'] = str_replace('<%replace%>', $numYear, $vars['varsItem']['varsOutput']['str' . $flagNengo]);
+				$rowData[$valueStr . 'PeriodExt'] = str_replace('<%replace%>', $strNengoYear, $vars['varsItem']['varsOutput']['strNengo']);
+				/*20190401 end*/
 				$rowData[$valueStr . 'PeriodExt'] .= $str;
 			}
 
@@ -999,6 +1006,8 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput extends Code_Else_Plugin
 			'flagFiscalPeriod' => 'f1',
 			'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
+
+		/*
 		$str = $vars['varsItem']['varsOutput']['strPeriodExt'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
@@ -1010,6 +1019,21 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsOutput extends Code_Else_Plugin
 		$strPoint = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $str);
 		$strPoint = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPoint);
 		$varsData['strPointExt'] = $strPoint;
+
+		*/
+
+		$str = $vars['varsItem']['varsOutput']['strPeriodExt20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
+		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
+		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
+		$varsData['strPeriodExt'] = $strPeriod;
+
+		$str = $arr['vars']['varsItem']['varsOutput']['strPointExt20190401'];
+		$strPoint = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $str);
+		$strPoint = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPoint);
+		$varsData['strPointExt'] = $strPoint;
+
 
 		return $varsData;
 	}

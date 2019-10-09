@@ -98,7 +98,10 @@ $vars = array(
 
 		'strEntity' => '事業体(<%replace%>)',
 		'strNum' => '会期(第<%replace%>期)',
+	    /*20190401 start*/
 		'strPeriod' => '会計期間(自 平成<%strStartHeisei%>年<%strStartMonth%>月1日　至 平成<%strEndHeisei%>年<%strEndMonth%>月末日)',
+	    'strPeriod20190401' => '会計期間(自 <%strStartNengoYear%>年<%strStartMonth%>月1日　至 <%strEndNengoYear%>年<%strEndMonth%>月末日)',
+	    /*20190401 end*/
 		'strUnit' => '単位(円)',
 		'numFiscalPeriod' => '第<%replace%>期',
 		'varsTitle' => array(
@@ -114,7 +117,10 @@ $vars = array(
 			'strNum' => '第<%replace%>期',
 			'strYear' => '年',
 			'strPer' => '％',
+			/*20190401 start*/
 			'strPeriodExt' => '自 平成<%strStartHeisei%>年<%strStartMonth%>月1日  至 平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+		    'strPeriodExt20190401' => '自 <%strStartNengoYear%>年<%strStartMonth%>月1日  至 <%strEndNengoYear%>年<%strEndMonth%>月末日',
+		    /*20190401 end*/
 			'strUnit' => '単位(円)',
 			'strStatus' => '状態',
 			'strTitleList' => '固定資産一覧',
@@ -122,7 +128,10 @@ $vars = array(
 			'strTitleSheet' => '固定資産台帳',
 			'strBlank' => '　',
 			'strNumColumn' => '会期',
+			/*20190401 start*/
 			'strPointExt' => '平成<%strEndHeisei%>年<%strEndMonth%>月末日',
+		    'strPointExt20190401' => '<%strEndNengoYear%>年<%strEndMonth%>月末日',
+		    /*20190401 end*/
 			'strDate' => '日付',
 			'strStatusData' => '',
 			'strRemoveFake' => '削扱',
@@ -133,8 +142,11 @@ $vars = array(
 			'idDepartment' => '部門',
 			'strDepColumn' => '償却額',
 			'numValueNetClosingColumn' => '帳簿価額',
+		    /*20190401 start*/
 			'strShouwa' => '(昭和<%replace%>年)',
 			'strHeisei' => '(平成<%replace%>年)',
+		    'strNengo' => '(<%replace%>年)',
+			/*20190401 end*/
 			'strDep' => '減価償却費',
 			'strOpeningDep' => '記帳開始年度期首償却累計額',
 			'strNumValueCompression' => '圧縮後帳簿価額',

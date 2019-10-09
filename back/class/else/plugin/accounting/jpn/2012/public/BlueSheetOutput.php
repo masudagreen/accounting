@@ -276,8 +276,17 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 			'flagFiscalPeriod' => 'f1',
 		));
 
-		if ($varsFiscalPeriod['numStartYear'] >= 2015) {
+		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2016) {
+			$this->_extSelf['numYearSheet'] = '2016';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
+			$this->_extSelf['numYearSheet'] = '2017';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		    $this->_extSelf['numYearSheet'] = '2018';
 		}
 
 		if ($varsRequest['query']['func']) {
@@ -571,8 +580,6 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 			$this->_childSelf[$str] = $this->_getNumValue($varsValue[$i]['netSales']['sumNext']);
 			$num += 30;
 		}
-
-
 
 		//仕入金額
 		$num = 610;
@@ -961,13 +968,23 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 			$arrDate = $classTime->getLocal(array('stamp' => $value['stampBuy']));
 			$numYear = $classTime->getNengoYear(array('stamp' => $value['stampBuy'], 'numYear' => $arrDate['year']));
 			$flagNengo = $classTime->getFlagNengo(array('stamp' => $value['stampBuy']));
-			if (!($flagNengo == 'Shouwa' || $flagNengo == 'Heisei')) {
+
+
+			/*20190401 start*/
+			if (!($flagNengo == 'Shouwa' || $flagNengo == 'Heisei' || $flagNengo == 'Reiwa')) {
 				continue;
 			}
-			$arrayNew['AMF01630_gen_era'] = 3;
+
+    		$arrayNew['AMF01630_gen_era'] = 3;
 			if ($flagNengo == 'Heisei') {
 				$arrayNew['AMF01630_gen_era'] = 4;
+
+			} elseif ($flagNengo == 'Reiwa') {
+			    $arrayNew['AMF01630_gen_era'] = 5;
 			}
+			/*20190401 end*/
+
+
 			$arrayNew['AMF01630_gen_yy'] = $numYear;
 			$arrayNew['AMF01630_gen_mm'] = $arrDate['strMonth'];
 
@@ -1056,6 +1073,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 	protected function _setVarsValue_3_sumDep($arr)
 	{
 		global $varsPluginAccountingAccount;
+		global $classTime;
 
 		$numFiscalPeriod = $varsPluginAccountingAccount['numFiscalPeriodCurrent'];
 
@@ -1076,8 +1094,15 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 				'numFiscalPeriod'  => $numFiscalPeriodStart,
 			));
 
+			/*20190401 start*/
+			/*
 			$strTitle = $arr['vars']['varsOutput']['strSumDep'];
 			$strTitle = str_replace('<%replace%>', $varsPeriod['numStartHeisei'], $strTitle);
+			*/
+			$strTitle = $arr['vars']['varsOutput']['strSumDep20190401'];
+			$strTitle = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $strTitle);
+			/*20190401 end*/
+
 
 			$rowData = array();
 			$rowData['numValue'] = $value['numValue'];
@@ -1115,9 +1140,29 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 			$arrayNew['AMF01620'] = '-';
 
 			//AMF01630	取得年月		yymm	0
+
+
+			/*20190401 start*/
+			$numNengoYear = $varsPeriod['numStartNengoYear'];
+			$flagNengo = $varsPeriod['flagStartNengo'];
+
+			$arrayNew['AMF01630_gen_era'] = 3;
+			if ($flagNengo == 'Heisei') {
+			    $arrayNew['AMF01630_gen_era'] = 4;
+
+			} elseif ($flagNengo == 'Reiwa') {
+			    $arrayNew['AMF01630_gen_era'] = 5;
+			}
+			$arrayNew['AMF01630_gen_yy'] = $numNengoYear;
+            /*
 			$arrayNew['AMF01630_gen_era'] = 4;
 			$arrayNew['AMF01630_gen_yy'] = $varsPeriod['numStartHeisei'];
+			*/
+            /*20190401 end*/
+
+
 			$arrayNew['AMF01630_gen_mm'] = 1;
+
 
 			//AMF01640	取得価額		kingaku	0
 			$arrayNew['AMF01640'] = $rowData['numValue'];
@@ -1240,10 +1285,28 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$ele = $domDoc->createElement('RKO0010');
 
 		$attr = $domDoc->createAttribute('VR');
+
+
+
+		/*変更箇所*/
 		if ($this->_extSelf['numYearSheet'] == 2014) {
 			$attr->value = '14.0.0';
-		} else {
+
+			//2015
+		} elseif ($this->_extSelf['numYearSheet'] == 2015) {
 			$attr->value = '15.0.0';
+
+			//2016
+		} elseif ($this->_extSelf['numYearSheet'] == 2016) {
+			$attr->value = '16.0.0';
+
+			//2017
+		} elseif ($this->_extSelf['numYearSheet'] == 2017) {
+		    $attr->value = '17.0.0';
+
+		    //2018
+		} else {
+			$attr->value = '18.0.0';
 		}
 		$ele->appendChild($attr);
 
@@ -1860,7 +1923,24 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$ele->appendChild($eleGen);
 
 		$eleGen = $domDoc->createElement('gen:yy');
-		$eleGen->nodeValue = 27;
+
+		/*変更箇所*/
+		if ($this->_extSelf['numYearSheet'] == 2014) {
+			$eleGen->nodeValue = 26;
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2015) {
+			$eleGen->nodeValue = 27;
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2016) {
+			$eleGen->nodeValue = 28;
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2017) {
+		    $eleGen->nodeValue = 29;
+
+		} else {
+			$eleGen->nodeValue = 30;
+		}
+
 		$ele->appendChild($eleGen);
 
 		return $ele;
@@ -3195,7 +3275,23 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 
 		//--------------------------------------------------------------------------------------------------------------------------------------
 		$eleGen = $domDoc->createElement('gen:yy');
-		$eleGen->nodeValue = '26';//27
+
+		/*変更箇所*/
+		if ($this->_extSelf['numYearSheet'] == 2014) {
+			$eleGen->nodeValue = '26';
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2015) {
+			$eleGen->nodeValue = '27';
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2016) {
+			$eleGen->nodeValue = '28';
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2017) {
+		    $eleGen->nodeValue = '29';
+
+		} else {
+			$eleGen->nodeValue = '30';
+		}
 		$ele->appendChild($eleGen);
 
 		$eleGen = $domDoc->createElement('gen:mm');

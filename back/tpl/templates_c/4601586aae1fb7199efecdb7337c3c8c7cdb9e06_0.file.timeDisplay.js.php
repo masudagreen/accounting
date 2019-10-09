@@ -1,7 +1,7 @@
-<?php /* Smarty version 3.1.24, created on 2016-08-18 12:50:23
+<?php /* Smarty version 3.1.24, created on 2019-06-16 09:02:08
          compiled from "/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/core/base/js/lib/timeDisplay.js" */ ?>
 <?php
-/*%%SmartyHeaderCode:210263962457b5af0f172834_63730092%%*/
+/*%%SmartyHeaderCode:1024667125d0605901d6348_67925889%%*/
 if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
@@ -9,24 +9,24 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '4601586aae1fb7199efecdb7337c3c8c7cdb9e06' => 
     array (
       0 => '/storage/emulated/0/htdocs/rucaro/back/tpl/templates/else/core/base/js/lib/timeDisplay.js',
-      1 => 1471523676,
+      1 => 1560675140,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '210263962457b5af0f172834_63730092',
+  'nocache_hash' => '1024667125d0605901d6348_67925889',
   'variables' => 
   array (
     'varsLoad' => 0,
   ),
   'has_nocache_code' => false,
   'version' => '3.1.24',
-  'unifunc' => 'content_57b5af0f1958b3_11310503',
+  'unifunc' => 'content_5d0605901dc2d9_17594172',
 ),false);
 /*/%%SmartyHeaderCode%%*/
-if ($_valid && !is_callable('content_57b5af0f1958b3_11310503')) {
-function content_57b5af0f1958b3_11310503 ($_smarty_tpl) {
+if ($_valid && !is_callable('content_5d0605901dc2d9_17594172')) {
+function content_5d0605901dc2d9_17594172 ($_smarty_tpl) {
 
-$_smarty_tpl->properties['nocache_hash'] = '210263962457b5af0f172834_63730092';
+$_smarty_tpl->properties['nocache_hash'] = '1024667125d0605901d6348_67925889';
 ?>
 
 /*
@@ -138,6 +138,48 @@ var Code_Lib_TimeDisplay = Class.create({
 		return str;
 	},
 
+
+	/*
+	{
+		stamp : num,
+		numYear : num
+	}
+ * */
+	getStrNengoYear : function(obj)
+	{
+		var numYear = parseFloat(obj.numYear);
+		var flag = this.getFlagNengo({stamp : obj.stamp});
+		if (flag == 'Meiji') {
+			numYear -= 1867;
+
+		} else if (flag == 'Taishou') {
+			numYear -= 1911;
+
+		} else if (flag == 'Shouwa') {
+			numYear -= 1925;
+
+		/*20190401 start*/
+		} else if (flag == 'Heisei') {
+			numYear -= 1988;
+
+		} else if (flag == 'Reiwa') {
+			numYear -= 2018;
+		}
+		/*20190401 end*/
+
+		var strYear = numYear;
+	    if (numYear == 1) {
+	        strYear = this.varsLoad.strGan;
+	    }
+
+	    var flagNengo = 'str' + flag;
+	    var strNengoYear = this.varsLoad[flagNengo] + strYear;
+
+	    return strNengoYear;
+
+	},
+
+
 	/*
 		{
 			stamp : num,
@@ -157,9 +199,14 @@ var Code_Lib_TimeDisplay = Class.create({
 		} else if (flag == 'Shouwa') {
 			numYear -= 1925;
 
+		/*20190401 start*/
 		} else if (flag == 'Heisei') {
 			numYear -= 1988;
+
+		} else if (flag == 'Reiwa') {
+			numYear -= 2018;
 		}
+		/*20190401 end*/
 
 		return numYear;
 	},
@@ -204,9 +251,14 @@ var Code_Lib_TimeDisplay = Class.create({
 		} else if (-1357635600 <= stamp && stamp < 600188400) {
 			return 'Shouwa';
 
-		} else if (600188400 <= stamp) {
+		/*20190401 start*/
+		} else if (600188400 <= stamp && stamp < 1556636400) {
 			return 'Heisei';
+
+		} else if (1556636400 <= stamp) {
+			return 'Reiwa';
 		}
+		/*20190401 end*/
 
 		return '';
 	}

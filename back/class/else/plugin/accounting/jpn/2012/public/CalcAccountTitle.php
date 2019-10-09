@@ -78,6 +78,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle_2012_Public extends Code_
 				$data['varsValueNext']['departmentNet'] = $dataTmpl;
 			}
 
+			if(!isset($varsFSValueNext['jsonJgaapAccountTitleBS'][$key])){
+			    if(!is_array($varsFSValueNext['jsonJgaapAccountTitleBS'])){
+			        $varsFSValueNext['jsonJgaapAccountTitleBS'] = array();
+			        $varsFSValueNext['jsonJgaapAccountTitleBS'][$key] = array();
+			    }
+			}
+
 			$varsFSValueNext['jsonJgaapAccountTitleBS'][$key] = $data['varsValueNext'];
 
 			$data = $this->_loopVarsNext(array(
@@ -87,7 +94,15 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle_2012_Public extends Code_
 				'idParent'      => '',
 			));
 
+			if(!isset($varsFSValueNext['jsonJgaapFSBS'][$key])){
+			    if(!is_array($varsFSValueNext['jsonJgaapFSBS'])){
+			        $varsFSValueNext['jsonJgaapFSBS'] = array();
+			        $varsFSValueNext['jsonJgaapFSBS'][$key] = array();
+			    }
+			}
+
 			$varsFSValueNext['jsonJgaapFSBS'][$key] = $data['varsValueNext'];
+
 
 		}
 

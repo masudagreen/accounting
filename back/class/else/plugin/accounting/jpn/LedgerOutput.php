@@ -582,12 +582,24 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 				'flagFiscalPeriod' => 'f1',
 				'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
+
+		/*20190401 start*/
+		/*
 		$str = $vars['varsItem']['varsOutput']['strPeriodExt'];
 		$strPeriod = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 		$strPeriod = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strPeriod);
 		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
 		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
 		$varsData['strPeriodExt'] = $strPeriod;
+		*/
+
+		$str = $vars['varsItem']['varsOutput']['strPeriodExt20190401'];
+		$strPeriod = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+		$strPeriod = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strPeriod);
+		$strPeriod = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strPeriod);
+		$strPeriod = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strPeriod);
+		$varsData['strPeriodExt'] = $strPeriod;
+		/*20190401 end*/
 
 		//strDepartment
 		$strDepartment = '';
@@ -765,6 +777,13 @@ class Code_Else_Plugin_Accounting_Jpn_LedgerOutput extends Code_Else_Plugin_Acco
 				if (!$flagUse) {
 					continue;
 				}
+				//開始残高がない場合＆期中仕訳が一個もない
+				//会社、資本金
+				//個人一般＆
+
+
+
+
 
 				$arr['varsFlag']['idAccountTitle'] = $idAccountTitle;
 				$arr['varsFlag']['idSubAccountTitle'] = 'none';

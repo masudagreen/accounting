@@ -107,6 +107,48 @@ var Code_Lib_TimeDisplay = Class.create({
 		return str;
 	},
 
+
+	/*
+	{
+		stamp : num,
+		numYear : num
+	}
+ * */
+	getStrNengoYear : function(obj)
+	{
+		var numYear = parseFloat(obj.numYear);
+		var flag = this.getFlagNengo({stamp : obj.stamp});
+		if (flag == 'Meiji') {
+			numYear -= 1867;
+
+		} else if (flag == 'Taishou') {
+			numYear -= 1911;
+
+		} else if (flag == 'Shouwa') {
+			numYear -= 1925;
+
+		/*20190401 start*/
+		} else if (flag == 'Heisei') {
+			numYear -= 1988;
+
+		} else if (flag == 'Reiwa') {
+			numYear -= 2018;
+		}
+		/*20190401 end*/
+
+		var strYear = numYear;
+	    if (numYear == 1) {
+	        strYear = this.varsLoad.strGan;
+	    }
+
+	    var flagNengo = 'str' + flag;
+	    var strNengoYear = this.varsLoad[flagNengo] + strYear;
+
+	    return strNengoYear;
+
+	},
+
+
 	/*
 		{
 			stamp : num,
@@ -126,9 +168,14 @@ var Code_Lib_TimeDisplay = Class.create({
 		} else if (flag == 'Shouwa') {
 			numYear -= 1925;
 
+		/*20190401 start*/
 		} else if (flag == 'Heisei') {
 			numYear -= 1988;
+
+		} else if (flag == 'Reiwa') {
+			numYear -= 2018;
 		}
+		/*20190401 end*/
 
 		return numYear;
 	},
@@ -173,9 +220,14 @@ var Code_Lib_TimeDisplay = Class.create({
 		} else if (-1357635600 <= stamp && stamp < 600188400) {
 			return 'Shouwa';
 
-		} else if (600188400 <= stamp) {
+		/*20190401 start*/
+		} else if (600188400 <= stamp && stamp < 1556636400) {
 			return 'Heisei';
+
+		} else if (1556636400 <= stamp) {
+			return 'Reiwa';
 		}
+		/*20190401 end*/
 
 		return '';
 	}

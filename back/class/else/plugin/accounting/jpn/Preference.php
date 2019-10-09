@@ -581,11 +581,21 @@ class Code_Else_Plugin_Accounting_Jpn_Preference extends Code_Else_Plugin_Accoun
 							'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 						));
 
+						/*20190401 start*/
+						/*
 						$str = $value['varsTmplTerm'];
 						$strTerm = str_replace('<%strStartHeisei%>', $varsPeriod['numStartHeisei'], $str);
 						$strTerm = str_replace('<%strEndHeisei%>', $varsPeriod['numEndHeisei'], $strTerm);
 						$strTerm = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strTerm);
 						$strTerm = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strTerm);
+						*/
+						$str = $value['varsTmplTerm20190401'];
+						$strTerm = str_replace('<%strStartNengoYear%>', $varsPeriod['strStartNengoYear'], $str);
+						$strTerm = str_replace('<%strEndNengoYear%>', $varsPeriod['strEndNengoYear'], $strTerm);
+
+						$strTerm = str_replace('<%strStartMonth%>', $varsPeriod['numStartMonth'], $strTerm);
+						$strTerm = str_replace('<%strEndMonth%>', $varsPeriod['numEndMonth'], $strTerm);
+						/*20190401 end*/
 
 						$strItem .= $this->_getVarsIdEntityCurrentStrTitle(array(
 							'vars'       => $varsEntityConfig,
