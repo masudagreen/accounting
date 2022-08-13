@@ -45,7 +45,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 		));
 
 
-
+		//loop check
 		/*変更を加えるときに>=　と== があるので注意*/
 		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
@@ -56,9 +56,16 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
 			$this->_extSelf['numYearSheet'] = '2017';
 
-		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2018) {
 		    $this->_extSelf['numYearSheet'] = '2018';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2019) {
+		    $this->_extSelf['numYearSheet'] = '2019';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2020) {
+		    $this->_extSelf['numYearSheet'] = '2020';
 		}
+
 
 		$this->_checkEntity();
 
@@ -496,12 +503,15 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 					continue;
 				}
 			}
+			//loop check
 			if ($value['id'] == 'DummyNoneVersion') {
 				if ($arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2014
 					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2015
 					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
 					&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
 				    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+				    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2019
+				    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2020
 					) {
 					$arrayNew[] = $value;
 				}
@@ -513,6 +523,8 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
 				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
 			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2019
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2020
 				) {
 				continue;
 			}
@@ -550,6 +562,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 			$arr['vars']['portal']['varsDetail']['varsStart']['varsEdit']['flagEditUse'] = 0;
 		}
 
+		//loop check
 		//tempNext
 		if (preg_match("/^(tempNext)$/", $flag)
 			|| (
@@ -558,6 +571,8 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheet_2012_Public extends Code_Else_Pl
 				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2016
 				&& $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2017
 			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2018
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2019
+			    && $arr['varsItem']['varsFiscalPeriod']['numStartYear'] != 2020
 			)
 		) {
 			$arr['vars']['portal']['varsDetail']['varsDetail']['varsHtml'] = '';

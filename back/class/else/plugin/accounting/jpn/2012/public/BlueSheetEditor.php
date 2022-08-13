@@ -36,6 +36,7 @@
 			'flagFiscalPeriod' => 'f1',
 		));
 
+		//loop check
 		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
 
@@ -45,8 +46,14 @@
 		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
 			$this->_extSelf['numYearSheet'] = '2017';
 
-		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2018) {
 		    $this->_extSelf['numYearSheet'] = '2018';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2019) {
+		    $this->_extSelf['numYearSheet'] = '2019';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2020) {
+		    $this->_extSelf['numYearSheet'] = '2020';
 		}
 
 		$flag = $this->_getCurrentFlagNow(array());

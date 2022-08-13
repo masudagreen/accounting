@@ -452,7 +452,8 @@ var Code_Plugin_Accounting_BalanceEditor = Class.create(Code_Lib_ExtEditor,
 		obj.vars.value = this._checkNumValue({
 			value : obj.vars.value
 		});
-		if (!obj.vars.value) {
+
+		if (obj.vars.value === '') {
 			this._varsSensitive.ins.updateVarsTarget({
 				idTarget : obj.vars.id,
 				strKey   : 'value',

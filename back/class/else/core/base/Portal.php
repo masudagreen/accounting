@@ -573,17 +573,7 @@ exit;
 	 */
 	protected function _checkUpdateVersion()
 	{
-		$flag = 0;
-		$array = scandir(PATH_BACK_DAT_TEMP);
-		foreach ($array as $key => $value) {
-			if (preg_match( "/^\.{1,2}$/", $value)) {
-				continue;
-			}
-			if ($value == 'flagUpdate.cgi') {
-				$flag = 1;
-				break;
-			}
-		}
+		$flag = 1;
 
 		return $flag;
 	}

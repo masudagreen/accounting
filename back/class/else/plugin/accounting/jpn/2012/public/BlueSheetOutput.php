@@ -20,7 +20,9 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 
 	protected $_childSelf = array(
 		'flagCR' => 0,
+
 		'zeimusho_CD' => '',
+	    'TEISYUTSU_Nengo' => 5,
 		'TEISYUTSU_DAY_gen_yy' => '',
 		'TEISYUTSU_DAY_gen_mm' => '',
 		'TEISYUTSU_DAY_gen_dd' => '',
@@ -95,6 +97,8 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		'AMF00960' => 0,//雑収入（売上（収入）金額） miscellaneousIncome
 		'AMF00980' => 0,//月別売上（収入）金額及び仕入金額（計）	売上（収入）金額
 		'AMF00990' => 0,//仕入金額
+	    //'AMF00995' => 0,//うち軽減税率対象 売上（収入）金額
+	    //'AMF00997' => 0,//うち軽減税率対象 仕入金額
 		'AMF01010' => 0,//個別評価による本年分繰入額
 		'AMF01030' => 0,//年末における一括評価による貸倒引当金の繰入れの対象となる貸金の合計額
 		'AMF01040' => 0,//本年分繰入限度額
@@ -276,6 +280,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 			'flagFiscalPeriod' => 'f1',
 		));
 
+		//loop check
 		if ($varsFiscalPeriod['numStartYear'] == 2015) {
 			$this->_extSelf['numYearSheet'] = '2015';
 
@@ -285,8 +290,14 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		} elseif ($varsFiscalPeriod['numStartYear'] == 2017) {
 			$this->_extSelf['numYearSheet'] = '2017';
 
-		} elseif ($varsFiscalPeriod['numStartYear'] >= 2018) {
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2018) {
 		    $this->_extSelf['numYearSheet'] = '2018';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2019) {
+		    $this->_extSelf['numYearSheet'] = '2019';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] >= 2020) {
+		    $this->_extSelf['numYearSheet'] = '2020';
 		}
 
 		if ($varsRequest['query']['func']) {
@@ -389,6 +400,19 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 
 		$arrDate = $classTime->getLocal(array('stamp' => TIMESTAMP));
 		$numYear = $classTime->getNengoYear(array('stamp' => TIMESTAMP, 'numYear' => $arrDate['year']));
+
+		$flagNengo = $classTime->getFlagNengo(array('stamp' => TIMESTAMP));
+		if ($flagNengo == 'Shouwa') {
+		    $this->_childSelf['TEISYUTSU_Nengo'] = 3;
+
+		} else if ($flagNengo == 'Heisei') {
+		    $this->_childSelf['TEISYUTSU_Nengo'] = 4;
+
+		} else {
+		    //令和
+		    $this->_childSelf['TEISYUTSU_Nengo'] = 5;
+		}
+
 		$this->_childSelf['TEISYUTSU_DAY_gen_yy'] = $numYear;
 		$this->_childSelf['TEISYUTSU_DAY_gen_mm'] = $arrDate['month'];
 		$this->_childSelf['TEISYUTSU_DAY_gen_dd'] = $arrDate['date'];
@@ -550,7 +574,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$this->_childSelf['AMF00500'] = $this->_getNumValue($varsValue['currentTermProfitOrLossNet']['sumNext']);
 
 		//青色申告特別控除額
-		//650,000
+		//650,000　※etax提出が前提なので550,000としない。
 		if ($this->_childSelf['AMF01530']) {
 			$this->_childSelf['AMF00510'] = $this->_childSelf['AMF01550'];
 
@@ -604,6 +628,25 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 
 		//仕入金額
 		$this->_childSelf['AMF00990'] = $this->_getNumValue($varsValue['f1']['goodsPurcheses']['sumNext']) - $sumCR;
+
+
+
+
+
+        //省略可能、あくまで任意入力
+		//うち軽減税率対象 売上（収入）金額
+		//$this->_childSelf['AMF00995'] = 0;
+
+
+		//省略可能、あくまで任意入力
+		//うち軽減税率対象 仕入金額
+		//$this->_childSelf['AMF00997'] = 0;
+
+
+
+
+
+
 
 		$this->_childSelf['AMF01010'] = 0;//個別評価による本年分繰入額
 		$this->_childSelf['AMF01030'] = 0;//年末における一括評価による貸倒引当金の繰入れの対象となる貸金の合計額
@@ -1287,7 +1330,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$attr = $domDoc->createAttribute('VR');
 
 
-
+		//loop check
 		/*変更箇所*/
 		if ($this->_extSelf['numYearSheet'] == 2014) {
 			$attr->value = '14.0.0';
@@ -1305,8 +1348,16 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		    $attr->value = '17.0.0';
 
 		    //2018
+		} elseif ($this->_extSelf['numYearSheet'] == 2018) {
+		    $attr->value = '18.0.0';
+
+		    //2019
+		} elseif ($this->_extSelf['numYearSheet'] == 2019) {
+		    $attr->value = '19.0.0';
+
+		    //2020
 		} else {
-			$attr->value = '18.0.0';
+			$attr->value = '20.0.0';
 		}
 		$ele->appendChild($attr);
 
@@ -1626,7 +1677,7 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$ele->appendChild($attr);
 
 		$eleGen = $domDoc->createElement('gen:era');
-		$eleGen->nodeValue = 4;
+		$eleGen->nodeValue = $this->_childSelf['TEISYUTSU_Nengo'];
 		$ele->appendChild($eleGen);
 
 		$eleGen = $domDoc->createElement('gen:yy');
@@ -1919,11 +1970,22 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$ele->appendChild($attr);
 
 		$eleGen = $domDoc->createElement('gen:era');
-		$eleGen->nodeValue = 4;
+
+		//○○年分なので開始月年号基準
+		if ($this->_extSelf['numYearSheet'] <= 2018) {
+		    //平成
+		    $eleGen->nodeValue = 4;
+
+		} else {
+		    //開始月年号基準だが、2019年分は平成31年分ではなく令和元年分となる
+		    //令和
+		    $eleGen->nodeValue = 5;
+		}
 		$ele->appendChild($eleGen);
 
 		$eleGen = $domDoc->createElement('gen:yy');
 
+		//loop check
 		/*変更箇所*/
 		if ($this->_extSelf['numYearSheet'] == 2014) {
 			$eleGen->nodeValue = 26;
@@ -1937,8 +1999,14 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		} elseif ($this->_extSelf['numYearSheet'] == 2017) {
 		    $eleGen->nodeValue = 29;
 
+		} elseif ($this->_extSelf['numYearSheet'] == 2018) {
+		    $eleGen->nodeValue = 30;
+
+		} elseif ($this->_extSelf['numYearSheet'] == 2019) {
+		    $eleGen->nodeValue = 1;
+
 		} else {
-			$eleGen->nodeValue = 30;
+			$eleGen->nodeValue = 2;
 		}
 
 		$ele->appendChild($eleGen);
@@ -1970,14 +2038,34 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 	protected function _getTag_KOA210($arr)
 	{
 		global $classTime;
+		global $varsPluginAccountingAccount;
+
+		$varsFiscalPeriod = $this->_getVarsFiscalPeriod(array(
+		    'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+		    'flagFiscalPeriod' => 'f1',
+		));
+
 
 		$domDoc = &$arr['domDoc'];
 
 		$ele = $domDoc->createElement('KOA210');
 
+		//loop check
 		$attr = $domDoc->createAttribute('VR');
-		$attr->value = '7.0';
+		//XML構造設計書(所得-申告)Ver8xのこと
+		if ($varsFiscalPeriod['numStartYear'] <= 2018) {
+		    $attr->value = '7.0';
+
+		} elseif ($varsFiscalPeriod['numStartYear'] == 2019) {
+		    $attr->value = '8.0';
+
+		} else {
+		    //XML構造設計書(所得-申告)のタブKOA210の最新のものを参照する
+		    $attr->value = '9.0';
+		}
 		$ele->appendChild($attr);
+
+
 
 		$attr = $domDoc->createAttribute('id');
 		$attr->value = 'KOA210-1';
@@ -2698,6 +2786,13 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$eleAMF00970 = $this->_getTag_CONTENTS_KOA210_2_AMF00970(array('domDoc' => $domDoc,));
 		$ele->appendChild($eleAMF00970);
 
+		//軽減税率
+		//AMF00993
+		//if ($this->_extSelf['numYearSheet'] >= 2019) {
+    	//	$eleAMF00993 = $this->_getTag_CONTENTS_KOA210_2_AMF00993(array('domDoc' => $domDoc,));
+    	//	$ele->appendChild($eleAMF00993);
+		//}
+
 		return $ele;
 	}
 
@@ -2714,12 +2809,34 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$eleAMF00980->nodeValue = $this->_childSelf['AMF00980'];
 		$ele->appendChild($eleAMF00980);
 
+
 		//AMF00990
-		$eleAMF00990 = $domDoc->createElement('AMF00990');
-		$eleAMF00990->nodeValue = $this->_childSelf['AMF00990'];
-		$ele->appendChild($eleAMF00990);
+	    $eleAMF00990 = $domDoc->createElement('AMF00990');
+	    $eleAMF00990->nodeValue = $this->_childSelf['AMF00990'];
+	    $ele->appendChild($eleAMF00990);
 
 		return $ele;
+	}
+
+	/**
+	*/
+	protected function _getTag_CONTENTS_KOA210_2_AMF00993($arr)
+	{
+	    $domDoc = &$arr['domDoc'];
+
+	    $ele = $domDoc->createElement('AMF00993');
+
+	    //AMF00995
+	    $eleAMF00995 = $domDoc->createElement('AMF00995');
+	    $eleAMF00995->nodeValue = $this->_childSelf['AMF00995'];
+	    $ele->appendChild($eleAMF00995);
+
+	    //AMF00997
+	    $eleAMF00997 = $domDoc->createElement('AMF00997');
+	    $eleAMF00997->nodeValue = $this->_childSelf['AMF00997'];
+	    $ele->appendChild($eleAMF00997);
+
+	    return $ele;
 	}
 
 	/**
@@ -3270,12 +3387,21 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		$ele = $domDoc->createElement('AMG00010');
 
 		$eleGen = $domDoc->createElement('gen:era');
-		$eleGen->nodeValue = '4';
+		//期末なので年号は期末時の年号となる。
+		//開始年号が2019の場合の期末年号は令和
+		if ($this->_extSelf['numYearSheet'] <= 2018) {
+		    $eleGen->nodeValue = '4';
+
+		} else {
+		    $eleGen->nodeValue = '5';
+		}
+
 		$ele->appendChild($eleGen);
 
 		//--------------------------------------------------------------------------------------------------------------------------------------
 		$eleGen = $domDoc->createElement('gen:yy');
 
+		//loop check
 		/*変更箇所*/
 		if ($this->_extSelf['numYearSheet'] == 2014) {
 			$eleGen->nodeValue = '26';
@@ -3289,8 +3415,16 @@ class Code_Else_Plugin_Accounting_Jpn_BlueSheetOutput_2012_Public extends Code_E
 		} elseif ($this->_extSelf['numYearSheet'] == 2017) {
 		    $eleGen->nodeValue = '29';
 
+		} elseif ($this->_extSelf['numYearSheet'] == 2018) {
+		    $eleGen->nodeValue = '30';
+
+		    //開始年号が2019の場合の期末年号は令和
+		} elseif ($this->_extSelf['numYearSheet'] == 2019) {
+		    $eleGen->nodeValue = '1';
+
 		} else {
-			$eleGen->nodeValue = '30';
+
+		    $eleGen->nodeValue = '2';
 		}
 		$ele->appendChild($eleGen);
 

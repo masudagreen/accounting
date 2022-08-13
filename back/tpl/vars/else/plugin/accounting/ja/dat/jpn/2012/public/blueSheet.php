@@ -74,7 +74,7 @@ $vars = array(
 		'0' => array(
 			'strTitle' => 'e-TAXソフト取り込み必須項目',
 			'strSpace' => '　',
-			'strCaution' => '※<a href="javascript:void(window.open(\'http://www.e-tax.nta.go.jp/download/e-taxSoftDownLoad.htm\'));" rel="noreferrer">e-TAXソフト</a>に組み込むには以下の項目を設定する必要があります。',
+			'strCaution' => '※<a href="javascript:void(window.open(\'http://www.e-tax.nta.go.jp/download/e-taxSoftDownLoad.htm\'));" rel="noreferrer">e-TAXソフト</a>に組み込むには以下の項目を設定する必要があります。<br>※令和元年分の青色申告決算書より「月別売上（収入）金額及び仕入金額」の下に「うち軽減税率対象」が新設されました。ただ入力は任意で省略可能なため自動入力を見送っております。',
 		),
 
 	),

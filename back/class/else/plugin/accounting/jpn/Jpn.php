@@ -669,11 +669,7 @@ class Code_Else_Plugin_Accounting_Jpn_Jpn extends Code_Else_Plugin_Accounting_Ac
 				);
 
 			} else {
-				if(is_array($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']])){
-					$strTitleFSTag .= '['. count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]) .']';
-				} else {
-					$strTitleFSTag .= '['. 0 .']';
-				}
+				$strTitleFSTag .= '['. count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]) .']';
 				$arr['arrSelectTag'][] = array(
 					'strTitle'     => $strTitleFSTag,
 					'value'        => $value['vars']['idTarget'],

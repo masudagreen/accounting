@@ -63,6 +63,20 @@ $vars =  array(
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 			),
 		),
+		array(
+			'flagType' =>  'loop',
+			'strTitle' =>  '天皇誕生日',
+			'stamp' =>  0,'term' =>  array( 'stampStart' =>  0,'stampEnd' =>  0,),
+			'loop' =>  array(
+				'flagType' =>  'year',
+				'arrayMonth' =>  array(1),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(23),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
 		array(#2011 only
 			'flagType' =>  'term',
 			'strTitle' =>  '春分の日',
@@ -198,7 +212,36 @@ $vars =  array(
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 			),
 		),
-
+		array(#2020 only
+			'flagType' =>  'term',
+			'strTitle' =>  '春分の日',
+			'stamp' =>  0,
+			'term' =>  array( 'stampStart' => 1584630000000, 'stampEnd' =>  1584716399000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+		array(#2021 only
+			'flagType' =>  'term',
+			'strTitle' =>  '春分の日',
+			'stamp' =>  0,
+			'term' =>  array( 'stampStart' => 1616166000000, 'stampEnd' =>  1616252399000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
 		array(
 			'flagType' =>  'loop',
 			'strTitle' =>  '昭和の日',
@@ -301,7 +344,8 @@ $vars =  array(
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 			),
 		),
-		array(
+/*
+		array(#2020 only 7/23
 			'flagType' =>  'loop',
 			'strTitle' =>  '海の日',
 			'stamp' =>  0,'term' =>  array( 'stampStart' =>  0,'stampEnd' =>  0,),
@@ -315,7 +359,54 @@ $vars =  array(
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 			),
 		),
-		array(
+*/
+		array(#2020 only 7/23
+			'flagType' =>  'term',
+			'strTitle' =>  '海の日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1595430000000, 'stampEnd' =>  1595516399000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+		array(#2021 only 7/22
+			'flagType' =>  'term',
+			'strTitle' =>  '海の日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1626879600000, 'stampEnd' =>  1626965999000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+		array(#2021 only 7/223
+			'flagType' =>  'term',
+			'strTitle' =>  '体育の日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1626966000000, 'stampEnd' =>  1627052399000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+/*
+		array(#2020 only 8/10
 			'flagType' =>  'loop',
 			'strTitle' =>  '山の日',
 			'stamp' =>  0,'term' =>  array( 'stampStart' =>  0,'stampEnd' =>  0,),
@@ -324,6 +415,37 @@ $vars =  array(
 				'arrayMonth' =>  array(7),
 				'arrayWeek' =>  array(),
 				'arrayDate' =>  array(11),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+*/
+		array(#2020 only 8/10
+			'flagType' =>  'term',
+			'strTitle' =>  '山の日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1597017600000, 'stampEnd' =>  1597071599000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+		array(#2021 only 8/8
+			'flagType' =>  'term',
+			'strTitle' =>  '山の日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1628348400000, 'stampEnd' =>  1628434799000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
 				'arrayDay' =>  array(),
 				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
@@ -493,15 +615,61 @@ $vars =  array(
 				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
 			),
 		),
-
-		array(
+		array(#2020 only
+			'flagType' =>  'term',
+			'strTitle' =>  '秋分の日',
+			'stamp' =>  0,
+			'term' =>  array( 'stampStart' =>  1600700400000, 'stampEnd' => 1600786799000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+		array(#2021 only
+			'flagType' =>  'term',
+			'strTitle' =>  '秋分の日',
+			'stamp' =>  0,
+			'term' =>  array( 'stampStart' =>  1632322800000, 'stampEnd' => 1632409199000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+/*
+		array(#2020 only 7/24
 			'flagType' =>  'loop',
-			'strTitle' =>  '体育の日',
+			'strTitle' =>  'スポーツの日',
 			'stamp' =>  0,'term' =>  array( 'stampStart' =>  0,'stampEnd' =>  0,),
 			'loop' =>  array(
 				'flagType' =>  'year',
 				'arrayMonth' =>  array(9),
 				'arrayWeek' =>  array(array( 'flagNum' =>  2, 'numDay' =>  1 )),
+				'arrayDate' =>  array(),
+				'arrayDay' =>  array(),
+				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+				'end' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),
+			),
+		),
+*/
+		array(#2020 only 7/24
+			'flagType' =>  'term',
+			'strTitle' =>  'スポーツの日',
+			'stamp' =>  0,
+		    'term' =>  array( 'stampStart' => 1595516400000, 'stampEnd' =>  1595602799000,),
+			'loop' =>  array(
+				'flagType' =>  '',
+				'arrayMonth' =>  array(),
+				'arrayWeek' =>  array(),
 				'arrayDate' =>  array(),
 				'arrayDay' =>  array(),
 				'start' =>  array( 'numHour' =>  0, 'numMin' =>  0 ),

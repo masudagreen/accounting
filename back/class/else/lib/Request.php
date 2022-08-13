@@ -41,14 +41,14 @@ class Code_Else_Lib_Request
 	{
 		global $classEscape;
 
-//		if (get_magic_quotes_gpc()) {
-//			function strip_magic_quotes_slashes($arr)
-//			{
-//				return is_array($arr) ? array_map('strip_magic_quotes_slashes', $arr) : stripslashes($arr);
-//			}
-//			$_GET = strip_magic_quotes_slashes($_GET);
-//			$_POST = strip_magic_quotes_slashes($_POST);
-//		}
+		if (get_magic_quotes_gpc()) {
+			function strip_magic_quotes_slashes($arr)
+			{
+				return is_array($arr) ? array_map('strip_magic_quotes_slashes', $arr) : stripslashes($arr);
+			}
+			$_GET = strip_magic_quotes_slashes($_GET);
+			$_POST = strip_magic_quotes_slashes($_POST);
+		}
 
 		$arr['query'] = array();
 		if ($this->_self['flagType'] == 'or') {
@@ -113,7 +113,7 @@ class Code_Else_Lib_Request
      */
     public function getReferer()
     {
-    	if (!isset($_SERVER['HTTP_REFERER'])) {
+    	if (is_null($_SERVER['HTTP_REFERER'])) {
     		return '';
     	}
 

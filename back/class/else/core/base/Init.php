@@ -7,7 +7,7 @@
 class Code_Else_Core_Base_Init
 {
 	protected $_self = array(
-		'numVersion'            => '1.48.00',
+		'numVersion'            => '1.50.10',
 		'flagConfig'            => 0,
 		'flagAPI'               => 0,
 		'flagRequest'           => 'post',
@@ -564,10 +564,6 @@ class Code_Else_Core_Base_Init
 		ini_set('memory_limit', '128M');
 		error_reporting(E_ALL ^ E_NOTICE);
 		ini_set('display_errors', 1);
-		if (FLAG_TEST) {
-			error_reporting(E_ALL ^ E_NOTICE);
-			ini_set('display_errors', 1);
-		}
 	}
 
 

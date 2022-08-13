@@ -131,7 +131,7 @@ class Code_Else_Plugin_Accounting_Jpn_Budget extends Code_Else_Plugin_Accounting
 		$arrayNew = array();
 		$array = &$vars['portal']['varsDetail']['templateDetail'];
 		foreach ($array as $key => $value) {
-			if ($value['id'] == 'JsonFiscalPeriod' || $value['id'] == 'JsonData') {
+			if ($value['id'] == 'JsonFiscalPeriod' || $value['id'] == 'JsonData' || $value['id'] == 'FlagSplit') {
 				$method = '_updateVarsDetail' . $value['id'];
 				$value = $this->$method(array(
 					'vars'     => $value,
@@ -145,6 +145,21 @@ class Code_Else_Plugin_Accounting_Jpn_Budget extends Code_Else_Plugin_Accounting
 
 
 		return $vars['portal']['varsDetail']['templateDetail'];
+	}
+
+	/**
+		(array(
+			'vars'             => $value,
+			'varsItem'         => $varsItem,
+		))
+	 */
+	protected function _updateVarsDetailFlagSplit($arr)
+	{
+		$arrayOption = $arr['vars']['varsTmpl']['arrayOption'];
+
+		$arr['vars']['arrayOption'] = $arrayOption;
+
+		return $arr['vars'];
 	}
 
 	/**

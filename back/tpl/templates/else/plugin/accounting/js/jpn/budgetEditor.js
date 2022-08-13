@@ -292,7 +292,99 @@ var Code_Plugin_Accounting_BudgetEditor = Class.create(Code_Lib_ExtEditor,
 	_setDetailContent : function()
 	{
 		this._varsContent.num = 0;
+		this._iniDetailFormSelect();
 		this._iniDetailFormSensitive();
+		this._updateDetailFormSelect();
+	},
+
+	/**
+	 *
+	*/
+	_iniDetailFormSelect : function()
+	{
+		this._setDetailFormSelect({arr : this.insDetail.insForm.vars.varsDetail});
+	},
+
+	/**
+	 *
+	*/
+	_insDetailFormSelect : {},
+	_setDetailFormSelect : function(obj)
+	{
+		for (var i = 0; i < obj.arr.length; i++) {
+			if (obj.arr[i].id == 'JsonFiscalPeriod') {
+				var insFormSelect = new Code_Lib_FormSelect({
+					eleInsert  : $(this.insDetail.insForm.idSelf + obj.arr[i].id),
+					insRoot    : this.insRoot,
+					insCurrent : this,
+					idSelf     : this.idSelf + 'FormSelect' + obj.arr[i].id,
+					allot      : this._getDetailFormSelectAllot(),
+					vars       : null
+				});
+				this._insDetailFormSelect[obj.arr[i].id] = insFormSelect;
+				break;
+			}
+		}
+	},
+
+	/**
+	 *
+	*/
+	_getDetailFormSelectAllot : function()
+	{
+		var allot = function(obj) {
+			var insCurrent = obj.insCurrent;
+			insCurrent._updateDetailFormSelect();
+		};
+
+		return allot;
+	},
+
+	/**
+	 *
+	*/
+	_updateDetailFormSelect : function()
+	{
+		var obj = {};
+		var flagFiscalPeriod = '';
+		this.insDetail.checkForm({flagType : ''});
+		var vars = this.insDetail.getFormValue();
+		var numMulti = 0;
+		var varsCheck = {};
+		var flagFiscalPeriod = '';
+		for (var key in vars.JsonFiscalPeriod) {
+		    if (vars.JsonFiscalPeriod.hasOwnProperty(key)) {
+		        var value = vars.JsonFiscalPeriod[key];
+		        if (parseFloat(value)){
+		        	numMulti++;
+		        	flagFiscalPeriod = key;
+		        	varsCheck[key] = 1;
+		        }
+		    }
+		}
+		obj.arr = this.insDetail.insForm.vars.varsDetail;
+		for (var i = 0; i < obj.arr.length; i++) {
+			if (obj.arr[i].id == 'FlagSplit') {
+				if (numMulti > 1) {
+					obj.arr[i].flagHideNow = 1;
+
+
+				} else {
+					if (flagFiscalPeriod == 'f1') {
+						obj.arr[i].flagHideNow = 0;
+
+					} else {
+						obj.arr[i].flagHideNow = 1;
+					}
+				}
+
+				this.insDetail.insForm.viewForm({
+					idTarget    : obj.arr[i].id,
+					flagHideNow : obj.arr[i].flagHideNow
+				});
+				return;
+			}
+		}
 	},
 
 	/**
@@ -471,7 +563,7 @@ var Code_Plugin_Accounting_BudgetEditor = Class.create(Code_Lib_ExtEditor,
 			value : obj.vars.value
 		});
 
-		if (!obj.vars.value) {
+		if (obj.vars.value === '') {
 			this._varsSensitive.ins.updateVarsTarget({
 				idTarget : obj.vars.id,
 				strKey   : 'value',

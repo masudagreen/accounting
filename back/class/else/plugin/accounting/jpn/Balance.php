@@ -496,10 +496,7 @@ class Code_Else_Plugin_Accounting_Jpn_Balance extends Code_Else_Plugin_Accountin
 			$strTitle = $str . $value['strTitle'];
 			$strTitleFSTag = $str . $strTitleFS;
 			$strTitleTree = $strTitleFS;
-			$numSub = 0;
-			if(is_array($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']])){
-				$numSub = count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]);
-			}
+			$numSub = count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]);
 			if (is_null($value['vars']['flagUse'])) {
 				$arr['arrSelectTag'][] = array(
 					'strTitle'     => $strTitle,
@@ -508,11 +505,7 @@ class Code_Else_Plugin_Accounting_Jpn_Balance extends Code_Else_Plugin_Accountin
 				);
 
 			} else {
-				if(is_array($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']])){
-					$strTitleFSTag .= '['. count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]) .']';
-				}else{
-					$strTitleFSTag .= '['. 0 .']';
-				}
+				$strTitleFSTag .= '['. count($arr['arrSubAccountTitle']['arrStrTitle'][$value['vars']['idTarget']]) .']';
 				$arr['arrSelectTag'][] = array(
 					'strTitle'     => $strTitleFSTag,
 					'value'        => $value['vars']['idTarget'],

@@ -147,7 +147,7 @@ class Code_Else_Lib_File
                 for ($j = 0; $j < $strCoverolumns; $j++) {
                     if ($arrayColumn[$j] == $arr['strColumn'] && $rowData[$j] == $arr['value']) {
                         for ($k = 0; $k < $strCoverolumns; $k++) {
-                            $arrayRow[$arrayColumn[$k]] = $rowData[$k];
+                            $arrayRow{$arrayColumn[$k]} = $rowData[$k];
                         }
                         break;
                     }
@@ -186,7 +186,7 @@ class Code_Else_Lib_File
                 continue;
             } else {
                 for ($j = 0; $j < $strCoverolumns; $j++) {
-                    $arrayRow[$rows][$arrayColumn[$j]] = $rowData[$j];
+                    $arrayRow[$rows]{$arrayColumn[$j]} = $rowData[$j];
                 }
             }
             $rows++;
@@ -217,7 +217,7 @@ class Code_Else_Lib_File
 				continue;
 			} else {
 				for ($j = 0; $j < $strCoverolumns; $j++) {
-					$arrayRow[$rows][$arrayColumn[$j]] = $rowData[$j];
+					$arrayRow[$rows]{$arrayColumn[$j]} = $rowData[$j];
 				}
 			}
 			$rows++;

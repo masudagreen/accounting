@@ -127,6 +127,7 @@ class Code_Else_Plugin_Accounting_Jpn_BudgetEditor extends Code_Else_Plugin_Acco
 			'values' => $varsTarget
 		));
 
+
 		$arrValue = $this->_checkValueDetailValue(array(
 			'vars'     => $vars,
 			'arrValue' => $arrValue,
@@ -141,6 +142,7 @@ class Code_Else_Plugin_Accounting_Jpn_BudgetEditor extends Code_Else_Plugin_Acco
 				'arrValue' => $arrValue,
 				'varsFlag' => $varsFlag,
 			));
+
 			$this->_updateDbPreferenceStamp(array('strColumn' => 'budget'));
 
 			$dbh->commit();
@@ -187,10 +189,25 @@ class Code_Else_Plugin_Accounting_Jpn_BudgetEditor extends Code_Else_Plugin_Acco
 		$array = $arr['arrValue']['arr']['jsonFiscalPeriod'];
 
 		foreach ($array as $key => $value) {
-			if ($key == '' || $value == 0) {
-				continue;
-			}
 			$flagFiscalPeriod = $key;
+			if ($arr['arrValue']['arr']['flagSplit']) {
+				if ($key == '') {
+					continue;
+				}
+				$jsonData = $arr['arrValue']['arr']['jsonData'];
+				$jsonData = $this->_getCalcJsonData(array(
+					'vars'             => $arr['vars'],
+					'jsonData'         => $jsonData,
+					'flagFiscalPeriod' => $flagFiscalPeriod,
+				));
+
+			} else {
+				if ($key == '' || $value == 0) {
+					continue;
+				}
+			}
+
+
 			$rows = $this->_getLog(array(
 				'flagFiscalPeriod' => $flagFiscalPeriod,
 				'numFiscalPeriod'  => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
@@ -273,6 +290,43 @@ class Code_Else_Plugin_Accounting_Jpn_BudgetEditor extends Code_Else_Plugin_Acco
 				));
 			}
 		}
+	}
+
+	/**
+
+	 */
+	protected function _getCalcJsonData($arr)
+	{
+		$numCalc = 1;
+		if (preg_match("/^(f1)$/", $arr['flagFiscalPeriod'])) {
+			return json_encode($arr['jsonData']);
+
+		} elseif (preg_match("/^(f21|f22)$/", $arr['flagFiscalPeriod'])) {
+			$numCalc = 2;
+
+		} elseif (preg_match("/^(f41|f42|f43|f44)$/", $arr['flagFiscalPeriod'])) {
+			$numCalc = 4;
+
+		} else {
+			$numCalc = 12;
+		}
+
+		$array = $arr['jsonData'];
+		foreach ($array as $key => $value) {
+			$array[$key] = floor($value/$numCalc);
+		}
+		$varsFS = $arr['vars']['portal']['varsList']['varsDetail'];
+		$varsFS = $this->_setVarsListValue(array(
+			'varsFS'    => $varsFS,
+			'varsValue' => &$array,
+		));
+		$varsValue = array();
+		$this->_loopVarsCalc(array(
+			'varsFS'    => $varsFS,
+			'varsValue' => &$varsValue,
+		));
+
+		return json_encode($varsValue);
 	}
 
 	/**
