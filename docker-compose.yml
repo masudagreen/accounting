@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      # Database connection settings matching the app checks (although app uses connect.cgi)
+      # These env vars are just for convenience if we modify config later
+      - DB_HOST=db
+      - DB_NAME=rucaro
+      - DB_USER=rucaro
+      - DB_PASSWORD=rucaro
+
+  db:
+    image: mariadb:10
+    # Command removed for MariaDB compatibility
+    # command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: rucaro
+      MYSQL_USER: rucaro
+      MYSQL_PASSWORD: rucaro
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      # PMA_USER: rucaro
+      # PMA_PASSWORD: rucaro
+    ports:
+      - "8081:80"
+    depends_on:
+      - db

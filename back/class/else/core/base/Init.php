@@ -7,31 +7,31 @@
 class Code_Else_Core_Base_Init
 {
 	protected $_self = array(
-		'numVersion'            => '1.50.10',
-		'flagConfig'            => 0,
-		'flagAPI'               => 0,
-		'flagRequest'           => 'post',
-		'flagObfuscate'         => 1,
-		'flagCheckUpdate'       => 0,
-		'pathTop'               => '',
-		'strEncoding'           => 'UTF-8',
-		'strSystemLang'         => 'ja',
-		'numSystemTimeZone'     => 9,
+		'numVersion' => '1.50.10',
+		'flagConfig' => 0,
+		'flagAPI' => 0,
+		'flagRequest' => 'post',
+		'flagObfuscate' => 1,
+		'flagCheckUpdate' => 0,
+		'pathTop' => '',
+		'strEncoding' => 'UTF-8',
+		'strSystemLang' => 'ja',
+		'numSystemTimeZone' => 9,
 		'numSessionLoginSecond' => 3600,
-		'numSession'            => 90000,
-		'flagTest'              => 0,
-		'flagAPC'               => 0,
-		'strSystemHoliday'      => 'jp',
-		'numMaxUploadSize'      => 1048576,
-		'numMaxTextSize'        => 4000000000,//longtext 4294967295
-		'datLang'               => 'back/dat/lang/<strLang>/list.csv',
-		'pathInfo'              => 'http://rucaro.org/',
-		'pathInfoSSL'           => 'https://rucaro.org/',
+		'numSession' => 90000,
+		'flagTest' => 0,
+		'flagAPC' => 0,
+		'strSystemHoliday' => 'jp',
+		'numMaxUploadSize' => 1048576,
+		'numMaxTextSize' => 4000000000,//longtext 4294967295
+		'datLang' => 'back/dat/lang/<strLang>/list.csv',
+		'pathInfo' => 'http://rucaro.org/',
+		'pathInfoSSL' => 'https://rucaro.org/',
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -40,31 +40,31 @@ class Code_Else_Core_Base_Init
 		}
 	}
 
-	 /**
-	  *
-	  */
-    public function run()
-    {
-    	$this->_setDefine();
-    	$this->_setSystem();
+	/**
+	 *
+	 */
+	public function run()
+	{
+		$this->_setDefine();
+		$this->_setSystem();
 		$this->_setAbstract();
-    	$this->_setClass();
-    	$this->_setVars();
+		$this->_setClass();
+		$this->_setVars();
 		$this->_setAccess();
 
-    }
+	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setAbstract()
 	{
 		require_once(PATH_BACK_CLASS_ELSE_CORE_BASE . 'ModuleAbstract.php');
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setAccess()
 	{
 		if ($this->_self['flagConfig']) {
@@ -76,12 +76,12 @@ class Code_Else_Core_Base_Init
 
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setDefine()
 	{
-		$dateTime = new DateTime(null, new DateTimeZone("UTC"));
+		$dateTime = new DateTime('now', new DateTimeZone("UTC"));
 		$stamp = $dateTime->format('U');
 
 		define('TIMESTAMP', $stamp);
@@ -92,30 +92,30 @@ class Code_Else_Core_Base_Init
 		define('PATH_CONFIG_FILE', PATH_TOP . "/config.php");
 
 		define('PATH_BACK_CLASS', PATH_BACK . "class/");
-		define('PATH_BACK_DAT',   PATH_BACK . "dat/");
-		define('PATH_BACK_DB',    PATH_BACK . "db/");
-		define('PATH_BACK_TPL',   PATH_BACK . "tpl/");
+		define('PATH_BACK_DAT', PATH_BACK . "dat/");
+		define('PATH_BACK_DB', PATH_BACK . "db/");
+		define('PATH_BACK_TPL', PATH_BACK . "tpl/");
 
-		define('PATH_BACK_DAT_CONNECT',   PATH_BACK_DAT . "db/connect.cgi");
-		define('PATH_BACK_DAT_LANG',   PATH_BACK_DAT . "lang/");
-		define('PATH_BACK_DAT_FILE',   PATH_BACK_DAT . "file/");
-		define('PATH_BACK_DAT_TEMP',   PATH_BACK_DAT . "temp/");
-		define('PATH_BACK_DAT_VERSION',   PATH_BACK_DAT . "version/");
+		define('PATH_BACK_DAT_CONNECT', PATH_BACK_DAT . "db/connect.cgi");
+		define('PATH_BACK_DAT_LANG', PATH_BACK_DAT . "lang/");
+		define('PATH_BACK_DAT_FILE', PATH_BACK_DAT . "file/");
+		define('PATH_BACK_DAT_TEMP', PATH_BACK_DAT . "temp/");
+		define('PATH_BACK_DAT_VERSION', PATH_BACK_DAT . "version/");
 
 
-		define('PATH_BACK_TPL_VARS',   PATH_BACK_TPL . "vars/");
-		define('PATH_BACK_TPL_TEMPLATES',   PATH_BACK_TPL . "templates/");
+		define('PATH_BACK_TPL_VARS', PATH_BACK_TPL . "vars/");
+		define('PATH_BACK_TPL_TEMPLATES', PATH_BACK_TPL . "templates/");
 
 		define('PATH_BACK_CLASS_ELSE', PATH_BACK_CLASS . "else/");
 
 		define('PATH_BACK_CLASS_ELSE_CONFIG', PATH_BACK_CLASS_ELSE . "config/");
-		define('PATH_BACK_CLASS_ELSE_CORE',   PATH_BACK_CLASS_ELSE . "core/");
+		define('PATH_BACK_CLASS_ELSE_CORE', PATH_BACK_CLASS_ELSE . "core/");
 		define('PATH_BACK_CLASS_ELSE_PLUGIN', PATH_BACK_CLASS_ELSE . "plugin/");
-		define('PATH_BACK_CLASS_ELSE_LIB',    PATH_BACK_CLASS_ELSE . "lib/");
+		define('PATH_BACK_CLASS_ELSE_LIB', PATH_BACK_CLASS_ELSE . "lib/");
 
-		define('PATH_BACK_CLASS_ELSE_CORE_BASE',    PATH_BACK_CLASS_ELSE_CORE . "base/");
-		define('PATH_BACK_CLASS_ELSE_CORE_LOGIN',   PATH_BACK_CLASS_ELSE_CORE . "login/");
-		define('PATH_BACK_CLASS_ELSE_CORE_CONFIRM',   PATH_BACK_CLASS_ELSE_CORE . "confirm/");
+		define('PATH_BACK_CLASS_ELSE_CORE_BASE', PATH_BACK_CLASS_ELSE_CORE . "base/");
+		define('PATH_BACK_CLASS_ELSE_CORE_LOGIN', PATH_BACK_CLASS_ELSE_CORE . "login/");
+		define('PATH_BACK_CLASS_ELSE_CORE_CONFIRM', PATH_BACK_CLASS_ELSE_CORE . "confirm/");
 		define('FLAG_APC', $this->_self['flagAPC']);
 		define('FLAG_API', $this->_self['flagAPI']);
 		define('FLAG_CHECK_UPDATE', $this->_self['flagCheckUpdate']);
@@ -134,13 +134,13 @@ class Code_Else_Core_Base_Init
 		define('NUM_MAX_TEXT_SIZE', $this->_self['numMaxTextSize']);
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setClass()
 	{
 		global $classSmarty;
-		$classSmarty = (FLAG_APC)? apc_fetch('classSmarty') : null;
+		$classSmarty = (FLAG_APC) ? apc_fetch('classSmarty') : null;
 		if (is_null($classSmarty)) {
 			/*
 			if ($this->_self['flagConfig']) {
@@ -155,14 +155,15 @@ class Code_Else_Core_Base_Init
 			}
 			*/
 
-			require_once(PATH_BACK_CLASS_ELSE_LIB . 'Smarty/libs/Smarty.class.php');
-			$classSmarty = new Smarty();
-			$classSmarty->caching = 0;
-			$classSmarty->compile_check  = true;
-			$classSmarty->template_dir = PATH_BACK_TPL . 'templates/';
-			$classSmarty->compile_dir  = PATH_BACK_TPL . 'templates_c/';
-			$classSmarty->config_dir  = PATH_BACK_TPL . 'configs/';
-			$classSmarty->cache_dir  = PATH_BACK_TPL . 'cache/';
+			// require_once(PATH_BACK_CLASS_ELSE_LIB . 'Smarty/libs/Smarty.class.php');
+			require_once(PATH_TOP . '/vendor/autoload.php');
+			$classSmarty = new \Smarty\Smarty();
+			$classSmarty->setCaching(0);
+			$classSmarty->setCompileCheck(true);
+			$classSmarty->setTemplateDir(PATH_BACK_TPL . 'templates/');
+			$classSmarty->setCompileDir(PATH_BACK_TPL . 'templates_c/');
+			$classSmarty->setConfigDir(PATH_BACK_TPL . 'configs/');
+			$classSmarty->setCacheDir(PATH_BACK_TPL . 'cache/');
 			if (FLAG_APC) {
 				apc_store('classSmarty', $classSmarty);
 			}
@@ -173,7 +174,7 @@ class Code_Else_Core_Base_Init
 		$classRebuild = new Code_Else_Lib_Rebuild();
 
 		global $classCheck;
-		$classCheck = (FLAG_APC)? apc_fetch('classCheck') : null;
+		$classCheck = (FLAG_APC) ? apc_fetch('classCheck') : null;
 		if (is_null($classCheck)) {
 			require_once(PATH_BACK_CLASS_ELSE_LIB . "Check.php");
 			$classCheck = new Code_Else_Lib_Check();
@@ -183,7 +184,7 @@ class Code_Else_Core_Base_Init
 		}
 
 		global $classTime;
-		$classTime = (FLAG_APC)? apc_fetch('classTime') : null;
+		$classTime = (FLAG_APC) ? apc_fetch('classTime') : null;
 		if (is_null($classTime)) {
 			require_once(PATH_BACK_CLASS_ELSE_LIB . "Time.php");
 			$classTime = new Code_Else_Lib_Time();
@@ -193,7 +194,7 @@ class Code_Else_Core_Base_Init
 		}
 
 		global $classFile;
-		$classFile = (FLAG_APC)? apc_fetch('classFile') : null;
+		$classFile = (FLAG_APC) ? apc_fetch('classFile') : null;
 		if (is_null($classFile)) {
 			require_once(PATH_BACK_CLASS_ELSE_LIB . "File.php");
 			$classFile = new Code_Else_Lib_File();
@@ -203,7 +204,7 @@ class Code_Else_Core_Base_Init
 		}
 
 		global $classEscape;
-		$classEscape = (FLAG_APC)? apc_fetch('classEscape') : null;
+		$classEscape = (FLAG_APC) ? apc_fetch('classEscape') : null;
 		if (is_null($classEscape)) {
 			require_once(PATH_BACK_CLASS_ELSE_LIB . "Escape.php");
 			$classEscape = new Code_Else_Lib_Escape();
@@ -242,9 +243,9 @@ class Code_Else_Core_Base_Init
 		$classHtml = new Code_Else_Lib_Html();
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVars()
 	{
 		global $classMedia;
@@ -271,8 +272,8 @@ class Code_Else_Core_Base_Init
 	}
 
 	/**
-	  *
-	  */
+	 *
+	 */
 	protected function _setVarsAPI()
 	{
 		global $classDb;
@@ -280,7 +281,7 @@ class Code_Else_Core_Base_Init
 
 		global $varsApiAccounts;
 
-		$varsApiAccounts = (FLAG_APC)? apc_fetch('varsApiAccounts'): null;
+		$varsApiAccounts = (FLAG_APC) ? apc_fetch('varsApiAccounts') : null;
 		if (is_null($varsApiAccounts)) {
 			$sql = 'select * from baseApiAccount;';
 			$stmt = $dbh->prepare($sql);
@@ -297,19 +298,19 @@ class Code_Else_Core_Base_Init
 
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsModule()
 	{
 		global $varsPreference;
 		global $varsModule;
 
-		$varsModule = (FLAG_APC)? apc_fetch('varsModule'): null;
+		$varsModule = (FLAG_APC) ? apc_fetch('varsModule') : null;
 		if (is_null($varsModule)) {
 			$this->updateVarsAll(array(
-				'vars'     => &$varsModule,
-				'strVars'  => 'varsModule',
+				'vars' => &$varsModule,
+				'strVars' => 'varsModule',
 				'strTable' => 'baseModule',
 			));
 		}
@@ -326,41 +327,41 @@ class Code_Else_Core_Base_Init
 	}
 
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsTerm()
 	{
 		global $varsTerm;
 
-		$varsTerm = (FLAG_APC)? apc_fetch('varsTerm'): null;
+		$varsTerm = (FLAG_APC) ? apc_fetch('varsTerm') : null;
 		if (is_null($varsTerm)) {
 			$this->updateVarsAll(array(
-				'vars'     => &$varsTerm,
-				'strVars'  => 'varsTerm',
+				'vars' => &$varsTerm,
+				'strVars' => 'varsTerm',
 				'strTable' => 'baseTerm',
 			));
 		}
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsSession()
 	{
 		global $classDb;
 		$dbh = $classDb->getHandle();
 
 		global $varsSession;
-		$varsSession = (FLAG_APC)? apc_fetch('varsSession'): null;
+		$varsSession = (FLAG_APC) ? apc_fetch('varsSession') : null;
 		if (is_null($varsSession)) {
 			$stmt = $dbh->prepare('select * from baseSession;');
 			$stmt->execute();
 			$array = array();
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				$jsonToken = $row['jsonToken'];
-				$row['jsonToken'] = ($jsonToken)? json_decode($jsonToken, true) : array();
-				$str = ($row['idCookie'])? $row['idCookie'] : $row['idMobile'];
+				$row['jsonToken'] = ($jsonToken) ? json_decode($jsonToken, true) : array();
+				$str = ($row['idCookie']) ? $row['idCookie'] : $row['idMobile'];
 				$array[$str] = $row;
 			}
 			$varsSession = $array;
@@ -371,16 +372,16 @@ class Code_Else_Core_Base_Init
 
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsAccount()
 	{
 		global $classDb;
 		$dbh = $classDb->getHandle();
 
 		global $varsAccounts;
-		$varsAccounts = (FLAG_APC)? apc_fetch('varsAccounts'): null;
+		$varsAccounts = (FLAG_APC) ? apc_fetch('varsAccounts') : null;
 
 		if (is_null($varsAccounts)) {
 			$stmt = $dbh->prepare('select * from baseAccount');
@@ -389,7 +390,7 @@ class Code_Else_Core_Base_Init
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				foreach ($row as $key => $value) {
 					if (preg_match("/^json/", $key)) {
-						$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+						$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 					}
 				}
 				$array[$row['id']] = $row;
@@ -407,9 +408,9 @@ class Code_Else_Core_Base_Init
 		$this->_setVarsAccountLang();
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsAccountLang()
 	{
 		global $varsAccount;
@@ -422,7 +423,7 @@ class Code_Else_Core_Base_Init
 			if ($varsRequest['cookie']['lang']) {
 				$path = $classEscape->loopReplace(array(
 					'data' => $this->_self['path']['file']['datLang'],
-					'arr'  => array(
+					'arr' => array(
 						array(
 							'before' => '<strLang>',
 							'after' => STR_SYSTEM_LANG,
@@ -471,9 +472,9 @@ class Code_Else_Core_Base_Init
 		}
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsDb()
 	{
 
@@ -495,15 +496,15 @@ class Code_Else_Core_Base_Init
 				$flagElse = $j;
 			}
 		}
-		$num = (!is_null($flag))? $flag: $flagElse;
+		$num = (!is_null($flag)) ? $flag : $flagElse;
 
 		$classDb->setHandle(array(
-			'driver'   => $array[$num]['driver'],
+			'driver' => $array[$num]['driver'],
 			'username' => $array[$num]['username'],
 			'password' => $array[$num]['password'],
-			'host'     => $array[$num]['host'],
-			'dbname'   => $array[$num]['dbname'],
-			'dbtype'   => $array[$num]['dbtype'],
+			'host' => $array[$num]['host'],
+			'dbname' => $array[$num]['dbname'],
+			'dbtype' => $array[$num]['dbtype'],
 		));
 
 	}
@@ -514,22 +515,22 @@ class Code_Else_Core_Base_Init
 	{
 		//for batch version < 1.30.00
 		$pathUnder13000 = PATH_BACK_DAT . "db/connect.csv";
-    	if (file_exists($pathUnder13000)) {
-    		copy( PATH_BACK_DAT . "db/connect.csv", PATH_BACK_DAT . "db/connect.cgi" );
-    		unlink(PATH_BACK_DAT . "db/connect.csv");
+		if (file_exists($pathUnder13000)) {
+			copy(PATH_BACK_DAT . "db/connect.csv", PATH_BACK_DAT . "db/connect.cgi");
+			unlink(PATH_BACK_DAT . "db/connect.csv");
 		}
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setVarsPreferece()
 	{
 		global $varsPreference;
 		global $classDb;
 		$dbh = $classDb->getHandle();
 
-		$varsPreference = (FLAG_APC)? apc_fetch('varsPreference'): null;
+		$varsPreference = (FLAG_APC) ? apc_fetch('varsPreference') : null;
 		if (is_null($varsPreference)) {
 			$sql = 'select * from basePreference;';
 			$stmt = $dbh->prepare($sql);
@@ -537,7 +538,7 @@ class Code_Else_Core_Base_Init
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				foreach ($row as $key => $value) {
 					if (preg_match("/^json/", $key)) {
-						$row[$key] = ($value)? json_decode($value, true) : array();
+						$row[$key] = ($value) ? json_decode($value, true) : array();
 					}
 				}
 				$varsPreference = $row;
@@ -549,9 +550,9 @@ class Code_Else_Core_Base_Init
 		}
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	protected function _setSystem()
 	{
 
@@ -562,14 +563,14 @@ class Code_Else_Core_Base_Init
 		//mb_http_output("utf-8");
 		date_default_timezone_set('UTC');
 		ini_set('memory_limit', '128M');
-		error_reporting(E_ALL ^ E_NOTICE);
+		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 		ini_set('display_errors', 1);
 	}
 
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	public function updateVarsPreference()
 	{
 		global $varsPreference;
@@ -581,7 +582,7 @@ class Code_Else_Core_Base_Init
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			foreach ($row as $key => $value) {
 				if (preg_match("/^json/", $key)) {
-					$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+					$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 				}
 			}
 			$varsPreference = $row;
@@ -593,14 +594,14 @@ class Code_Else_Core_Base_Init
 
 	}
 
-	 /**
-	  * array(
-	  * 	'vars'     => &array,
-	  * 	'strVars'  => string,
-	  * 	'strTable' => string,
-	  * 	'id'       => string
-	  * )
-	  */
+	/**
+	 * array(
+	 * 	'vars'     => &array,
+	 * 	'strVars'  => string,
+	 * 	'strTable' => string,
+	 * 	'id'       => string
+	 * )
+	 */
 	public function updateVars($arr)
 	{
 
@@ -614,7 +615,7 @@ class Code_Else_Core_Base_Init
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			foreach ($row as $key => $value) {
 				if (preg_match("/^json/", $key)) {
-					$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+					$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 				}
 			}
 			$data = $row;
@@ -626,13 +627,13 @@ class Code_Else_Core_Base_Init
 
 	}
 
-	 /**
-	  * array(
-	  * 	'vars'     => &array,
-	  * 	'strVars'  => string,
-	  * 	'strTable' => string,
-	  * )
-	  */
+	/**
+	 * array(
+	 * 	'vars'     => &array,
+	 * 	'strVars'  => string,
+	 * 	'strTable' => string,
+	 * )
+	 */
 	public function updateVar($arr)
 	{
 
@@ -646,26 +647,26 @@ class Code_Else_Core_Base_Init
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			foreach ($row as $key => $value) {
 				if (preg_match("/^json/", $key)) {
-					$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+					$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 				}
 			}
 			$data = $row;
 		}
-		$arr['vars']= $data;
+		$arr['vars'] = $data;
 		if (FLAG_APC) {
 			apc_store($arr['strVars'], $arr['vars']);
 		}
 
 	}
 
-	 /**
-	  * array(
-	  * 	'vars'     => &array,
-	  * 	'strVars'  => string,
-	  * 	'strTable' => string,
-	  * 	'strColumn' => string,
-	  * )
-	  */
+	/**
+	 * array(
+	 * 	'vars'     => &array,
+	 * 	'strVars'  => string,
+	 * 	'strTable' => string,
+	 * 	'strColumn' => string,
+	 * )
+	 */
 	public function updateVarsAll($arr)
 	{
 		global $classDb;
@@ -678,10 +679,10 @@ class Code_Else_Core_Base_Init
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			foreach ($row as $key => $value) {
 				if (preg_match("/^json/", $key)) {
-					$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+					$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 				}
 			}
-			$str = ($arr['strColumn'])? $row[($arr['strColumn'])] : $row['id'];
+			$str = ($arr['strColumn']) ? $row[($arr['strColumn'])] : $row['id'];
 			$array[$str] = $row;
 		}
 		$arr['vars'] = $array;
@@ -691,9 +692,9 @@ class Code_Else_Core_Base_Init
 		}
 	}
 
-	 /**
-	  *
-	  */
+	/**
+	 *
+	 */
 	public function updateVarsAccount()
 	{
 		global $classDb;
@@ -707,7 +708,7 @@ class Code_Else_Core_Base_Init
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			foreach ($row as $key => $value) {
 				if (preg_match("/^json/", $key)) {
-					$row[$key] = (!is_null($value))? json_decode($value, true) : array();
+					$row[$key] = (!is_null($value)) ? json_decode($value, true) : array();
 				}
 			}
 			$varsAccount = $row;

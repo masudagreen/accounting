@@ -8,20 +8,20 @@ class Code_Else_Core_Base_Access
 {
 
 	protected $_self = array(
-		'pathDirLog'     => 'back/dat/log/',
-		'pathDirAccess'  => 'back/dat/access/',
-		'pathVarsMail'   => 'back/tpl/vars/else/core/base/<strLang>/mail/accessUnknown.php',
-		'pathTplMail'    => 'back/tpl/vars/else/core/base/<strLang>/mail/accessUnknown.tpl',
-		'status'         => array(
+		'pathDirLog' => 'back/dat/log/',
+		'pathDirAccess' => 'back/dat/access/',
+		'pathVarsMail' => 'back/tpl/vars/else/core/base/<strLang>/mail/accessUnknown.php',
+		'pathTplMail' => 'back/tpl/vars/else/core/base/<strLang>/mail/accessUnknown.tpl',
+		'status' => array(
 			'flagMonth' => 0,
-			'flagDate'  => 0,
-			'flagHour'  => 0,
+			'flagDate' => 0,
+			'flagHour' => 0,
 		),
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -29,25 +29,25 @@ class Code_Else_Core_Base_Access
 			if (empty($this->_self[$key])) {
 				$this->_self[$key] = $value;
 			}
-        }
-    }
+		}
+	}
 
-    /**
-     *
-     */
-    public function run()
-    {
-    	$this->_checkRoutine();
+	/**
+	 *
+	 */
+	public function run()
+	{
+		$this->_checkRoutine();
 		$this->_setLog();
 		$this->_setRoutine();
 		$this->_checkUnknown();
-    }
+	}
 
-    /**
-     *
-     */
-    protected function _checkUnknown()
-    {
+	/**
+	 *
+	 */
+	protected function _checkUnknown()
+	{
 		global $varsRequest;
 		global $varsPreference;
 		global $varsMedia;
@@ -87,13 +87,13 @@ class Code_Else_Core_Base_Access
 
 		$this->_sendMailAdmin(array(
 			'pathVars' => $this->_self['pathVarsMail'],
-			'pathTpl'  => $this->_self['pathTplMail'],
+			'pathTpl' => $this->_self['pathTplMail'],
 		));
-    }
+	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _sendMailAdmin($arr)
 	{
 		global $classMail;
@@ -106,11 +106,11 @@ class Code_Else_Core_Base_Access
 
 		$array = $varsAccounts;
 		$arrayNew = array();
-        foreach ($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			$temp = array();
-        	$classTime->setTimeZone(array('data' => $value['numTimeZone']));
+			$classTime->setTimeZone(array('data' => $value['numTimeZone']));
 			$strTime = $classTime->getDisplay(array(
-				'stamp'    => TIMESTAMP,
+				'stamp' => TIMESTAMP,
 				'flagType' => 'year-sec',
 			));
 			$temp['strTime'] = $strTime;
@@ -122,7 +122,7 @@ class Code_Else_Core_Base_Access
 			}
 			$id = $value['idModule'];
 			$data = $varsModule[$id]['arrCommaIdModuleAdmin'];
-			if (preg_match( "/,base,/", $data)) {
+			if (preg_match("/,base,/", $data)) {
 				$temp['strMailPc'] = $value['strMailPc'];
 				$arrayNew[] = $temp;
 			}
@@ -131,31 +131,31 @@ class Code_Else_Core_Base_Access
 		$array = $arrayNew;
 		foreach ($array as $key => $value) {
 			$arrValue = array(
-				'strName'     => $varsPreference['strSiteName'],
-				'strUrl'      => $varsPreference['strSiteUrl'],
-				'strIp'       => $varsMedia['ip'],
-				'strHost'     => $varsMedia['host'],
-				'strTime'     => $temp['strTime'],
+				'strName' => $varsPreference['strSiteName'],
+				'strUrl' => $varsPreference['strSiteUrl'],
+				'strIp' => $varsMedia['ip'],
+				'strHost' => $varsMedia['host'],
+				'strTime' => $temp['strTime'],
 			);
 
 			$flag = $classMail->setMail(array(
-				'pathVars'    => $arr['pathVars'],
-				'pathTpl'     => $arr['pathTpl'],
-				'arrValue'    => $arrValue,
-				'mailTo'      => $value['strMailPc'],
-				'arrMailBcc'  => array(),
-				'arrMailCc'   => array(),
-				'mailFrom'    => $varsPreference['strSiteMailPc'],
+				'pathVars' => $arr['pathVars'],
+				'pathTpl' => $arr['pathTpl'],
+				'arrValue' => $arrValue,
+				'mailTo' => $value['strMailPc'],
+				'arrMailBcc' => array(),
+				'arrMailCc' => array(),
+				'mailFrom' => $varsPreference['strSiteMailPc'],
 				'strNameFrom' => $varsPreference['strSiteName'],
 			));
 		}
 	}
 
-    /**
-     *
-     */
-    protected function _setLog()
-    {
+	/**
+	 *
+	 */
+	protected function _setLog()
+	{
 		global $varsRequest;
 		global $varsPreference;
 		global $varsAccount;
@@ -167,14 +167,14 @@ class Code_Else_Core_Base_Access
 
 		$stampRegister = TIMESTAMP;
 		$ip = $varsMedia['ip'];
-		$strHost = ($varsMedia['host'])? $varsMedia['host'] : '';
-		$idAccount = ($varsAccount)? $varsAccount['id'] : 0;
+		$strHost = ($varsMedia['host']) ? $varsMedia['host'] : '';
+		$idAccount = ($varsAccount) ? $varsAccount['id'] : 0;
 		$strDbType = $classDb->getSelf(array('key' => 'dbtype'));
 		$strDevice = $varsMedia['device'];
-		$idModule = ($varsRequest['query']['module'])? $varsRequest['query']['module'] : '';
-		$strExt = ($varsRequest['query']['ext'])? $varsRequest['query']['ext'] : '';
-		$strChild = ($varsRequest['query']['child'])? $varsRequest['query']['child'] : '';
-		$strFunc = ($varsRequest['query']['func'])? $varsRequest['query']['func'] : '';
+		$idModule = ($varsRequest['query']['module']) ? $varsRequest['query']['module'] : '';
+		$strExt = ($varsRequest['query']['ext']) ? $varsRequest['query']['ext'] : '';
+		$strChild = ($varsRequest['query']['child']) ? $varsRequest['query']['child'] : '';
+		$strFunc = ($varsRequest['query']['func']) ? $varsRequest['query']['func'] : '';
 
 		$array = $varsRequest['query'];
 		/*
@@ -202,10 +202,10 @@ class Code_Else_Core_Base_Access
 			$array['jsonValue']['vars']['StrPassword'] = '***';
 		}
 		if ($this->_batchIllegalStringOffset($array['jsonValue']['vars'], 'StrPasswordConfirm')) {
-		//if (!is_null($array['jsonValue']['vars']['StrPasswordConfirm'])) {
+			//if (!is_null($array['jsonValue']['vars']['StrPasswordConfirm'])) {
 			$array['jsonValue']['vars']['StrPasswordConfirm'] = '***';
 		}
-		$jsonQuery = (count($array))? json_encode($array) : '';
+		$jsonQuery = (count($array)) ? json_encode($array) : '';
 
 		try {
 			$dbh->beginTransaction();
@@ -227,7 +227,7 @@ class Code_Else_Core_Base_Access
 
 		$classTime->setTimeZone(array('data' => NUM_SYSTEM_TIME_ZONE));
 		$fileName = $classTime->getDisplay(array(
-			'stamp'    => TIMESTAMP,
+			'stamp' => TIMESTAMP,
 			'flagType' => 'yearmonth',
 		));
 		$path = $this->_self['pathDirLog'] . $fileName . '.cgi';
@@ -246,9 +246,9 @@ class Code_Else_Core_Base_Access
 			'data' => $data,
 			'path' => $path,
 		));
-    }
+	}
 
-    /**
+	/**
 		php5.3 -> php5.4 batch
 
 		batch for IllegalStringOffset
@@ -258,7 +258,7 @@ class Code_Else_Core_Base_Access
 			'str' string
 		);
 	 */
-	protected function _batchIllegalStringOffset($data,$str)
+	protected function _batchIllegalStringOffset($data, $str)
 	{
 		if (is_array($data)) {
 			if ($data[$str]) {
@@ -269,33 +269,33 @@ class Code_Else_Core_Base_Access
 		return false;
 	}
 
-    /**
-     *
-     */
-    protected function _checkRoutine($array = array())
-    {
-		$array['flagMonth'] = $this->_checkUpdate(array('flagType' => 'month',));
-		$array['flagDate']  = $this->_checkUpdate(array('flagType' => 'date',));
-		$array['flagHour']  = $this->_checkUpdate(array('flagType' => 'hour',));
+	/**
+	 *
+	 */
+	protected function _checkRoutine($array = array())
+	{
+		$array['flagMonth'] = $this->_checkUpdate(array('flagType' => 'month', ));
+		$array['flagDate'] = $this->_checkUpdate(array('flagType' => 'date', ));
+		$array['flagHour'] = $this->_checkUpdate(array('flagType' => 'hour', ));
 		if (!$array['flagMonth'] && !$array['flagDate'] && !$array['flagHour']) {
 			$array = null;
 		}
 
 		$this->_self['status'] = $array;
-    }
+	}
 
-    /**
-     * $arr = array(
-     * 	'flagType' => string,
-     * )
-     */
-    protected function _checkUpdate($arr)
-    {
+	/**
+	 * $arr = array(
+	 * 	'flagType' => string,
+	 * )
+	 */
+	protected function _checkUpdate($arr)
+	{
 		global $classTime;
 
 		$classTime->setTimeZone(array('data' => NUM_SYSTEM_TIME_ZONE));
 		$fileName = $classTime->getDisplay(array(
-			'stamp'    => TIMESTAMP,
+			'stamp' => TIMESTAMP,
 			'flagType' => 'yearmonth',
 		));
 		$path = $this->_self['pathDirLog'] . $fileName . '.cgi';
@@ -304,13 +304,13 @@ class Code_Else_Core_Base_Access
 		}
 
 		$flagNow = $classTime->getDisplay(array(
-			'stamp'    => TIMESTAMP,
+			'stamp' => TIMESTAMP,
 			'flagType' => $arr['flagType'],
 		));
 
 		$stat = stat($path);
 		$flagLast = $classTime->getDisplay(array(
-			'stamp'    => $stat[9],
+			'stamp' => $stat[9],
 			'flagType' => $arr['flagType'],
 		));
 
@@ -318,7 +318,7 @@ class Code_Else_Core_Base_Access
 			return 1;
 		}
 		return 0;
-    }
+	}
 	/**
 	 *
 	 */
@@ -345,12 +345,12 @@ class Code_Else_Core_Base_Access
 		}
 
 		$classDb->setHandle(array(
-			'driver'   => $array[$num]['driver'],
+			'driver' => $array[$num]['driver'],
 			'username' => $array[$num]['username'],
 			'password' => $array[$num]['password'],
-			'host'     => $array[$num]['host'],
-			'dbname'   => $array[$num]['dbname'],
-			'dbtype'   => $array[$num]['dbtype'],
+			'host' => $array[$num]['host'],
+			'dbname' => $array[$num]['dbname'],
+			'dbtype' => $array[$num]['dbtype'],
 		));
 
 		$this->_setCore();
@@ -363,9 +363,9 @@ class Code_Else_Core_Base_Access
 	{
 		//for batch version < 1.30.00
 		$pathUnder13000 = PATH_BACK_DAT . "db/connect.csv";
-    	if (file_exists($pathUnder13000)) {
-    		copy( PATH_BACK_DAT . "db/connect.csv", PATH_BACK_DAT . "db/connect.cgi" );
-    		unlink(PATH_BACK_DAT . "db/connect.csv");
+		if (file_exists($pathUnder13000)) {
+			copy(PATH_BACK_DAT . "db/connect.csv", PATH_BACK_DAT . "db/connect.cgi");
+			unlink(PATH_BACK_DAT . "db/connect.csv");
 		}
 	}
 
@@ -376,7 +376,7 @@ class Code_Else_Core_Base_Access
 	{
 		$array = scandir(PATH_BACK_CLASS_ELSE_CORE);
 		foreach ($array as $key => $value) {
-			if ( preg_match( "/^\.{1,2}$/", $value)) {
+			if (preg_match("/^\.{1,2}$/", $value)) {
 				continue;
 			}
 			$strDir = $value;
@@ -390,7 +390,7 @@ class Code_Else_Core_Base_Access
 			$classCall = new $strClass;
 			$classCall->loop(array(
 				'flagType' => 'routine',
-				'routine'  => $this->_self['status'],
+				'routine' => $this->_self['status'],
 			));
 		}
 	}
@@ -417,7 +417,7 @@ class Code_Else_Core_Base_Access
 			$classCall = new $strClass;
 			$classCall->loop(array(
 				'flagType' => 'routine',
-				'routine'  => $this->_self['status'],
+				'routine' => $this->_self['status'],
 			));
 		}
 	}

@@ -9,59 +9,59 @@ class Code_Else_Lib_Time
 
 	protected $_self = array(
 		'numTimeZone' => 9,
-		'pathLoad'    => 'back/class/else/lib/Time/<strLang>.php',
-		'strLang'     => 'ja',
-		'varsLoad'    => array(),
+		'pathLoad' => 'back/class/else/lib/Time/<strLang>.php',
+		'strLang' => 'ja',
+		'varsLoad' => array(),
 	);
 
-    function __construct()
-    {
-    	$strLang = $this->_self['strLang'];
-    	$this->setVarsTime(array('strLang' => $strLang));
-        $arr = @func_get_arg(0);
-        if (!$arr) {
-            return;
-        }
+	function __construct($arr = null)
+	{
+		$strLang = $this->_self['strLang'];
+		$this->setVarsTime(array('strLang' => $strLang));
+		// $arr = @func_get_arg(0);
+		if (!$arr) {
+			return;
+		}
 		foreach ($arr as $key => $value) {
 			if (empty($this->_self[$key])) {
 				$this->_self[$key] = $value;
 			}
-        }
-        if ($strLang != $this->_self['strLang']) {
-        	$this->setVarsTime(array('strLang' => $this->_self['strLang']));
-        }
-    }
+		}
+		if ($strLang != $this->_self['strLang']) {
+			$this->setVarsTime(array('strLang' => $this->_self['strLang']));
+		}
+	}
 
-    /**
-     * $arr = array(
-     *     strLang  => str,
-     * )
-     */
-    public function setVarsTime($arr)
-    {
-    	$path = str_replace('<strLang>', $arr['strLang'], $this->_self['pathLoad']);
-        if (!file_exists($path)) {
-        	return;
-        }
-        require($path);
-        $this->_self['varsLoad'] = $vars;
-    }
+	/**
+	 * $arr = array(
+	 *     strLang  => str,
+	 * )
+	 */
+	public function setVarsTime($arr)
+	{
+		$path = str_replace('<strLang>', $arr['strLang'], $this->_self['pathLoad']);
+		if (!file_exists($path)) {
+			return;
+		}
+		require($path);
+		$this->_self['varsLoad'] = $vars;
+	}
 
-    /**
-     * $arr = array(
-     *     data  => int,
-     * )
-     */
+	/**
+	 * $arr = array(
+	 *     data  => int,
+	 * )
+	 */
 	public function setTimeZone($arr)
 	{
 		$this->_self['numTimeZone'] = $arr['data'];
 	}
 
-    /**
-     * $arr = array(
-     *     stamp => stamp,
-     * )
-     */
+	/**
+	 * $arr = array(
+	 *     stamp => stamp,
+	 * )
+	 */
 	public function getLocal($arr)
 	{
 		$timeZone = $this->_self['numTimeZone'] * 60 * 60;
@@ -72,36 +72,36 @@ class Code_Else_Lib_Time
 		list($sec, $min, $hour, $date, $mon, $year, $day, $strDate) = preg_split('/,/', $dateTime->format("s,i,H,j,m,Y,w,d"));
 		$data = array(
 			'stamp' => $arr['stamp'],
-			'year'  => $year,
+			'year' => $year,
 			'month' => (int) $mon,
-			'date'  => $date,
-			'day'   => $day,
-			'hour'  => (int) $hour,
-			'min'   => (int) $min,
-			'sec'   => (int) $sec,
-			'numYear'  => $year,
+			'date' => $date,
+			'day' => $day,
+			'hour' => (int) $hour,
+			'min' => (int) $min,
+			'sec' => (int) $sec,
+			'numYear' => $year,
 			'numMonth' => (int) $mon,
-			'numDate'  => $date,
-			'numDay'   => $day,
-			'numHour'  => (int) $hour,
-			'numMin'   => (int) $min,
-			'numSec'   => (int) $sec,
-			'strYear'  => $year,
+			'numDate' => $date,
+			'numDay' => $day,
+			'numHour' => (int) $hour,
+			'numMin' => (int) $min,
+			'numSec' => (int) $sec,
+			'strYear' => $year,
 			'strMonth' => $mon,
-			'strDate'  => $strDate,
-			'strHour'  => $hour,
-			'strMin'   => $min,
-			'strSec'   => $sec,
+			'strDate' => $strDate,
+			'strHour' => $hour,
+			'strMin' => $min,
+			'strSec' => $sec,
 		);
 
 		return $data;
 	}
 
-    /**
-     * $arr = array(
-     *     stamp => stamp,
-     * )
-     */
+	/**
+	 * $arr = array(
+	 *     stamp => stamp,
+	 * )
+	 */
 	public function getList($arr)
 	{
 		$timeZone = $this->_self['numTimeZone'] * 60 * 60;
@@ -112,37 +112,37 @@ class Code_Else_Lib_Time
 		list($sec, $min, $hour, $date, $mon, $year, $day, $strDate) = preg_split('/,/', $dateTime->format("s,i,H,j,m,Y,w,d"));
 		$data = array(
 			'stamp' => $arr['stamp'],
-			'year'  => (int) $year,
+			'year' => (int) $year,
 			'month' => (int) $mon,
-			'date'  => (int) $date,
-			'day'   => (int) $day,
-			'hour'  => (int) $hour,
-			'min'   => (int) $min,
-			'sec'   => (int) $sec,
-			'numYear'  => (int) $year,
+			'date' => (int) $date,
+			'day' => (int) $day,
+			'hour' => (int) $hour,
+			'min' => (int) $min,
+			'sec' => (int) $sec,
+			'numYear' => (int) $year,
 			'numMonth' => (int) $mon,
-			'numDate'  => (int) $date,
-			'numDay'   => (int) $day,
-			'numHour'  => (int) $hour,
-			'numMin'   => (int) $min,
-			'numSec'   => (int) $sec,
-			'strYear'  => $year,
+			'numDate' => (int) $date,
+			'numDay' => (int) $day,
+			'numHour' => (int) $hour,
+			'numMin' => (int) $min,
+			'numSec' => (int) $sec,
+			'strYear' => $year,
 			'strMonth' => $mon,
-			'strDate'  => $strDate,
-			'strHour'  => $hour,
-			'strMin'   => $min,
-			'strSec'   => $sec,
+			'strDate' => $strDate,
+			'strHour' => $hour,
+			'strMin' => $min,
+			'strSec' => $sec,
 		);
 
 		return $data;
 	}
 
-    /**
+	/**
 $classTime->getDisplay(array(
 	'flagType' => 'year/date',
 	'stamp'    => 0,
 ));
-     */
+	 */
 	public function getDisplay($arr)
 	{
 		$timeZone = $this->_self['numTimeZone'] * 60 * 60;
@@ -150,34 +150,34 @@ $classTime->getDisplay(array(
 		$stamp = $arr['stamp'] + $timeZone;
 		$dateTime = new DateTime('@' . $stamp);
 
-		if($arr['flagType'] == 'rdf') {
+		if ($arr['flagType'] == 'rdf') {
 			return $dateTime->format("r");
 
-		} elseif($arr['flagType'] == 'year-sec') {
+		} elseif ($arr['flagType'] == 'year-sec') {
 			return $dateTime->format("Y/m/d H:i:s");
 
-		} elseif($arr['flagType'] == 'year-min') {
+		} elseif ($arr['flagType'] == 'year-min') {
 			return $dateTime->format("Y/m/d H:i");
 
-		} elseif($arr['flagType'] == 'yearmin') {
+		} elseif ($arr['flagType'] == 'yearmin') {
 			return $dateTime->format("Y/m/d-H:i");
 
-		} elseif($arr['flagType'] == 'yearmonth') {
+		} elseif ($arr['flagType'] == 'yearmonth') {
 			return $dateTime->format("Ym");
 
-		} elseif($arr['flagType'] == 'year/date') {
+		} elseif ($arr['flagType'] == 'year/date') {
 			return $dateTime->format("Y/m/d");
 
-		} elseif($arr['flagType'] == 'year-date') {
+		} elseif ($arr['flagType'] == 'year-date') {
 			return $dateTime->format("Y-m-d");
 
-		} elseif($arr['flagType'] == 'month') {
+		} elseif ($arr['flagType'] == 'month') {
 			return $dateTime->format("m");
 
-		} elseif($arr['flagType'] == 'date') {
+		} elseif ($arr['flagType'] == 'date') {
 			return $dateTime->format("j");
 
-		} elseif($arr['flagType'] == 'hour') {
+		} elseif ($arr['flagType'] == 'hour') {
 			return $dateTime->format("H");
 
 		} else {
@@ -221,7 +221,7 @@ $classTime->getDisplay(array(
 					. $this->_self['varsLoad']['strHour']
 					. $varsDate['strMin']
 					. $this->_self['varsLoad']['strMin']
-					. '(' .$varsDate['strSec'] . $this->_self['varsLoad']['strSec'] . ')';
+					. '(' . $varsDate['strSec'] . $this->_self['varsLoad']['strSec'] . ')';
 
 			} elseif ($arr['flagType'] == 6) {
 				return $varsDate['strMonth']
@@ -251,10 +251,10 @@ $classTime->getDisplay(array(
 
 			} elseif ($arr['flagType'] == 9) {
 				return $varsDate['strYear']
-				. '/' . $varsDate['strMonth']
-				. '/' . $varsDate['strDate']
-				. '-' . $varsDate['strHour']
-				. ':' . $varsDate['strMin'];
+					. '/' . $varsDate['strMonth']
+					. '/' . $varsDate['strDate']
+					. '-' . $varsDate['strHour']
+					. ':' . $varsDate['strMin'];
 			}
 		}
 
@@ -268,40 +268,40 @@ $classTime->getDisplay(array(
 	* */
 	public function getStrNengoYear($arr)
 	{
-	    $numYear = $arr['numYear'];
-	    $flag = $this->getFlagNengo(array('stamp' => $arr['stamp']));
-	    if ($flag == 'Meiji') {
-	        $numYear -= 1867;
+		$numYear = $arr['numYear'];
+		$flag = $this->getFlagNengo(array('stamp' => $arr['stamp']));
+		if ($flag == 'Meiji') {
+			$numYear -= 1867;
 
-	    } elseif ($flag == 'Taishou') {
-	        $numYear -= 1911;
+		} elseif ($flag == 'Taishou') {
+			$numYear -= 1911;
 
-	    } elseif ($flag == 'Shouwa') {
-	        $numYear -= 1925;
+		} elseif ($flag == 'Shouwa') {
+			$numYear -= 1925;
 
-	        /*20190401 start*/
-	    } elseif ($flag == 'Heisei') {
-	        $numYear -= 1988;
+			/*20190401 start*/
+		} elseif ($flag == 'Heisei') {
+			$numYear -= 1988;
 
-	    } elseif ($flag == 'Reiwa') {
-	        $numYear -= 2018;
-	    }
-	    /*20190401 end*/
+		} elseif ($flag == 'Reiwa') {
+			$numYear -= 2018;
+		}
+		/*20190401 end*/
 
-	    if ($numYear < 1) {
-	        return '';
-	    }
+		if ($numYear < 1) {
+			return '';
+		}
 
 
-	    $strYear = $numYear;
-	    if ($numYear == 1) {
-	        $strYear = $this->_self['varsLoad']['strGan'];
-	    }
+		$strYear = $numYear;
+		if ($numYear == 1) {
+			$strYear = $this->_self['varsLoad']['strGan'];
+		}
 
-	    $flagNengo = 'str' . $flag;
-	    $strNengoYear = $this->_self['varsLoad'][$flagNengo] . $strYear;
+		$flagNengo = 'str' . $flag;
+		$strNengoYear = $this->_self['varsLoad'][$flagNengo] . $strYear;
 
-	    return $strNengoYear;
+		return $strNengoYear;
 	}
 
 	/*
@@ -323,12 +323,12 @@ $classTime->getDisplay(array(
 		} elseif ($flag == 'Shouwa') {
 			$numYear -= 1925;
 
-		/*20190401 start*/
+			/*20190401 start*/
 		} elseif ($flag == 'Heisei') {
 			$numYear -= 1988;
 
 		} elseif ($flag == 'Reiwa') {
-		    $numYear -= 2018;
+			$numYear -= 2018;
 		}
 		/*20190401 end*/
 
@@ -361,12 +361,12 @@ $classTime->getDisplay(array(
 		} elseif (-1357635600 <= $stamp && $stamp < 600188400) {
 			return 'Shouwa';
 
-		/*20190401 start*/
+			/*20190401 start*/
 		} elseif (600188400 <= $stamp && $stamp < 1556636400) {
-		    return 'Heisei';
+			return 'Heisei';
 
 		} elseif (1556636400 <= $stamp) {
-		    return 'Reiwa';
+			return 'Reiwa';
 		}
 		/*20190401 end*/
 
@@ -401,10 +401,10 @@ $classTime->getDisplay(array(
 			$num = 10;
 		}*/
 		if ($stamp20140401 <= $stamp && $stamp < $stamp20191001) {
-		    $num = 8;
+			$num = 8;
 
 		} else if ($stamp20191001 <= $stamp) {
-		    $num = 10;
+			$num = 10;
 		}
 		/*
 		 * 20191001 end

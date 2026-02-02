@@ -19,7 +19,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	public function run()
 	{
 		if (FLAG_TEST) {
-			var_dump(__CLASS__ . '/' .__FUNCTION__. '/' .__LINE__);
+			var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 		}
 		exit;
 	}
@@ -32,7 +32,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		} else {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__. '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			exit;
 		}
@@ -57,9 +57,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$flag = $this->_setNextVarsValuePart(array(
-			'varsItem'     => $varsItem,
+			'varsItem' => $varsItem,
 			'varsItemNext' => $varsItemNext,
-			'arrIdTarget'  => $arr['arrIdTarget'],
+			'arrIdTarget' => $arr['arrIdTarget'],
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -67,8 +67,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$classCalcAccountTitleFS = $this->_getClassCalc(array('flagType' => 'AccountTitleFS'));
 		$flag = $classCalcAccountTitleFS->allot(array(
-			'flagStatus'   => 'calc',
-			'varsItem'     => $varsItemNext,
+			'flagStatus' => 'calc',
+			'varsItem' => $varsItemNext,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -76,8 +76,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$classCalcAccountTitleFSCS = $this->_getClassCalc(array('flagType' => 'AccountTitleFSCS'));
 		$flag = $classCalcAccountTitleFSCS->allot(array(
-			'flagStatus'   => 'calc',
-			'varsItem'     => $varsItemNext,
+			'flagStatus' => 'calc',
+			'varsItem' => $varsItemNext,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -99,9 +99,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$varsFSValueNext = $this->_loopVarsValueNext(array(
-			'varsFSValue'  => $varsFSValue,
-			'arrIdTarget'  => $arr['arrIdTarget'],
-			'varsItem'     => $arr['varsItem'],
+			'varsFSValue' => $varsFSValue,
+			'arrIdTarget' => $arr['arrIdTarget'],
+			'varsItem' => $arr['varsItem'],
 			'varsItemNext' => $arr['varsItemNext'],
 		));
 		if ($varsFSValueNext == 'errorDataMax') {
@@ -109,31 +109,31 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		}
 
 		$this->_updateDb(array(
-			'varsValue'     => $varsFSValueNext,
-			'varsItemNext'  => $arr['varsItemNext'],
+			'varsValue' => $varsFSValueNext,
+			'varsItemNext' => $arr['varsItemNext'],
 		));
 
 		$array = $arr['varsItem']['varsDepartment'];
 		foreach ($array as $key => $value) {
 			$varsFSValue = $this->_getVarsFSValueDepartment(array(
-				'idDepartment'     => $key,
-				'numFiscalPeriod'  => $arr['varsItem']['numFiscalPeriod'],
+				'idDepartment' => $key,
+				'numFiscalPeriod' => $arr['varsItem']['numFiscalPeriod'],
 			));
 
 			$varsFSValueNext = $this->_loopVarsValueNext(array(
 				'flagDepartment' => 1,
-				'varsFSValue'    => $varsFSValue,
-				'varsItem'       => $arr['varsItem'],
-				'varsItemNext'   => $arr['varsItemNext'],
+				'varsFSValue' => $varsFSValue,
+				'varsItem' => $arr['varsItem'],
+				'varsItemNext' => $arr['varsItemNext'],
 			));
 			if ($varsFSValueNext == 'errorDataMax') {
 				return 'errorDataMax';
 			}
 
 			$this->_insertDb(array(
-				'idDepartment'  => $key,
-				'varsValue'     => $varsFSValueNext,
-				'varsItemNext'  => $arr['varsItemNext'],
+				'idDepartment' => $key,
+				'varsValue' => $varsFSValueNext,
+				'varsItemNext' => $arr['varsItemNext'],
 			));
 		}
 	}
@@ -156,7 +156,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$flag = $this->_setNextVarsValue(array(
-			'varsItem'     => $varsItem,
+			'varsItem' => $varsItem,
 			'varsItemNext' => $varsItemNext,
 		));
 		if ($flag == 'errorDataMax') {
@@ -164,14 +164,14 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		}
 
 		$this->_iniCalc(array(
-			'numFiscalPeriod'    => $arr['numFiscalPeriodNext'],
+			'numFiscalPeriod' => $arr['numFiscalPeriodNext'],
 			'flagCalcDepartment' => 1,
 		));
 
 		$classCalcAccountTitleFS = $this->_getClassCalc(array('flagType' => 'AccountTitleFS'));
 		$flag = $classCalcAccountTitleFS->allot(array(
-			'flagStatus'   => 'calc',
-			'varsItem'     => $varsItemNext,
+			'flagStatus' => 'calc',
+			'varsItem' => $varsItemNext,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -179,8 +179,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$classCalcAccountTitleFSCS = $this->_getClassCalc(array('flagType' => 'AccountTitleFSCS'));
 		$flag = $classCalcAccountTitleFSCS->allot(array(
-			'flagStatus'   => 'calc',
-			'varsItem'     => $varsItemNext,
+			'flagStatus' => 'calc',
+			'varsItem' => $varsItemNext,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -200,10 +200,10 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	protected function _iniCalc($arr)
 	{
 		$this->_iniAdd(array(
-			'arrRows'         => array(),
+			'arrRows' => array(),
 			'numFiscalPeriod' => $arr['numFiscalPeriod'],
-			'flagTempNext'    => ($arr['flagTempNext'])? 1 : 0,
-			'flagCalcDepartment' => ($arr['flagCalcDepartment'])? 1 : 0,//部門すべて再計算要フラグ
+			'flagTempNext' => ($arr['flagTempNext']) ? 1 : 0,
+			'flagCalcDepartment' => ($arr['flagCalcDepartment']) ? 1 : 0,//部門すべて再計算要フラグ
 		));
 	}
 
@@ -222,12 +222,12 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$flag = $this->_setVarsValue(array(
-			'arrRows'      => $arr['arrRows'],
-			'varsItem'     => $varsItem,
-			'flagDelete'   => ($arr['flagDelete'])? 1 : 0,
-			'flagTempNext' => ($arr['flagTempNext'])? 1 : 0,
-			'flagBalance'  => ($arr['flagBalance'])? $arr['flagBalance'] : '',
-			'flagCalcDepartment'     => ($arr['flagCalcDepartment'])? 1 : 0,
+			'arrRows' => $arr['arrRows'],
+			'varsItem' => $varsItem,
+			'flagDelete' => ($arr['flagDelete']) ? 1 : 0,
+			'flagTempNext' => ($arr['flagTempNext']) ? 1 : 0,
+			'flagBalance' => ($arr['flagBalance']) ? $arr['flagBalance'] : '',
+			'flagCalcDepartment' => ($arr['flagCalcDepartment']) ? 1 : 0,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -236,7 +236,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$classCalcAccountTitleFS = $this->_getClassCalc(array('flagType' => 'AccountTitleFS'));
 		$flag = $classCalcAccountTitleFS->allot(array(
 			'flagStatus' => 'calc',
-			'varsItem'   => $varsItem,
+			'varsItem' => $varsItem,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -245,7 +245,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$classCalcAccountTitleFSCS = $this->_getClassCalc(array('flagType' => 'AccountTitleFSCS'));
 		$flag = $classCalcAccountTitleFSCS->allot(array(
 			'flagStatus' => 'calc',
-			'varsItem'   => $varsItem,
+			'varsItem' => $varsItem,
 		));
 		if ($flag == 'errorDataMax') {
 			return $flag;
@@ -268,8 +268,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$varsFSValueNext = $this->_loopVarsValueNext(array(
-			'varsFSValue'  => $varsFSValue,
-			'varsItem'     => $arr['varsItem'],
+			'varsFSValue' => $varsFSValue,
+			'varsItem' => $arr['varsItem'],
 			'varsItemNext' => $arr['varsItemNext'],
 		));
 		if ($varsFSValueNext == 'errorDataMax') {
@@ -277,31 +277,31 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		}
 
 		$this->_insertDb(array(
-			'varsValue'     => $varsFSValueNext,
-			'varsItemNext'  => $arr['varsItemNext'],
+			'varsValue' => $varsFSValueNext,
+			'varsItemNext' => $arr['varsItemNext'],
 		));
 
 		$array = $arr['varsItem']['varsDepartment'];
 		foreach ($array as $key => $value) {
 			$varsFSValue = $this->_getVarsFSValueDepartment(array(
-				'idDepartment'     => $key,
-				'numFiscalPeriod'  => $arr['varsItem']['numFiscalPeriod'],
+				'idDepartment' => $key,
+				'numFiscalPeriod' => $arr['varsItem']['numFiscalPeriod'],
 			));
 
 			$varsFSValueNext = $this->_loopVarsValueNext(array(
 				'flagDepartment' => 1,
-				'varsFSValue'    => $varsFSValue,
-				'varsItem'       => $arr['varsItem'],
-				'varsItemNext'   => $arr['varsItemNext'],
+				'varsFSValue' => $varsFSValue,
+				'varsItem' => $arr['varsItem'],
+				'varsItemNext' => $arr['varsItemNext'],
 			));
 			if ($varsFSValueNext == 'errorDataMax') {
 				return 'errorDataMax';
 			}
 
 			$this->_insertDb(array(
-				'idDepartment'  => $key,
-				'varsValue'     => $varsFSValueNext,
-				'varsItemNext'  => $arr['varsItemNext'],
+				'idDepartment' => $key,
+				'varsValue' => $varsFSValueNext,
+				'varsItemNext' => $arr['varsItemNext'],
 			));
 		}
 	}
@@ -331,18 +331,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		if ($arr['idDepartment']) {
 			$classDb->insertRow(array(
-				'idModule'  => 'accounting',
-				'strTable'  => 'accountingEntityDepartmentFSValue' . $strNation,
+				'idModule' => 'accounting',
+				'strTable' => 'accountingEntityDepartmentFSValue' . $strNation,
 				'arrColumn' => $arrDbColumn,
-				'arrValue'  => $arrDbValue,
+				'arrValue' => $arrDbValue,
 			));
 
 		} else {
 			$classDb->insertRow(array(
-				'idModule'  => 'accounting',
-				'strTable'  => 'accountingFSValue' . $strNation,
+				'idModule' => 'accounting',
+				'strTable' => 'accountingFSValue' . $strNation,
 				'arrColumn' => $arrDbColumn,
-				'arrValue'  => $arrDbValue,
+				'arrValue' => $arrDbValue,
 			));
 		}
 	}
@@ -383,11 +383,14 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			}
 		}
 
+		$varsFSValueNext['jsonJgaapAccountTitleBS'] = array();
+		$varsFSValueNext['jsonJgaapFSBS'] = array();
+
 		$array = $arr['varsItemNext']['varsFiscalPeriod'];
 		foreach ($array as $key => $value) {
 			$data = $this->_loopVarsNext(array(
-				'varsFS'        => $arr['varsItemNext']['varsFS']['jsonJgaapAccountTitleBS'],
-				'varsValue'     => &$arr['varsFSValue']['jsonJgaapAccountTitleBS']['f1'],
+				'varsFS' => $arr['varsItemNext']['varsFS']['jsonJgaapAccountTitleBS'],
+				'varsValue' => &$arr['varsFSValue']['jsonJgaapAccountTitleBS']['f1'],
 				'varsValueNext' => array(),
 			));
 
@@ -397,21 +400,21 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 					$sumNext = 0;
 				}
 				$dataTmpl = array(
-					'sumPrev'   => $sumNext,
-					'sumDebit'  => 0,
+					'sumPrev' => $sumNext,
+					'sumDebit' => 0,
 					'sumCredit' => 0,
-					'sumNext'   => $sumNext,
+					'sumNext' => $sumNext,
 					'varsAdjust' => array(
-						'sumPrev'   => 0,
-						'sumDebit'  => 0,
+						'sumPrev' => 0,
+						'sumDebit' => 0,
 						'sumCredit' => 0,
-						'sumNext'   => 0,
+						'sumNext' => 0,
 					),
 					'varsAdjust2' => array(
-						'sumPrev'   => 0,
-						'sumDebit'  => 0,
+						'sumPrev' => 0,
+						'sumDebit' => 0,
 						'sumCredit' => 0,
-						'sumNext'   => 0,
+						'sumNext' => 0,
 					),
 				);
 				$data['varsValueNext']['departmentNet'] = $dataTmpl;
@@ -420,8 +423,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			$varsFSValueNext['jsonJgaapAccountTitleBS'][$key] = $data['varsValueNext'];
 
 			$data = $this->_loopVarsNext(array(
-				'varsFS'        => $arr['varsItemNext']['varsFS']['jsonJgaapFSBS'],
-				'varsValue'     => &$arr['varsFSValue']['jsonJgaapFSBS']['f1'],
+				'varsFS' => $arr['varsItemNext']['varsFS']['jsonJgaapFSBS'],
+				'varsValue' => &$arr['varsFSValue']['jsonJgaapFSBS']['f1'],
 				'varsValueNext' => array(),
 			));
 
@@ -434,10 +437,10 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			if (preg_match("/^json/", $key)) {
 				$varsFSValueNext[$key] = '';
 				if (preg_match("/(.*?)BS$/", $key) && $value) {
-					$varsFSValueNext[$key] =  json_encode($value);
+					$varsFSValueNext[$key] = json_encode($value);
 					$flag = $this->checkTextSize(array(
 						'flagReturn' => 1,
-						'str'        => $varsFSValueNext[$key],
+						'str' => $varsFSValueNext[$key],
 					));
 					if ($flag) {
 						return 'errorDataMax';
@@ -468,21 +471,21 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				if (!is_null($varsValue[$value['vars']['idTarget']])) {
 
 					$dataTmpl = array(
-						'sumPrev'   => $varsValue[$value['vars']['idTarget']]['sumNext'],
-						'sumDebit'  => 0,
+						'sumPrev' => $varsValue[$value['vars']['idTarget']]['sumNext'],
+						'sumDebit' => 0,
 						'sumCredit' => 0,
-						'sumNext'   => $varsValue[$value['vars']['idTarget']]['sumNext'],
+						'sumNext' => $varsValue[$value['vars']['idTarget']]['sumNext'],
 						'varsAdjust' => array(
-							'sumPrev'   => 0,
-							'sumDebit'  => 0,
+							'sumPrev' => 0,
+							'sumDebit' => 0,
 							'sumCredit' => 0,
-							'sumNext'   => 0,
+							'sumNext' => 0,
 						),
 						'varsAdjust2' => array(
-							'sumPrev'   => 0,
-							'sumDebit'  => 0,
+							'sumPrev' => 0,
+							'sumDebit' => 0,
 							'sumCredit' => 0,
-							'sumNext'   => 0,
+							'sumNext' => 0,
 						),
 					);
 
@@ -506,12 +509,12 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			}
 			if ($value['child']) {
 				$data = $this->_loopVarsNext(array(
-					'varsFS'        => $array[$key]['child'],
-					'varsValue'     => $arr['varsValue'],
+					'varsFS' => $array[$key]['child'],
+					'varsValue' => $arr['varsValue'],
 					'varsValueNext' => $arr['varsValueNext'],
 				));
 				$array[$key]['child'] = $data['varsFS'];
-				$varsValueNext =  $data['varsValueNext'];
+				$varsValueNext = $data['varsValueNext'];
 			}
 		}
 
@@ -531,16 +534,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	protected function _iniEdit($arr)
 	{
 		$this->_iniDelete(array(
-			'arrRows'         => $arr['arrRowsDelete'],
+			'arrRows' => $arr['arrRowsDelete'],
 			'numFiscalPeriod' => $arr['numFiscalPeriod'],
-			'flagTempNext'    => ($arr['flagTempNext'])? 1 : 0,
-			'flagBalance'     => ($arr['flagBalance'])? $arr['flagBalance'] : '',
+			'flagTempNext' => ($arr['flagTempNext']) ? 1 : 0,
+			'flagBalance' => ($arr['flagBalance']) ? $arr['flagBalance'] : '',
 		));
 		$this->_iniAdd(array(
-			'arrRows'         => $arr['arrRowsAdd'],
+			'arrRows' => $arr['arrRowsAdd'],
 			'numFiscalPeriod' => $arr['numFiscalPeriod'],
-			'flagTempNext'    => ($arr['flagTempNext'])? 1 : 0,
-			'flagBalance'     => ($arr['flagBalance'])? $arr['flagBalance'] : '',
+			'flagTempNext' => ($arr['flagTempNext']) ? 1 : 0,
+			'flagBalance' => ($arr['flagBalance']) ? $arr['flagBalance'] : '',
 		));
 	}
 
@@ -555,15 +558,15 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	protected function _iniDelete($arr)
 	{
 		$arr['arrRows'] = $this->_getArrRowsReverse(array(
-			'arrRows'         => $arr['arrRows'],
+			'arrRows' => $arr['arrRows'],
 			'numFiscalPeriod' => $arr['numFiscalPeriod'],
 		));
 		$this->_iniAdd(array(
-			'arrRows'         => $arr['arrRows'],
+			'arrRows' => $arr['arrRows'],
 			'numFiscalPeriod' => $arr['numFiscalPeriod'],
-			'flagDelete'      => 1,
-			'flagTempNext'    => ($arr['flagTempNext'])? 1 : 0,
-			'flagBalance'     => ($arr['flagBalance'])? $arr['flagBalance'] : '',
+			'flagDelete' => 1,
+			'flagTempNext' => ($arr['flagTempNext']) ? 1 : 0,
+			'flagBalance' => ($arr['flagBalance']) ? $arr['flagBalance'] : '',
 		));
 	}
 
@@ -576,7 +579,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	{
 		$array = &$arr['arrRows'];
 		foreach ($array as $key => $value) {
-			$array[$key]['flagDebit'] = ($array[$key]['flagDebit'])? 0 : 1;
+			$array[$key]['flagDebit'] = ($array[$key]['flagDebit']) ? 0 : 1;
 		}
 
 		return $array;
@@ -600,19 +603,19 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			'strTable' => 'accountingFS' . $strNation,
 			'arrLimit' => array(),
 			'arrOrder' => array(),
-			'flagAnd'  => 1,
+			'flagAnd' => 1,
 			'arrWhere' => array(
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idEntity',
+					'flagType' => 'num',
+					'strColumn' => 'idEntity',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+					'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'numFiscalPeriod',
+					'flagType' => 'num',
+					'strColumn' => 'numFiscalPeriod',
 					'flagCondition' => 'eq',
-					'value'         => $arr['numFiscalPeriod'],
+					'value' => $arr['numFiscalPeriod'],
 				),
 			),
 		));
@@ -631,9 +634,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$varsFiscalPeriod = array();
 		foreach ($array as $key => $value) {
 			$varsFiscalPeriod[$value] = $this->_getVarsStampTerm(array(
-				'varsFlag'         => array('flagFiscalPeriod' => $value),
+				'varsFlag' => array('flagFiscalPeriod' => $value),
 				'varsEntityNation' => $varsEntityNation,
-				'numFiscalPeriod'  => $arr['numFiscalPeriod'],
+				'numFiscalPeriod' => $arr['numFiscalPeriod'],
 			));
 		}
 		$varsFiscalPeriodMonth = $this->_getVarsFiscalPeriodMonth(array(
@@ -651,11 +654,11 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				}
 			}
 			$data = $this->_getArrSelectOption(array(
-				'arrStrTitle'     => array(),
-				'arrSelectTag'    => array(),
-				'vars'            => $varsFS['jsonJgaapAccountTitle' . $value],
-				'flagBS'          => ($value == 'BS')? 1 : 0,
-				'flagFS'          => $value,
+				'arrStrTitle' => array(),
+				'arrSelectTag' => array(),
+				'vars' => $varsFS['jsonJgaapAccountTitle' . $value],
+				'flagBS' => ($value == 'BS') ? 1 : 0,
+				'flagFS' => $value,
 			));
 			$varsAccountTitle[$value] = $data['arrStrTitle'];
 		}
@@ -665,15 +668,15 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		));
 
 		$data = array(
-			'varsFS'                 => $varsFS,
-			'varsConsumptionTax'     => $varsConsumptionTax,
-			'varsEntityNation'       => $varsEntityNation,
-			'varsFiscalPeriod'       => $varsFiscalPeriod,
-			'varsFiscalPeriodMonth'  => $varsFiscalPeriodMonth,
-			'varsAccountTitle'       => $varsAccountTitle,
-			'varsDepartment'         => $varsDepartment,
+			'varsFS' => $varsFS,
+			'varsConsumptionTax' => $varsConsumptionTax,
+			'varsEntityNation' => $varsEntityNation,
+			'varsFiscalPeriod' => $varsFiscalPeriod,
+			'varsFiscalPeriodMonth' => $varsFiscalPeriodMonth,
+			'varsAccountTitle' => $varsAccountTitle,
+			'varsDepartment' => $varsDepartment,
 			'varsDepartmentTreeItem' => $varsDepartmentTreeItem,
-			'numFiscalPeriod'        => $arr['numFiscalPeriod'],
+			'numFiscalPeriod' => $arr['numFiscalPeriod'],
 		);
 
 		return $data;
@@ -691,19 +694,19 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			'strTable' => 'accountingEntityDepartment',
 			'arrLimit' => array(),
 			'arrOrder' => array(),
-			'flagAnd'  => 1,
+			'flagAnd' => 1,
 			'arrWhere' => array(
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idEntity',
+					'flagType' => 'num',
+					'strColumn' => 'idEntity',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+					'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'numFiscalPeriod',
+					'flagType' => 'num',
+					'strColumn' => 'numFiscalPeriod',
 					'flagCondition' => 'eq',
-					'value'         => $arr['numFiscalPeriod'],
+					'value' => $arr['numFiscalPeriod'],
 				),
 			),
 		));
@@ -760,7 +763,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$arrRows = $arr['arrRows'];
 
 				$arrRows = $this->_checkArrRowsDepartment(array(
-					'arrRows'      => $arr['arrRows'],
+					'arrRows' => $arr['arrRows'],
 					'idDepartment' => $key,
 				));
 
@@ -771,24 +774,24 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				}
 
 				$varsFSValue = $this->_getVarsFSValueDepartment(array(
-					'idDepartment'     => $key,
-					'numFiscalPeriod'  => $arr['varsItem']['numFiscalPeriod'],
+					'idDepartment' => $key,
+					'numFiscalPeriod' => $arr['varsItem']['numFiscalPeriod'],
 				));
 
 				$varsFSValue = $this->_loopVarsValue(array(
 					'flagDepartment' => 1,
-					'arrRows'        => $arrRows,
-					'varsFSValue'    => $varsFSValue,
-					'varsItem'       => $arr['varsItem'],
-					'flagDelete'     => $arr['flagDelete'],
-					'flagTempNext'   => $arr['flagTempNext'],
+					'arrRows' => $arrRows,
+					'varsFSValue' => $varsFSValue,
+					'varsItem' => $arr['varsItem'],
+					'flagDelete' => $arr['flagDelete'],
+					'flagTempNext' => $arr['flagTempNext'],
 				));
 
 				$flag = $this->_updateDb(array(
 					'idDepartment' => $key,
-					'varsValue'    => $varsFSValue,
-					'varsItem'     => $arr['varsItem'],
-					'strColumn'    => 'jsonJgaapAccountTitle',
+					'varsValue' => $varsFSValue,
+					'varsItem' => $arr['varsItem'],
+					'strColumn' => 'jsonJgaapAccountTitle',
 				));
 				if ($flag == 'errorDataMax') {
 					return $flag;
@@ -797,17 +800,17 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		} else {
 			$varsFSValue = $this->_loopVarsValue(array(
-				'arrRows'      => $arr['arrRows'],
-				'varsFSValue'  => $varsFSValue,
-				'varsItem'     => $arr['varsItem'],
-				'flagDelete'   => $arr['flagDelete'],
+				'arrRows' => $arr['arrRows'],
+				'varsFSValue' => $varsFSValue,
+				'varsItem' => $arr['varsItem'],
+				'flagDelete' => $arr['flagDelete'],
 				'flagTempNext' => $arr['flagTempNext'],
-				'flagBalance'  => $arr['flagBalance'],
+				'flagBalance' => $arr['flagBalance'],
 			));
 
 			$flag = $this->_updateDb(array(
 				'varsValue' => $varsFSValue,
-				'varsItem'  => $arr['varsItem'],
+				'varsItem' => $arr['varsItem'],
 				'strColumn' => 'jsonJgaapAccountTitle',
 			));
 			if ($flag == 'errorDataMax') {
@@ -819,7 +822,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$arrRows = $arr['arrRows'];
 
 				$arrRows = $this->_checkArrRowsDepartment(array(
-					'arrRows'      => $arr['arrRows'],
+					'arrRows' => $arr['arrRows'],
 					'idDepartment' => $key,
 				));
 
@@ -830,24 +833,24 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				}
 
 				$varsFSValue = $this->_getVarsFSValueDepartment(array(
-					'idDepartment'     => $key,
-					'numFiscalPeriod'  => $arr['varsItem']['numFiscalPeriod'],
+					'idDepartment' => $key,
+					'numFiscalPeriod' => $arr['varsItem']['numFiscalPeriod'],
 				));
 
 				$varsFSValue = $this->_loopVarsValue(array(
 					'flagDepartment' => 1,
-					'arrRows'        => $arrRows,
-					'varsFSValue'    => $varsFSValue,
-					'varsItem'       => $arr['varsItem'],
-					'flagDelete'     => $arr['flagDelete'],
-					'flagTempNext'   => $arr['flagTempNext'],
+					'arrRows' => $arrRows,
+					'varsFSValue' => $varsFSValue,
+					'varsItem' => $arr['varsItem'],
+					'flagDelete' => $arr['flagDelete'],
+					'flagTempNext' => $arr['flagTempNext'],
 				));
 
 				$flag = $this->_updateDb(array(
 					'idDepartment' => $key,
-					'varsValue'    => $varsFSValue,
-					'varsItem'     => $arr['varsItem'],
-					'strColumn'    => 'jsonJgaapAccountTitle',
+					'varsValue' => $varsFSValue,
+					'varsItem' => $arr['varsItem'],
+					'strColumn' => 'jsonJgaapAccountTitle',
 				));
 				if ($flag == 'errorDataMax') {
 					return $flag;
@@ -889,7 +892,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$json = json_encode($arr['varsValue'][$arr['strColumn'] . $value]);
 				$flag = $this->checkTextSize(array(
 					'flagReturn' => 1,
-					'str'        => $json,
+					'str' => $json,
 				));
 				if ($flag) {
 					return 'errorDataMax';
@@ -907,28 +910,28 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				'idModule' => 'accounting',
 				'strTable' => 'accountingEntityDepartmentFSValue' . $strNation,
 				'arrColumn' => $arrColumn,
-				'flagAnd'   => 1,
-				'arrWhere'  => array(
+				'flagAnd' => 1,
+				'arrWhere' => array(
 					array(
-						'flagType'      => 'num',
-						'strColumn'     => 'idEntity',
+						'flagType' => 'num',
+						'strColumn' => 'idEntity',
 						'flagCondition' => 'eq',
-						'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+						'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 					),
 					array(
-						'flagType'      => 'num',
-						'strColumn'     => 'numFiscalPeriod',
+						'flagType' => 'num',
+						'strColumn' => 'numFiscalPeriod',
 						'flagCondition' => 'eq',
-						'value'         => $arr['varsItem']['numFiscalPeriod'],
+						'value' => $arr['varsItem']['numFiscalPeriod'],
 					),
 					array(
-						'flagType'      => 'num',
-						'strColumn'     => 'idDepartment',
+						'flagType' => 'num',
+						'strColumn' => 'idDepartment',
 						'flagCondition' => 'eq',
-						'value'         => $arr['idDepartment'],
+						'value' => $arr['idDepartment'],
 					),
 				),
-				'arrValue'  => $arrValue,
+				'arrValue' => $arrValue,
 			));
 
 		} else {
@@ -936,22 +939,22 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				'idModule' => 'accounting',
 				'strTable' => 'accountingFSValue' . $strNation,
 				'arrColumn' => $arrColumn,
-				'flagAnd'   => 1,
-				'arrWhere'  => array(
+				'flagAnd' => 1,
+				'arrWhere' => array(
 					array(
-						'flagType'      => 'num',
-						'strColumn'     => 'idEntity',
+						'flagType' => 'num',
+						'strColumn' => 'idEntity',
 						'flagCondition' => 'eq',
-						'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+						'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 					),
 					array(
-						'flagType'      => 'num',
-						'strColumn'     => 'numFiscalPeriod',
+						'flagType' => 'num',
+						'strColumn' => 'numFiscalPeriod',
 						'flagCondition' => 'eq',
-						'value'         => $arr['varsItem']['numFiscalPeriod'],
+						'value' => $arr['varsItem']['numFiscalPeriod'],
 					),
 				),
-				'arrValue'  => $arrValue,
+				'arrValue' => $arrValue,
 			));
 		}
 	}
@@ -976,13 +979,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				}
 			}
 			$arr['varsFSValue']['jsonJgaapAccountTitle' . $value] = $this->_getValueFS(array(
-				'flagFS'           => $value,
-				'flagDelete'       => $arr['flagDelete'],
-				'flagTempNext'     => $arr['flagTempNext'],
+				'flagFS' => $value,
+				'flagDelete' => $arr['flagDelete'],
+				'flagTempNext' => $arr['flagTempNext'],
 				'varsAccountTitle' => $arr['varsItem']['varsAccountTitle'][$value],
-				'arrRows'          => $arr['arrRows'],
-				'varsItem'         => $arr['varsItem'],
-				'varsValue'        => $arr['varsFSValue']['jsonJgaapAccountTitle' . $value],
+				'arrRows' => $arr['arrRows'],
+				'varsItem' => $arr['varsItem'],
+				'varsValue' => $arr['varsFSValue']['jsonJgaapAccountTitle' . $value],
 			));
 		}
 
@@ -1006,7 +1009,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			if ((int) $arr['varsItem']['varsEntityNation']['flagCR']) {
 				//CR Loop
 				$this->_loopVarsCalc(array(
-					'varsFS'    => $arr['varsItem']['varsFS'][$strFS . 'CR'],
+					'varsFS' => $arr['varsItem']['varsFS'][$strFS . 'CR'],
 					'varsValue' => &$arr['varsFSValue'][$strFS . 'CR'][$key],
 				));
 
@@ -1014,18 +1017,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProductsCost']['sumPrev'] = 0;
 
 				$arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProductsCost']['sumDebit']
-					 = $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumDebit'];
+					= $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumDebit'];
 
 				$arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProductsCost']['sumCredit']
-					 = $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumCredit'];
+					= $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumCredit'];
 
 				$arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProductsCost']['sumNext']
-					 = $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumNext'];
+					= $arr['varsFSValue'][$strFS . 'CR'][$key]['currentWorkInProcessNet']['sumNext'];
 			}
 
 			//PL Loop
 			$this->_loopVarsCalc(array(
-				'varsFS'    => $arr['varsItem']['varsFS'][$strFS . 'PL'],
+				'varsFS' => $arr['varsItem']['varsFS'][$strFS . 'PL'],
 				'varsValue' => &$arr['varsFSValue'][$strFS . 'PL'][$key],
 			));
 
@@ -1036,18 +1039,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 			} elseif (preg_match("/^(f2)/", $key)) {
 				if ($key == 'f22') {
-					$sumPrev =  $arr['varsFSValue'][$strFS . 'BS']['f21']['netIncome']['sumNext'];
+					$sumPrev = $arr['varsFSValue'][$strFS . 'BS']['f21']['netIncome']['sumNext'];
 				}
 
 			} elseif (preg_match("/^(f4)/", $key)) {
 				if ($key == 'f42') {
-					$sumPrev =  $arr['varsFSValue'][$strFS . 'BS']['f41']['netIncome']['sumNext'];
+					$sumPrev = $arr['varsFSValue'][$strFS . 'BS']['f41']['netIncome']['sumNext'];
 
 				} elseif ($key == 'f43') {
-					$sumPrev =  $arr['varsFSValue'][$strFS . 'BS']['f42']['netIncome']['sumNext'];
+					$sumPrev = $arr['varsFSValue'][$strFS . 'BS']['f42']['netIncome']['sumNext'];
 
 				} elseif ($key == 'f44') {
-					$sumPrev =  $arr['varsFSValue'][$strFS . 'BS']['f43']['netIncome']['sumNext'];
+					$sumPrev = $arr['varsFSValue'][$strFS . 'BS']['f43']['netIncome']['sumNext'];
 				}
 
 			} else {
@@ -1055,7 +1058,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				if ($numMonthPrev < 1) {
 					$numMonthPrev += 12;
 				}
-				$sumPrev =  $arr['varsFSValue'][$strFS . 'BS'][$numMonthPrev]['netIncome']['sumNext'];
+				$sumPrev = $arr['varsFSValue'][$strFS . 'BS'][$numMonthPrev]['netIncome']['sumNext'];
 			}
 
 
@@ -1066,18 +1069,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			$arr['varsFSValue'][$strFS . 'BS'][$key]['netIncome']['sumPrev'] = $sumPrev;
 
 			$arr['varsFSValue'][$strFS . 'BS'][$key]['netIncome']['sumDebit']
-				 = $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumDebit'];
+				= $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumDebit'];
 
 			$arr['varsFSValue'][$strFS . 'BS'][$key]['netIncome']['sumCredit']
-				 = $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumCredit'];
+				= $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumCredit'];
 
 			$arr['varsFSValue'][$strFS . 'BS'][$key]['netIncome']['sumNext']
-				 = $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumNext'] + $sumPrev;
+				= $arr['varsFSValue'][$strFS . 'PL'][$key]['currentTermProfitOrLossNet']['sumNext'] + $sumPrev;
 
 
 			//BS Loop
 			$this->_loopVarsCalc(array(
-				'varsFS'    => $varsFSBS,
+				'varsFS' => $varsFSBS,
 				'varsValue' => &$arr['varsFSValue'][$strFS . 'BS'][$key],
 			));
 
@@ -1131,7 +1134,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			foreach ($arraySum as $keySum => $valueSum) {
 				$numNetAssetsSum = $arr['varsFSValue'][$strFS . 'BS'][$key]['netAssetsSum'][$valueSum];
 				$numliabilitiesSum = $arr['varsFSValue'][$strFS . 'BS'][$key]['liabilitiesSum'][$valueSum];
-				$numDepartmentNet =  $arr['varsFSValue'][$strFS . 'BS'][$key]['departmentNet'][$valueSum];
+				$numDepartmentNet = $arr['varsFSValue'][$strFS . 'BS'][$key]['departmentNet'][$valueSum];
 
 				$sum = $numNetAssetsSum + $numliabilitiesSum + $numDepartmentNet;
 
@@ -1179,7 +1182,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		foreach ($array as $key => $value) {
 			if ($value['child']) {
 				$arraySum = $this->_loopVarsCalc(array(
-					'varsFS'    => $array[$key]['child'],
+					'varsFS' => $array[$key]['child'],
 					'varsValue' => &$arr['varsValue'],
 				));
 			}
@@ -1264,18 +1267,18 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 				} else {
 					if (!is_null($arr['varsValue'][$value['vars']['idTarget']])) {
-						$numPrev =  $arr['varsValue'][$value['vars']['idTarget']]['sumPrev'];
-						$numDebit =  $arr['varsValue'][$value['vars']['idTarget']]['sumDebit'];
-						$numCredit =  $arr['varsValue'][$value['vars']['idTarget']]['sumCredit'];
-						$numNext =  $arr['varsValue'][$value['vars']['idTarget']]['sumNext'];
+						$numPrev = $arr['varsValue'][$value['vars']['idTarget']]['sumPrev'];
+						$numDebit = $arr['varsValue'][$value['vars']['idTarget']]['sumDebit'];
+						$numCredit = $arr['varsValue'][$value['vars']['idTarget']]['sumCredit'];
+						$numNext = $arr['varsValue'][$value['vars']['idTarget']]['sumNext'];
 					}
 				}
 				$data = array(
 					'flagDebit' => (int) $value['vars']['flagDebit'],
-					'numPrev'   => $numPrev,
-					'numDebit'  => $numDebit,
+					'numPrev' => $numPrev,
+					'numDebit' => $numDebit,
 					'numCredit' => $numCredit,
-					'numNext'   => $numNext,
+					'numNext' => $numNext,
 				);
 
 				if ($value['vars']['flagCalc'] == 'net') {
@@ -1309,21 +1312,21 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$varsFiscalPeriod = $arr['varsItem']['varsFiscalPeriod'];
 
 		$dataTmpl = array(
-			'sumPrev'    => 0,
-			'sumDebit'   => 0,
-			'sumCredit'  => 0,
-			'sumNext'    => 0,
-			'varsAdjust'    => array(
-				'sumPrev'    => 0,
-				'sumDebit'   => 0,
-				'sumCredit'  => 0,
-				'sumNext'    => 0,
+			'sumPrev' => 0,
+			'sumDebit' => 0,
+			'sumCredit' => 0,
+			'sumNext' => 0,
+			'varsAdjust' => array(
+				'sumPrev' => 0,
+				'sumDebit' => 0,
+				'sumCredit' => 0,
+				'sumNext' => 0,
 			),
-			'varsAdjust2'    => array(
-				'sumPrev'    => 0,
-				'sumDebit'   => 0,
-				'sumCredit'  => 0,
-				'sumNext'    => 0,
+			'varsAdjust2' => array(
+				'sumPrev' => 0,
+				'sumDebit' => 0,
+				'sumCredit' => 0,
+				'sumNext' => 0,
 			),
 		);
 
@@ -1356,7 +1359,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 					}
 
 					$flagFiscalReport = 'varsAdjust';
-					if (preg_match( "/^f2/", $valueRows['flagFiscalReport'])) {
+					if (preg_match("/^f2/", $valueRows['flagFiscalReport'])) {
 						$flagFiscalReport = 'varsAdjust2';
 					}
 
@@ -1420,7 +1423,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 							}
 
 							//month
-							if ($valueRows['stampBook'] >= $varsFiscalPeriod[$numMonth]['stampMin']
+							if (
+								$valueRows['stampBook'] >= $varsFiscalPeriod[$numMonth]['stampMin']
 								&& $valueRows['stampBook'] <= $varsFiscalPeriod[$numMonth]['stampMax']
 							) {
 								if ($arr['flagDelete']) {
@@ -1441,7 +1445,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 							if ($varsFiscalPeriod['f21']) {
 								$arrayReport = array('f21', 'f22');
 								foreach ($arrayReport as $keyReport => $valueReport) {
-									if ($valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
+									if (
+										$valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
 										&& $valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']
 									) {
 										if ($arr['flagDelete']) {
@@ -1459,12 +1464,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 									}
 								}
 
-							//f4
+								//f4
 							}
 							if ($varsFiscalPeriod['f41']) {
 								$arrayReport = array('f41', 'f42', 'f43', 'f44');
 								foreach ($arrayReport as $keyReport => $valueReport) {
-									if ($valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
+									if (
+										$valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
 										&& $valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']
 									) {
 										if ($arr['flagDelete']) {
@@ -1532,7 +1538,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 							$arrayReport = array('f21', 'f22');
 							foreach ($arrayReport as $keyReport => $valueReport) {
 								if (!$arrayflagSumNext[$valueReport]) {
-									if ($valueRows['stampBook']  <= $varsFiscalPeriod[$valueReport]['stampMax']) {
+									if ($valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']) {
 										$varsValue[$valueReport][$valueRows['idAccountTitle']]['sumNext'] += $numValue;
 										if ($valueRows['flagFiscalReport']) {
 											$varsValue[$valueReport][$valueRows['idAccountTitle']][$flagFiscalReport]['sumNext'] += $numValue;
@@ -1554,13 +1560,13 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 								}
 							}
 
-						//f4
+							//f4
 						}
 						if ($varsFiscalPeriod['f41']) {
 							$arrayReport = array('f41', 'f42', 'f43', 'f44');
 							foreach ($arrayReport as $keyReport => $valueReport) {
 								if (!$arrayflagSumNext[$valueReport]) {
-									if ($valueRows['stampBook']  <= $varsFiscalPeriod[$valueReport]['stampMax']) {
+									if ($valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']) {
 										$varsValue[$valueReport][$valueRows['idAccountTitle']]['sumNext'] += $numValue;
 										if ($valueRows['flagFiscalReport']) {
 											$varsValue[$valueReport][$valueRows['idAccountTitle']][$flagFiscalReport]['sumNext'] += $numValue;
@@ -1585,7 +1591,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 					} else {
 						//month
-						if ($valueRows['stampBook'] >= $varsFiscalPeriod[$numMonth]['stampMin']
+						if (
+							$valueRows['stampBook'] >= $varsFiscalPeriod[$numMonth]['stampMin']
 							&& $valueRows['stampBook'] <= $varsFiscalPeriod[$numMonth]['stampMax']
 						) {
 							$varsValue[$numMonth][$valueRows['idAccountTitle']]['sumNext'] += $numValue;
@@ -1599,7 +1606,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 							$arrayReport = array('f21', 'f22');
 							foreach ($arrayReport as $keyReport => $valueReport) {
 								if (!$arrayflagSumNext[$valueReport]) {
-									if ($valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
+									if (
+										$valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
 										&& $valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']
 									) {
 										$varsValue[$valueReport][$valueRows['idAccountTitle']]['sumNext'] += $numValue;
@@ -1611,13 +1619,14 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 								}
 							}
 
-						//f4
+							//f4
 						}
 						if ($varsFiscalPeriod['f41']) {
 							$arrayReport = array('f41', 'f42', 'f43', 'f44');
 							foreach ($arrayReport as $keyReport => $valueReport) {
 								if (!$arrayflagSumNext[$valueReport]) {
-									if ($valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
+									if (
+										$valueRows['stampBook'] >= $varsFiscalPeriod[$valueReport]['stampMin']
 										&& $valueRows['stampBook'] <= $varsFiscalPeriod[$valueReport]['stampMax']
 									) {
 										$varsValue[$valueReport][$valueRows['idAccountTitle']]['sumNext'] += $numValue;
@@ -1701,8 +1710,8 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$varsIdAccountTitle = $this->_getBalanceVarsFS(array(
 			'varsIdAccountTitle' => $varsIdAccountTitle,
-			'varsItem'           => $this->_extChildSelf['varsItemBalance'][$arr['numFiscalPeriod']],
-			'numFiscalPeriod'    => $arr['numFiscalPeriod'],
+			'varsItem' => $this->_extChildSelf['varsItemBalance'][$arr['numFiscalPeriod']],
+			'numFiscalPeriod' => $arr['numFiscalPeriod'],
 		));
 
 		return $varsIdAccountTitle;
@@ -1722,7 +1731,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$arrAccountTitle = $this->_getAccountTitle(array(
 			'arrSubAccountTitle' => $arrSubAccountTitle,
-			'numFiscalPeriod'    => $arr['numFiscalPeriod'],
+			'numFiscalPeriod' => $arr['numFiscalPeriod'],
 		));
 
 		$varsDepartment = $this->_getVarsDepartment(array(
@@ -1731,9 +1740,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 		$data = array(
 			'arrSubAccountTitle' => $arrSubAccountTitle,
-			'arrAccountTitle'    => $arrAccountTitle,
-			'varsDepartment'     => $varsDepartment,
-			'numFiscalPeriod'    => $arr['numFiscalPeriod'],
+			'arrAccountTitle' => $arrAccountTitle,
+			'varsDepartment' => $varsDepartment,
+			'numFiscalPeriod' => $arr['numFiscalPeriod'],
 		);
 
 		return $data;
@@ -1748,7 +1757,7 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 	 */
 	protected function _getBalanceVarsFS($arr)
 	{
-		$idAccountTitle='cash';
+		$idAccountTitle = 'cash';
 
 		$array = $arr['varsIdAccountTitle'];
 		foreach ($array as $key => $value) {
@@ -1756,9 +1765,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 
 			//all
 			$numBalance = $this->_getNumBalance(array(
-				'numFiscalPeriod'   => $arr['numFiscalPeriod'],
-				'idDepartment'      => 'none',
-				'idAccountTitle'    => $idAccountTitle,
+				'numFiscalPeriod' => $arr['numFiscalPeriod'],
+				'idDepartment' => 'none',
+				'idAccountTitle' => $idAccountTitle,
 				'idSubAccountTitle' => 'none',
 			));
 
@@ -1774,9 +1783,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			foreach ($arraySub as $keySub => $valueSub) {
 				$idSubAccountTitle = $keySub;
 				$numBalance = $this->_getNumBalance(array(
-					'numFiscalPeriod'   => $arr['numFiscalPeriod'],
-					'idDepartment'      => 'none',
-					'idAccountTitle'    => $idAccountTitle,
+					'numFiscalPeriod' => $arr['numFiscalPeriod'],
+					'idDepartment' => 'none',
+					'idAccountTitle' => $idAccountTitle,
 					'idSubAccountTitle' => $idSubAccountTitle,
 				));
 				if ($numBalance != 0) {
@@ -1792,9 +1801,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 			foreach ($arrayDepartment as $keyDepartment => $valueDepartment) {
 				$idDepartment = $keyDepartment;
 				$numBalance = $this->_getNumBalance(array(
-					'numFiscalPeriod'   => $arr['numFiscalPeriod'],
-					'idDepartment'      => $idDepartment,
-					'idAccountTitle'    => $idAccountTitle,
+					'numFiscalPeriod' => $arr['numFiscalPeriod'],
+					'idDepartment' => $idDepartment,
+					'idAccountTitle' => $idAccountTitle,
 					'idSubAccountTitle' => 'none',
 				));
 
@@ -1809,9 +1818,9 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				foreach ($arraySub as $keySub => $valueSub) {
 					$idSubAccountTitle = $keySub;
 					$numBalance = $this->_getNumBalance(array(
-						'numFiscalPeriod'   => $arr['numFiscalPeriod'],
-						'idDepartment'      => $idDepartment,
-						'idAccountTitle'    => $idAccountTitle,
+						'numFiscalPeriod' => $arr['numFiscalPeriod'],
+						'idDepartment' => $idDepartment,
+						'idAccountTitle' => $idAccountTitle,
 						'idSubAccountTitle' => $idSubAccountTitle,
 					));
 					if ($numBalance != 0) {
@@ -1849,16 +1858,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$strNation = ucwords(PLUGIN_ACCOUNTING_STR_NATION);
 		$arrWhere = array(
 			array(
-				'flagType'      => 'num',
-				'strColumn'     => 'idEntity',
+				'flagType' => 'num',
+				'strColumn' => 'idEntity',
 				'flagCondition' => 'eq',
-				'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+				'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 			),
 			array(
-				'flagType'      => 'num',
-				'strColumn'     => 'numFiscalPeriod',
+				'flagType' => 'num',
+				'strColumn' => 'numFiscalPeriod',
 				'flagCondition' => 'eq',
-				'value'         => $arr['numFiscalPeriod'],
+				'value' => $arr['numFiscalPeriod'],
 			),
 		);
 
@@ -1872,10 +1881,10 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$strTable = 'accountingSubAccountTitleValue' . $strNation;
 
 				$arrWhere[] = array(
-					'flagType'      => '',
-					'strColumn'     => 'idSubAccountTitle',
+					'flagType' => '',
+					'strColumn' => 'idSubAccountTitle',
 					'flagCondition' => 'eq',
-					'value'         => $arr['idSubAccountTitle'],
+					'value' => $arr['idSubAccountTitle'],
 				);
 			}
 
@@ -1885,20 +1894,20 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 				$strTable = 'accountingEntityDepartmentFSValue' . $strNation;
 
 				$arrWhere[] = array(
-					'flagType'      => '',
-					'strColumn'     => 'idDepartment',
+					'flagType' => '',
+					'strColumn' => 'idDepartment',
 					'flagCondition' => 'eq',
-					'value'         => $arr['idDepartment'],
+					'value' => $arr['idDepartment'],
 				);
 
 			} else {
 				//numBalanceDepartmentSubAccount
 				$strTable = 'accountingSubAccountTitleValue' . $strNation;
 				$arrWhere[] = array(
-					'flagType'      => '',
-					'strColumn'     => 'idSubAccountTitle',
+					'flagType' => '',
+					'strColumn' => 'idSubAccountTitle',
 					'flagCondition' => 'eq',
-					'value'         => $arr['idSubAccountTitle'],
+					'value' => $arr['idSubAccountTitle'],
 				);
 			}
 		}
@@ -1906,15 +1915,16 @@ class Code_Else_Plugin_Accounting_Jpn_CalcAccountTitle extends Code_Else_Plugin_
 		$varsRow = $this->_extChildSelf['varsBalance'][$arr['numFiscalPeriod']][$arr['idDepartment']][$arr['idSubAccountTitle']];
 		if (!$varsRow) {
 			$rows = $classDb->getSelect(array(
-				'idModule'    => 'accounting',
-				'strTable'    => $strTable,
-				'arrJoin'     => '',
-				'arrLimit'    => array(
-					'numStart' => 0, 'numEnd' => 1,
+				'idModule' => 'accounting',
+				'strTable' => $strTable,
+				'arrJoin' => '',
+				'arrLimit' => array(
+					'numStart' => 0,
+					'numEnd' => 1,
 				),
-				'arrOrder'  => array(),
-				'arrWhere'    => $arrWhere,
-				'flagAnd'     => 1,
+				'arrOrder' => array(),
+				'arrWhere' => $arrWhere,
+				'flagAnd' => 1,
 			));
 			if (!$rows['numRows']) {
 				return $numValue;

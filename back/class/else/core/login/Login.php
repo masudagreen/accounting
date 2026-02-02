@@ -7,24 +7,24 @@
 class Code_Else_Core_Login_Login extends Code_Else_Core_Base_ModuleAbstract
 {
 	protected $_self = array(
-		'path'        => array(
+		'path' => array(
 			'file' => array(
-				'tplHtml'    => 'else/core/login/html/index.html',
-				'tplJs'      => 'else/core/login/js/index.js',
-				'varsHtml'    => 'back/tpl/vars/else/core/login/<strLang>/html/index.php',
-				'varsPortal'      => 'back/tpl/vars/else/core/login/<strLang>/js/portal.php',
-				'datLang'      => 'back/dat/lang/<strLang>/list.csv',
-				'datSession'  => 'back/dat/error/sessionTimeOut.txt',
+				'tplHtml' => 'else/core/login/html/index.html',
+				'tplJs' => 'else/core/login/js/index.js',
+				'varsHtml' => 'back/tpl/vars/else/core/login/<strLang>/html/index.php',
+				'varsPortal' => 'back/tpl/vars/else/core/login/<strLang>/js/portal.php',
+				'datLang' => 'back/dat/lang/<strLang>/list.csv',
+				'datSession' => 'back/dat/error/sessionTimeOut.txt',
 			),
-			'dir'  => array(
-				'varLang'      => 'back/tpl/vars/else/core/base/',
+			'dir' => array(
+				'varLang' => 'back/tpl/vars/else/core/base/',
 			),
 		),
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -35,9 +35,9 @@ class Code_Else_Core_Login_Login extends Code_Else_Core_Base_ModuleAbstract
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	public function run()
 	{
 		global $varsRequest;
@@ -50,17 +50,17 @@ class Code_Else_Core_Login_Login extends Code_Else_Core_Base_ModuleAbstract
 			if (!file_exists($path) || $module != 'Login') {
 				if (preg_match("/output/is", $varsRequest['query']['func'])) {
 					$classRequest->output(array(
-						'path'         => $this->_self['path']['file']['datSession'],
-						'strFileType'  => 'txt',
-						'strFileName'  => 'SessionTimeOut.txt',
+						'path' => $this->_self['path']['file']['datSession'],
+						'strFileType' => 'txt',
+						'strFileName' => 'SessionTimeOut.txt',
 					));
 
 				} else {
 					$this->sendVars(array(
-						'flag'    => 0,
-						'stamp'   => array(),
+						'flag' => 0,
+						'stamp' => array(),
 						'numNews' => array(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 			}
@@ -76,9 +76,9 @@ class Code_Else_Core_Login_Login extends Code_Else_Core_Base_ModuleAbstract
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	public function loop($arr)
 	{
 		if (preg_match("/^rebuild/", $arr['flagType'])) {

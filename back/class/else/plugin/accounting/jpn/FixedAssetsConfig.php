@@ -8,13 +8,13 @@
 class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 {
 	protected $_extSelf = array(
-		'db'        => 'back/tpl/templates/else/plugin/accounting/db/config.php',
+		'db' => 'back/tpl/templates/else/plugin/accounting/db/config.php',
 		'strNation' => 'jpn',
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -30,7 +30,7 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 	public function run()
 	{
 		if (FLAG_TEST) {
-			var_dump(__CLASS__ . '/' .__FUNCTION__. '/' .__LINE__);
+			var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 		}
 		exit;
 	}
@@ -68,13 +68,13 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 		}
 	}
 
-    /**
+	/**
 		(array(
 			'path'      => '',
 			'strLang'   => '',
 			'strNation' => '',
 		));
-     */
+	 */
 	protected function _getVars($arr)
 	{
 
@@ -93,11 +93,11 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 		}
 
 		$vars = $classEscape->getVars(array(
-			'data'    => $arr['path'],
+			'data' => $arr['path'],
 			'arr' => array(
-				array('before' => '<strTitle>', 'after' => $arr['strTitle'],),
-				array('before' => '<strLang>', 'after' => $arr['strLang'],),
-				array('before' => '<strNation>', 'after' => $arr['strNation'],),
+				array('before' => '<strTitle>', 'after' => $arr['strTitle'], ),
+				array('before' => '<strLang>', 'after' => $arr['strLang'], ),
+				array('before' => '<strNation>', 'after' => $arr['strNation'], ),
 			),
 		));
 
@@ -115,7 +115,7 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 		$strNation = ucwords($this->_extSelf['strNation']);
 		$dbname = $classDb->getSelf(array('key' => 'dbname'));
 
-		$sql = 'show tables from '. $dbname . ' like ? ;';
+		$sql = 'show tables from ' . $dbname . ' like ? ;';
 		$str = 'accountingFixedAssets' . $strNation;
 
 		$stmt = $dbh->prepare($sql);
@@ -150,15 +150,15 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 			$numFiscalPeriodStart = $value['numFiscalPeriodStart'];
 			$numFiscalPeriodEnd = $value['numFiscalPeriod'];
 			$idEntity = $value['id'];
-			for ($i = $numFiscalPeriodStart ; $i <= $numFiscalPeriodEnd; $i++) {
+			for ($i = $numFiscalPeriodStart; $i <= $numFiscalPeriodEnd; $i++) {
 				$numFiscalPeriod = $i;
 				$arrDbColumn = array('stampRegister', 'stampUpdate', 'idEntity', 'numFiscalPeriod');
 				$arrDbValue = array($stampRegister, $stampUpdate, $idEntity, $numFiscalPeriod);
 				$classDb->insertRow(array(
-					'idModule'  => 'accounting',
-					'strTable'  => 'accountingFixedAssets' . $strNation,
+					'idModule' => 'accounting',
+					'strTable' => 'accountingFixedAssets' . $strNation,
 					'arrColumn' => $arrDbColumn,
-					'arrValue'  => $arrDbValue,
+					'arrValue' => $arrDbValue,
 				));
 			}
 			$this->_setDetailAddAdminMemoEntity($idEntity);
@@ -179,7 +179,8 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 		$stampUpdate = $tm;
 
 		$arrayColumn = array(
-			'jsonFixedAssetsNaviFolder', 'jsonFixedAssetsEditorNaviFormat',
+			'jsonFixedAssetsNaviFolder',
+			'jsonFixedAssetsEditorNaviFormat',
 		);
 
 		foreach ($arrayColumn as $keyColumn => $valueColumn) {
@@ -206,7 +207,9 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 		foreach ($array as $key => $value) {
 			$idAccount = $value['id'];
 			$arrayColumn = array(
-				'jsonFixedAssetsNaviFolder', 'jsonFixedAssetsNaviSearch', 'jsonFixedAssetsEditorNaviFormat',
+				'jsonFixedAssetsNaviFolder',
+				'jsonFixedAssetsNaviSearch',
+				'jsonFixedAssetsEditorNaviFormat',
 			);
 
 			foreach ($arrayColumn as $keyColumn => $valueColumn) {
@@ -233,19 +236,19 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 			'strTable' => 'accountingEntity' . $strNation,
 			'arrLimit' => array(),
 			'arrOrder' => array(),
-			'flagAnd'  => 1,
+			'flagAnd' => 1,
 			'arrWhere' => array(
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idEntity',
+					'flagType' => 'num',
+					'strColumn' => 'idEntity',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+					'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'numFiscalPeriod',
+					'flagType' => 'num',
+					'strColumn' => 'numFiscalPeriod',
 					'flagCondition' => 'eq',
-					'value'         => $arr['numFiscalPeriod'],
+					'value' => $arr['numFiscalPeriod'],
 				),
 			),
 		));
@@ -273,7 +276,8 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 
 		$array = $vars;
 		foreach ($array as $key => $value) {
-			if ($value['table'] == 'accountingLogFixedAssets' . $strNation
+			if (
+				$value['table'] == 'accountingLogFixedAssets' . $strNation
 				|| $value['table'] == 'accountingFixedAssets' . $strNation
 			) {
 				//drop
@@ -290,9 +294,9 @@ class Code_Else_Plugin_Accounting_Jpn_FixedAssetsConfig
 				$strColumn = '';
 				foreach ($arrayChild as $keyChild => $valueChild) {
 					$strColumn .= ' '
-								. $arrayChild[$keyChild]['column']
-								. ' '
-								. $arrayChild[$keyChild]['type'];
+						. $arrayChild[$keyChild]['column']
+						. ' '
+						. $arrayChild[$keyChild]['type'];
 
 					if ($keyChild != $numLimit) {
 						$strColumn .= ',';

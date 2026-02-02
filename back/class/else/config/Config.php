@@ -8,14 +8,14 @@ class Code_Else_Config
 {
 
 	protected $_self = array(
-		'strTitle'    => '',
-		'path'        => array(
-			'file'=> array(
+		'strTitle' => '',
+		'path' => array(
+			'file' => array(
 				'sqlConnect' => 'back/dat/db/connect.cgi',
-				'tplHtml'    => 'else/config/html/index.html',
-				'tplJs'      => 'else/config/js/index.js',
-				'varHtml'    => 'back/tpl/vars/else/config/<strLang>/html/index.php',
-				'varJs'      => 'back/tpl/vars/else/config/<strLang>/js/index.php',
+				'tplHtml' => 'else/config/html/index.html',
+				'tplJs' => 'else/config/js/index.js',
+				'varHtml' => 'back/tpl/vars/else/config/<strLang>/html/index.php',
+				'varJs' => 'back/tpl/vars/else/config/<strLang>/js/index.php',
 			),
 			'dir' => array(
 				'plugin' => '',
@@ -120,9 +120,9 @@ class Code_Else_Config
 
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -133,9 +133,9 @@ class Code_Else_Config
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	public function run()
 	{
 		global $varsRequest;
@@ -179,7 +179,7 @@ class Code_Else_Config
 		global $classRequest;
 
 		$flag = $classRebuild->run(array(
-		    'flagType' => 'DbTable',
+			'flagType' => 'DbTable',
 		));
 
 		if ($flag) {
@@ -190,7 +190,7 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'     => $json,
+				'data' => $json,
 			));
 			exit;
 		}
@@ -199,7 +199,7 @@ class Code_Else_Config
 			$dbh->beginTransaction();
 
 			$classRebuild->run(array(
-			    'flagType' => 'DbInsert',
+				'flagType' => 'DbInsert',
 			));
 
 			$dbh->commit();
@@ -221,7 +221,7 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'     => $json,
+				'data' => $json,
 			));
 			exit;
 		}
@@ -229,15 +229,15 @@ class Code_Else_Config
 		$array = array('Css', 'Js');
 		foreach ($array as $key => $value) {
 			$classRebuild->run(array(
-			    'flagType' => $value,
+				'flagType' => $value,
 			));
 		}
 
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkPhp()
 	{
 		global $classRequest;
@@ -251,25 +251,25 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'    => $json,
+				'data' => $json,
 			));
 			exit;
 		}
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _checkFunc()
 	{
 		global $classRequest;
 		$array = $this->_self['funcList'];
 		$arrayNew = array();
 		$num = 0;
-        foreach ($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			if (!function_exists($value)) {
 				$arrayNew[$num] = $value;
-			    $num++;
+				$num++;
 			}
 		}
 
@@ -281,25 +281,25 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'     => $json,
+				'data' => $json,
 			));
 			exit;
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkClass()
 	{
 		global $classRequest;
 		$array = $this->_self['classList'];
 		$arrayNew = array();
 		$num = 0;
-        foreach ($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			if (!class_exists($value)) {
 				$arrayNew[$num] = $value;
-			    $num++;
+				$num++;
 			}
 		}
 
@@ -311,15 +311,15 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'     => $json,
+				'data' => $json,
 			));
 			exit;
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkDb()
 	{
 		global $varsRequest;
@@ -327,11 +327,11 @@ class Code_Else_Config
 		global $classDb;
 
 		$classDb->setVar(array(
-			'driver'   => $this->_self['vars']['flagDriver'],
+			'driver' => $this->_self['vars']['flagDriver'],
 			'username' => $varsRequest['query']['StrDbUser'],
 			'password' => $varsRequest['query']['StrDbPassword'],
-			'host'     => $varsRequest['query']['StrDbHost'],
-			'dbname'   => $varsRequest['query']['StrDbName'],
+			'host' => $varsRequest['query']['StrDbHost'],
+			'dbname' => $varsRequest['query']['StrDbName'],
 		));
 		if (!$classDb->checkConnect()) {
 			$vars = array(
@@ -340,54 +340,54 @@ class Code_Else_Config
 			$json = json_encode($vars);
 			$classRequest->send(array(
 				'flagType' => 'json',
-				'data'     => $json,
+				'data' => $json,
 			));
 			exit;
 		}
 		$classDb->setHandle(array(
-			'driver'   => $this->_self['vars']['flagDriver'],
+			'driver' => $this->_self['vars']['flagDriver'],
 			'username' => $varsRequest['query']['StrDbUser'],
 			'password' => $varsRequest['query']['StrDbPassword'],
-			'host'     => $varsRequest['query']['StrDbHost'],
-			'dbname'   => $varsRequest['query']['StrDbName'],
+			'host' => $varsRequest['query']['StrDbHost'],
+			'dbname' => $varsRequest['query']['StrDbName'],
 		));
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _setFile()
 	{
 		global $varsRequest;
 
 		$str = '"dbtype",'
-				. '"dbname",'
-				. '"username",'
-				. '"password",'
-				. '"host",'
-				. '"driver"'
-				. "\n";
-		$str  .= '"master",'
-				. '"' . $varsRequest['query']['StrDbName'] . '",'
-				. '"' . $varsRequest['query']['StrDbUser'] . '",'
-				. '"' . $varsRequest['query']['StrDbPassword'] . '",'
-				. '"' . $varsRequest['query']['StrDbHost'] . '",'
-				. '"' . $this->_self['vars']['flagDriver'] . '"'
-				. "\n";
-		$str  .= '"slave",'
-				. '"' . $varsRequest['query']['StrDbName'] . '",'
-				. '"' . $varsRequest['query']['StrDbUser'] . '",'
-				. '"' . $varsRequest['query']['StrDbPassword'] . '",'
-				. '"' . $varsRequest['query']['StrDbHost'] . '",'
-				. '"' . $this->_self['vars']['flagDriver'] . '"'
-				. "\n";
-		$str  .= '"log",'
-				. '"' . $varsRequest['query']['StrDbName'] . '",'
-				. '"' . $varsRequest['query']['StrDbUser'] . '",'
-				. '"' . $varsRequest['query']['StrDbPassword'] . '",'
-				. '"' . $varsRequest['query']['StrDbHost'] . '",'
-				. '"' . $this->_self['vars']['flagDriver'] . '"'
-				. "\n";
+			. '"dbname",'
+			. '"username",'
+			. '"password",'
+			. '"host",'
+			. '"driver"'
+			. "\n";
+		$str .= '"master",'
+			. '"' . $varsRequest['query']['StrDbName'] . '",'
+			. '"' . $varsRequest['query']['StrDbUser'] . '",'
+			. '"' . $varsRequest['query']['StrDbPassword'] . '",'
+			. '"' . $varsRequest['query']['StrDbHost'] . '",'
+			. '"' . $this->_self['vars']['flagDriver'] . '"'
+			. "\n";
+		$str .= '"slave",'
+			. '"' . $varsRequest['query']['StrDbName'] . '",'
+			. '"' . $varsRequest['query']['StrDbUser'] . '",'
+			. '"' . $varsRequest['query']['StrDbPassword'] . '",'
+			. '"' . $varsRequest['query']['StrDbHost'] . '",'
+			. '"' . $this->_self['vars']['flagDriver'] . '"'
+			. "\n";
+		$str .= '"log",'
+			. '"' . $varsRequest['query']['StrDbName'] . '",'
+			. '"' . $varsRequest['query']['StrDbUser'] . '",'
+			. '"' . $varsRequest['query']['StrDbPassword'] . '",'
+			. '"' . $varsRequest['query']['StrDbHost'] . '",'
+			. '"' . $this->_self['vars']['flagDriver'] . '"'
+			. "\n";
 		$classFile = new Code_Else_Lib_File();
 		$classFile->setData(array(
 			'path' => $this->_self['path']['file']['sqlConnect'],
@@ -395,9 +395,9 @@ class Code_Else_Config
 		));
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _sendSuccess()
 	{
 		global $classRequest;
@@ -426,7 +426,7 @@ class Code_Else_Config
 	{
 		$array = scandir(PATH_BACK_DAT_TEMP);
 		foreach ($array as $key => $value) {
-			if (preg_match( "/^\.{1,2}$/", $value)) {
+			if (preg_match("/^\.{1,2}$/", $value)) {
 				continue;
 			}
 			if ($value == 'flagUpdate.cgi') {
@@ -437,9 +437,9 @@ class Code_Else_Config
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _getJs()
 	{
 		global $classSmarty;
@@ -447,8 +447,8 @@ class Code_Else_Config
 
 		$vars = $classEscape->getVars(array(
 			'data' => $this->_self['path']['file']['varJs'],
-			'arr'  => array(
-				array('before' => '<strLang>', 'after' => STR_SYSTEM_LANG,),
+			'arr' => array(
+				array('before' => '<strLang>', 'after' => STR_SYSTEM_LANG, ),
 			),
 		));
 		$json = json_encode($vars);
@@ -456,14 +456,14 @@ class Code_Else_Config
 		$path = $this->_self['path']['file']['tplJs'];
 
 		$output = $classSmarty->fetch($path);
-		$output = $classEscape->obfuscate(array( 'data' => $output) );
+		$output = $classEscape->obfuscate(array('data' => $output));
 
 		return $output;
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _showHtml()
 	{
 		global $classSmarty;
@@ -472,18 +472,18 @@ class Code_Else_Config
 
 		$array = $classEscape->getVars(array(
 			'data' => $this->_self['path']['file']['varHtml'],
-			'arr'  => array(
-				array('before' => '<strLang>', 'after' => STR_SYSTEM_LANG,),
+			'arr' => array(
+				array('before' => '<strLang>', 'after' => STR_SYSTEM_LANG, ),
 			),
 		));
 		$array['loadJs'] = $this->_getJs();
-        foreach ($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			$classSmarty->assign($key, $value);
-        }
+		}
 		$path = $classEscape->loopReplace(array(
 			'data' => $this->_self['path']['file']['tplHtml'],
-			'arr'  => array(
-				array('before' => '<strTitle>', 'after' => $this->_self['strTitle'],),
+			'arr' => array(
+				array('before' => '<strTitle>', 'after' => $this->_self['strTitle'], ),
 			),
 		));
 
@@ -491,7 +491,7 @@ class Code_Else_Config
 
 		$classRequest->send(array(
 			'flagType' => 'html',
-			'data'     => $output,
+			'data' => $output,
 		));
 		exit;
 	}

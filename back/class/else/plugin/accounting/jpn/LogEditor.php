@@ -8,7 +8,7 @@
 class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Accounting_Jpn_Log
 {
 	protected $_childSelf = array(
-		'pathTplJs'  => 'else/plugin/accounting/js/jpn/logEditor.js',
+		'pathTplJs' => 'else/plugin/accounting/js/jpn/logEditor.js',
 		'pathVarsJs' => 'back/tpl/vars/else/plugin/accounting/<strLang>/js/jpn/logEditor.php',
 	);
 
@@ -28,7 +28,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 			} else {
 				if (FLAG_TEST) {
-					var_dump(__CLASS__ . '/' .__FUNCTION__. '/' .__LINE__);
+					var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 				}
 				exit;
 			}
@@ -42,14 +42,14 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 	protected function _iniJs()
 	{
 		$this->_setJsEditor(array(
-			'pathVars'  => $this->_childSelf['pathVarsJs'],
-			'pathTpl'   => $this->_childSelf['pathTplJs'],
+			'pathVars' => $this->_childSelf['pathVarsJs'],
+			'pathTpl' => $this->_childSelf['pathTplJs'],
 			'arrFolder' => array(
 				array(
-					'flagType'  => 'folder',
-					'strTable'  => 'accountingAccountMemo',
+					'flagType' => 'folder',
+					'strTable' => 'accountingAccountMemo',
 					'strColumn' => 'jsonLogEditorNaviFormat',
-					'flagEntity'  => 1,
+					'flagEntity' => 1,
 					'flagAccount' => 1,
 				),
 			),
@@ -62,10 +62,10 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 	protected function _iniNaviFormatSave()
 	{
 		$this->_setNaviFormatSave(array(
-			'pathVars'  => $this->_childSelf['pathVarsJs'],
+			'pathVars' => $this->_childSelf['pathVarsJs'],
 			'strColumn' => 'jsonLogEditorNaviFormat',
-			'strTable'  => 'accountingAccountMemo',
-			'flagEntity'  => 1,
+			'strTable' => 'accountingAccountMemo',
+			'flagEntity' => 1,
 			'flagAccount' => 1,
 		));
 	}
@@ -86,9 +86,9 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		));
 
 		$vars['portal']['varsNavi']['templateFolder']['varsDetail']['varsDetail'] = $this->_getMemo(array(
-			'strTable'    => $arr['strTable'],
-			'strColumn'   => $arr['strColumn'],
-			'flagEntity'  => $arr['flagEntity'],
+			'strTable' => $arr['strTable'],
+			'strColumn' => $arr['strColumn'],
+			'flagEntity' => $arr['flagEntity'],
 			'flagAccount' => $arr['flagAccount'],
 		));
 
@@ -98,9 +98,9 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		}
 
 		$this->sendVars(array(
-			'stamp'   => $this->getStamp(),
+			'stamp' => $this->getStamp(),
 			'numNews' => $this->getNumNews(),
-			'vars'    => array(
+			'vars' => array(
 				'varsDetail' => $vars['portal']['varsNavi']['templateFolder']['varsDetail']['varsDetail'],
 			),
 		));
@@ -116,15 +116,15 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		if (FLAG_CHECK_UPDATE) {
 			$this->checkStampReload(array(
 				'stampTarget' => $varsPluginAccountingAccount['stampUpdate'],
-				'flagSearch'  => 0,
+				'flagSearch' => 0,
 			));
 		}
 
 		$this->_setNaviFormatReload(array(
-			'pathVars'  => $this->_childSelf['pathVarsJs'],
+			'pathVars' => $this->_childSelf['pathVarsJs'],
 			'strColumn' => 'jsonLogEditorNaviFormat',
-			'strTable'  => 'accountingAccountMemo',
-			'flagEntity'  => 1,
+			'strTable' => 'accountingAccountMemo',
+			'flagEntity' => 1,
 			'flagAccount' => 1,
 		));
 	}
@@ -140,14 +140,14 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$classCalcDictionary = $this->_getClassCalc(array('flagType' => 'Dictionary'));
 		$vars = $classCalcDictionary->allot((array(
 			'flagStatus' => 'data',
-			'strTitle'   => $strTitle,
+			'strTitle' => $strTitle,
 		)));
 
 		$this->sendVars(array(
-			'flag'    => 1,
-			'stamp'   => $this->getStamp(),
+			'flag' => 1,
+			'stamp' => $this->getStamp(),
 			'numNews' => $this->getNumNews(),
-			'vars'    => $vars,
+			'vars' => $vars,
 		));
 	}
 
@@ -199,29 +199,38 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		 */
 		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
 		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
-		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
-		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+			'flagStatus' => 'receiveValueConsumptionTaxReduced',
+			'jsonDetail' => $arrValue['arr']['jsonDetail'],
 		));
 		/*
 		 * 20191001 end
 		 */
 
+		$arrayDetail = $arrValue['arr']['jsonDetail']['varsDetail'];
+		foreach ($arrayDetail as $keyDetail => $valueDetail) {
+			$arraySide = array('arrDebit', 'arrCredit');
+			foreach ($arraySide as $keySide => $valueSide) {
+				$arrayDetail[$keyDetail][$valueSide]['flagConsumptionTaxFree'] = $vars['varsRule']['varsEntityNation']['flagConsumptionTaxFree'];
+				$arrayDetail[$keyDetail][$valueSide]['flagConsumptionTaxIncluding'] = $vars['varsRule']['varsEntityNation']['flagConsumptionTaxIncluding'];
+			}
+		}
+		$arrValue['arr']['jsonDetail']['varsDetail'] = $arrayDetail;
 
 		$this->_checkValueDetail(array(
-			'vars'     => $vars,
+			'vars' => $vars,
 			'arrValue' => $arrValue,
 		));
 
 		$flagCashInsert = $this->_checkAccess(array(
-			'flagAllUse'    => 0,
+			'flagAllUse' => 0,
 			'flagAuthority' => 'insert',
-			'idTarget'      => $this->_extSelf['idCash'],
+			'idTarget' => $this->_extSelf['idCash'],
 		));
 
 		$flagCashSelect = $this->_checkAccess(array(
-			'flagAllUse'    => 1,
+			'flagAllUse' => 1,
 			'flagAuthority' => 'select',
-			'idTarget'      => $this->_extSelf['idCash'],
+			'idTarget' => $this->_extSelf['idCash'],
 		));
 
 
@@ -235,107 +244,109 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 			if ($arrValue['arr']['flagFiscalReport'] != 'none' || !$flagCashInsert) {
 				$this->_setDbLog(array(
-					'vars'         => $vars,
-					'arrValue'     => $arrValue,
+					'vars' => $vars,
+					'arrValue' => $arrValue,
 					'classCalcLog' => $classCalcLog,
 				));
 
 			} else {
 
-				$arrOrder = array(array(
-					'numFiscalPeriod'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'idEntity'                => $varsPluginAccountingAccount['idEntityCurrent'],
-					'idAccount'               => $varsAccount['id'],
-					'idAccountApply'          => $varsAccount['id'],
-					'flagFiscalReport'        => $arrValue['arr']['flagFiscalReport'],
-					'stampBook'               => $arrValue['arr']['stampBook'],
-					'strTitle'                => $arrValue['arr']['strTitle'],
-					'jsonDetail'              => $arrValue['arr']['jsonDetail'],
-					'arrCommaIdLogFile'       => $arrValue['arr']['arrCommaIdLogFile'],
-					'arrCommaIdAccountPermit' => $arrValue['arr']['arrCommaIdAccountPermit'],
-					'numSumMax'               => $arrValue['arr']['numSumMax'],
-					'arrSpaceStrTag'          => $arrValue['arr']['arrSpaceStrTag'],
-				),);
+				$arrOrder = array(
+					array(
+						'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+						'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
+						'idAccount' => $varsAccount['id'],
+						'idAccountApply' => $varsAccount['id'],
+						'flagFiscalReport' => $arrValue['arr']['flagFiscalReport'],
+						'stampBook' => $arrValue['arr']['stampBook'],
+						'strTitle' => $arrValue['arr']['strTitle'],
+						'jsonDetail' => $arrValue['arr']['jsonDetail'],
+						'arrCommaIdLogFile' => $arrValue['arr']['arrCommaIdLogFile'],
+						'arrCommaIdAccountPermit' => $arrValue['arr']['arrCommaIdAccountPermit'],
+						'numSumMax' => $arrValue['arr']['numSumMax'],
+						'arrSpaceStrTag' => $arrValue['arr']['arrSpaceStrTag'],
+					),
+				);
 
 				$arrVarsDbLog = $classCalcLog->allot(array(
-					'flagStatus'      => 'varsDbLog',
-					'arrOrder'        => $arrOrder,
-					'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+					'flagStatus' => 'varsDbLog',
+					'arrOrder' => $arrOrder,
+					'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 
 				$varsDbLog = end($arrVarsDbLog);
 				$tempValue = array(
-					'idAccount'               => $varsDbLog['idAccount'],
-					'idAccountApply'          => $varsDbLog['idAccountApply'],
-					'flagApply'               => $varsDbLog['flagApply'],
-					'flagFiscalReport'        => $varsDbLog['flagFiscalReport'],
-					'stampBook'               => $varsDbLog['stampBook'],
-					'strTitle'                => $varsDbLog['strTitle'],
-					'jsonDetail'              => $arrValue['arr']['jsonDetail'],
-					'arrCommaIdLogFile'       => $varsDbLog['arrCommaIdLogFile'],
+					'idAccount' => $varsDbLog['idAccount'],
+					'idAccountApply' => $varsDbLog['idAccountApply'],
+					'flagApply' => $varsDbLog['flagApply'],
+					'flagFiscalReport' => $varsDbLog['flagFiscalReport'],
+					'stampBook' => $varsDbLog['stampBook'],
+					'strTitle' => $varsDbLog['strTitle'],
+					'jsonDetail' => $arrValue['arr']['jsonDetail'],
+					'arrCommaIdLogFile' => $varsDbLog['arrCommaIdLogFile'],
 					'arrCommaIdAccountPermit' => $varsDbLog['arrCommaIdAccountPermit'],
-					'jsonPermitHistory'       => json_decode($varsDbLog['jsonPermitHistory'], true),
-					'arrSpaceStrTag'          => $varsDbLog['arrSpaceStrTag'],
+					'jsonPermitHistory' => json_decode($varsDbLog['jsonPermitHistory'], true),
+					'arrSpaceStrTag' => $varsDbLog['arrSpaceStrTag'],
 				);
 
 				$flagCashVars = $classCalcCashPay->allot(array(
-					'flagStatus'      => 'check',
-					'arrValue'        => $tempValue,
-					'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+					'flagStatus' => 'check',
+					'arrValue' => $tempValue,
+					'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'classCalcLog'    => $classCalcLog,
+					'classCalcLog' => $classCalcLog,
 				));
 
 				if ($flagCashVars['flag']) {
 					if ($flagCashVars['flag'] == 'pay' || $flagCashVars['flag'] == 'paid') {
 						$flagVars = $classCalcCashPay->allot(array(
-							'flagStatus'      => $flagCashVars['flag'],
-							'arrValue'        => $tempValue,
-							'arrRowsCash'     => $flagCashVars['arrRowsCash'],
-							'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+							'flagStatus' => $flagCashVars['flag'],
+							'arrValue' => $tempValue,
+							'arrRowsCash' => $flagCashVars['arrRowsCash'],
+							'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 							'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-							'classCalcCash'   => $classCalcCash,
+							'classCalcCash' => $classCalcCash,
 						));
 						if ($flagVars == 'errorDataMax') {
 							$this->sendVars(array(
-								'flag'    => $flagVars,
-								'stamp'   => $this->getStamp(),
+								'flag' => $flagVars,
+								'stamp' => $this->getStamp(),
 								'numNews' => $this->getNumNews(),
-								'vars'    => array(),
+								'vars' => array(),
 							));
 						}
 
 						$arrValue['arr']['arrSpaceStrTag'] = $flagVars['arrValue']['arrSpaceStrTag'];
 
 						$arrVarsLog = $this->_setDbLog(array(
-							'vars'         => $vars,
-							'arrValue'     => $arrValue,
+							'vars' => $vars,
+							'arrValue' => $arrValue,
 							'classCalcLog' => $classCalcLog,
 						));
 
 						$flagVars = $classCalcCashPay->allot(array(
-							'flagStatus'      => 'WriteHistory',
-							'varsLog'         => end($arrVarsLog),
-							'varsLogCash'     => $flagVars['arrVarsLogAdd'][0],
-							'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+							'flagStatus' => 'WriteHistory',
+							'varsLog' => end($arrVarsLog),
+							'varsLogCash' => $flagVars['arrVarsLogAdd'][0],
+							'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 							'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 						));
 						if ($flagVars == 'errorDataMax') {
 							$this->sendVars(array(
-								'flag'    => $flagVars,
-								'stamp'   => $this->getStamp(),
+								'flag' => $flagVars,
+								'stamp' => $this->getStamp(),
 								'numNews' => $this->getNumNews(),
-								'vars'    => array(),
+								'vars' => array(),
 							));
 						}
 
 					} elseif ($flagCashVars['flag'] == 'caution') {
 						$flagVars = $classCalcCashPay->allot(array(
-							'flagStatus'      => $flagCashVars['flag'],
-							'varsLog'         => $flagCashVars['varsLog'],
-							'arrRowsCash'     => $flagCashVars['arrRowsCash'],
-							'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+							'flagStatus' => $flagCashVars['flag'],
+							'varsLog' => $flagCashVars['varsLog'],
+							'arrRowsCash' => $flagCashVars['arrRowsCash'],
+							'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 							'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 						));
 						if ($flagCashSelect) {
@@ -347,8 +358,8 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 				} else {
 					$this->_setDbLog(array(
-						'vars'         => $vars,
-						'arrValue'     => $arrValue,
+						'vars' => $vars,
+						'arrValue' => $arrValue,
 						'classCalcLog' => $classCalcLog,
 					));
 				}
@@ -416,37 +427,37 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		));
 
 		$varsOrder = array(
-			'numFiscalPeriod'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-			'idEntity'                => $varsPluginAccountingAccount['idEntityCurrent'],
-			'idAccount'               => $varsAccount['id'],
-			'idAccountApply'          => $varsAccount['id'],
-			'flagFiscalReport'        => $arr['arrValue']['arr']['flagFiscalReport'],
-			'stampBook'               => $arr['arrValue']['arr']['stampBook'],
-			'strTitle'                => $arr['arrValue']['arr']['strTitle'],
-			'jsonDetail'              => $arr['arrValue']['arr']['jsonDetail'],
-			'arrCommaIdLogFile'       => $arr['arrValue']['arr']['arrCommaIdLogFile'],
+			'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+			'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
+			'idAccount' => $varsAccount['id'],
+			'idAccountApply' => $varsAccount['id'],
+			'flagFiscalReport' => $arr['arrValue']['arr']['flagFiscalReport'],
+			'stampBook' => $arr['arrValue']['arr']['stampBook'],
+			'strTitle' => $arr['arrValue']['arr']['strTitle'],
+			'jsonDetail' => $arr['arrValue']['arr']['jsonDetail'],
+			'arrCommaIdLogFile' => $arr['arrValue']['arr']['arrCommaIdLogFile'],
 			'arrCommaIdAccountPermit' => $arr['arrValue']['arr']['arrCommaIdAccountPermit'],
-			'numSumMax'               => $arr['arrValue']['arr']['numSumMax'],
-			'arrSpaceStrTag'          => $arr['arrValue']['arr']['arrSpaceStrTag'],
+			'numSumMax' => $arr['arrValue']['arr']['numSumMax'],
+			'arrSpaceStrTag' => $arr['arrValue']['arr']['arrSpaceStrTag'],
 		);
 
 		$classCalcLog = $this->_getClassCalc(array('flagType' => 'Log'));
 		$flag = $classCalcLog->allot(array(
-			'flagStatus'      => 'check',
-			'varsOrder'       => $varsOrder,
-			'idEntity'        => $varsPluginAccountingAccount['idEntityCurrent'],
+			'flagStatus' => 'check',
+			'varsOrder' => $varsOrder,
+			'idEntity' => $varsPluginAccountingAccount['idEntityCurrent'],
 			'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-			'varsItem'        => &$arr['vars']['varsRule'],
+			'varsItem' => &$arr['vars']['varsRule'],
 		));
 
 
 		if ($flag) {
 			if ($flag == 'term' || $flag == 'noneFile') {
 				$this->sendVars(array(
-					'flag'    => $flag,
-					'stamp'   => $this->getStamp(),
+					'flag' => $flag,
+					'stamp' => $this->getStamp(),
 					'numNews' => $this->getNumNews(),
-					'vars'    => array(),
+					'vars' => array(),
 				));
 			} else {
 				if (FLAG_TEST) {
@@ -479,10 +490,10 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		foreach ($array as $key => $value) {
 			if (!$varsPluginAccountingAccountsEntity[$value][$varsPluginAccountingAccount['idEntityCurrent']]) {
 				$this->sendVars(array(
-					'flag'    => 'none',
-					'stamp'   => $this->getStamp(),
+					'flag' => 'none',
+					'stamp' => $this->getStamp(),
 					'numNews' => $this->getNumNews(),
-					'vars'    => array(),
+					'vars' => array(),
 				));
 			}
 			$varsAuthority = $this->_getVarsAuthority(array('idAccount' => $value));
@@ -495,19 +506,19 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 			if (!preg_match("/$str/", $arrCommaIdEntity)) {
 				$this->sendVars(array(
-					'flag'    => 'none',
-					'stamp'   => $this->getStamp(),
+					'flag' => 'none',
+					'stamp' => $this->getStamp(),
 					'numNews' => $this->getNumNews(),
-					'vars'    => array(),
+					'vars' => array(),
 				));
 
 			} else {
 				if (!$varsAuthority['flagAllUpdate']) {
 					$this->sendVars(array(
-						'flag'    => 'none',
-						'stamp'   => $this->getStamp(),
+						'flag' => 'none',
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 			}
@@ -534,37 +545,39 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$idEntity = $varsPluginAccountingAccount['idEntityCurrent'];
 		$numFiscalPeriodTempNext = $varsPluginAccountingEntity[$idEntity]['numFiscalPeriod'];
 
-		$arrOrder = array(array(
-			'numFiscalPeriod'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-			'idEntity'                => $idEntity,
-			'idAccount'               => $varsAccount['id'],
-			'idAccountApply'          => $varsAccount['id'],
-			'flagFiscalReport'        => $arr['arrValue']['arr']['flagFiscalReport'],
-			'stampBook'               => $arr['arrValue']['arr']['stampBook'],
-			'strTitle'                => $arr['arrValue']['arr']['strTitle'],
-			'jsonDetail'              => $arr['arrValue']['arr']['jsonDetail'],
-			'arrCommaIdLogFile'       => $arr['arrValue']['arr']['arrCommaIdLogFile'],
-			'arrCommaIdAccountPermit' => $arr['arrValue']['arr']['arrCommaIdAccountPermit'],
-			'numSumMax'               => $arr['arrValue']['arr']['numSumMax'],
-			'arrSpaceStrTag'          => $arr['arrValue']['arr']['arrSpaceStrTag'],
-		),);
+		$arrOrder = array(
+			array(
+				'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+				'idEntity' => $idEntity,
+				'idAccount' => $varsAccount['id'],
+				'idAccountApply' => $varsAccount['id'],
+				'flagFiscalReport' => $arr['arrValue']['arr']['flagFiscalReport'],
+				'stampBook' => $arr['arrValue']['arr']['stampBook'],
+				'strTitle' => $arr['arrValue']['arr']['strTitle'],
+				'jsonDetail' => $arr['arrValue']['arr']['jsonDetail'],
+				'arrCommaIdLogFile' => $arr['arrValue']['arr']['arrCommaIdLogFile'],
+				'arrCommaIdAccountPermit' => $arr['arrValue']['arr']['arrCommaIdAccountPermit'],
+				'numSumMax' => $arr['arrValue']['arr']['numSumMax'],
+				'arrSpaceStrTag' => $arr['arrValue']['arr']['arrSpaceStrTag'],
+			),
+		);
 
 		$classCalcLog = &$arr['classCalcLog'];
 		$flag = $classCalcLog->allot(array(
-			'flagStatus'              => 'add',
-			'arrOrder'                => $arrOrder,
-			'idEntity'                => $idEntity,
-			'numFiscalPeriod'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-			'flagTempPrev'            => (preg_match("/^(tempPrev)$/", $flagCurrentFlagNow))? 1 : 0,
+			'flagStatus' => 'add',
+			'arrOrder' => $arrOrder,
+			'idEntity' => $idEntity,
+			'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+			'flagTempPrev' => (preg_match("/^(tempPrev)$/", $flagCurrentFlagNow)) ? 1 : 0,
 			'numFiscalPeriodTempNext' => $numFiscalPeriodTempNext,
 		));
 		$flagType = gettype($flag);
 		if ($flag == 'errorDataMax') {
 			$this->sendVars(array(
-				'flag'    => $flag,
-				'stamp'   => $this->getStamp(),
+				'flag' => $flag,
+				'stamp' => $this->getStamp(),
 				'numNews' => $this->getNumNews(),
-				'vars'    => array(),
+				'vars' => array(),
 			));
 
 		} else if (gettype($flag) != 'array') {
@@ -601,7 +614,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		}
 
 		$varsLog = $this->_getVarsLog(array(
-			'idTarget'   => $varsRequest['query']['jsonValue']['idTarget'],
+			'idTarget' => $varsRequest['query']['jsonValue']['idTarget'],
 			'flagRemove' => 0,
 		));
 
@@ -643,26 +656,36 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		 */
 		$classCalcConsumptionTax = $this->_getClassCalc(array('flagType' => 'ConsumptionTax'));
 		$arrValue['arr']['jsonDetail'] = $classCalcConsumptionTax->allot(array(
-		    'flagStatus' => 'receiveValueConsumptionTaxReduced',
-		    'jsonDetail'   => $arrValue['arr']['jsonDetail'],
+			'flagStatus' => 'receiveValueConsumptionTaxReduced',
+			'jsonDetail' => $arrValue['arr']['jsonDetail'],
 		));
 		/*
 		 * 20191001 end
 		 */
 
+		$arrayDetail = $arrValue['arr']['jsonDetail']['varsDetail'];
+		foreach ($arrayDetail as $keyDetail => $valueDetail) {
+			$arraySide = array('arrDebit', 'arrCredit');
+			foreach ($arraySide as $keySide => $valueSide) {
+				$arrayDetail[$keyDetail][$valueSide]['flagConsumptionTaxFree'] = $vars['varsRule']['varsEntityNation']['flagConsumptionTaxFree'];
+				$arrayDetail[$keyDetail][$valueSide]['flagConsumptionTaxIncluding'] = $vars['varsRule']['varsEntityNation']['flagConsumptionTaxIncluding'];
+			}
+		}
+		$arrValue['arr']['jsonDetail']['varsDetail'] = $arrayDetail;
+
 		$this->_checkValueDetail(array(
-			'vars'     => $vars,
+			'vars' => $vars,
 			'arrValue' => $arrValue,
-			'varsLog'  => $varsLog,
+			'varsLog' => $varsLog,
 		));
 
 		try {
 			$dbh->beginTransaction();
 
 			$this->_updateDbLog(array(
-				'vars'     => $vars,
+				'vars' => $vars,
 				'arrValue' => $arrValue,
-				'varsLog'  => $varsLog,
+				'varsLog' => $varsLog,
 			));
 
 			$this->_updateDbPreferenceStamp(array('strColumn' => 'log'));
@@ -706,7 +729,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			if ($arrValue['arr']['flagFiscalReport'] == 'f1') {
 				$stampBook = $stampMax;
 
-			} elseif (preg_match( "/^f/", $arrValue['arr']['flagFiscalReport'])) {
+			} elseif (preg_match("/^f/", $arrValue['arr']['flagFiscalReport'])) {
 				$this->_sendOldError();
 			}
 
@@ -714,7 +737,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			if ($arrValue['arr']['flagFiscalReport'] == 'f1') {
 				$stampBook = $stampMax;
 
-			} elseif (preg_match( "/^f/", $arrValue['arr']['flagFiscalReport'])) {
+			} elseif (preg_match("/^f/", $arrValue['arr']['flagFiscalReport'])) {
 				if ($arrValue['arr']['flagFiscalReport'] == 'f21' || $arrValue['arr']['flagFiscalReport'] == 'f42') {
 					$numMonth = $numFiscalBeginningMonth + 6;
 
@@ -736,9 +759,9 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 			}
 		}
 
-		if (!preg_match( "/^f/", $arrValue['arr']['flagFiscalReport'])) {
+		if (!preg_match("/^f/", $arrValue['arr']['flagFiscalReport'])) {
 			$strStamp = $arrValue['arr']['stampBook'];
-			preg_match( "/^([0-9]{4})\/([0-9]{1,2})\/([0-9]{1,2})-([0-9]{1,2}):([0-9]{1,2})$/", $strStamp, $arrMatch);
+			preg_match("/^([0-9]{4})\/([0-9]{1,2})\/([0-9]{1,2})-([0-9]{1,2}):([0-9]{1,2})$/", $strStamp, $arrMatch);
 			list($strStamp, $numYear, $numMonth, $numDate, $numHour, $numMin) = $arrMatch;
 
 			$strTimeZone = (-1 * $varsAccount['numTimeZone']) . 'hours';
@@ -747,7 +770,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 		}
 
-		preg_replace("/\.?0+$/",'', $stampBook);
+		preg_replace("/\.?0+$/", '', $stampBook);
 
 		return $stampBook;
 	}
@@ -774,7 +797,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$stampUpdate = TIMESTAMP;
 		$stampRegister = TIMESTAMP;
 		$stampBook = $this->_getDbLogStampBook(array(
-			'vars'     => $vars,
+			'vars' => $vars,
 			'arrValue' => $arrValue,
 		));
 
@@ -805,8 +828,8 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$arrValue['arr']['stampBook'] = $stampBook;
 		$classCalcLog = $this->_getClassCalc(array('flagType' => 'Log'));
 		$varsVersion = $classCalcLog->allot(array(
-			'flagStatus'      => 'varsVersion',
-			'arrValue'        => $arrValue['arr'],
+			'flagStatus' => 'varsVersion',
+			'arrValue' => $arrValue['arr'],
 			'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 		));
 
@@ -817,7 +840,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$jsonVersion = json_encode($varsLog['jsonVersion']);
 		$this->checkTextSize(array(
 			'flag' => 'errorDataMax',
-			'str'  => $jsonVersion,
+			'str' => $jsonVersion,
 		));
 
 		$numValue = $varsVersion['numValue'];
@@ -858,10 +881,10 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 		if ($flagApply) {
 			$arrPermitHistory[] = array(
-				'flagInvalid'        => 0,
-				'stampRegister'      => TIMESTAMP,
-				'numSumMax'          => (int) $arrValue['arr']['numSumMax'],
-				'idAccountApply'     => $idAccount,
+				'flagInvalid' => 0,
+				'stampRegister' => TIMESTAMP,
+				'numSumMax' => (int) $arrValue['arr']['numSumMax'],
+				'idAccountApply' => $idAccount,
 				'arrIdAccountPermit' => $this->_getDbLogArrIdAccountPermit($arrValue),
 			);
 		}
@@ -869,7 +892,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		$jsonPermitHistory = json_encode($arrPermitHistory);
 		$this->checkTextSize(array(
 			'flag' => 'errorDataMax',
-			'str'  => $jsonPermitHistory,
+			'str' => $jsonPermitHistory,
 		));
 
 		if (!$flagApply) {
@@ -922,59 +945,60 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		}
 
 		$classDb->updateRow(array(
-			'idModule'  => 'accounting',
+			'idModule' => 'accounting',
 			'strTable' => 'accountingLog',
 			'arrColumn' => $arrColumn,
-			'flagAnd'  => 1,
-			'arrWhere'  => array(
+			'flagAnd' => 1,
+			'arrWhere' => array(
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idEntity',
+					'flagType' => 'num',
+					'strColumn' => 'idEntity',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+					'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'numFiscalPeriod',
+					'flagType' => 'num',
+					'strColumn' => 'numFiscalPeriod',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+					'value' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idLog',
+					'flagType' => 'num',
+					'strColumn' => 'idLog',
 					'flagCondition' => 'eq',
-					'value'         => $varsRequest['query']['jsonValue']['idTarget'],
+					'value' => $varsRequest['query']['jsonValue']['idTarget'],
 				),
 			),
-			'arrValue'  => $arrValue,
+			'arrValue' => $arrValue,
 		));
 
 		$rows = $classDb->getSelect(array(
 			'idModule' => 'accounting',
 			'strTable' => 'accountingLog',
 			'arrLimit' => array(
-				'numStart' => 0, 'numEnd' => 1,
+				'numStart' => 0,
+				'numEnd' => 1,
 			),
 			'arrOrder' => array(),
-			'flagAnd'  => 1,
-			'arrWhere'  => array(
+			'flagAnd' => 1,
+			'arrWhere' => array(
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idEntity',
+					'flagType' => 'num',
+					'strColumn' => 'idEntity',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['idEntityCurrent'],
+					'value' => $varsPluginAccountingAccount['idEntityCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'numFiscalPeriod',
+					'flagType' => 'num',
+					'strColumn' => 'numFiscalPeriod',
 					'flagCondition' => 'eq',
-					'value'         => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
+					'value' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				),
 				array(
-					'flagType'      => 'num',
-					'strColumn'     => 'idLog',
+					'flagType' => 'num',
+					'strColumn' => 'idLog',
 					'flagCondition' => 'eq',
-					'value'         => $varsRequest['query']['jsonValue']['idTarget'],
+					'value' => $varsRequest['query']['jsonValue']['idTarget'],
 				),
 			),
 		));
@@ -987,7 +1011,7 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 		$flagCurrentFlagNow = $this->_getCurrentFlagNow(array());
 		$classCalcTempNextLog = $this->_getClassCalc(array(
-			'flagType'   => 'TempNext',
+			'flagType' => 'TempNext',
 			'flagDetail' => 'Log',
 		));
 		$idEntity = $varsPluginAccountingAccount['idEntityCurrent'];
@@ -998,68 +1022,68 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 			} else {
 				$arrRows = $this->_getVarsLogCalcLoop(array(
-					'arrVarsLog'      => array($varsLog),
+					'arrVarsLog' => array($varsLog),
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 				$flag = $classCalcAccountTitle->allot(array(
-					'flagStatus'      => 'add',
-					'arrRows'         => $arrRows,
+					'flagStatus' => 'add',
+					'arrRows' => $arrRows,
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 				if ($flag == 'errorDataMax') {
 					$this->sendVars(array(
-						'flag'    => $flag,
-						'stamp'   => $this->getStamp(),
+						'flag' => $flag,
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 				$flag = $classCalcSubAccountTitle->allot(array(
-					'flagStatus'      => 'add',
-					'arrRows'         => $arrRows,
+					'flagStatus' => 'add',
+					'arrRows' => $arrRows,
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 				if ($flag == 'errorDataMax') {
 					$this->sendVars(array(
-						'flag'    => $flag,
-						'stamp'   => $this->getStamp(),
+						'flag' => $flag,
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 
 				$flag = $classCalcConsumptionTax->allot(array(
-					'flagStatus'      => 'add',
-					'arrRows'         => $arrRows,
+					'flagStatus' => 'add',
+					'arrRows' => $arrRows,
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 				if ($flag == 'errorDataMax') {
 					$this->sendVars(array(
-						'flag'    => $flag,
-						'stamp'   => $this->getStamp(),
+						'flag' => $flag,
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 
 				$classCalcLogCalc->allot(array(
-					'flagStatus'      => 'add',
-					'arrRows'         => $arrRows,
+					'flagStatus' => 'add',
+					'arrRows' => $arrRows,
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 
 				if (preg_match("/^(tempPrev)$/", $flagCurrentFlagNow)) {
 					$flag = $classCalcTempNextLog->allot(array(
-						'flagStatus'      => 'add',
+						'flagStatus' => 'add',
 						'numFiscalPeriod' => $numFiscalPeriodTempNext,
-						'arrRows'         => $arrRows,
+						'arrRows' => $arrRows,
 					));
 					if ($flag) {
 						$this->sendVars(array(
-							'flag'    => $flag,
-							'stamp'   => $this->getStamp(),
+							'flag' => $flag,
+							'stamp' => $this->getStamp(),
 							'numNews' => $this->getNumNews(),
-							'vars'    => array(),
+							'vars' => array(),
 						));
 					}
 				}
@@ -1068,109 +1092,109 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 
 		} else {
 			$arrRowsDelete = $this->_getVarsLogCalcLoop(array(
-				'arrVarsLog'      => array($varsLogDelete),
+				'arrVarsLog' => array($varsLogDelete),
 				'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 			));
 
 			if ($flagApply) {
 				$flag = $classCalcAccountTitle->allot(array(
-					'flagStatus'      => 'delete',
+					'flagStatus' => 'delete',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRows'         => $arrRowsDelete,
+					'arrRows' => $arrRowsDelete,
 				));
 				if ($flag == 'errorDataMax') {
 					$this->sendVars(array(
-						'flag'    => $flag,
-						'stamp'   => $this->getStamp(),
+						'flag' => $flag,
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 				$classCalcSubAccountTitle->allot(array(
-					'flagStatus'      => 'delete',
+					'flagStatus' => 'delete',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRows'         => $arrRowsDelete,
+					'arrRows' => $arrRowsDelete,
 				));
 				$classCalcConsumptionTax->allot(array(
-					'flagStatus'      => 'delete',
+					'flagStatus' => 'delete',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRows'         => $arrRowsDelete,
+					'arrRows' => $arrRowsDelete,
 				));
 				$classCalcLogCalc->allot(array(
-					'flagStatus'      => 'delete',
+					'flagStatus' => 'delete',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRows'         => $arrRowsDelete,
+					'arrRows' => $arrRowsDelete,
 				));
 				if (preg_match("/^(tempPrev)$/", $flagCurrentFlagNow)) {
 					$classCalcTempNextLog = $this->_getClassCalc(array(
-						'flagType'   => 'TempNext',
+						'flagType' => 'TempNext',
 						'flagDetail' => 'Log',
 					));
 					$flag = $classCalcTempNextLog->allot(array(
-						'flagStatus'      => 'delete',
+						'flagStatus' => 'delete',
 						'numFiscalPeriod' => $numFiscalPeriodTempNext,
-						'arrRows'         => $arrRowsDelete,
+						'arrRows' => $arrRowsDelete,
 					));
 					if ($flag) {
 						$this->sendVars(array(
-							'flag'    => $flag,
-							'stamp'   => $this->getStamp(),
+							'flag' => $flag,
+							'stamp' => $this->getStamp(),
 							'numNews' => $this->getNumNews(),
-							'vars'    => array(),
+							'vars' => array(),
 						));
 					}
 				}
 
 			} else {
 				$arrRowsAdd = $this->_getVarsLogCalcLoop(array(
-					'arrVarsLog'      => array($varsLog),
+					'arrVarsLog' => array($varsLog),
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
 				));
 				$flag = $classCalcAccountTitle->allot(array(
-					'flagStatus'      => 'edit',
+					'flagStatus' => 'edit',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRowsAdd'      => $arrRowsAdd,
-					'arrRowsDelete'   => $arrRowsDelete,
+					'arrRowsAdd' => $arrRowsAdd,
+					'arrRowsDelete' => $arrRowsDelete,
 				));
 				if ($flag == 'errorDataMax') {
 					$this->sendVars(array(
-						'flag'    => $flag,
-						'stamp'   => $this->getStamp(),
+						'flag' => $flag,
+						'stamp' => $this->getStamp(),
 						'numNews' => $this->getNumNews(),
-						'vars'    => array(),
+						'vars' => array(),
 					));
 				}
 				$classCalcSubAccountTitle->allot(array(
-					'flagStatus'      => 'edit',
+					'flagStatus' => 'edit',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRowsAdd'      => $arrRowsAdd,
-					'arrRowsDelete'   => $arrRowsDelete,
+					'arrRowsAdd' => $arrRowsAdd,
+					'arrRowsDelete' => $arrRowsDelete,
 				));
 				$classCalcConsumptionTax->allot(array(
-					'flagStatus'      => 'edit',
+					'flagStatus' => 'edit',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRowsAdd'      => $arrRowsAdd,
-					'arrRowsDelete'   => $arrRowsDelete,
+					'arrRowsAdd' => $arrRowsAdd,
+					'arrRowsDelete' => $arrRowsDelete,
 				));
 				$classCalcLogCalc->allot(array(
-					'flagStatus'      => 'edit',
+					'flagStatus' => 'edit',
 					'numFiscalPeriod' => $varsPluginAccountingAccount['numFiscalPeriodCurrent'],
-					'arrRowsAdd'      => $arrRowsAdd,
-					'arrRowsDelete'   => $arrRowsDelete,
+					'arrRowsAdd' => $arrRowsAdd,
+					'arrRowsDelete' => $arrRowsDelete,
 				));
 				if (preg_match("/^(tempPrev)$/", $flagCurrentFlagNow)) {
 					$flag = $classCalcTempNextLog->allot(array(
-						'flagStatus'      => 'edit',
+						'flagStatus' => 'edit',
 						'numFiscalPeriod' => $numFiscalPeriodTempNext,
-						'arrRowsAdd'      => $arrRowsAdd,
-						'arrRowsDelete'   => $arrRowsDelete,
+						'arrRowsAdd' => $arrRowsAdd,
+						'arrRowsDelete' => $arrRowsDelete,
 					));
 					if ($flag) {
 						$this->sendVars(array(
-							'flag'    => $flag,
-							'stamp'   => $this->getStamp(),
+							'flag' => $flag,
+							'stamp' => $this->getStamp(),
 							'numNews' => $this->getNumNews(),
-							'vars'    => array(),
+							'vars' => array(),
 						));
 					}
 				}
@@ -1191,8 +1215,8 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		foreach ($array as $key => $value) {
 			$data = array(
 				'stampRegister' => 0,
-				'idAccount'     => $value,
-				'flagPermit'    => 'none',
+				'idAccount' => $value,
+				'flagPermit' => 'none',
 			);
 			$arrayNew[] = $data;
 		}
@@ -1250,8 +1274,8 @@ class Code_Else_Plugin_Accounting_Jpn_LogEditor extends Code_Else_Plugin_Account
 		}
 
 		$data = array(
-			'arrCommaIdDepartment'      => $classEscape->joinCommaArray(array('arr' => $arrayIdDepartment)),
-			'arrCommaIdAccountTitle'    => $classEscape->joinCommaArray(array('arr' => $arrayIdAccountTitle)),
+			'arrCommaIdDepartment' => $classEscape->joinCommaArray(array('arr' => $arrayIdDepartment)),
+			'arrCommaIdAccountTitle' => $classEscape->joinCommaArray(array('arr' => $arrayIdAccountTitle)),
 			'arrCommaIdSubAccountTitle' => $classEscape->joinCommaArray(array('arr' => $arrayIdSubAccountTitle)),
 		);
 
