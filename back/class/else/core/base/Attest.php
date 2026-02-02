@@ -10,29 +10,29 @@ class Code_Else_Core_Base_Attest
 	protected $_self = array(
 		'pathVarsMaintenance' => 'back/tpl/vars/else/core/base/<strLang>/html/maintenance.php',
 		'pathHtmlMaintenance' => 'else/core/base/html/maintenance.html',
-		'pathPlugin'          => 'back/class/else/plugin/',
-		'pathVarsLogin'       => 'back/tpl/vars/else/core/base/<strLang>/mail/login.php',
-		'pathTplLogin'        => 'back/tpl/vars/else/core/base/<strLang>/mail/login.tpl',
+		'pathPlugin' => 'back/class/else/plugin/',
+		'pathVarsLogin' => 'back/tpl/vars/else/core/base/<strLang>/mail/login.php',
+		'pathTplLogin' => 'back/tpl/vars/else/core/base/<strLang>/mail/login.tpl',
 	);
 
-    function __construct()
-    {
-        $arr = @func_get_arg(0);
-        if (!$arr) {
-            return;
-        }
-        foreach ($arr as $key => $value) {
-            if (empty($this->_self[$key])) {
+	function __construct($arr = null)
+	{
+		// $arr = @func_get_arg(0);
+		if (!$arr) {
+			return;
+		}
+		foreach ($arr as $key => $value) {
+			if (empty($this->_self[$key])) {
 				$this->_self[$key] = $value;
 			}
-        }
-    }
+		}
+	}
 
-    /**
-     *
-     */
-    public function run()
-    {
+	/**
+	 *
+	 */
+	public function run()
+	{
 		global $varsMedia;
 		global $varsRequest;
 
@@ -43,7 +43,7 @@ class Code_Else_Core_Base_Attest
 		$this->_checkReject();
 		if ($varsMedia['device'] == 'deviceName') {
 
-		} else  {
+		} else {
 			if (is_null($varsRequest['cookie']['id'])) {
 				return;
 			} else {
@@ -51,11 +51,11 @@ class Code_Else_Core_Base_Attest
 			}
 		}
 		$this->_checkMaintenance(array());
-    }
+	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkReject()
 	{
 		global $classDb;
@@ -70,13 +70,13 @@ class Code_Else_Core_Base_Attest
 		if ($varsRequest['query']['module'] != 'Confirm') {
 
 			if ($classDb->getFlagMaster()) {
-/*
-if ($varsRequest['query']['module'] != 'Login') {
-	if (!preg_match("/output$/i", $varsRequest['query']['func'])) {
-		exit;
-	}
-}
-*/
+				/*
+				if ($varsRequest['query']['module'] != 'Login') {
+					if (!preg_match("/output$/i", $varsRequest['query']['func'])) {
+						exit;
+					}
+				}
+				*/
 				$token = $varsRequest['query']['token'];
 				$stmt = $dbh->prepare('select * from baseToken where token = ?;');
 				$stmt->execute(array($token));
@@ -87,7 +87,7 @@ if ($varsRequest['query']['module'] != 'Login') {
 				}
 				if (!$vars) {
 					if (FLAG_TEST) {
-						var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' . __LINE__);
+						var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 					}
 					exit;
 				}
@@ -102,8 +102,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _checkRejectIp()
 	{
 		global $varsPreference;
@@ -114,12 +114,12 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		if ($varsPreference['jsonIpSubnetAccessAccept']) {
 			$flag = $classCheck->ipRange(array(
-				'ip'  => $varsMedia['ip'],
+				'ip' => $varsMedia['ip'],
 				'arr' => $varsPreference['jsonIpSubnetAccessAccept']
 			));
 			if (!$flag) {
 				if (FLAG_TEST) {
-					var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+					var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 				}
 				$this->_send404();
 				exit;
@@ -132,11 +132,11 @@ if ($varsRequest['query']['module'] != 'Login') {
 			foreach ($array as $key => $value) {
 				$flag = $classCheck->checkValueFormat(array(
 					'flagType' => 'ip',
-					'value'    => $value,
+					'value' => $value,
 				));
 				if (!$flag) {
 					$flagIp = $classCheck->ipRange(array(
-						'ip'  => $varsMedia['ip'],
+						'ip' => $varsMedia['ip'],
 						'arr' => array($value),
 					));
 
@@ -153,7 +153,7 @@ if ($varsRequest['query']['module'] != 'Login') {
 			}
 			if (!$flagIp) {
 				if (FLAG_TEST) {
-					var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+					var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 				}
 				$this->_send404();
 				exit;
@@ -165,12 +165,12 @@ if ($varsRequest['query']['module'] != 'Login') {
 		}
 
 		$flag = $classCheck->ipRange(array(
-			'ip'  => $varsMedia['ip'],
+			'ip' => $varsMedia['ip'],
 			'arr' => $varsPreference['jsonIpSubnetAccessReject']
 		));
 		if ($flag) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			$this->_send404();
 			exit;
@@ -181,11 +181,11 @@ if ($varsRequest['query']['module'] != 'Login') {
 		foreach ($array as $key => $value) {
 			$flag = $classCheck->checkValueFormat(array(
 				'flagType' => 'ip',
-				'value'    => $value,
+				'value' => $value,
 			));
 			if (!$flag) {
 				$flagIp = $classCheck->ipRange(array(
-					'ip'  => $varsMedia['ip'],
+					'ip' => $varsMedia['ip'],
 					'arr' => array($value),
 				));
 
@@ -202,7 +202,7 @@ if ($varsRequest['query']['module'] != 'Login') {
 		}
 		if ($flagIp) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			$this->_send404();
 			exit;
@@ -210,8 +210,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _send404()
 	{
 		/*
@@ -241,8 +241,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _checkAPI()
 	{
 		global $varsAccounts;
@@ -283,8 +283,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _sendSessionError()
 	{
 		global $classRequest;
@@ -296,14 +296,14 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		$classRequest->send(array(
 			'flagType' => 'json',
-			'data'     => $json,
+			'data' => $json,
 		));
 		exit;
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _checkVarsApiAccount()
 	{
 		global $varsAccounts;
@@ -313,7 +313,7 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		if (!$varsApiAccounts) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			exit;
 		}
@@ -331,29 +331,29 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		if (!$idAccount) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			exit;
 		}
 
 		if (!$varsAccounts[$idAccount]) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__ . '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			exit;
 		}
 
 		$varsApiAccount = array(
 			'arrStrSiteUrl' => $arrStrSiteUrl,
-			'idAccount'     => $idAccount,
+			'idAccount' => $idAccount,
 		);
 
 		return $varsApiAccount;
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _checkVarsAPISession($arr)
 	{
 		global $varsRequest;
@@ -411,9 +411,9 @@ if ($varsRequest['query']['module'] != 'Login') {
 		$array = $varsApiAccount['arrStrSiteUrl'];
 		foreach ($array as $key => $value) {
 			$str = MICROTIMESTAMP . $value . $classDisplay->getPassword(array(
-				'numMark'  => 5,
-				'numNum'   => 5,
-				'numBig'   => 5,
+				'numMark' => 5,
+				'numNum' => 5,
+				'numBig' => 5,
 				'numSmall' => 5,
 			));
 			$varsCookie[$key] = hash('sha256', $str);
@@ -464,38 +464,38 @@ if ($varsRequest['query']['module'] != 'Login') {
 		$pathTpl = str_replace('<strLang>', $varsAccount['strLang'], $this->_self['pathTplLogin']);
 		$classTime->setTimeZone(array('data' => $varsAccount['numTimeZone']));
 		$strTime = $classTime->getDisplay(array(
-			'stamp'    => TIMESTAMP,
+			'stamp' => TIMESTAMP,
 			'flagType' => 'year-sec',
 		));
 
 		if ($varsPreference['flagLoginMail']) {
 			$this->_sendMailAdmin(array(
 				'pathVars' => $pathVars,
-				'pathTpl'  => $pathTpl,
+				'pathTpl' => $pathTpl,
 				'arrValue' => array(
-					'strName'     => $varsPreference['strSiteName'],
-					'strUrl'      => $varsPreference['strSiteUrl'],
-					'id'          => $varsAccount['id'],
+					'strName' => $varsPreference['strSiteName'],
+					'strUrl' => $varsPreference['strSiteUrl'],
+					'id' => $varsAccount['id'],
 					'strCodeName' => $varsAccount['strCodeName'],
-					'strIp'       => $varsMedia['ip'],
-					'strHost'     => $varsMedia['host'],
-					'strTime'     => $strTime,
+					'strIp' => $varsMedia['ip'],
+					'strHost' => $varsMedia['host'],
+					'strTime' => $strTime,
 				),
 			));
 		}
 		if ($varsAccount['flagLoginMail']) {
 			$this->_sendMailAccount(array(
 				'pathVars' => $pathVars,
-				'pathTpl'  => $pathTpl,
-				'strMail'  => $varsAccount['strMailPc'],
+				'pathTpl' => $pathTpl,
+				'strMail' => $varsAccount['strMailPc'],
 				'arrValue' => array(
-					'strName'     => $varsPreference['strSiteName'],
-					'strUrl'      => $varsPreference['strSiteUrl'],
-					'id'          => $varsAccount['id'],
+					'strName' => $varsPreference['strSiteName'],
+					'strUrl' => $varsPreference['strSiteUrl'],
+					'id' => $varsAccount['id'],
 					'strCodeName' => $varsAccount['strCodeName'],
-					'strIp'       => $varsMedia['ip'],
-					'strHost'     => $varsMedia['host'],
-					'strTime'     => $strTime,
+					'strIp' => $varsMedia['ip'],
+					'strHost' => $varsMedia['host'],
+					'strTime' => $strTime,
 				),
 			));
 		}
@@ -504,8 +504,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _sendMailAccount($arr)
 	{
 		global $classMail;
@@ -525,7 +525,7 @@ if ($varsRequest['query']['module'] != 'Login') {
 				}
 				$id = $value['idModule'];
 				$data = $varsModule[$id]['arrCommaIdModuleAdmin'];
-				if (preg_match( "/,base,/", $data)) {
+				if (preg_match("/,base,/", $data)) {
 					if ($value['strMailPc'] == $arr['strMail']) {
 						return;
 					}
@@ -536,21 +536,21 @@ if ($varsRequest['query']['module'] != 'Login') {
 		$array = array($arr['strMail']);
 		foreach ($array as $key => $value) {
 			$flag = $classMail->setMail(array(
-				'pathVars'    => $arr['pathVars'],
-				'pathTpl'     => $arr['pathTpl'],
-				'arrValue'    => $arr['arrValue'],
-				'mailTo'      => $value,
-				'arrMailBcc'  => array(),
-				'arrMailCc'   => array(),
-				'mailFrom'    => $varsPreference['strSiteMailPc'],
+				'pathVars' => $arr['pathVars'],
+				'pathTpl' => $arr['pathTpl'],
+				'arrValue' => $arr['arrValue'],
+				'mailTo' => $value,
+				'arrMailBcc' => array(),
+				'arrMailCc' => array(),
+				'mailFrom' => $varsPreference['strSiteMailPc'],
 				'strNameFrom' => $varsPreference['strSiteName'],
 			));
 		}
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _sendMailAdmin($arr)
 	{
 		global $classMail;
@@ -561,14 +561,14 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		$array = $varsAccounts;
 		$arrayNew = array();
-        foreach ($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			if ($value['flagWebmaster']) {
 				$arrayNew[] = $value['strMailPc'];
 				continue;
 			}
 			$id = $value['idModule'];
 			$data = $varsModule[$id]['arrCommaIdModuleAdmin'];
-			if (preg_match( "/,base,/", $data)) {
+			if (preg_match("/,base,/", $data)) {
 				$arrayNew[] = $value['strMailPc'];
 			}
 		}
@@ -576,13 +576,13 @@ if ($varsRequest['query']['module'] != 'Login') {
 		$array = $arrayNew;
 		foreach ($array as $key => $value) {
 			$flag = $classMail->setMail(array(
-				'pathVars'    => $arr['pathVars'],
-				'pathTpl'     => $arr['pathTpl'],
-				'arrValue'    => $arr['arrValue'],
-				'mailTo'      => $value,
-				'arrMailBcc'  => array(),
-				'arrMailCc'   => array(),
-				'mailFrom'    => $varsPreference['strSiteMailPc'],
+				'pathVars' => $arr['pathVars'],
+				'pathTpl' => $arr['pathTpl'],
+				'arrValue' => $arr['arrValue'],
+				'mailTo' => $value,
+				'arrMailBcc' => array(),
+				'arrMailCc' => array(),
+				'mailFrom' => $varsPreference['strSiteMailPc'],
 				'strNameFrom' => $varsPreference['strSiteName'],
 			));
 		}
@@ -606,12 +606,12 @@ if ($varsRequest['query']['module'] != 'Login') {
 				"Content-Type: application/json; charset=UTF-8",
 				'X-FRAME-OPTIONS: SAMEORIGIN',
 				'X-Content-Type-Options: nosniff',
-				"Content-Length: ".strlen($data)
+				"Content-Length: " . strlen($data)
 			);
 			$context = array(
 				"http" => array(
-					"method"  => "POST",
-					"header"  => implode("\r\n", $header),
+					"method" => "POST",
+					"header" => implode("\r\n", $header),
 					"content" => $data,
 					'timeout' => 30
 				)
@@ -621,9 +621,9 @@ if ($varsRequest['query']['module'] != 'Login') {
 		}
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkAccount()
 	{
 		global $classDb;
@@ -691,9 +691,9 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _checkMaintenance($arr)
 	{
 		global $varsPreference;
@@ -705,7 +705,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 		}
 
 		if ($varsAccount) {
-			if ($varsAccount['flagWebmaster']
+			if (
+				$varsAccount['flagWebmaster']
 				|| preg_match('/,' . $varsAccount['id'] . ',/', $varsPreference['arrCommaIdAccountMaintenance'])
 			) {
 				return;
@@ -721,8 +722,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 	}
 
 	/**
-     *
-     */
+	 *
+	 */
 	protected function _showMaintenanceAPI()
 	{
 		global $classRequest;
@@ -734,14 +735,14 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		$classRequest->send(array(
 			'flagType' => 'json',
-			'data'     => $json,
+			'data' => $json,
 		));
 		exit;
 	}
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	protected function _showMaintenance()
 	{
 		global $classSmarty;
@@ -749,8 +750,8 @@ if ($varsRequest['query']['module'] != 'Login') {
 		global $varsAccount;
 
 		$array = $this->_getVars(array(
-			'path'     => $this->_self['pathVarsMaintenance'],
-			'strLang'  => STR_SYSTEM_LANG,
+			'path' => $this->_self['pathVarsMaintenance'],
+			'strLang' => STR_SYSTEM_LANG,
 		));
 
 		foreach ($array as $key => $value) {
@@ -765,17 +766,17 @@ if ($varsRequest['query']['module'] != 'Login') {
 
 		$classRequest->send(array(
 			'flagType' => 'html',
-			'data'     => $output,
+			'data' => $output,
 		));
 		exit;
 	}
 
-    /**
-     * $arr = array(
-     *     'path' => string,
-     *     'strLang' => string,
-     * )
-     */
+	/**
+	 * $arr = array(
+	 *     'path' => string,
+	 *     'strLang' => string,
+	 * )
+	 */
 	protected function _getVars($arr)
 	{
 		$path = $arr['path'];

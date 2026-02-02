@@ -7,60 +7,61 @@
 class Code_Else_Lib_Escape
 {
 
-    public $self = array(
-    	'pathLoad' => 'back/class/else/lib/Escape/<strLang>.php',
-    	'strLang'  => 'ja',
-    );
+	public $self = array(
+		'pathLoad' => 'back/class/else/lib/Escape/<strLang>.php',
+		'strLang' => 'ja',
+	);
 
-    function __construct()
-    {
-    	$strLang = $this->self['strLang'];
-    	$this->setVarsEscape(array('strLang' => $strLang));
-        $arr = @func_get_arg(0);
-        if (!$arr) {
-            return;
-        }
+	function __construct($arr = null)
+	{
+		// $arr = @func_get_arg(0); = $this->self['strLang'];
+		$strLang = $this->self['strLang'];
+		$this->setVarsEscape(array('strLang' => $strLang));
+		// $arr = @func_get_arg(0);
+		if (!$arr) {
+			return;
+		}
 		foreach ($arr as $key => $value) {
 			if (empty($this->self[$key])) {
 				$this->self[$key] = $value;
 			}
-        }
-        if ($strLang != $this->self['strLang']) {
-        	$this->setVarsEscape(array('strLang' => $this->self['strLang']));
-        }
-    }
+		}
+		if ($strLang != $this->self['strLang']) {
+			$this->setVarsEscape(array('strLang' => $this->self['strLang']));
+		}
+	}
 
-    /**
-     * $arr = array(
-     *     strLang  => str,
-     * )
-     */
-    public function setVarsEscape($arr)
-    {
-    	$path = str_replace('<strLang>', $arr['strLang'], $this->self['pathLoad']);
-        if (!file_exists($path)) {
-        	return;
-        }
-        require($path);
-        $array = $vars;
-        foreach ($array as $key => $value) {
-        	if (empty($this->self[$key])) {
-        		$this->self[$key] = $value;
-        	}
-        }
-    }
+	/**
+	 * $arr = array(
+	 *     strLang  => str,
+	 * )
+	 */
+	public function setVarsEscape($arr)
+	{
+		$path = str_replace('<strLang>', $arr['strLang'], $this->self['pathLoad']);
+		if (!file_exists($path)) {
+			return;
+		}
+		require($path);
+		$array = $vars;
+		foreach ($array as $key => $value) {
+			if (empty($this->self[$key])) {
+				$this->self[$key] = $value;
+			}
+		}
+	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     * )
-     */
-    public function to($arr)
-    {
-        return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['to']));
-    }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 * )
+	 */
+	public function to($arr)
+	{
+		return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['to']));
+	}
 
-    /**
+	/**
 	 * $arr = array(
 	 *     data => mixed,
 	 * )
@@ -70,68 +71,68 @@ class Code_Else_Lib_Escape
 		return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['toFrom']));
 	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     * )
-     */
-    public function toBr($arr)
-    {
-        return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['br']));
-    }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 * )
+	 */
+	public function toBr($arr)
+	{
+		return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['br']));
+	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     * )
-     */
-    public function toComma($arr)
-    {
-        return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['comma']));
-    }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 * )
+	 */
+	public function toComma($arr)
+	{
+		return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['comma']));
+	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     * )
-     */
-    public function obfuscate($arr)
-    {
-        $array = $this->self['obfuscate'];
-        $numAll = count($array);
-        for ($j = 0; $j < $numAll; $j++) {
-            $arr['data'] = mb_ereg_replace($array[$j]['before'], $array[$j]['after'], $arr['data']);
-        }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 * )
+	 */
+	public function obfuscate($arr)
+	{
+		$array = $this->self['obfuscate'];
+		$numAll = count($array);
+		for ($j = 0; $j < $numAll; $j++) {
+			$arr['data'] = mb_ereg_replace($array[$j]['before'], $array[$j]['after'], $arr['data']);
+		}
 
-        return $arr['data'];
-    }
+		return $arr['data'];
+	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     * )
-     */
-    public function strUnique($arr)
-    {
-        return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['strUnique']));
-    }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 * )
+	 */
+	public function strUnique($arr)
+	{
+		return $this->loopReplace(array('data' => $arr['data'], 'arr' => $this->self['strUnique']));
+	}
 
-    /**
-     * $arr = array(
-     *     data => mixed,
-     *     arr => array,
-     * )
-     */
-    public function loopReplace($arr)
-    {
-        $array = $arr['arr'];
-        $numAll = count($array);
-        for ($j = 0; $j < $numAll; $j++) {
-            $arr['data'] = str_replace($array[$j]['before'], $array[$j]['after'], $arr['data']);
-        }
+	/**
+	 * $arr = array(
+	 *     data => mixed,
+	 *     arr => array,
+	 * )
+	 */
+	public function loopReplace($arr)
+	{
+		$array = $arr['arr'];
+		$numAll = count($array);
+		for ($j = 0; $j < $numAll; $j++) {
+			$arr['data'] = str_replace($array[$j]['before'], $array[$j]['after'], $arr['data']);
+		}
 
-        return $arr['data'];
-    }
+		return $arr['data'];
+	}
 
 	/**
 	 * $arr = array(
@@ -250,7 +251,7 @@ class Code_Else_Lib_Escape
 		}
 
 		$strComma = $this->joinCommaArray(array(
-			'arr'  => $arrayNew,
+			'arr' => $arrayNew,
 		));
 
 		return $strComma;
@@ -383,7 +384,7 @@ class Code_Else_Lib_Escape
 	public function addCommaArray($arr)
 	{
 		$arrComma = $this->splitCommaArray(array(
-			'data'      => $arr['strComma'],
+			'data' => $arr['strComma'],
 			'flagKsort' => 0,
 		));
 
@@ -399,7 +400,7 @@ class Code_Else_Lib_Escape
 			$arrComma = array_unique($arrComma);
 		}
 
-		$str =  ',' . join(',', $arrComma) . ',';
+		$str = ',' . join(',', $arrComma) . ',';
 
 		return $str;
 	}
@@ -414,7 +415,7 @@ class Code_Else_Lib_Escape
 		if (!$arr['arr']) {
 			return '';
 		}
-		$str =  ',' . join(',', $arr['arr']) . ',';
+		$str = ',' . join(',', $arr['arr']) . ',';
 
 		return $str;
 	}
@@ -430,7 +431,7 @@ class Code_Else_Lib_Escape
 			return '';
 		}
 
-		$str =  ' ' . join(' ', $arr['arr']) . ' ';
+		$str = ' ' . join(' ', $arr['arr']) . ' ';
 
 		return $str;
 	}

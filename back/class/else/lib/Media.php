@@ -7,9 +7,9 @@
 require_once(PATH_BACK_CLASS_ELSE_LIB . "/Check.php");
 require_once(PATH_BACK_CLASS_ELSE_LIB . "/File.php");
 
- /**
-  *
-  */
+/**
+ *
+ */
 class Code_Else_Lib_Media
 {
     protected $_self = array(
@@ -21,16 +21,16 @@ class Code_Else_Lib_Media
         ),
     );
 
-    function __construct()
+    function __construct($arr = null)
     {
-        $arr = @func_get_arg(0);
+        // $arr = @func_get_arg(0);
         if (!$arr) {
             return;
         }
         foreach ($arr as $key => $value) {
             if (empty($this->_self[$key])) {
-				$this->_self[$key] = $value;
-			}
+                $this->_self[$key] = $value;
+            }
         }
     }
 
@@ -40,8 +40,8 @@ class Code_Else_Lib_Media
     public function getDetail()
     {
         return array(
-            'ip'     => $this->getIp(),
-            'host'   => $this->getHost(),
+            'ip' => $this->getIp(),
+            'host' => $this->getHost(),
             'device' => $this->getDevice(),
         );
     }
@@ -63,7 +63,7 @@ class Code_Else_Lib_Media
         $ip = $this->getIp();
         $host = getenv("REMOTE_HOST");
 
-        if(!$host || $host == $ip) {
+        if (!$host || $host == $ip) {
             $host = gethostbyaddr($ip);
         }
 
@@ -73,7 +73,8 @@ class Code_Else_Lib_Media
     /**
      *
      */
-    public function getDevice(){
+    public function getDevice()
+    {
 
         $ip = $this->getIp();
         $classCheck = new Code_Else_Lib_Check();
@@ -83,7 +84,7 @@ class Code_Else_Lib_Media
         $device = 'else';
         for ($j = 0; $j < $numAll; $j++) {
             $flag = $classCheck->ipRange(array(
-                'ip'  => $ip,
+                'ip' => $ip,
                 'arr' => array($array[$j]['ip']),
             ));
             if ($flag) {

@@ -7,22 +7,22 @@
 require_once(PATH_BACK_CLASS_ELSE_LIB . "/Escape.php");
 require_once(PATH_BACK_CLASS_ELSE_LIB . "/File.php");
 
- /**
-  *
-  */
+/**
+ *
+ */
 class Code_Else_Lib_Request
 {
 	protected $_self = array(
 		'flagEscape' => 1,
-		'flagType'	=> 'or',
-		'path'	   => array(
+		'flagType' => 'or',
+		'path' => array(
 			'content' => 'back/dat/content/list.csv',
 		),
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			return;
 		}
@@ -41,21 +41,12 @@ class Code_Else_Lib_Request
 	{
 		global $classEscape;
 
-		if (get_magic_quotes_gpc()) {
-			function strip_magic_quotes_slashes($arr)
-			{
-				return is_array($arr) ? array_map('strip_magic_quotes_slashes', $arr) : stripslashes($arr);
-			}
-			$_GET = strip_magic_quotes_slashes($_GET);
-			$_POST = strip_magic_quotes_slashes($_POST);
-		}
-
 		$arr['query'] = array();
 		if ($this->_self['flagType'] == 'or') {
 			if ($_POST) {
 				$arr['query'] = $this->getPost();
 
-			} elseif($_GET) {
+			} elseif ($_GET) {
 				$arr['query'] = $this->getGet();
 			}
 
@@ -66,7 +57,8 @@ class Code_Else_Lib_Request
 			$arr['query'] = $this->getPost();
 
 		} elseif ($this->_self['flagType'] == 'get') {
-			if (($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['QUERY_STRING'])
+			if (
+				($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['QUERY_STRING'])
 				|| (!$_POST && !$_GET)
 			) {
 				exit;
@@ -78,8 +70,8 @@ class Code_Else_Lib_Request
 			if (is_null($json)) {
 				exit;
 			}
-			$json = $classEscape->to(array( 'data' => $json));
-			$arr['query']['api'] = ($json)? json_decode($json, true) : array();
+			$json = $classEscape->to(array('data' => $json));
+			$arr['query']['api'] = ($json) ? json_decode($json, true) : array();
 		}
 
 		$arr['cookie'] = $this->getCookie();
@@ -97,7 +89,7 @@ class Code_Else_Lib_Request
 		global $classEscape;
 		foreach ($_COOKIE as $key => $value) {
 			if ($this->_self['flagEscape']) {
-				$arr[$key] = $classEscape->to(array( 'data' => $value ));
+				$arr[$key] = $classEscape->to(array('data' => $value));
 
 			} else {
 				$arr[$key] = $value;
@@ -108,17 +100,16 @@ class Code_Else_Lib_Request
 		return $arr;
 	}
 
-    /**
-     *
-     */
-    public function getReferer()
-    {
-    	if (is_null($_SERVER['HTTP_REFERER'])) {
-    		return '';
-    	}
-
-        return $_SERVER['HTTP_REFERER'];
-    }
+	/**
+	 *
+	 */
+	public function getReferer()
+	{
+		if (empty($_SERVER['HTTP_REFERER'])) {
+			return '';
+		}
+		return $_SERVER['HTTP_REFERER'];
+	}
 
 	/**
 	 *
@@ -133,7 +124,7 @@ class Code_Else_Lib_Request
 			}
 
 			if ($this->_self['flagEscape']) {
-				$arr[$key] = $classEscape->to(array( 'data' => $value ));
+				$arr[$key] = $classEscape->to(array('data' => $value));
 
 			} else {
 				$arr[$key] = $value;
@@ -143,7 +134,7 @@ class Code_Else_Lib_Request
 
 		foreach ($arr as $key => $value) {
 			if (preg_match("/^json/i", $key)) {
-				$arr[$key] = ($value)? json_decode($value, true) : '';
+				$arr[$key] = ($value) ? json_decode($value, true) : '';
 
 			}
 		}
@@ -159,7 +150,7 @@ class Code_Else_Lib_Request
 		global $classEscape;
 		foreach ($_GET as $key => $value) {
 			if ($this->_self['flagEscape']) {
-				$arr[$key] = $classEscape->to(array( 'data' => $value ));
+				$arr[$key] = $classEscape->to(array('data' => $value));
 
 			} else {
 				$arr[$key] = $value;
@@ -180,7 +171,8 @@ class Code_Else_Lib_Request
 	{
 		global $varsRequest;
 
-		if ($_SERVER['REQUEST_METHOD'] == 'GET'
+		if (
+			$_SERVER['REQUEST_METHOD'] == 'GET'
 			&& $_SERVER['QUERY_STRING']
 			&& !$varsRequest['flagGetPermit']
 		) {
@@ -190,18 +182,18 @@ class Code_Else_Lib_Request
 		if ($arr['flagType'] == 'html') {
 			$flagType = 'Content-Type: text/html; charset=UTF-8';
 
-		} elseif($arr['flagType'] == 'javascript') {
+		} elseif ($arr['flagType'] == 'javascript') {
 			$flagType = 'Content-Type: text/javascript';
 
-		} elseif($arr['flagType'] == 'json') {
+		} elseif ($arr['flagType'] == 'json') {
 			$flagType = 'Content-Type: application/json;  charset=UTF-8';
 
 		} else {
 			$classFile = new Code_Else_Lib_File();
 			$arrType = $classFile->getCsvRow(array(
-				'path'      => $this->_self['path']['content'],
+				'path' => $this->_self['path']['content'],
 				'strColumn' => 'file',
-				'value'     => $arr['flagType'],
+				'value' => $arr['flagType'],
 			));
 			$flagType = 'Content-Type: ' . $arrType['content'];
 
@@ -243,7 +235,8 @@ class Code_Else_Lib_Request
 	{
 		global $varsRequest;
 
-		if ($_SERVER['REQUEST_METHOD'] == 'GET'
+		if (
+			$_SERVER['REQUEST_METHOD'] == 'GET'
 			&& $_SERVER['QUERY_STRING']
 			&& !$varsRequest['flagGetPermit']
 		) {
@@ -253,9 +246,9 @@ class Code_Else_Lib_Request
 		$classFile = new Code_Else_Lib_File();
 
 		$arrType = $classFile->getCsvRow(array(
-			'path'      => $this->_self['path']['content'],
+			'path' => $this->_self['path']['content'],
 			'strColumn' => 'file',
-			'value'     => $arr['strFileType'],
+			'value' => $arr['strFileType'],
 		));
 		$strContentType = 'Content-Type: ' . $arrType['content'];
 		$strFileName = $arr['strFileName'];
@@ -278,25 +271,26 @@ class Code_Else_Lib_Request
 			'strUrl'         => '',
 	 * )
 	 */
-	public function curlGetContents($arr){
+	public function curlGetContents($arr)
+	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $arr['strUrl'] );
+		curl_setopt($ch, CURLOPT_URL, $arr['strUrl']);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
 		$result = curl_exec($ch);
-		if($result === false) {
+		if ($result === false) {
 			return array(
 				'flagError' => 1,
-				'data'      => curl_error($ch),
+				'data' => curl_error($ch),
 			);
 		}
 		curl_close($ch);
 
 		return array(
 			'flagError' => 0,
-			'data'      => $result
+			'data' => $result
 		);
 	}
 }

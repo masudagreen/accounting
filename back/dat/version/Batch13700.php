@@ -7,16 +7,16 @@
 class Code_Batch13700
 {
 	protected $_selfBatch = array(
-		'numVersion'     => 0,
+		'numVersion' => 0,
 		'numVersionThis' => 13700,
 	);
 
-	function __construct()
+	function __construct($arr = null)
 	{
-		$arr = @func_get_arg(0);
+		// $arr = @func_get_arg(0);
 		if (!$arr) {
 			if (FLAG_TEST) {
-				var_dump(__CLASS__ . '/' .__FUNCTION__. '/' .__LINE__);
+				var_dump(__CLASS__ . '/' . __FUNCTION__ . '/' . __LINE__);
 			}
 			exit;
 		}
@@ -24,10 +24,10 @@ class Code_Batch13700
 	}
 
 	/**
-	  *
-	  */
-    public function run()
-    {
+	 *
+	 */
+	public function run()
+	{
 		if ($this->_selfBatch['numVersion'] >= $this->_selfBatch['numVersionThis']) {
 			return;
 		}
@@ -42,16 +42,16 @@ class Code_Batch13700
 			$this->_setBatchTable();
 			$this->_setBatchColumn();
 		}
-   }
+	}
 
-   /*
+	/*
 	 *
 	 * */
 	protected function _setBatchPath()
 	{
 		//define('PATH_BATCH13700_CLASS',   PATH_BACK_DAT_VERSION . 'Batch13700/class/');
 		//define('PATH_BATCH13700_VARS',   PATH_BACK_DAT_VERSION . 'Batch13700/vars/');
-		define('PATH_BATCH13700_TEMPLATES',   PATH_BACK_DAT_VERSION . 'Batch13700/templates/');
+		define('PATH_BATCH13700_TEMPLATES', PATH_BACK_DAT_VERSION . 'Batch13700/templates/');
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Code_Batch13700
 
 		$vars = $classEscape->getVars(array(
 			'data' => PATH_BATCH13700_TEMPLATES . 'config.php',
-			'arr'  => array(),
+			'arr' => array(),
 		));
 
 		$flag55 = $classDb->checkVersion55();
@@ -87,9 +87,9 @@ class Code_Batch13700
 				$strColumn = '';
 				foreach ($arrayChild as $keyChild => $valueChild) {
 					$strColumn .= ' '
-								. $arrayChild[$keyChild]['column']
-								. ' '
-								. $arrayChild[$keyChild]['type'];
+						. $arrayChild[$keyChild]['column']
+						. ' '
+						. $arrayChild[$keyChild]['type'];
 
 					if ($keyChild != $numLimit) {
 						$strColumn .= ',';
@@ -107,9 +107,9 @@ class Code_Batch13700
 		}
 	}
 
-   /**
+	/**
 
-	 */
+	  */
 	protected function _setBatchColumn()
 	{
 		global $classDb;
