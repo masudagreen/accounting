@@ -1,0 +1,2707 @@
+openapi: 3.1.0
+info:
+  title: Rucaro Accounting API
+  version: 1.0.0
+  summary: 日本語会計アプリ Rucaro の REST API（新基盤）
+  description: |
+    Rucaro Accounting 新基盤（PHP 8.3 + MariaDB 10.11）の REST API 仕様。
+
+    対象スコープ:
+      - 認証（opaque Bearer token, DB 保管、SHA-256 ハッシュ化）
+      - 会計主体（entity）・会計期（fiscal term）管理
+      - 勘定科目（account title）・補助科目（sub account title）マスタ参照
+      - 仕訳（journal entry）の CRUD と検索（借方・貸方・税率・摘要）
+      - 試算表（trial balance）の集計出力
+      - 決算書（financial statements: BS / PL / CS）の出力
+      - 固定資産（fixed asset）台帳と減価償却バッチ
+      - 領収書（receipt）アップロード → Claude 抽出 → 承認 → 仕訳化のパイプライン
+      - メール / メッセージ承認トークン処理
+      - ヘルスチェック
+
+    共通レスポンス包絡形式:
+    ```json
+    { "success": true, "data": { ... }, "error": null, "meta": null }
+    ```
+
+    エラー時:
+    ```json
+    { "success": false, "data": null, "error": { "code": "VALIDATION_FAILED", "message": "...", "details": {} }, "meta": null }
+    ```
+
+    ID は全て ULID (Crockford Base32, 26 文字)。金額は文字列 DECIMAL(18,4) で送受信。
+    日付は ISO 8601（暦日は `YYYY-MM-DD`、時刻込みは RFC 3339 UTC、例 `2026-04-21T12:34:56.789012Z`）。
+    通貨は ISO 4217 3 文字コード。既定 `JPY`。
+
+    借方合計 = 貸方合計 の不変条件は OpenAPI レベルでは記述のみ、実装側（Application 層）で強制する。
+  termsOfService: https://example.com/terms
+  contact:
+    name: Rucaro Accounting Maintainers
+    url: https://github.com/masudagreen/accounting
+    email: masudagreen@gmail.com
+  license:
+    name: GPL-2.0-or-later
+    identifier: GPL-2.0-or-later
+
+externalDocs:
+  description: 実装計画書（PLAN.md）と ADR 一式
+  url: https://github.com/masudagreen/accounting/blob/master/docs/PLAN.md
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: ローカル開発環境（Docker Compose）
+  - url: https://{host}/api/v1
+    description: 本番相当環境（ユーザが自前ホスティング）
+    variables:
+      host:
+        default: accounting.local
+        description: 運用ホスト名
+
+tags:
+  - name: Auth
+    description: 認証・トークン発行
+  - name: Entity
+    description: 会計主体（会社・個人事業主）
+  - name: FiscalTerm
+    description: 会計期
+  - name: AccountTitle
+    description: 勘定科目（Chart of Accounts）
+  - name: SubAccountTitle
+    description: 補助科目
+  - name: Journal
+    description: 仕訳
+  - name: TrialBalance
+    description: 試算表
+  - name: FinancialStatement
+    description: 決算書（貸借対照表・損益計算書・キャッシュフロー計算書）
+  - name: FixedAsset
+    description: 固定資産台帳と減価償却
+  - name: Receipt
+    description: 領収書アップロードと AI 抽出
+  - name: Approval
+    description: メール / メッセージ承認
+  - name: System
+    description: ヘルスチェック等のシステム系
+
+security:
+  - bearerAuth: []
+
+paths:
+  /healthz:
+    get:
+      tags: [System]
+      operationId: getHealthz
+      summary: ヘルスチェック
+      description: アプリケーションと DB 接続の生存確認。認証不要。
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/HealthStatus"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      operationId: login
+      summary: ログイン
+      description: email + password で opaque Bearer token を発行する。
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+            examples:
+              default:
+                value:
+                  email: taro@example.com
+                  password: "C0rrectHorseBatteryStaple!"
+      responses:
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/LoginResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      operationId: logout
+      summary: ログアウト
+      description: 現在の Bearer token を失効させる。
+      responses:
+        "200":
+          description: 失効完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          revoked:
+                            type: boolean
+                        required: [revoked]
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      operationId: refreshToken
+      summary: トークン更新
+      description: |
+        有効な Bearer token を用いて新しい token を発行し、旧 token を失効させる。
+        クライアントは新 token で後続リクエストを継続する。
+      responses:
+        "200":
+          description: 新 token 発行
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      operationId: getMe
+      summary: 現在のユーザ情報
+      description: Bearer token に紐づくユーザを返す。
+      responses:
+        "200":
+          description: ユーザ情報
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /entities:
+    get:
+      tags: [Entity]
+      operationId: listEntities
+      summary: 会計主体一覧
+      description: 現在のユーザが参照可能な会計主体（会社・個人事業）を一覧返却。
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/Order"
+        - name: q
+          in: query
+          description: 名前部分一致検索
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+        - name: isActive
+          in: query
+          description: 有効フラグで絞り込み
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: 一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Entity"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags: [Entity]
+      operationId: createEntity
+      summary: 会計主体作成
+      description: 新しい会計主体を作成する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityCreate"
+      responses:
+        "201":
+          description: 作成完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Entity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /entities/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [Entity]
+      operationId: getEntityById
+      summary: 会計主体詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Entity"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    patch:
+      tags: [Entity]
+      operationId: updateEntity
+      summary: 会計主体更新
+      description: 指定フィールドのみ更新する（部分更新）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityUpdate"
+      responses:
+        "200":
+          description: 更新完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Entity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags: [Entity]
+      operationId: deleteEntity
+      summary: 会計主体削除（論理削除）
+      description: "`deleted_at` を立てる soft delete。仕訳が 1 件でもあれば 409。"
+      responses:
+        "204":
+          description: 削除完了
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /fiscal-terms:
+    get:
+      tags: [FiscalTerm]
+      operationId: listFiscalTerms
+      summary: 会計期一覧
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          description: 対象会計主体
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: isClosed
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/Order"
+      responses:
+        "200":
+          description: 一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/FiscalTerm"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags: [FiscalTerm]
+      operationId: createFiscalTerm
+      summary: 会計期作成
+      description: 新しい会計期を作成する。`end_date >= start_date` が必須。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FiscalTermCreate"
+      responses:
+        "201":
+          description: 作成完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FiscalTerm"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /fiscal-terms/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [FiscalTerm]
+      operationId: getFiscalTermById
+      summary: 会計期詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FiscalTerm"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /account-titles:
+    get:
+      tags: [AccountTitle]
+      operationId: listAccountTitles
+      summary: 勘定科目一覧
+      description: |
+        指定会計主体の勘定科目（Chart of Accounts）を返却。
+        カテゴリ（資産・負債・純資産・収益・費用）で絞り込み可能。
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: category
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/AccountCategory"
+        - name: isActive
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: q
+          in: query
+          description: 科目名 / コード部分一致
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: 一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/AccountTitle"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /account-titles/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [AccountTitle]
+      operationId: getAccountTitleById
+      summary: 勘定科目詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/AccountTitle"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /sub-account-titles:
+    get:
+      tags: [SubAccountTitle]
+      operationId: listSubAccountTitles
+      summary: 補助科目一覧
+      parameters:
+        - name: accountTitleId
+          in: query
+          required: true
+          description: 親勘定科目
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: isActive
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: 一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/SubAccountTitle"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /sub-account-titles/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [SubAccountTitle]
+      operationId: getSubAccountTitleById
+      summary: 補助科目詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SubAccountTitle"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /journals:
+    get:
+      tags: [Journal]
+      operationId: listJournals
+      summary: 仕訳検索
+      description: |
+        会計期・期間・勘定科目・摘要キーワード・ステータスで仕訳を検索する。
+        既定では論理削除済みは除外。`includeTrashed=true` で含める。
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: fiscalTermId
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: from
+          in: query
+          description: 計上日 開始（含む）ISO 8601 日付
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          description: 計上日 終了（含む）ISO 8601 日付
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: accountTitleId
+          in: query
+          description: 明細にこの勘定科目を含む仕訳のみ
+          required: false
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: subAccountTitleId
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/JournalStatus"
+        - name: source
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/JournalSource"
+        - name: q
+          in: query
+          description: 摘要部分一致
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+        - name: includeTrashed
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/Order"
+      responses:
+        "200":
+          description: 仕訳一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Journal"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags: [Journal]
+      operationId: createJournal
+      summary: 仕訳作成
+      description: |
+        仕訳を 1 件作成する。明細は借方・貸方双方を含む 2 行以上を要する。
+
+        **不変条件（実装で強制）**:
+          - `SUM(lines.amount WHERE side='debit') = SUM(lines.amount WHERE side='credit')`
+          - `total_amount` は借方合計と一致
+          - `lines` は最低 2 件（借方 1、貸方 1）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JournalCreate"
+            examples:
+              simple:
+                summary: 現金で消耗品 1,100 円購入
+                value:
+                  entityId: 01HW7K9B2QV7C8Y4ZEXAMPLE00
+                  fiscalTermId: 01HW7K9B2QV7C8Y4ZEXAMPLE11
+                  journalDate: "2026-04-15"
+                  summary: 事務用品購入
+                  source: manual
+                  lines:
+                    - side: debit
+                      accountTitleId: 01HW7K9B2QV7C8Y4ZACCTTL001
+                      amount: "1100.00"
+                      taxRatePercent: "10.00"
+                      taxAmount: "100.00"
+                      isTaxReduced: false
+                      memo: 事務用品
+                    - side: credit
+                      accountTitleId: 01HW7K9B2QV7C8Y4ZACCTTL002
+                      amount: "1100.00"
+                      taxRatePercent: "0.00"
+                      taxAmount: "0.00"
+                      isTaxReduced: false
+                      memo: 現金支払
+      responses:
+        "201":
+          description: 作成完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Journal"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /journals/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [Journal]
+      operationId: getJournalById
+      summary: 仕訳詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Journal"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    patch:
+      tags: [Journal]
+      operationId: updateJournal
+      summary: 仕訳更新
+      description: |
+        仕訳を更新する。明細を差し替える場合は `lines` に完全版を渡す（全置換セマンティクス）。
+        借貸一致条件は実装層で再検証する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JournalUpdate"
+      responses:
+        "200":
+          description: 更新完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Journal"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags: [Journal]
+      operationId: deleteJournal
+      summary: 仕訳削除（論理削除）
+      description: |
+        仕訳を論理削除する。`deleted_at` を立てる soft delete。
+        物理削除は行わない（会計データは `ON DELETE RESTRICT`）。
+      responses:
+        "204":
+          description: 削除完了
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /trial-balance:
+    get:
+      tags: [TrialBalance]
+      operationId: getTrialBalance
+      summary: 試算表の出力
+      description: |
+        指定した会計期 / 基準日時点の試算表を返す。
+        `format=json` の場合は JSON 包絡、`format=csv` では CSV 直接返却。
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: fiscalTermId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: asOf
+          in: query
+          required: false
+          description: 基準日。未指定時は会計期末。
+          schema:
+            type: string
+            format: date
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, csv]
+            default: json
+      responses:
+        "200":
+          description: 試算表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TrialBalance"
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /financial-statements:
+    get:
+      tags: [FinancialStatement]
+      operationId: getFinancialStatements
+      summary: 決算書の出力
+      description: |
+        貸借対照表（BS）・損益計算書（PL）・キャッシュフロー計算書（CS）を返す。
+        `kind=ALL` で 3 種を同時返却。`format=pdf` では dompdf 生成 PDF をバイナリ返却。
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: fiscalTermId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: kind
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [BS, PL, CS, ALL]
+            default: ALL
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, pdf]
+            default: json
+      responses:
+        "200":
+          description: 決算書
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FinancialStatements"
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /fixed-assets:
+    get:
+      tags: [FixedAsset]
+      operationId: listFixedAssets
+      summary: 固定資産一覧
+      parameters:
+        - name: entityId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+        - name: isActive
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/Order"
+      responses:
+        "200":
+          description: 一覧
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/FixedAsset"
+                      meta:
+                        $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags: [FixedAsset]
+      operationId: createFixedAsset
+      summary: 固定資産登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FixedAssetCreate"
+      responses:
+        "201":
+          description: 作成完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FixedAsset"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /fixed-assets/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [FixedAsset]
+      operationId: getFixedAssetById
+      summary: 固定資産詳細
+      responses:
+        "200":
+          description: 詳細
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FixedAsset"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    patch:
+      tags: [FixedAsset]
+      operationId: updateFixedAsset
+      summary: 固定資産更新
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FixedAssetUpdate"
+      responses:
+        "200":
+          description: 更新完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/FixedAsset"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /fixed-assets/{id}/depreciate:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    post:
+      tags: [FixedAsset]
+      operationId: depreciateFixedAsset
+      summary: 減価償却バッチ実行
+      description: |
+        指定した会計期に対し減価償却を実行し、仕訳を自動生成する。
+        既に当期の償却仕訳が存在する場合は 409。
+      parameters:
+        - name: fiscalTermId
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Ulid"
+      responses:
+        "200":
+          description: 償却仕訳生成完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/DepreciationResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /receipts:
+    post:
+      tags: [Receipt]
+      operationId: uploadReceipt
+      summary: 領収書アップロード
+      description: |
+        領収書ファイル（画像 / PDF）をアップロードする。content-addressed ストレージに保存し、
+        Sonnet 4.6 による抽出を非同期に開始する。同一 entity × 同一 SHA-256 の重複は 409。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ReceiptUpload"
+            encoding:
+              file:
+                contentType: image/jpeg, image/png, image/heic, application/pdf
+      responses:
+        "202":
+          description: 受理（抽出処理はバックグラウンド）
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Receipt"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "413":
+          description: ファイルサイズ上限超過
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvelopeError"
+        "415":
+          description: 未対応の MIME タイプ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvelopeError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /receipts/{id}/draft:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    get:
+      tags: [Receipt]
+      operationId: getReceiptDraft
+      summary: 領収書の抽出・ドラフト結果
+      description: |
+        Claude Sonnet による抽出結果（`extractedJson`）と Opus が生成した仕訳ドラフト
+        （未承認）を取得する。抽出未完了の場合は `status=extracting` を返す。
+      responses:
+        "200":
+          description: 抽出結果 + ドラフト
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/ReceiptDraft"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /receipts/{id}/approve:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    post:
+      tags: [Receipt]
+      operationId: approveReceipt
+      summary: 領収書ドラフトの承認 → 仕訳化
+      description: |
+        Web UI では承認しない方針だが、運用／開発補助用に本エンドポイントを提供する。
+        承認すると draft_journal を `posted` へ遷移させ `receipts.status=journaled` になる。
+        通常の承認フローは `POST /approvals/{token}` を経由する。
+      responses:
+        "200":
+          description: 仕訳化完了
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Receipt"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /receipts/{id}/retry:
+    parameters:
+      - $ref: "#/components/parameters/UlidPath"
+    post:
+      tags: [Receipt]
+      operationId: retryReceiptExtraction
+      summary: 抽出・ドラフト再実行
+      description: |
+        抽出・ドラフト生成をやり直す。ユーザが却下時に補足情報（`userHint`）を渡すと
+        Opus がそれを踏まえて再生成する。
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceiptRetry"
+      responses:
+        "202":
+          description: 再実行受理
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Receipt"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /approvals/{token}:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        description: ワンタイム承認トークン（URL 中の不透明文字列）。SHA-256 ハッシュ化して DB 参照する。
+        schema:
+          type: string
+          minLength: 32
+          maxLength: 128
+          pattern: "^[A-Za-z0-9_-]{32,128}$"
+    post:
+      tags: [Approval]
+      operationId: respondApproval
+      summary: 承認 / 却下
+      description: |
+        メール / メッセージで送信したリンクから承認または却下を受け付ける。
+        承認時は対象仕訳を `approved` + `posted` に、却下時は `rejected` に遷移。
+        トークンは 1 度だけ使用可能。期限切れ・使用済みは 410 を返す。
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalResponse"
+      responses:
+        "200":
+          description: 承認 / 却下確定
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/ApprovalResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          description: トークン期限切れ / 使用済み
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvelopeError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: |
+        opaque token を `Authorization: Bearer <token>` ヘッダで送信。
+        サーバは SHA-256 ハッシュで `api_tokens.token_hash` と突き合わせる。
+
+  parameters:
+    UlidPath:
+      name: id
+      in: path
+      required: true
+      description: 対象リソースの ULID
+      schema:
+        $ref: "#/components/schemas/Ulid"
+    Page:
+      name: page
+      in: query
+      required: false
+      description: ページ番号（1 起番）
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: 1 ページあたりの件数
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+    Sort:
+      name: sort
+      in: query
+      required: false
+      description: ソート対象フィールド名（camelCase）
+      schema:
+        type: string
+        maxLength: 64
+    Order:
+      name: order
+      in: query
+      required: false
+      description: 昇順 / 降順
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+
+  responses:
+    BadRequest:
+      description: リクエストが不正（JSON 破損・必須パラメータ欠如・型違い）
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    Unauthorized:
+      description: 認証情報なし / token 無効 / token 期限切れ
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    Forbidden:
+      description: 認証は通っているが対象リソースへの権限なし
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    NotFound:
+      description: 指定 ID のリソースが存在しない、または論理削除済み
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    Conflict:
+      description: 一意制約違反 / 状態遷移不可 / 子が残っている削除など
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    UnprocessableEntity:
+      description: スキーマは通ったがドメインルール違反（借貸不一致 等）
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+    ServerError:
+      description: サーバ内部エラー
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvelopeError"
+
+  schemas:
+    # -----------------------------------------------------------
+    # 共通ユーティリティ
+    # -----------------------------------------------------------
+    Ulid:
+      type: string
+      description: Crockford Base32 の 26 文字 ULID
+      pattern: "^[0-9A-HJKMNP-TV-Z]{26}$"
+      minLength: 26
+      maxLength: 26
+      example: 01HW7K9B2QV7C8Y4ZEXAMPLE00
+
+    Timestamp:
+      type: string
+      format: date-time
+      description: RFC 3339 マイクロ秒精度。UTC 送受信、表示時に Asia/Tokyo へ変換
+      example: "2026-04-21T03:15:27.123456Z"
+
+    DateOnly:
+      type: string
+      format: date
+      description: ISO 8601 暦日（YYYY-MM-DD）
+      example: "2026-04-21"
+
+    Decimal:
+      type: string
+      description: |
+        固定小数点数を**文字列**で送受信（浮動小数誤差回避）。
+        DB 側は DECIMAL(18, 4)。正負いずれも許容するが、金額列は個別にレンジ制約を持つ。
+      pattern: "^-?\\d{1,14}(\\.\\d{1,4})?$"
+      example: "1100.0000"
+
+    Money:
+      type: object
+      description: 金額 + 通貨
+      properties:
+        amount:
+          $ref: "#/components/schemas/Decimal"
+        currency:
+          type: string
+          description: ISO 4217 通貨コード
+          minLength: 3
+          maxLength: 3
+          default: JPY
+          example: JPY
+      required: [amount, currency]
+
+    Error:
+      type: object
+      description: エラー情報
+      properties:
+        code:
+          type: string
+          description: 機械可読エラーコード（UPPER_SNAKE_CASE）
+          example: VALIDATION_FAILED
+        message:
+          type: string
+          description: 人間可読メッセージ（日本語可）
+          example: 借方合計と貸方合計が一致していません
+        details:
+          type: object
+          description: フィールド別エラーなど追加詳細
+          additionalProperties: true
+          nullable: true
+      required: [code, message]
+
+    Meta:
+      type: object
+      description: ページネーションメタ情報
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          example: 128
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          example: 50
+      required: [total, page, pageSize]
+
+    Envelope:
+      type: object
+      description: 成功レスポンスの包絡
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          description: 各エンドポイント固有のデータ。失敗時は null。
+          nullable: true
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/Error"
+            - type: "null"
+        meta:
+          oneOf:
+            - $ref: "#/components/schemas/Meta"
+            - type: "null"
+      required: [success, data, error]
+
+    EnvelopeError:
+      type: object
+      description: エラーレスポンスの包絡
+      properties:
+        success:
+          type: boolean
+          const: false
+        data:
+          type: "null"
+        error:
+          $ref: "#/components/schemas/Error"
+        meta:
+          oneOf:
+            - $ref: "#/components/schemas/Meta"
+            - type: "null"
+      required: [success, data, error]
+
+    # -----------------------------------------------------------
+    # ヘルス
+    # -----------------------------------------------------------
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded, down]
+        version:
+          type: string
+          example: 1.0.0
+        checkedAt:
+          $ref: "#/components/schemas/Timestamp"
+        components:
+          type: object
+          additionalProperties:
+            type: string
+            enum: [ok, degraded, down]
+          example:
+            database: ok
+            storage: ok
+      required: [status, version, checkedAt]
+
+    # -----------------------------------------------------------
+    # 認証
+    # -----------------------------------------------------------
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          minLength: 8
+          maxLength: 255
+          writeOnly: true
+      required: [email, password]
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: opaque Bearer token（表示は初回のみ）
+          example: rucaro_live_9vQ...etZ
+        tokenPrefix:
+          type: string
+          description: ログ照合用プレフィックス
+          minLength: 8
+          maxLength: 8
+        issuedAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        user:
+          $ref: "#/components/schemas/User"
+      required: [token, tokenPrefix, issuedAt, expiresAt, user]
+
+    User:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        loginId:
+          type: string
+          maxLength: 64
+        displayName:
+          type: string
+          maxLength: 128
+        email:
+          type: string
+          format: email
+        isActive:
+          type: boolean
+        lastLoginAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required: [id, loginId, displayName, email, isActive, createdAt, updatedAt]
+
+    # -----------------------------------------------------------
+    # 会計主体
+    # -----------------------------------------------------------
+    Entity:
+      type: object
+      description: 会計主体（会社 / 個人事業主）
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        ownerUserId:
+          $ref: "#/components/schemas/Ulid"
+        name:
+          type: string
+          maxLength: 128
+          description: 屋号 / 会社名
+        nationCode:
+          type: string
+          description: ISO 3166-1 alpha-3
+          minLength: 3
+          maxLength: 3
+          default: JPN
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        fiscalStartMmDd:
+          type: string
+          description: 会計年度開始 MMDD
+          pattern: "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$"
+          example: "0401"
+        isActive:
+          type: boolean
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+        deletedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+      required:
+        - id
+        - ownerUserId
+        - name
+        - nationCode
+        - currencyCode
+        - fiscalStartMmDd
+        - isActive
+        - createdAt
+        - updatedAt
+
+    EntityCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 128
+        nationCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPN
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        fiscalStartMmDd:
+          type: string
+          pattern: "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$"
+          default: "0101"
+      required: [name]
+
+    EntityUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 128
+        nationCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+        fiscalStartMmDd:
+          type: string
+          pattern: "^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$"
+        isActive:
+          type: boolean
+      additionalProperties: false
+
+    # -----------------------------------------------------------
+    # 会計期
+    # -----------------------------------------------------------
+    FiscalTerm:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalPeriod:
+          type: integer
+          description: 期番号（1 期 / 2 期 …）
+          minimum: 1
+        startDate:
+          $ref: "#/components/schemas/DateOnly"
+        endDate:
+          $ref: "#/components/schemas/DateOnly"
+        isClosed:
+          type: boolean
+        closedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - entityId
+        - fiscalPeriod
+        - startDate
+        - endDate
+        - isClosed
+        - createdAt
+        - updatedAt
+
+    FiscalTermCreate:
+      type: object
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalPeriod:
+          type: integer
+          minimum: 1
+        startDate:
+          $ref: "#/components/schemas/DateOnly"
+        endDate:
+          $ref: "#/components/schemas/DateOnly"
+      required: [entityId, fiscalPeriod, startDate, endDate]
+
+    # -----------------------------------------------------------
+    # 勘定科目 / 補助科目
+    # -----------------------------------------------------------
+    AccountCategory:
+      type: string
+      description: 勘定科目カテゴリ
+      enum:
+        - asset
+        - liability
+        - equity
+        - revenue
+        - expense
+
+    NormalSide:
+      type: string
+      description: 正常残高側
+      enum: [debit, credit]
+
+    AccountTitle:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        code:
+          type: string
+          maxLength: 16
+        name:
+          type: string
+          maxLength: 128
+        category:
+          $ref: "#/components/schemas/AccountCategory"
+        normalSide:
+          $ref: "#/components/schemas/NormalSide"
+        parentId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        sortOrder:
+          type: integer
+          default: 0
+        isActive:
+          type: boolean
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - entityId
+        - code
+        - name
+        - category
+        - normalSide
+        - sortOrder
+        - isActive
+        - createdAt
+        - updatedAt
+
+    SubAccountTitle:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+        code:
+          type: string
+          maxLength: 16
+        name:
+          type: string
+          maxLength: 128
+        sortOrder:
+          type: integer
+          default: 0
+        isActive:
+          type: boolean
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - accountTitleId
+        - code
+        - name
+        - sortOrder
+        - isActive
+        - createdAt
+        - updatedAt
+
+    # -----------------------------------------------------------
+    # 仕訳
+    # -----------------------------------------------------------
+    JournalStatus:
+      type: string
+      enum:
+        - draft
+        - pending_approval
+        - approved
+        - rejected
+        - posted
+
+    JournalSource:
+      type: string
+      enum:
+        - manual
+        - ai_receipt
+        - bank_import
+        - mail_import
+
+    JournalLineSide:
+      type: string
+      enum: [debit, credit]
+
+    JournalLine:
+      type: object
+      description: 仕訳明細 1 行
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        lineNo:
+          type: integer
+          minimum: 1
+        side:
+          $ref: "#/components/schemas/JournalLineSide"
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+        subAccountTitleId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        amount:
+          $ref: "#/components/schemas/Decimal"
+        taxRatePercent:
+          $ref: "#/components/schemas/Decimal"
+        taxAmount:
+          $ref: "#/components/schemas/Decimal"
+        isTaxReduced:
+          type: boolean
+          default: false
+        memo:
+          type: string
+          maxLength: 255
+        bookedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - lineNo
+        - side
+        - accountTitleId
+        - amount
+        - taxRatePercent
+        - taxAmount
+        - isTaxReduced
+
+    JournalLineInput:
+      type: object
+      properties:
+        side:
+          $ref: "#/components/schemas/JournalLineSide"
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+        subAccountTitleId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        amount:
+          $ref: "#/components/schemas/Decimal"
+        taxRatePercent:
+          $ref: "#/components/schemas/Decimal"
+        taxAmount:
+          $ref: "#/components/schemas/Decimal"
+        isTaxReduced:
+          type: boolean
+          default: false
+        memo:
+          type: string
+          maxLength: 255
+          default: ""
+      required: [side, accountTitleId, amount]
+
+    Journal:
+      type: object
+      description: 仕訳（本体 + 明細）
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalTermId:
+          $ref: "#/components/schemas/Ulid"
+        journalDate:
+          $ref: "#/components/schemas/DateOnly"
+        bookedAt:
+          $ref: "#/components/schemas/Timestamp"
+        summary:
+          type: string
+          maxLength: 255
+          description: 摘要
+        totalAmount:
+          $ref: "#/components/schemas/Decimal"
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+        status:
+          $ref: "#/components/schemas/JournalStatus"
+        source:
+          $ref: "#/components/schemas/JournalSource"
+        sourceReceiptId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        createdBy:
+          $ref: "#/components/schemas/Ulid"
+        approvedBy:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        approvedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+        deletedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        lines:
+          type: array
+          minItems: 2
+          items:
+            $ref: "#/components/schemas/JournalLine"
+      required:
+        - id
+        - entityId
+        - fiscalTermId
+        - journalDate
+        - bookedAt
+        - summary
+        - totalAmount
+        - currencyCode
+        - status
+        - source
+        - createdBy
+        - createdAt
+        - updatedAt
+        - lines
+
+    JournalCreate:
+      type: object
+      description: |
+        仕訳作成リクエスト。
+        `lines` は借方 1 件以上・貸方 1 件以上、合計一致が必須（実装で検証）。
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalTermId:
+          $ref: "#/components/schemas/Ulid"
+        journalDate:
+          $ref: "#/components/schemas/DateOnly"
+        summary:
+          type: string
+          maxLength: 255
+          default: ""
+        source:
+          $ref: "#/components/schemas/JournalSource"
+        sourceReceiptId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        lines:
+          type: array
+          minItems: 2
+          items:
+            $ref: "#/components/schemas/JournalLineInput"
+      required: [entityId, fiscalTermId, journalDate, lines]
+
+    JournalUpdate:
+      type: object
+      properties:
+        journalDate:
+          $ref: "#/components/schemas/DateOnly"
+        summary:
+          type: string
+          maxLength: 255
+        status:
+          $ref: "#/components/schemas/JournalStatus"
+        lines:
+          type: array
+          description: 明細を全置換する場合のみ指定
+          minItems: 2
+          items:
+            $ref: "#/components/schemas/JournalLineInput"
+      additionalProperties: false
+
+    # -----------------------------------------------------------
+    # 試算表
+    # -----------------------------------------------------------
+    TrialBalanceRow:
+      type: object
+      properties:
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+        accountCode:
+          type: string
+          maxLength: 16
+        accountName:
+          type: string
+          maxLength: 128
+        category:
+          $ref: "#/components/schemas/AccountCategory"
+        debitTotal:
+          $ref: "#/components/schemas/Decimal"
+        creditTotal:
+          $ref: "#/components/schemas/Decimal"
+        balance:
+          $ref: "#/components/schemas/Decimal"
+        normalSide:
+          $ref: "#/components/schemas/NormalSide"
+      required:
+        - accountTitleId
+        - accountCode
+        - accountName
+        - category
+        - debitTotal
+        - creditTotal
+        - balance
+        - normalSide
+
+    TrialBalance:
+      type: object
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalTermId:
+          $ref: "#/components/schemas/Ulid"
+        asOf:
+          $ref: "#/components/schemas/DateOnly"
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrialBalanceRow"
+        totals:
+          type: object
+          properties:
+            debit:
+              $ref: "#/components/schemas/Decimal"
+            credit:
+              $ref: "#/components/schemas/Decimal"
+          required: [debit, credit]
+        generatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - entityId
+        - fiscalTermId
+        - asOf
+        - currencyCode
+        - rows
+        - totals
+        - generatedAt
+
+    # -----------------------------------------------------------
+    # 決算書
+    # -----------------------------------------------------------
+    FinancialStatementLine:
+      type: object
+      description: 決算書 1 明細行
+      properties:
+        accountTitleId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        label:
+          type: string
+          maxLength: 128
+        amount:
+          $ref: "#/components/schemas/Decimal"
+        depth:
+          type: integer
+          minimum: 0
+          default: 0
+        isSubtotal:
+          type: boolean
+          default: false
+      required: [label, amount]
+
+    FinancialStatementSection:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 128
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/FinancialStatementLine"
+        subtotal:
+          $ref: "#/components/schemas/Decimal"
+      required: [title, lines, subtotal]
+
+    BalanceSheet:
+      type: object
+      description: 貸借対照表（BS）
+      properties:
+        assets:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        liabilities:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        equity:
+          $ref: "#/components/schemas/FinancialStatementSection"
+      required: [assets, liabilities, equity]
+
+    ProfitAndLoss:
+      type: object
+      description: 損益計算書（PL）
+      properties:
+        revenue:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        expenses:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        netIncome:
+          $ref: "#/components/schemas/Decimal"
+      required: [revenue, expenses, netIncome]
+
+    CashFlowStatement:
+      type: object
+      description: キャッシュフロー計算書（CS）
+      properties:
+        operating:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        investing:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        financing:
+          $ref: "#/components/schemas/FinancialStatementSection"
+        netChange:
+          $ref: "#/components/schemas/Decimal"
+      required: [operating, investing, financing, netChange]
+
+    FinancialStatements:
+      type: object
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalTermId:
+          $ref: "#/components/schemas/Ulid"
+        currencyCode:
+          type: string
+          minLength: 3
+          maxLength: 3
+        bs:
+          oneOf:
+            - $ref: "#/components/schemas/BalanceSheet"
+            - type: "null"
+        pl:
+          oneOf:
+            - $ref: "#/components/schemas/ProfitAndLoss"
+            - type: "null"
+        cs:
+          oneOf:
+            - $ref: "#/components/schemas/CashFlowStatement"
+            - type: "null"
+        generatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - entityId
+        - fiscalTermId
+        - currencyCode
+        - generatedAt
+
+    # -----------------------------------------------------------
+    # 固定資産
+    # -----------------------------------------------------------
+    DepreciationMethod:
+      type: string
+      description: 減価償却方法
+      enum:
+        - straight_line
+        - declining_balance
+        - sum_of_years_digits
+        - units_of_production
+
+    FixedAsset:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        name:
+          type: string
+          maxLength: 128
+        assetCategory:
+          type: string
+          maxLength: 64
+          description: 資産区分（建物 / 器具備品 / 車両運搬具 / 工具 等）
+        acquiredOn:
+          $ref: "#/components/schemas/DateOnly"
+        acquisitionCost:
+          $ref: "#/components/schemas/Decimal"
+        residualValue:
+          $ref: "#/components/schemas/Decimal"
+        usefulLifeYears:
+          type: integer
+          minimum: 1
+          maximum: 100
+        depreciationMethod:
+          $ref: "#/components/schemas/DepreciationMethod"
+        accumulatedDepreciation:
+          $ref: "#/components/schemas/Decimal"
+        bookValue:
+          $ref: "#/components/schemas/Decimal"
+        isActive:
+          type: boolean
+        retiredOn:
+          oneOf:
+            - $ref: "#/components/schemas/DateOnly"
+            - type: "null"
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - entityId
+        - name
+        - assetCategory
+        - acquiredOn
+        - acquisitionCost
+        - residualValue
+        - usefulLifeYears
+        - depreciationMethod
+        - accumulatedDepreciation
+        - bookValue
+        - isActive
+        - accountTitleId
+        - createdAt
+        - updatedAt
+
+    FixedAssetCreate:
+      type: object
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 128
+        assetCategory:
+          type: string
+          maxLength: 64
+        acquiredOn:
+          $ref: "#/components/schemas/DateOnly"
+        acquisitionCost:
+          $ref: "#/components/schemas/Decimal"
+        residualValue:
+          $ref: "#/components/schemas/Decimal"
+        usefulLifeYears:
+          type: integer
+          minimum: 1
+          maximum: 100
+        depreciationMethod:
+          $ref: "#/components/schemas/DepreciationMethod"
+        accountTitleId:
+          $ref: "#/components/schemas/Ulid"
+      required:
+        - entityId
+        - name
+        - assetCategory
+        - acquiredOn
+        - acquisitionCost
+        - residualValue
+        - usefulLifeYears
+        - depreciationMethod
+        - accountTitleId
+
+    FixedAssetUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 128
+        assetCategory:
+          type: string
+          maxLength: 64
+        residualValue:
+          $ref: "#/components/schemas/Decimal"
+        usefulLifeYears:
+          type: integer
+          minimum: 1
+          maximum: 100
+        depreciationMethod:
+          $ref: "#/components/schemas/DepreciationMethod"
+        isActive:
+          type: boolean
+        retiredOn:
+          oneOf:
+            - $ref: "#/components/schemas/DateOnly"
+            - type: "null"
+      additionalProperties: false
+
+    DepreciationResult:
+      type: object
+      properties:
+        fixedAssetId:
+          $ref: "#/components/schemas/Ulid"
+        fiscalTermId:
+          $ref: "#/components/schemas/Ulid"
+        depreciationAmount:
+          $ref: "#/components/schemas/Decimal"
+        bookValueAfter:
+          $ref: "#/components/schemas/Decimal"
+        generatedJournalId:
+          $ref: "#/components/schemas/Ulid"
+      required:
+        - fixedAssetId
+        - fiscalTermId
+        - depreciationAmount
+        - bookValueAfter
+        - generatedJournalId
+
+    # -----------------------------------------------------------
+    # 領収書 (Phase 5)
+    # -----------------------------------------------------------
+    ReceiptStatus:
+      type: string
+      enum:
+        - uploaded
+        - extracting
+        - drafted
+        - approved
+        - rejected
+        - journaled
+
+    Receipt:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Ulid"
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        uploaderId:
+          $ref: "#/components/schemas/Ulid"
+        contentSha256:
+          type: string
+          description: ファイル SHA-256（小文字 hex）
+          pattern: "^[0-9a-f]{64}$"
+          minLength: 64
+          maxLength: 64
+        filename:
+          type: string
+          maxLength: 255
+        mimeType:
+          type: string
+          maxLength: 64
+        byteSize:
+          type: integer
+          format: int64
+          minimum: 0
+        storagePath:
+          type: string
+          maxLength: 512
+        status:
+          $ref: "#/components/schemas/ReceiptStatus"
+        draftJournalId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        uploadedAt:
+          $ref: "#/components/schemas/Timestamp"
+        extractedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        draftedAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        journaledAt:
+          oneOf:
+            - $ref: "#/components/schemas/Timestamp"
+            - type: "null"
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - entityId
+        - uploaderId
+        - contentSha256
+        - filename
+        - mimeType
+        - byteSize
+        - storagePath
+        - status
+        - uploadedAt
+        - createdAt
+        - updatedAt
+
+    ReceiptUpload:
+      type: object
+      description: multipart/form-data
+      properties:
+        entityId:
+          $ref: "#/components/schemas/Ulid"
+        file:
+          type: string
+          format: binary
+          description: 領収書ファイル（image/jpeg, image/png, image/heic, application/pdf）
+        memo:
+          type: string
+          maxLength: 255
+      required: [entityId, file]
+
+    ReceiptExtracted:
+      type: object
+      description: Sonnet 4.6 の抽出結果
+      properties:
+        vendor:
+          type: string
+          maxLength: 255
+          nullable: true
+        total:
+          oneOf:
+            - $ref: "#/components/schemas/Decimal"
+            - type: "null"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          nullable: true
+        receiptDate:
+          oneOf:
+            - $ref: "#/components/schemas/DateOnly"
+            - type: "null"
+        taxIncluded:
+          type: boolean
+          nullable: true
+        paymentMethod:
+          type: string
+          maxLength: 32
+          nullable: true
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                maxLength: 255
+              amount:
+                $ref: "#/components/schemas/Decimal"
+              quantity:
+                $ref: "#/components/schemas/Decimal"
+              taxRatePercent:
+                $ref: "#/components/schemas/Decimal"
+            required: [name, amount]
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Sonnet の抽出確信度（0-1）
+
+    ReceiptDraft:
+      type: object
+      properties:
+        receipt:
+          $ref: "#/components/schemas/Receipt"
+        extracted:
+          oneOf:
+            - $ref: "#/components/schemas/ReceiptExtracted"
+            - type: "null"
+        draftJournal:
+          oneOf:
+            - $ref: "#/components/schemas/Journal"
+            - type: "null"
+        draftConfidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Opus の仕訳ドラフト確信度
+      required: [receipt]
+
+    ReceiptRetry:
+      type: object
+      properties:
+        userHint:
+          type: string
+          maxLength: 1024
+          description: 却下時のユーザコメント。Opus の再生成に渡される。
+        forceReExtract:
+          type: boolean
+          default: false
+          description: Sonnet の抽出からやり直す
+
+    # -----------------------------------------------------------
+    # 承認（メール / メッセージ）
+    # -----------------------------------------------------------
+    ApprovalDecision:
+      type: string
+      enum: [approved, rejected]
+
+    ApprovalChannel:
+      type: string
+      enum: [email, line, slack, discord]
+
+    ApprovalResponse:
+      type: object
+      properties:
+        decision:
+          $ref: "#/components/schemas/ApprovalDecision"
+        comment:
+          type: string
+          maxLength: 512
+          default: ""
+      required: [decision]
+
+    ApprovalResult:
+      type: object
+      properties:
+        tokenId:
+          $ref: "#/components/schemas/Ulid"
+        decision:
+          $ref: "#/components/schemas/ApprovalDecision"
+        respondedAt:
+          $ref: "#/components/schemas/Timestamp"
+        channel:
+          $ref: "#/components/schemas/ApprovalChannel"
+        journalEntryId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+        receiptId:
+          oneOf:
+            - $ref: "#/components/schemas/Ulid"
+            - type: "null"
+      required: [tokenId, decision, respondedAt, channel]

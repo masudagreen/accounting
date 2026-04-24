@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Rucaro Accounting - CLI entry point.
+ *
+ * Phase 1: bootstraps Composer's autoloader, loads .env, and wires a bare
+ * Symfony Console application. Commands (crypto:generate-key, receipts:ingest,
+ * migrate, ...) will land in later phases under Rucaro\Infrastructure\Console.
+ *
+ * Usage:
+ *     php bin/cowork [command] [options]
+ */
+
+use Symfony\Component\Console\Application;
+
+$repoRoot = dirname(__DIR__);
+$autoload = $repoRoot . '/vendor/autoload.php';
+
+if (!is_file($autoload)) {
+    fwrite(STDERR, "Composer autoloader not found. Run `composer install` first.\n");
+    exit(1);
+}
+
+require $autoload;
+
+if (class_exists(\Dotenv\Dotenv::class) && is_file($repoRoot . '/.env')) {
+    \Dotenv\Dotenv::createImmutable($repoRoot)->safeLoad();
+}
+
+date_default_timezone_set($_ENV['TZ'] ?? 'Asia/Tokyo');
+
+$application = new Application('cowork', '0.1.0-phase1');
+
+// Commands are registered here as they land in later phases.
+// Example (Phase 2):
+//     $application->add(new \Rucaro\Infrastructure\Console\GenerateEncryptionKeyCommand());
+
+exit($application->run());

@@ -1,0 +1,37 @@
+# Rucaro Accounting v2 - public/.htaccess
+# DocumentRoot is public/. Legacy back/ is never served here.
+
+RewriteEngine On
+
+# Apache mod_php は Authorization ヘッダを既定で PHP に渡さない。
+# HTTP_AUTHORIZATION へ明示転送して Bearer token が middleware に届くようにする。
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Deny any attempt to reach legacy back/ through this DocumentRoot.
+# (back/ lives outside public/ so this is defence-in-depth.)
+RewriteRule ^back/ - [F,L]
+RewriteRule (^|/)\.env$ - [F,L]
+RewriteRule (^|/)\.git(/|$) - [F,L]
+
+# Pass real files/dirs untouched (static assets under public/assets/).
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# /api/v1/* -> public/api/v1/index.php
+RewriteRule ^api/v1(/.*)?$ api/v1/index.php [QSA,L]
+
+# /ui/* -> public/ui/index.php (Phase 7-1 Web UI front controller).
+# Must come before the catch-all below.
+RewriteRule ^ui(/.*)?$ ui/index.php [QSA,L]
+
+# Everything else -> public/index.php (new front controller).
+RewriteRule ^ index.php [QSA,L]
+
+# Security headers (reasonable defaults; Phase 2 will refine CSP).
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

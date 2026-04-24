@@ -1,0 +1,19 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - back/*
+        - vendor/*
+        - storage/*
+    tmpDir: .phpstan.tmp
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    bootstrapFiles:
+        - tests/bootstrap.php

@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Rucaro\\\\Support\\\\Result\\\\Result\\:\\:err\\(\\) should return Rucaro\\\\Support\\\\Result\\\\Result\\<never, E of string\\|Throwable\\> but returns Rucaro\\\\Support\\\\Result\\\\Result\\<null, string\\|Throwable\\>\\.$#"
+			count: 1
+			path: src/Support/Result/Result.php
+
+		-
+			message: "#^Method Rucaro\\\\Support\\\\Result\\\\Result\\:\\:ok\\(\\) should return Rucaro\\\\Support\\\\Result\\\\Result\\<T, never\\> but returns Rucaro\\\\Support\\\\Result\\\\Result\\<T, string\\|Throwable\\>\\.$#"
+			count: 1
+			path: src/Support/Result/Result.php
