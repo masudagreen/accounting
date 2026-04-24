@@ -1,0 +1,47 @@
+# VCS / editor
+.git/
+.github/
+.idea/
+.vscode/
+
+# Secrets (compose mounts .env via env_file; never bake into image)
+.env
+.env.*
+!.env.example
+
+# Composer — installed during image build via composer install
+vendor/
+composer.phar
+
+# Node / frontend toolchain
+node_modules/
+
+# Static analysis / test caches
+.phpunit.result.cache
+.phpunit.cache/
+.php-cs-fixer.cache
+.php_cs.cache
+phpstan.tmp/
+.phpstan.tmp/
+psalm.cache/
+.rector/
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Runtime storage (bind-mounted at runtime; volumes hold the real data)
+storage/cache/
+storage/logs/
+storage/receipts/
+storage/uploads/
+!storage/**/.gitkeep
+
+# Legacy runtime
+back/tpl/templates_c/
+back/tpl/cache/
+back/dat/access/
+
+# Coverage / build output
+coverage/
+build/
+tmp/

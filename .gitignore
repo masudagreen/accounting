@@ -1,26 +1,71 @@
+# OS / editors
 Thumbs.db
+.DS_Store
+*.swp
+.idea/
+.vscode/
 
-# Ignore contents of these directories but keep them via .gitkeep
+# Secrets & env
+.env
+.env.*
+!.env.example
+
+# Composer / vendors
+/vendor/
+composer.phar
+
+# PHPUnit / static analysis caches
+.phpunit.result.cache
+.phpunit.cache/
+/.php-cs-fixer.cache
+/.php_cs.cache
+/phpstan.tmp
+/.phpstan.tmp/
+/psalm.cache/
+/.rector/
+
+# Playwright MCP traces / logs
+/.playwright-mcp/
+
+# Node / frontend toolchain (future)
+/node_modules/
+
+# Legacy runtime directories: track skeleton via .gitkeep
 back/dat/access/*
 !back/dat/access/.gitkeep
 
-back/tpl/templates_c/*
-!back/tpl/templates_c/.gitkeep
-
-back/tpl/configs/*
-!back/tpl/configs/.gitkeep
-
-back/tpl/cache/*
-!back/tpl/cache/.gitkeep
+back/dat/error/*
+!back/dat/error/.gitkeep
 
 back/dat/file/*
 !back/dat/file/.gitkeep
 
-back/dat/temp/*
-!back/dat/temp/.gitkeep
-
 back/dat/log/*
 !back/dat/log/.gitkeep
 
-back/dat/error/*
-!back/dat/error/.gitkeep
+back/dat/temp/*
+!back/dat/temp/.gitkeep
+
+back/tpl/cache/*
+!back/tpl/cache/.gitkeep
+
+back/tpl/configs/*
+!back/tpl/configs/.gitkeep
+
+back/tpl/templates_c/*
+!back/tpl/templates_c/.gitkeep
+
+# New runtime storage: track only the directory skeletons.
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/receipts/*
+!/storage/receipts/.gitkeep
+/storage/uploads/*
+!/storage/uploads/.gitkeep
+
+# Coverage / reports
+/coverage/
+/build/
+/tmp/
