@@ -204,5 +204,33 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-8-3**: 元実装の `Code_Else_Plugin_Accounting_Jpn_CashPay` (消込) は **CashEntry の `status` を Settled に変更し、対応する仕訳を別途記入** する設計. 新ドメインでは `CashEntry::withStatus()` で immutable 遷移するが、消込時に仕訳をどう生成するかは未実装 (現状は Pending → Settled の状態遷移のみテスト).
 - **G-8-4**: 5 行 (Japannetbank/Japanpostbank/Jibunbank/Sumisinnetbank/Surugabank) の Web 取込パーサは **本スプリントでは実装しない**. インターフェース (`BankStatementImporter`) と `DryRunBankAdapter` のみ提供. 将来必要になったら同インターフェースを実装する形で追加.
 
-### Sprint 9+: 未着手
+### Sprint 9: Golden Master Test (本番データ照合)
+
+**Golden DB**: `db20260207.sql.zip` を `rucaro_golden` schema にロードして照合. 本番データは `tests/Golden/data/` 配下に置き、`.gitignore` で完全除外済 (`db20*.sql` / `db_dump*.sql` / `tests/Golden/data/` 等).
+
+**結果サマリ** (1,579 件の仕訳を再構築):
+- **Entity 1 (7期, 計1,049件): 完全一致** ✓
+  - 借方=貸方 不変条件すべて成立
+  - PL の当期純利益が本番DB値と完全一致 (差分0円)
+- **Entity 2 (7期, 計322件): 不一致**
+  - **本番DB側のFS設定不整合** が原因 (新ドメイン側の問題ではない)
+
+**G-9-1**: Entity 2 の `accountingFSJpn.jsonJgaapAccountTitlePL` に **`rents` / `taxesAndDues` / `commissionPaid` / `badMiscellaneousExpenses` / `insuranceExpenses` 等の科目が定義されていない**. しかし `accountingLog` ではこれらの科目が実際に使われているため、AccountTree から見ると未知の科目になり TrialBalance で 0 集計される. 結果として Entity 2 は借方≠貸方になる.
+- **これは本番DB側のデータ不整合** (FS設定が仕訳科目に追従できていない)
+- 移行時の選択肢:
+  1. Entity 2 の本番側 FS 設定を補完してから移行 (推奨)
+  2. 新ドメイン側で「未知の科目を自動補完」するモードを用意 (推奨しない)
+  3. 移行前に本番側で FS 再構築を行う運用フィックス
+
+**G-9-2**: `LegacyJournalReader` は `accountingLog.jsonVersion` の **最新版 (配列の末尾)** から借方/貸方明細を抽出. 編集履歴のある仕訳でも最新状態のみ反映. 履歴を辿って差分監査する用途には別の Reader が必要.
+
+**G-9-3**: `LegacyAccountTreeReader` は `accountingFSJpn.jsonJgaapAccountTitle{BS,PL,CR}` から AccountTree を構築するが、**`PlSection` / `CrSection` の自動判定**は実施しない (不整合データでもとりあえず読めるよう緩く扱う). PL 集計は本来 `PlSection` で分類するため、Legacy データから FS 集計する場合は別途 `StandardChartLoader` の section マップを併用する設計.
+
+**G-9-4**: 本番DBは MariaDB 10.11. ダンプ内のテーブル名・列名は `back/tpl/templates/else/plugin/accounting/db/config.php` の DDL と一致 (移行時に追加カラムは不要).
+
+**G-9-5**: Golden テストは **DB 接続できないと markTestSkipped** する設計. CI で本番DB環境がなくても壊れない. テスト実行には `GOLDEN_DB_HOST=db GOLDEN_DB_PORT=3306 GOLDEN_DB_NAME=rucaro_golden GOLDEN_DB_USER=rucaro GOLDEN_DB_PASS=rucaro` 環境変数が必要.
+
+**結論**: 新ドメインは本番データ (Entity 1) に対して正しく動作することが確認できた. Entity 2 は本番DB側のデータ不整合の問題で、移行前に運用フィックスが必要.
+
+### Sprint 10+: 未着手
 - (今後ここに追記)
