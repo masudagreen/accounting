@@ -238,5 +238,13 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-10-3**: `DepreciationService::computeForAllAssets` の `accumulatedClosing` / `bookValueClosing` は **近似値** (前期末累計 + 当期償却). 完全に正確な値が必要なら `FixedAssetJournalGenerator::computeDepreciation` を public 化する必要あり.
 - **G-10-4**: `BridgeContainer` は **static ファクトリ** で PDO を直接受け取る. 既存 UI が `global $classDb` 経由なので DI コンテナを使わずに済んだ. UI 繋ぎ替え時は `$classDb->getHandle()` を渡すだけ.
 
-### Sprint 11+: 未着手
+### Sprint 11: 国税庁最新様式の帳票
+- **G-11-1**: サブエージェントは国税庁サイトに直接 WebFetch を行わず、**手元の知識** (令和最新様式) で実装した. 実際の提出用には `nta.go.jp` の最新 PDF を参照して項目名 (特に経費科目の文言) を微調整する必要がある.
+- **G-11-2**: PHP enum を `array` のキーとして使うと `TypeError`. `EquitySection->value` (string) をキーにする回避策で対応.
+- **G-11-3**: テンプレート (`templates/reports/*.html.php`) で `ob_start()` を使う実装. 例外時は `try/finally { ob_end_clean(); }` で出力バッファ漏れを防ぐ. PHPUnit が "did not close its own output buffers" を警告したケースを修正.
+- **G-11-4**: PHPStan level 8 で `assertIsString(render())` は **always-true** エラー. 戻り値型 `string` が確定しているため. テストは `assertNotEmpty` + `assertGreaterThan(100, strlen(...))` で代替.
+- **G-11-5**: 帳票 4 種の「勘定科目内訳明細書」(預貯金/売掛金/買掛金/借入金) のみ実装. 残り 13 種 (受取手形/支払手形/地代家賃/役員報酬 等) は将来必要に応じて追加. 共通インターフェース (`AccountBreakdownRow`) があるので追加は容易.
+- **G-11-6**: PDF 出力は dompdf 経由. 日本語フォント (`Hiragino Kaku Gothic ProN` 等) の有無で見た目が変わる可能性あり. dompdf 用のフォント埋め込みは未実装.
+
+### Sprint 12+: 未着手
 - (今後ここに追記)
