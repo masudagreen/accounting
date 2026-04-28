@@ -191,5 +191,12 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-7-4**: BS の不変条件 `資産 = 負債 + 純資産 + 当期純利益` は **期末締切前** の試算表に対するもの。元実装は確定後 (`flagFiscalReport='f1'`) に当期純利益を `netAssets` 配下の科目 (利益剰余金/個人事業の元入金 等) に振替えている可能性が高い。マイグレーション時の境界条件として要確認。
 - **G-7-5**: 株主資本等変動計算書 (SS) と キャッシュフロー計算書 (CS) は **本スプリント未着手**。SS は純資産の期首・変動・期末の遷移、CS は間接法/直接法で営業/投資/財務の3区分のキャッシュフロー。元実装の `accountingFSJpn.jsonJgaapFSCS` を流用するか新規設計するか、後で判断。
 
+### Sprint 7B: SS / CS
+- **G-7B-1**: 元 `JgaapFSCS.php` は **直接法** (営業収入・仕入支出・人件費支出を個別集計) で記述されている。新ドメインは間接法で実装した。両方式は同一の `CashFlowStatementBuilder` で扱えないため、直接法が必要になれば `DirectCashFlowStatementBuilder` を別クラスで追加する.
+- **G-7B-2**: 間接法での法人税等の現金支払は本実装では `CashFlowAdjustment::Operating` 区分への外部入力で対応する設計。テストでは `tax = 0` のケースのみ。複合シナリオは Sprint 8 以降で.
+- **G-7B-3**: BS 科目を「現金等/売上債権/棚卸資産/仕入債務」と識別するために、現在は文字列キー (`'cash'`/`'accountsReceivable'`/`'inventory'`/`'accountsPayable'`) を `CashFlowStatementBuilder` の定数で受ける。将来的に `AccountTitle` に `CsClassification` enum を付与して `AccountTree` から自動集計する方向が望ましい.
+- **G-7B-4**: `CashFlowStatement` 自体は不変条件 (期末現金 = 期首 + 全CF合計) を **ランタイムでは強制せず**, テスト側で `assertCashFlowInvariant` ヘルパーで担保する設計. 不整合な入力を渡すと CashFlowStatement 内部に矛盾が残る. 利用者責任で整合性を担保するか、Builder で validate するか後で判断.
+- **G-7B-5**: 元実装は `accountingFinancialStatementSS.php` クラスがあるが今回はゼロから新ドメインで設計した. 元実装の出力フォーマット・項目順序との互換性は Golden Master test で要検証.
+
 ### Sprint 8+: 未着手
 - (今後ここに追記)
