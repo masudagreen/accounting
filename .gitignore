@@ -1,3 +1,31 @@
 Thumbs.db
 back/tpl/templates_c/
 back/dat/access/
+
+# composer
+/vendor/
+composer.phar
+
+# phpunit / phpstan / dev tools
+.phpunit.cache/
+.phpunit.result.cache
+.phpstan.tmp/
+.php-cs-fixer.cache
+build/
+
+# editors / IDEs
+.idea/
+.vscode/
+
+# secrets / runtime
+.env
+storage/
+
+# playwright/E2E
+.playwright-mcp/
+
+# legacy
+.htaccess.bak
+.gemini/
+.pdfcheck;C/
+.pdfcheck/
