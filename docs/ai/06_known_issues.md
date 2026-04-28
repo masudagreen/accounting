@@ -232,5 +232,11 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 
 **結論**: 新ドメインは本番データ (Entity 1) に対して正しく動作することが確認できた. Entity 2 は本番DB側のデータ不整合の問題で、移行前に運用フィックスが必要.
 
-### Sprint 10+: 未着手
+### Sprint 10: アダプタ層
+- **G-10-1**: サブエージェントが PHPStan を `src/` のみで実行し「no errors」と報告したが、テストファイルに 13 エラーが残っていた (assertIsArray の冗長 + reset() の `array|false` 取扱). 私が修正済. **教訓**: サブエージェント発注時は `phpstan analyse` を `src/` + `tests/` の両方で実行するよう明示すること.
+- **G-10-2**: サブエージェントが namespace を `Tests\` で書いていた (composer.json の `App\Tests\` 規約と不整合). PHPUnit はパス discovery で動くため動作はするが規約違反. 私が `App\Tests\` に統一済.
+- **G-10-3**: `DepreciationService::computeForAllAssets` の `accumulatedClosing` / `bookValueClosing` は **近似値** (前期末累計 + 当期償却). 完全に正確な値が必要なら `FixedAssetJournalGenerator::computeDepreciation` を public 化する必要あり.
+- **G-10-4**: `BridgeContainer` は **static ファクトリ** で PDO を直接受け取る. 既存 UI が `global $classDb` 経由なので DI コンテナを使わずに済んだ. UI 繋ぎ替え時は `$classDb->getHandle()` を渡すだけ.
+
+### Sprint 11+: 未着手
 - (今後ここに追記)
