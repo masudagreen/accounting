@@ -138,14 +138,16 @@ function parseCommaIds(string $raw): array
 // Step 1: fetch all entities + fiscal periods from accountingFSJpn
 // -------------------------------------------------------------------------
 
-$fsRows = $pdo->query(
+$fsStmt = $pdo->query(
     'SELECT id, idEntity, numFiscalPeriod,
             jsonJgaapAccountTitlePL,
             jsonJgaapAccountTitleBS,
             jsonJgaapAccountTitleCR
        FROM accountingFSJpn
       ORDER BY idEntity, numFiscalPeriod'
-)->fetchAll(PDO::FETCH_ASSOC);
+);
+assert($fsStmt !== false);
+$fsRows = $fsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($fsRows)) {
     echo "No rows found in accountingFSJpn. Nothing to do.\n";
@@ -156,7 +158,7 @@ if (empty($fsRows)) {
 // Step 2: for each entity+period, compare tree IDs vs log IDs
 // -------------------------------------------------------------------------
 
-/** @var array<string, array{fsRowId: int, column: string, missingIds: list<string>}> $allGaps */
+/** @var array<string, array{fsRowId: int, idEntity: int, fiscalPeriod: int, column: string, missingIds: list<string>}> $allGaps */
 $allGaps = [];
 
 foreach ($fsRows as $fsRow) {

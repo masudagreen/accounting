@@ -75,7 +75,9 @@ echo sprintf("DB: `%s` (%s:%s)\n\n", $db, $host, $port);
 // ------------------------------------------------------------------
 echo "## 1. データ概要\n\n";
 
-$entities = $pdo->query('SELECT id, strTitle FROM accountingEntity ORDER BY id')->fetchAll();
+$entitiesStmt = $pdo->query('SELECT id, strTitle FROM accountingEntity ORDER BY id');
+assert($entitiesStmt !== false);
+$entities = $entitiesStmt->fetchAll();
 echo "| 事業体ID | 名称 |\n|---:|---|\n";
 foreach ($entities as $e) {
     // 名称は先頭数文字のみマスク
@@ -84,14 +86,16 @@ foreach ($entities as $e) {
 }
 echo "\n";
 
-$summary = $pdo->query(
+$summaryStmt = $pdo->query(
     "SELECT idEntity, numFiscalPeriod,
             SUM(CASE WHEN flagRemove = 0 THEN 1 ELSE 0 END) AS active_logs,
             SUM(CASE WHEN flagRemove = 1 THEN 1 ELSE 0 END) AS removed_logs
      FROM accountingLog
      GROUP BY idEntity, numFiscalPeriod
      ORDER BY idEntity, numFiscalPeriod"
-)->fetchAll();
+);
+assert($summaryStmt !== false);
+$summary = $summaryStmt->fetchAll();
 
 echo "## 2. 仕訳件数\n\n";
 echo "| 事業体 | 期 | 有効仕訳 | 論理削除 |\n|---:|---:|---:|---:|\n";
@@ -143,7 +147,8 @@ foreach ($summary as $row) {
          WHERE idEntity = ? AND numFiscalPeriod = ? AND flagRemove = 0'
     );
     $logRows->execute([$idEntity, $period]);
-    $rows = $logRows->fetchAll();
+    /** @var list<array<string, mixed>> $rows */
+    $rows = array_values($logRows->fetchAll());
 
     $reconstruction = $journalReader->read($rows);
     $entries = $reconstruction['entries'];

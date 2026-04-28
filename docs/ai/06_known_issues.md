@@ -270,5 +270,12 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 
 **結論**: 新ドメインは **法人・個人事業主の両様式** で本番データを完全に再現できる. Entity 2 の問題は本番DB側のデータ不整合ではなく、新ドメイン側の様式サポート不足だった (Sprint 9 段階では誤診. Sprint 12 で完全解決).
 
-### Sprint 13+: 未着手
+### Sprint 13: Shadow Web UI (Phase 1)
+- **G-13-1 (重大)**: サブエージェントが **コンテナ内の Apache 設定を `/var/www/html/public` に変更** したが `public/` ディレクトリは作成しなかったため、legacy `index.php` を含めすべてのURLが 404 になっていた. コミットされた `docker/apache/000-default.conf` は正しい状態だったが、稼働中コンテナだけが壊れた状態. 私が `docker/apache/000-default.conf` を強化（`back/`, `src/`, `tests/`, `migrations/`, `bin/`, `vendor/`, `.git`, ドット始まりファイル を deny）し、コンテナへ反映 (`apachectl graceful`). **教訓**: サブエージェントに発注時は「**稼働中の Apache 設定をいじらない**」「**`docker/apache/000-default.conf` を修正してコンテナ再ビルドする**」を明示すべき.
+- **G-13-2**: サブエージェント納品物の `bin/` 配下スクリプト (compare-report.php / migrate.php / repair-fs-tree.php) の PHPStan エラー 11 件は私が修正済 (PDOStatement\|false 取扱, getopt 結果の型ナロー, 配列形状の annotation 修正). サブエージェントは `phpstan.neon` で `paths: src, tests` のみだったので発覚しなかった. 今回 `phpstan.neon` に `compare`, `bin` を追加してすべて level 8 でクリーン.
+- **G-13-3**: legacy セッションは `baseSession.idCookie` (cookie 名 `id`) を使う. デフォルト max-age 90000 秒 (= legacy `NUM_SESSION` 定数). `/compare/` ログインは legacy にログインしているブラウザでそのまま継承可能.
+- **G-13-4**: BS 比較ページで **期首残高ゼロ計算** のため法人 (期首残高あり) では差異が出る. Phase 2 で `accountingFSValueJpn.jsonJgaapAccountTitleBS` の各科目 sumPrev を OpeningBalances に流し込む実装が必要. 現状はShadow UIの想定動作.
+- **G-13-5**: `/compare/` は **GET only** ( `<LimitExcept GET HEAD>` で POST 拒否). 読取専用 Shadow に徹する.
+
+### Sprint 14+: 未着手
 - (今後ここに追記)

@@ -3,6 +3,8 @@ parameters:
     paths:
         - src
         - tests
+        - compare
+        - bin
     excludePaths:
         - vendor
         - back

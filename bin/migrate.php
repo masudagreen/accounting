@@ -36,16 +36,24 @@ $args = $argv;
 array_shift($args); // remove script name
 
 $command = array_shift($args) ?? 'help';
-$options = [];
+
+/** @var array<string, string|true> $flagOptions */
+$flagOptions = [];
+/** @var list<string> $extraArgs */
+$extraArgs = [];
 
 foreach ($args as $arg) {
     if (str_starts_with($arg, '--')) {
         $parts = explode('=', ltrim($arg, '-'), 2);
-        $options[$parts[0]] = $parts[1] ?? true;
+        $flagOptions[$parts[0]] = $parts[1] ?? true;
     } else {
-        $options['_extra'][] = $arg;
+        $extraArgs[] = $arg;
     }
 }
+
+$targetOpt = $flagOptions['target'] ?? null;
+$targetStr = is_string($targetOpt) ? $targetOpt : null;
+$extraFirst = $extraArgs[0] ?? null;
 
 // -------------------------------------------------------------------------
 // DB connection (skipped for 'new' command)
@@ -92,9 +100,9 @@ function buildPdo(): PDO
 try {
     match ($command) {
         'status' => cmdStatus($migrationsDir),
-        'up'     => cmdUp($migrationsDir, $options['target'] ?? null),
-        'down'   => cmdDown($migrationsDir, $options['target'] ?? null),
-        'new'    => cmdNew($migrationsDir, $options['_extra'][0] ?? null),
+        'up'     => cmdUp($migrationsDir, $targetStr),
+        'down'   => cmdDown($migrationsDir, $targetStr),
+        'new'    => cmdNew($migrationsDir, $extraFirst),
         default  => cmdHelp(),
     };
 } catch (MigrationException $e) {
