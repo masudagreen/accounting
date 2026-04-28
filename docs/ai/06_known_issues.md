@@ -198,5 +198,11 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-7B-4**: `CashFlowStatement` 自体は不変条件 (期末現金 = 期首 + 全CF合計) を **ランタイムでは強制せず**, テスト側で `assertCashFlowInvariant` ヘルパーで担保する設計. 不整合な入力を渡すと CashFlowStatement 内部に矛盾が残る. 利用者責任で整合性を担保するか、Builder で validate するか後で判断.
 - **G-7B-5**: 元実装は `accountingFinancialStatementSS.php` クラスがあるが今回はゼロから新ドメインで設計した. 元実装の出力フォーマット・項目順序との互換性は Golden Master test で要検証.
 
-### Sprint 8+: 未着手
+### Sprint 8: Cash / FixedAssets / Banks スタブ
+- **G-8-1**: `BankStatement` の方向表現に `App\Domain\Cash\CashDirection` を再利用した. Banks ⇄ Cash の依存が生じるため、将来 Banks が独立すべきなら専用 enum (`BankDirection` 等) に分離する余地. 現時点では YAGNI.
+- **G-8-2**: `FixedAssetJournalGenerator` で **配賦の概念 (販管費 / 製造原価 / 非営業費 / 農業費)** を省略し、単一の借方科目 (`depreciationExpenseAccountTitleId`) に集約する設計. 元実装の `accountingLogFixedAssetsJpn.numRatioSellingAdminCost` 等の配賦率を再現するなら、`FixedAssetAccountMapping` に複数科目と配分率を持たせるよう拡張が必要. 個人事業主 / マイクロ法人で配賦が必要なケースは少ないため、Sprint 9 以降の拡張として保留.
+- **G-8-3**: 元実装の `Code_Else_Plugin_Accounting_Jpn_CashPay` (消込) は **CashEntry の `status` を Settled に変更し、対応する仕訳を別途記入** する設計. 新ドメインでは `CashEntry::withStatus()` で immutable 遷移するが、消込時に仕訳をどう生成するかは未実装 (現状は Pending → Settled の状態遷移のみテスト).
+- **G-8-4**: 5 行 (Japannetbank/Japanpostbank/Jibunbank/Sumisinnetbank/Surugabank) の Web 取込パーサは **本スプリントでは実装しない**. インターフェース (`BankStatementImporter`) と `DryRunBankAdapter` のみ提供. 将来必要になったら同インターフェースを実装する形で追加.
+
+### Sprint 9+: 未着手
 - (今後ここに追記)

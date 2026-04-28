@@ -21,6 +21,23 @@ build/
 .env
 storage/
 
+# DB dumps / backups (本番データの混入防止)
+# 圧縮ダンプは原則すべて除外
+*.sql.gz
+*.sql.zip
+*.sql.bz2
+*.dump
+*.dmp
+# 日付つきダンプ (db20260207.sql 等)
+db20*.sql
+db_dump*.sql
+# ルートに直接置かれた .sql は (マイグレーションは scripts/ や migrations/ 配下に置く前提)
+/*.sql
+# Golden master 用テストデータ
+fixtures/golden/
+tests/Golden/data/
+db_*.csv
+
 # playwright/E2E
 .playwright-mcp/
 
