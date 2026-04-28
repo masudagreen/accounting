@@ -246,5 +246,29 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-11-5**: 帳票 4 種の「勘定科目内訳明細書」(預貯金/売掛金/買掛金/借入金) のみ実装. 残り 13 種 (受取手形/支払手形/地代家賃/役員報酬 等) は将来必要に応じて追加. 共通インターフェース (`AccountBreakdownRow`) があるので追加は容易.
 - **G-11-6**: PDF 出力は dompdf 経由. 日本語フォント (`Hiragino Kaku Gothic ProN` 等) の有無で見た目が変わる可能性あり. dompdf 用のフォント埋め込みは未実装.
 
-### Sprint 12+: 未着手
+### Sprint 12: マイグレーション + Entity 2 真の原因解明
+
+**G-12-1**: マイグレーション基盤 (`migrations/`, `src/Infrastructure/Migration/`, `bin/migrate.php`) を整備. SQLite 互換 SQL に限定した統合テスト 12 件で MariaDB 不要で CI 動作.
+
+**G-12-2**: Entity 2 FS 補完スクリプト (`bin/repair-fs-tree.php`) を整備. dry-run / apply モード対応.
+
+**G-12-3 (重大発見)**: **Entity 2 の真の不一致原因が判明** — Sprint 9 の G-9-1 は誤診. 実際は Entity 2 が **個人事業主 (青色申告) 様式の PL** を使っており、root id が `expense` / `expenseSum` / `backExpenses` / `doubtfulDebtAccount` 等で法人とは別構造. `LegacyAccountTreeReader::PL_ROOT_TO_CLASSIFICATION` がこれらを未サポートで、配下の `taxesAndDues` / `repair` / `suppliesExpenses` 等の科目が AccountTree から消えていた.
+
+**修正**: `LegacyAccountTreeReader` のマップに個人事業主用 root を追加:
+- `expense` / `expenseSum` → `Expense` / `SellingAndAdmin`
+- `backExpenses` / `backExpensesSum` → `Revenue` / `NonOperatingIncome` (繰戻額等)
+- `doubtfulDebtAccount` / `doubtfulDebtAccountSum` → `Expense` / `NonOperatingExpenses` (繰入額等)
+- `operateProfitOrLossNet` → `Revenue` (計算結果ノード)
+
+**結果**: **全14期で円単位完全一致 / TB借方=貸方すべて成立** (compare-report.php 実測):
+```
+- 借方=貸方 一致: 14 / 14
+- 当期純利益 完全一致: 14 / 14
+```
+
+**G-12-4**: サブエージェント納品物 `bin/repair-fs-tree.php` の `collectAccountTitleIds` 関数が誤った構造解析 (配列キーから ID を推測) で誤検出していた. 実際の JSON 構造は `vars.idTarget` に科目 ID を持つ. 私が修正済.
+
+**結論**: 新ドメインは **法人・個人事業主の両様式** で本番データを完全に再現できる. Entity 2 の問題は本番DB側のデータ不整合ではなく、新ドメイン側の様式サポート不足だった (Sprint 9 段階では誤診. Sprint 12 で完全解決).
+
+### Sprint 13+: 未着手
 - (今後ここに追記)

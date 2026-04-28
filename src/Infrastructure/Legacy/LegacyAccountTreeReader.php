@@ -42,20 +42,28 @@ final class LegacyAccountTreeReader
         'liabilitiesNetAssetsNet' => AccountClassification::Equity,
     ];
 
+    /**
+     * 法人 (corporate) と 個人事業主 (青色申告) の両様式の root id をサポートする.
+     *
+     * 法人: sales / costOfSales / sellingGeneralAndAdministrationExpenses 等
+     * 個人: sales / costOfSales / expense / backExpenses / doubtfulDebtAccount 等
+     */
     private const array PL_ROOT_TO_CLASSIFICATION = [
+        // 法人/個人共通
         'sales'                                      => AccountClassification::Revenue,
         'salesSum'                                   => AccountClassification::Revenue,
+        'costOfSales'                                => AccountClassification::Expense,
+        'costOfSalesSum'                             => AccountClassification::Expense,
+        'grossProfitOrLossNet'                       => AccountClassification::Revenue,
+        'currentTermProfitOrLossNet'                 => AccountClassification::Revenue,
+        // 法人専用
         'nonOperatingIncome'                         => AccountClassification::Revenue,
         'nonOperatingIncomeSum'                      => AccountClassification::Revenue,
         'extraordinaryIncome'                        => AccountClassification::Revenue,
         'extraordinaryIncomeSum'                     => AccountClassification::Revenue,
-        'grossProfitOrLossNet'                       => AccountClassification::Revenue,
         'operatingIncomeProfitOrLossNet'             => AccountClassification::Revenue,
         'ordinaryProfitNet'                          => AccountClassification::Revenue,
         'currentTermProfitOrLossPreNet'              => AccountClassification::Revenue,
-        'currentTermProfitOrLossNet'                 => AccountClassification::Revenue,
-        'costOfSales'                                => AccountClassification::Expense,
-        'costOfSalesSum'                             => AccountClassification::Expense,
         'sellingGeneralAndAdministrationExpenses'    => AccountClassification::Expense,
         'sellingGeneralAndAdministrationExpensesSum' => AccountClassification::Expense,
         'nonOperatingExpenses'                       => AccountClassification::Expense,
@@ -64,13 +72,23 @@ final class LegacyAccountTreeReader
         'extraordinaryLossesSum'                     => AccountClassification::Expense,
         'corporateInhabitantAndEnterpriseTax'        => AccountClassification::Expense,
         'corporateTaxAdjustments'                    => AccountClassification::Expense,
+        // 個人事業主 (青色申告) 専用
+        'expense'                                    => AccountClassification::Expense,
+        'expenseSum'                                 => AccountClassification::Expense,
+        'operateProfitOrLossNet'                     => AccountClassification::Revenue,
+        'backExpenses'                               => AccountClassification::Revenue, // 繰戻額等は所得への加算
+        'backExpensesSum'                            => AccountClassification::Revenue,
+        'doubtfulDebtAccount'                        => AccountClassification::Expense, // 繰入額等は所得からの減算
+        'doubtfulDebtAccountSum'                     => AccountClassification::Expense,
     ];
 
     private const array PL_ROOT_TO_SECTION = [
+        // 法人/個人共通
         'sales'                                      => PlSection::Sales,
         'salesSum'                                   => PlSection::Sales,
         'costOfSales'                                => PlSection::CostOfSales,
         'costOfSalesSum'                             => PlSection::CostOfSales,
+        // 法人専用
         'sellingGeneralAndAdministrationExpenses'    => PlSection::SellingAndAdmin,
         'sellingGeneralAndAdministrationExpensesSum' => PlSection::SellingAndAdmin,
         'nonOperatingIncome'                         => PlSection::NonOperatingIncome,
@@ -83,6 +101,15 @@ final class LegacyAccountTreeReader
         'extraordinaryLossesSum'                     => PlSection::ExtraordinaryLosses,
         'corporateInhabitantAndEnterpriseTax'        => PlSection::Tax,
         'corporateTaxAdjustments'                    => PlSection::Tax,
+        // 個人事業主: expense / backExpenses / doubtfulDebtAccount は
+        // SellingAndAdmin / NonOperatingIncome / NonOperatingExpenses に近いが
+        // 法人とは性質が違うため、まずは SellingAndAdmin / NonOperating系 にマップ.
+        'expense'                                    => PlSection::SellingAndAdmin,
+        'expenseSum'                                 => PlSection::SellingAndAdmin,
+        'backExpenses'                               => PlSection::NonOperatingIncome,
+        'backExpensesSum'                            => PlSection::NonOperatingIncome,
+        'doubtfulDebtAccount'                        => PlSection::NonOperatingExpenses,
+        'doubtfulDebtAccountSum'                     => PlSection::NonOperatingExpenses,
     ];
 
     /**
