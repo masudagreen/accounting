@@ -184,5 +184,12 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 - **G-6-3**: 元実装は `flagDepRateType` (1=通常 / 0=改定) を **資産単位で永続化**し、保証額切替後の状態を記憶している。新ドメインは毎期 `previousAccumulated` から計算しなおすので **このフラグは不要**。マイグレーション時にカラム削除候補。
 - **G-6-4**: 元実装の償却率テーブル (`depStraightNew.csv`/`depDecliningNew200.csv` 等) は **耐用50年まで** しか定義されていない。建物の耐用年数は最長47年なので実用上は問題ないが、特殊資産で50年超があると壊れる。新ドメインでもまずは50年までで実装。
 
-### Sprint 7+: 未着手
+### Sprint 7: 決算書 (PL/BS/CR)
+- **G-7-1**: 元 `JgaapAccountTitlePL.php` には **27 root** に「売上総利益」「営業利益」「経常利益」「税引前当期純利益」「当期純利益」など計算結果ノードが root レベルで並ぶ。新ドメインでは `PlSection` enum (Sales/CostOfSales/SellingAndAdmin/...) で分類し、計算結果は `ProfitAndLossStatement` のメソッドとして導出。元データ構造との互換性は `StandardChartLoader::PL_ROOT_TO_SECTION` でマップ。
+- **G-7-2**: `JgaapAccountTitleCR.php` の root に **`workInProcessOpeningInventoryWrap` / `workInProcessClosingInventoryWrap` / `workInProcessRemoveWrap`** といった `Wrap` サフィックス付きノードがある。これは「仕掛品関連の集計枠」を意味し、その配下に実際の科目が並ぶ構造。新ドメインの `CrSection` enum で意図を明確化。
+- **G-7-3**: 元 `accountingFSValueJpn.jsonJgaapFS{PL,BS,CR,CS}` は **集計値を JSON で永続化**しているが、新ドメインでは集計を都度計算する設計。本番DBの値と一致するか Golden Master test で要検証。差分があれば、丸めポリシーや「期末締切前/後」の扱いの違いが原因の可能性。
+- **G-7-4**: BS の不変条件 `資産 = 負債 + 純資産 + 当期純利益` は **期末締切前** の試算表に対するもの。元実装は確定後 (`flagFiscalReport='f1'`) に当期純利益を `netAssets` 配下の科目 (利益剰余金/個人事業の元入金 等) に振替えている可能性が高い。マイグレーション時の境界条件として要確認。
+- **G-7-5**: 株主資本等変動計算書 (SS) と キャッシュフロー計算書 (CS) は **本スプリント未着手**。SS は純資産の期首・変動・期末の遷移、CS は間接法/直接法で営業/投資/財務の3区分のキャッシュフロー。元実装の `accountingFSJpn.jsonJgaapFSCS` を流用するか新規設計するか、後で判断。
+
+### Sprint 8+: 未着手
 - (今後ここに追記)

@@ -62,28 +62,128 @@ final class StandardChartLoader
         'corporateTaxAdjustments'                        => AccountClassification::Expense,
     ];
 
+    /** PL: root id → PlSection. 計算結果ノード (xxxNet) はマップに含めない. */
+    private const array PL_ROOT_TO_SECTION = [
+        'sales'                                          => PlSection::Sales,
+        'salesSum'                                       => PlSection::Sales,
+        'costOfSales'                                    => PlSection::CostOfSales,
+        'costOfSalesSum'                                 => PlSection::CostOfSales,
+        'sellingGeneralAndAdministrationExpenses'        => PlSection::SellingAndAdmin,
+        'sellingGeneralAndAdministrationExpensesSum'     => PlSection::SellingAndAdmin,
+        'nonOperatingIncome'                             => PlSection::NonOperatingIncome,
+        'nonOperatingIncomeSum'                          => PlSection::NonOperatingIncome,
+        'nonOperatingExpenses'                           => PlSection::NonOperatingExpenses,
+        'nonOperatingExpensesSum'                        => PlSection::NonOperatingExpenses,
+        'extraordinaryIncome'                            => PlSection::ExtraordinaryIncome,
+        'extraordinaryIncomeSum'                         => PlSection::ExtraordinaryIncome,
+        'extraordinaryLosses'                            => PlSection::ExtraordinaryLosses,
+        'extraordinaryLossesSum'                         => PlSection::ExtraordinaryLosses,
+        'corporateInhabitantAndEnterpriseTax'            => PlSection::Tax,
+        'corporateTaxAdjustments'                        => PlSection::Tax,
+    ];
+
     public static function loadBalanceSheet(string $path): AccountTree
     {
-        return self::load($path, self::BS_ROOT_TO_CLASSIFICATION);
+        return self::load($path, self::BS_ROOT_TO_CLASSIFICATION, []);
     }
 
     public static function loadProfitAndLoss(string $path): AccountTree
     {
-        return self::load($path, self::PL_ROOT_TO_CLASSIFICATION);
+        return self::load($path, self::PL_ROOT_TO_CLASSIFICATION, self::PL_ROOT_TO_SECTION);
     }
+
+    /** CR: root id → CrSection. */
+    private const array CR_ROOT_TO_SECTION = [
+        'materialsCost'                       => CrSection::Materials,
+        'materialsCostSum'                    => CrSection::Materials,
+        'laborCost'                           => CrSection::Labor,
+        'laborCostSum'                        => CrSection::Labor,
+        'manufactureCost'                     => CrSection::Manufacture,
+        'manufactureCostSum'                  => CrSection::Manufacture,
+        'workInProcessOpeningInventoryWrap'   => CrSection::OpeningWorkInProcess,
+        'workInProcessOpeningInventoryWrapSum' => CrSection::OpeningWorkInProcess,
+        'workInProcessClosingInventoryWrap'   => CrSection::ClosingWorkInProcess,
+        'workInProcessClosingInventoryWrapSum' => CrSection::ClosingWorkInProcess,
+        'workInProcessRemoveWrap'             => CrSection::RemoveTransfer,
+        'workInProcessRemoveWrapSum'          => CrSection::RemoveTransfer,
+    ];
 
     public static function loadCostReport(string $path): AccountTree
     {
-        // 製造原価報告書は全ノードが ManufacturingCost
-        return self::load($path, [], AccountClassification::ManufacturingCost);
+        // 製造原価報告書は全ノードが ManufacturingCost. PlSection は付与しない.
+        return self::loadWithCrSection($path, AccountClassification::ManufacturingCost);
+    }
+
+    private static function loadWithCrSection(
+        string $path,
+        AccountClassification $defaultClassification,
+    ): AccountTree {
+        if (! is_file($path)) {
+            throw new \RuntimeException(sprintf('chart file not found: %s', $path));
+        }
+
+        $vars = self::includeVars($path);
+
+        $roots = [];
+        foreach ($vars as $rootData) {
+            if (! is_array($rootData)) {
+                continue;
+            }
+            $rootId = self::extractId($rootData);
+            $section = self::CR_ROOT_TO_SECTION[$rootId] ?? null;
+            $roots[] = self::convertNodeWithCrSection($rootData, $defaultClassification, $section);
+        }
+
+        return AccountTree::of($roots);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private static function convertNodeWithCrSection(
+        array $data,
+        AccountClassification $classification,
+        ?CrSection $crSection = null,
+    ): AccountTreeNode {
+        $id = self::extractId($data);
+        $title = is_string($data['strTitle'] ?? null) ? $data['strTitle'] : $id;
+
+        $varsArr = is_array($data['vars'] ?? null) ? $data['vars'] : [];
+        $fsId = is_string($varsArr['idAccountTitleJgaapFS'] ?? null)
+            ? $varsArr['idAccountTitleJgaapFS']
+            : null;
+
+        $accountTitle = AccountTitle::of(
+            id: $id,
+            title: $title,
+            classification: $classification,
+            financialStatementItemId: $fsId,
+            crSection: $crSection,
+        );
+
+        $children = [];
+        if (is_array($data['child'] ?? null)) {
+            foreach ($data['child'] as $childData) {
+                if (! is_array($childData)) {
+                    continue;
+                }
+                $children[] = self::convertNodeWithCrSection($childData, $classification, $crSection);
+            }
+        }
+
+        return $children === []
+            ? AccountTreeNode::leaf($accountTitle)
+            : AccountTreeNode::branch($accountTitle, $children);
     }
 
     /**
      * @param array<string, AccountClassification> $rootToClassification
+     * @param array<string, PlSection>             $rootToSection
      */
     private static function load(
         string $path,
         array $rootToClassification,
+        array $rootToSection,
         ?AccountClassification $defaultClassification = null,
     ): AccountTree {
         if (! is_file($path)) {
@@ -102,7 +202,8 @@ final class StandardChartLoader
             if ($cls === null) {
                 throw new \DomainException(sprintf('unknown root account id: %s', $rootId));
             }
-            $roots[] = self::convertNode($rootData, $cls);
+            $section = $rootToSection[$rootId] ?? null;
+            $roots[] = self::convertNode($rootData, $cls, $section);
         }
 
         return AccountTree::of($roots);
@@ -128,8 +229,11 @@ final class StandardChartLoader
     /**
      * @param array<string, mixed> $data
      */
-    private static function convertNode(array $data, AccountClassification $classification): AccountTreeNode
-    {
+    private static function convertNode(
+        array $data,
+        AccountClassification $classification,
+        ?PlSection $plSection = null,
+    ): AccountTreeNode {
         $id = self::extractId($data);
         $title = is_string($data['strTitle'] ?? null) ? $data['strTitle'] : $id;
 
@@ -143,6 +247,7 @@ final class StandardChartLoader
             title: $title,
             classification: $classification,
             financialStatementItemId: $fsId,
+            plSection: $plSection,
         );
 
         $children = [];
@@ -151,7 +256,7 @@ final class StandardChartLoader
                 if (! is_array($childData)) {
                     continue;
                 }
-                $children[] = self::convertNode($childData, $classification);
+                $children[] = self::convertNode($childData, $classification, $plSection);
             }
         }
 

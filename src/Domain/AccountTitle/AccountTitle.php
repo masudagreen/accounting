@@ -22,6 +22,8 @@ final readonly class AccountTitle
         private AccountClassification $classification,
         private ?string $financialStatementItemId,
         private bool $allowSubAccount,
+        private ?PlSection $plSection,
+        private ?CrSection $crSection,
     ) {
     }
 
@@ -31,6 +33,8 @@ final readonly class AccountTitle
         AccountClassification $classification,
         ?string $financialStatementItemId = null,
         bool $allowSubAccount = false,
+        ?PlSection $plSection = null,
+        ?CrSection $crSection = null,
     ): self {
         if ($id === '') {
             throw new \InvalidArgumentException('id must not be empty');
@@ -38,7 +42,7 @@ final readonly class AccountTitle
         if ($title === '') {
             throw new \InvalidArgumentException('title must not be empty');
         }
-        return new self($id, $title, $classification, $financialStatementItemId, $allowSubAccount);
+        return new self($id, $title, $classification, $financialStatementItemId, $allowSubAccount, $plSection, $crSection);
     }
 
     public function id(): string
@@ -69,5 +73,15 @@ final readonly class AccountTitle
     public function allowsSubAccount(): bool
     {
         return $this->allowSubAccount;
+    }
+
+    public function plSection(): ?PlSection
+    {
+        return $this->plSection;
+    }
+
+    public function crSection(): ?CrSection
+    {
+        return $this->crSection;
     }
 }
