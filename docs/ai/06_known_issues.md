@@ -158,3 +158,31 @@ $arr['num'] = ceil($arr['num'] * $numLevel) / $numLevel;
 | **中** | A-3 (`==` 比較) | Rector で `==` → `===` 自動変換を試みる |
 | **中** | D-2 (パスワードハッシュ) | login 流入経路をテストでカバーした上で更新 |
 | **低** | E-1〜E-4 (設計問題) | ドメイン完成後の永続化層リファクタで対応 |
+
+---
+
+## G. スプリント別の特異点（移植中に発見）
+
+### Sprint 2: FiscalPeriod
+- **G-2-1**: `Jpn::_getVarsFiscalPeriod` (line 853-) で `numFiscalTermMonth != 12` の場合、`f1` 通期しかサポートせず **半期/四半期 (`f21`/`f22`/`f41`-`f44`) は暗黙に無視**。短期事業年度では半期集計が壊れる可能性。新ドメインでは将来対応。
+
+### Sprint 3: AccountTitle
+- **G-3-1**: 既存 `JgaapAccountTitlePL.php` は **27 root** が並ぶ。「売上総利益」「営業利益」「経常利益」「税引前当期純利益」「当期純利益」など計算結果ノードも独立 root として配置。新ドメインでは「計算結果」と「分類カテゴリ」を本来分けるべきだが、互換性のため一旦 Revenue 区分で取り込み中。後段で計算結果ノード専用クラスに分離予定。
+- **G-3-2**: 標準科目 ID にスペル誤りが残る（例: `accoutsReceivable` ← `accountsReceivable` の typo / `Inventries` ← `Inventories` の typo）。互換性のため新ドメインでも同じIDを許容しているが、**マイグレーション時に正字へ移行する判断が必要**。
+
+### Sprint 4: Ledger
+- 顕著な発見なし
+
+### Sprint 5: TrialBalance
+- 顕著な発見なし。元実装の `accountingFSValueJpn.jsonJgaapAccountTitle*` の `sumPrev / sumDebit / sumCredit / sumNext` 構造は新ドメインの TrialBalanceRow と同型なので、Repository を後から実装すれば既存データから素直に読み込める見込み。
+
+### Sprint 6: 減価償却
+- **G-6-1**: `back/class/else/plugin/accounting/jpn/calcDep/Voluntary.php` は `_setVarsCalc` 内で **計算ロジックがほぼ空**。`numValueDepCalc` を設定しないため、実体は「user-supplied 額をそのまま DB 列に保持して終了」。新ドメインでは `Voluntary::compute(requestedAmount: ...)` として明示的に仕様化。
+- **G-6-2**: **平成19年4月1日以前取得分の旧定額/旧定率は新ドメインで未実装**。元 `Straight.php` には `flag20070401` / `flag20070331` で残存価額 5%/10% 控除付きの旧計算が分岐実装されている。新方式 (1円残価) のみ採用したため、`accountingLogFixedAssetsJpn.numSurvivalRate > 0` の旧資産が DB に残っている場合は新ドメインで計算できない。
+  - **要確認**: `SELECT COUNT(*) FROM accountingLogFixedAssetsJpn WHERE numSurvivalRate > 0 OR stampStart < UNIX_TIMESTAMP('2007-04-01')`
+  - 0件なら対応不要。1件以上なら `StraightLineLegacy` / `DecliningBalanceLegacy` を追加実装する。
+- **G-6-3**: 元実装は `flagDepRateType` (1=通常 / 0=改定) を **資産単位で永続化**し、保証額切替後の状態を記憶している。新ドメインは毎期 `previousAccumulated` から計算しなおすので **このフラグは不要**。マイグレーション時にカラム削除候補。
+- **G-6-4**: 元実装の償却率テーブル (`depStraightNew.csv`/`depDecliningNew200.csv` 等) は **耐用50年まで** しか定義されていない。建物の耐用年数は最長47年なので実用上は問題ないが、特殊資産で50年超があると壊れる。新ドメインでもまずは50年までで実装。
+
+### Sprint 7+: 未着手
+- (今後ここに追記)
