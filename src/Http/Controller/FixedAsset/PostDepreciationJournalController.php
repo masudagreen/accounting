@@ -46,6 +46,7 @@ final readonly class PostDepreciationJournalController
         } catch (ValidationException $e) {
             return ErrorResponse::unprocessable($e->getMessage(), $e->errors());
         }
+
         return EnvelopeResponse::ok(['postings' => $out->postings]);
     }
 }

@@ -17,6 +17,7 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
         $this->items[] = $a;
     }
 
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -26,9 +27,11 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
         ?string $search = null,
     ): array {
         $matches = $this->filter($entityId, $category, $isActive, $search);
+
         return array_slice($matches, ($page - 1) * $pageSize, $pageSize);
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -38,6 +41,7 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
         return count($this->filter($entityId, $category, $isActive, $search));
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         foreach ($this->items as $a) {
@@ -45,9 +49,11 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
                 return $a;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $out = [];
@@ -56,20 +62,24 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
                 $out[] = $a;
             }
         }
+
         return $out;
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
         foreach ($this->items as $i => $a) {
             if ($a->id === $title->id) {
                 $this->items[$i] = $title;
+
                 return;
             }
         }
         $this->items[] = $title;
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
         unset($deletedAt);
@@ -77,11 +87,13 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
             if ($a->id === $id) {
                 unset($this->items[$i]);
                 $this->items = array_values($this->items);
+
                 return;
             }
         }
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         foreach ($this->items as $a) {
@@ -94,8 +106,10 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
             if ($excludeId !== null && $a->id === $excludeId) {
                 continue;
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -125,6 +139,7 @@ final class InMemoryAccountTitleRepo implements AccountTitleRepositoryInterface
             }
             $out[] = $a;
         }
+
         return $out;
     }
 }

@@ -51,7 +51,7 @@ final readonly class CsSectionDefinition
         $sign = 1;
         $buffer = '';
         $length = strlen($this->formula);
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $ch = $this->formula[$i];
             if ($ch === '+' || $ch === '-') {
                 if ($buffer !== '') {
@@ -66,6 +66,7 @@ final readonly class CsSectionDefinition
         if ($buffer !== '') {
             $out[] = [$sign, $buffer];
         }
+
         return $out;
     }
 }

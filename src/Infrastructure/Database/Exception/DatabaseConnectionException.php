@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Database\Exception;
 
-use RuntimeException;
-use Throwable;
-
 /**
  * Raised when a PDO connection cannot be established or the database
  * configuration is invalid.
@@ -16,22 +13,22 @@ use Throwable;
  * drivers include the connection string and credentials) out to callers
  * without a clear marker that this failure originated in the DB layer.
  */
-final class DatabaseConnectionException extends RuntimeException
+final class DatabaseConnectionException extends \RuntimeException
 {
     private const MESSAGE_PREFIX = '[DB] ';
 
     public function __construct(
         string $message,
         int $code = 0,
-        ?Throwable $previous = null,
+        ?\Throwable $previous = null,
     ) {
         if (!str_starts_with($message, self::MESSAGE_PREFIX)) {
-            $message = self::MESSAGE_PREFIX . $message;
+            $message = self::MESSAGE_PREFIX.$message;
         }
         parent::__construct($message, $code, $previous);
     }
 
-    public static function fromPdoFailure(string $detail, Throwable $previous): self
+    public static function fromPdoFailure(string $detail, \Throwable $previous): self
     {
         return new self(
             sprintf('connection failed: %s', $detail),

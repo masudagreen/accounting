@@ -53,14 +53,15 @@ final readonly class FiscalTermController
         $terms = $this->repo->listByEntity($entityId);
         $rows = array_map(
             static fn (FiscalTerm $t): array => [
-                'id'           => $t->id,
+                'id' => $t->id,
                 'fiscalPeriod' => $t->fiscalPeriod,
-                'startDate'    => $t->startDate->format('Y-m-d'),
-                'endDate'      => $t->endDate->format('Y-m-d'),
-                'isClosed'     => $t->isClosed,
+                'startDate' => $t->startDate->format('Y-m-d'),
+                'endDate' => $t->endDate->format('Y-m-d'),
+                'isClosed' => $t->isClosed,
             ],
             $terms,
         );
+
         return HtmlResponse::ok($this->view->render('masters/fiscal-terms/list.html.tpl', array_merge(
             $this->commonViewData('会計期マスタ'),
             ['rows' => $rows, 'total' => count($rows)],
@@ -74,6 +75,7 @@ final readonly class FiscalTermController
         if ($guard instanceof HtmlResponse) {
             return $guard;
         }
+
         return $this->renderForm(
             mode: 'new',
             formAction: '/ui/masters/fiscal-terms/new',
@@ -94,6 +96,7 @@ final readonly class FiscalTermController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms/new');
         }
         $values = self::valuesFromBody($body);
@@ -106,6 +109,7 @@ final readonly class FiscalTermController
                 isClosed: $values['is_closed'] === '1',
             ));
             $this->flash->addSuccess('会計期を登録しました。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         } catch (ValidationException $e) {
             return $this->renderForm(
@@ -120,7 +124,7 @@ final readonly class FiscalTermController
                 mode: 'new',
                 formAction: '/ui/masters/fiscal-terms/new',
                 values: $values,
-                errors: ['_' => ['登録に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['登録に失敗しました: '.$e->getMessage()]],
                 status: 500,
             );
         }
@@ -136,11 +140,13 @@ final readonly class FiscalTermController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の会計期が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         }
+
         return $this->renderForm(
             mode: 'edit',
-            formAction: '/ui/masters/fiscal-terms/' . $existing->id,
+            formAction: '/ui/masters/fiscal-terms/'.$existing->id,
             values: self::valuesFromEntity($existing),
             errors: [],
             status: 200,
@@ -156,7 +162,8 @@ final readonly class FiscalTermController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/masters/fiscal-terms/' . $id);
+
+            return HtmlResponse::redirect('/ui/masters/fiscal-terms/'.$id);
         }
         $values = self::valuesFromBody($body);
         try {
@@ -168,14 +175,16 @@ final readonly class FiscalTermController
                 isClosed: $values['is_closed'] === '1',
             ));
             $this->flash->addSuccess('会計期を更新しました。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の会計期が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         } catch (ValidationException $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/fiscal-terms/' . $id,
+                formAction: '/ui/masters/fiscal-terms/'.$id,
                 values: $values,
                 errors: $e->errors(),
                 status: 422,
@@ -183,9 +192,9 @@ final readonly class FiscalTermController
         } catch (\Throwable $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/fiscal-terms/' . $id,
+                formAction: '/ui/masters/fiscal-terms/'.$id,
                 values: $values,
-                errors: ['_' => ['更新に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['更新に失敗しました: '.$e->getMessage()]],
                 status: 500,
             );
         }
@@ -201,21 +210,23 @@ final readonly class FiscalTermController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の会計期が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         }
         $data = array_merge(
             $this->commonViewData('会計期の削除確認'),
             [
                 'target' => [
-                    'id'           => $existing->id,
+                    'id' => $existing->id,
                     'fiscalPeriod' => $existing->fiscalPeriod,
-                    'startDate'    => $existing->startDate->format('Y-m-d'),
-                    'endDate'      => $existing->endDate->format('Y-m-d'),
-                    'isClosed'     => $existing->isClosed,
+                    'startDate' => $existing->startDate->format('Y-m-d'),
+                    'endDate' => $existing->endDate->format('Y-m-d'),
+                    'isClosed' => $existing->isClosed,
                 ],
-                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
+                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
             ],
         );
+
         return HtmlResponse::ok($this->view->render('masters/fiscal-terms/delete-confirm.html.tpl', $data));
     }
 
@@ -226,8 +237,9 @@ final readonly class FiscalTermController
             return $guard;
         }
         $body = MasterFormSupport::parseForm($request);
-        if (!$this->csrf->validateToken(self::CSRF_FORM_ID . '_delete', MasterFormSupport::str($body, '_csrf'))) {
+        if (!$this->csrf->validateToken(self::CSRF_FORM_ID.'_delete', MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/fiscal-terms');
         }
         try {
@@ -236,8 +248,9 @@ final readonly class FiscalTermController
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の会計期が見つかりません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
         }
+
         return HtmlResponse::redirect('/ui/masters/fiscal-terms');
     }
 
@@ -248,8 +261,10 @@ final readonly class FiscalTermController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -259,20 +274,20 @@ final readonly class FiscalTermController
     private function commonViewData(string $title): array
     {
         return [
-            'page_title'         => $title,
-            'active_nav'         => 'masters',
-            'active_master'      => 'fiscal_terms',
-            'csrf_logout_token'  => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'  => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'  => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'  => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_delete_token'  => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
-            'display_name'       => $this->session->getDisplayName() ?? '',
-            'user_email'         => $this->session->getEmail() ?? '',
-            'entities'           => [],
+            'page_title' => $title,
+            'active_nav' => 'masters',
+            'active_master' => 'fiscal_terms',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_delete_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
             'selected_entity_id' => $this->session->getSelectedEntity() ?? '',
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'     => $this->flash->consume(),
+            'flash_messages' => $this->flash->consume(),
         ];
     }
 
@@ -290,14 +305,15 @@ final readonly class FiscalTermController
         $data = array_merge(
             $this->commonViewData($mode === 'new' ? '会計期の新規追加' : '会計期の編集'),
             [
-                'form_mode'       => $mode,
-                'form_action'     => $formAction,
-                'form_values'     => $values,
-                'form_errors'     => $errors,
+                'form_mode' => $mode,
+                'form_action' => $formAction,
+                'form_values' => $values,
+                'form_errors' => $errors,
                 'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
                 'csrf_form_field' => self::CSRF_FORM_ID,
             ],
         );
+
         return HtmlResponse::of($status, $this->view->render('masters/fiscal-terms/form.html.tpl', $data));
     }
 
@@ -308,23 +324,24 @@ final readonly class FiscalTermController
     {
         return [
             'fiscal_period' => '1',
-            'start_date'    => '',
-            'end_date'      => '',
-            'is_closed'     => '0',
+            'start_date' => '',
+            'end_date' => '',
+            'is_closed' => '0',
         ];
     }
 
     /**
      * @param array<string, mixed> $body
+     *
      * @return array<string, string>
      */
     private static function valuesFromBody(array $body): array
     {
         return [
             'fiscal_period' => (string) MasterFormSupport::int($body, 'fiscal_period', 1),
-            'start_date'    => MasterFormSupport::str($body, 'start_date'),
-            'end_date'      => MasterFormSupport::str($body, 'end_date'),
-            'is_closed'     => MasterFormSupport::bool($body, 'is_closed') ? '1' : '0',
+            'start_date' => MasterFormSupport::str($body, 'start_date'),
+            'end_date' => MasterFormSupport::str($body, 'end_date'),
+            'is_closed' => MasterFormSupport::bool($body, 'is_closed') ? '1' : '0',
         ];
     }
 
@@ -335,9 +352,9 @@ final readonly class FiscalTermController
     {
         return [
             'fiscal_period' => (string) $t->fiscalPeriod,
-            'start_date'    => $t->startDate->format('Y-m-d'),
-            'end_date'      => $t->endDate->format('Y-m-d'),
-            'is_closed'     => $t->isClosed ? '1' : '0',
+            'start_date' => $t->startDate->format('Y-m-d'),
+            'end_date' => $t->endDate->format('Y-m-d'),
+            'is_closed' => $t->isClosed ? '1' : '0',
         ];
     }
 }

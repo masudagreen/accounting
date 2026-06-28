@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Budget;
 
-use DateTimeImmutable;
 use Rucaro\Support\Decimal\Decimal;
 
 /**
@@ -25,11 +24,11 @@ final readonly class BudgetVarianceAnalysis
         public string $fiscalTermId,
         public string $budgetName,
         public BudgetStatus $status,
-        public DateTimeImmutable $periodFrom,
-        public DateTimeImmutable $periodTo,
+        public \DateTimeImmutable $periodFrom,
+        public \DateTimeImmutable $periodTo,
         public string $currencyCode,
         public array $rows,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 
@@ -39,6 +38,7 @@ final readonly class BudgetVarianceAnalysis
         foreach ($this->rows as $row) {
             $sum = Decimal::add($sum, $row->budgetAmount);
         }
+
         return Decimal::normalize($sum);
     }
 
@@ -48,6 +48,7 @@ final readonly class BudgetVarianceAnalysis
         foreach ($this->rows as $row) {
             $sum = Decimal::add($sum, $row->actualAmount);
         }
+
         return Decimal::normalize($sum);
     }
 
@@ -57,6 +58,7 @@ final readonly class BudgetVarianceAnalysis
         foreach ($this->rows as $row) {
             $sum = Decimal::add($sum, $row->varianceAmount);
         }
+
         return Decimal::normalize($sum);
     }
 

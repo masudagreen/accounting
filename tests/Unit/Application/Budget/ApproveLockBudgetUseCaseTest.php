@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Budget;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Budget\ApproveBudgetUseCase;
@@ -56,7 +55,7 @@ final class ApproveLockBudgetUseCaseTest extends TestCase
 
     private function seedDraft(InMemoryBudgetRepository $repo): Budget
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $budget = new Budget(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
@@ -72,6 +71,7 @@ final class ApproveLockBudgetUseCaseTest extends TestCase
             updatedAt: $now,
         );
         $repo->save($budget);
+
         return $budget;
     }
 }

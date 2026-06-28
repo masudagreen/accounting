@@ -32,6 +32,7 @@ final readonly class ListConsumptionTaxPeriodsController
             return ErrorResponse::badRequest('entityId query parameter is required and must be a ULID.');
         }
         $periods = $this->useCase->execute($entityId);
+
         return EnvelopeResponse::list(
             ConsumptionTaxSettlementJsonSerializer::periodsToArrayList($periods),
             ['total' => count($periods)],

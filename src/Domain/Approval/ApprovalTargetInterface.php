@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Approval;
 
-use DateTimeImmutable;
-
 /**
  * Hexagonal port: the subject of an approval workflow.
  *
@@ -45,10 +43,10 @@ interface ApprovalTargetInterface
      * through their own repository — the UseCase will only invoke this once
      * the token bookkeeping has been verified.
      */
-    public function applyApproval(string $actorUserId, DateTimeImmutable $at): void;
+    public function applyApproval(string $actorUserId, \DateTimeImmutable $at): void;
 
     /**
      * Apply a rejection decision, recording the operator-supplied reason.
      */
-    public function applyRejection(string $actorUserId, DateTimeImmutable $at, string $reason): void;
+    public function applyRejection(string $actorUserId, \DateTimeImmutable $at, string $reason): void;
 }

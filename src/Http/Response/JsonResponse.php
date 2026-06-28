@@ -28,12 +28,13 @@ final readonly class JsonResponse
     {
         $body = json_encode(
             $payload,
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+            \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_THROW_ON_ERROR,
         );
         $headers = array_merge(
             ['Content-Type' => 'application/json; charset=utf-8'],
             $extraHeaders,
         );
+
         return new self($status, $headers, $body);
     }
 
@@ -42,7 +43,7 @@ final readonly class JsonResponse
         if (!headers_sent()) {
             http_response_code($this->status);
             foreach ($this->headers as $name => $value) {
-                header($name . ': ' . $value, true);
+                header($name.': '.$value, true);
             }
         }
         echo $this->body;

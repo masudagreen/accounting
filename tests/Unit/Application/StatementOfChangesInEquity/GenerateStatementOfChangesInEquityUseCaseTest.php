@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\StatementOfChangesInEquity\GenerateStatementOfChangesInEquityInput;
@@ -44,8 +41,8 @@ final class GenerateStatementOfChangesInEquityUseCaseTest extends TestCase
         $input = new GenerateStatementOfChangesInEquityInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [SsSectionCode::CapitalStock->value => '10000000.0000'],
             netIncome: '5000000.0000',
@@ -63,12 +60,12 @@ final class GenerateStatementOfChangesInEquityUseCaseTest extends TestCase
             builder: new StatementOfChangesInEquityBuilder(),
             clock: new FrozenClock(),
         );
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $uc->execute(new GenerateStatementOfChangesInEquityInput(
             entityId: 'not-a-ulid',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
         ));
     }
 
@@ -79,12 +76,12 @@ final class GenerateStatementOfChangesInEquityUseCaseTest extends TestCase
             builder: new StatementOfChangesInEquityBuilder(),
             clock: new FrozenClock(),
         );
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $uc->execute(new GenerateStatementOfChangesInEquityInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2027-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2027-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-03-31', new \DateTimeZone('UTC')),
         ));
     }
 }

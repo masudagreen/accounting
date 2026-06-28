@@ -21,10 +21,11 @@ enum FsKind: string
     public static function fromString(string $raw): self
     {
         $normalised = strtolower($raw);
+
         return match ($normalised) {
             'bs', 'balance_sheet', 'balancesheet' => self::BalanceSheet,
             'pl', 'profit_and_loss', 'profitandloss' => self::ProfitAndLoss,
-            default => throw new \InvalidArgumentException('Unknown FsKind: ' . $raw),
+            default => throw new \InvalidArgumentException('Unknown FsKind: '.$raw),
         };
     }
 }

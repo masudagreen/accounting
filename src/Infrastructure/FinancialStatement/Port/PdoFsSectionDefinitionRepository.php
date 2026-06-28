@@ -16,10 +16,11 @@ use Rucaro\Domain\FinancialStatement\Port\FsSectionDefinitionRepositoryInterface
 final class PdoFsSectionDefinitionRepository implements FsSectionDefinitionRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findAllByKind(FsKind $kind): array
     {
         $sql = 'SELECT fs_kind, code, parent_code, label, sort_order,
@@ -30,7 +31,7 @@ final class PdoFsSectionDefinitionRepository implements FsSectionDefinitionRepos
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':kind' => $kind->value]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -58,6 +59,7 @@ final class PdoFsSectionDefinitionRepository implements FsSectionDefinitionRepos
                 formula: $formula,
             );
         }
+
         return $out;
     }
 
@@ -72,6 +74,7 @@ final class PdoFsSectionDefinitionRepository implements FsSectionDefinitionRepos
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 }

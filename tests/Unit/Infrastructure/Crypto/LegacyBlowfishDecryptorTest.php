@@ -27,13 +27,14 @@ final class LegacyBlowfishDecryptorTest extends TestCase
 {
     private const MASTER_SECRET = 'test-secret-123';
 
+    #[\Override]
     protected function setUp(): void
     {
         if (!LegacyBlowfishDecryptor::isAvailable()) {
             self::markTestSkipped(
                 'OpenSSL build does not expose bf-cbc. Enable the legacy provider '
-                . '(e.g. OPENSSL_CONF pointing to an openssl.cnf with "legacy = legacy_sect" '
-                . 'activated) to run these compatibility tests.',
+                .'(e.g. OPENSSL_CONF pointing to an openssl.cnf with "legacy = legacy_sect" '
+                .'activated) to run these compatibility tests.',
             );
         }
     }
@@ -47,13 +48,13 @@ final class LegacyBlowfishDecryptorTest extends TestCase
     private static function legacyEncrypt(string $plaintext, string $masterSecret): string
     {
         $key = substr(md5($masterSecret), 0, 56);
-        $iv  = substr(md5($key), 0, 8);
+        $iv = substr(md5($key), 0, 8);
 
         $blob = openssl_encrypt(
             $plaintext,
             'bf-cbc',
             $key,
-            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+            \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
             $iv,
         );
         self::assertNotFalse($blob, 'legacy fixture generation must succeed');
@@ -74,7 +75,7 @@ final class LegacyBlowfishDecryptorTest extends TestCase
             return $plaintext;
         }
 
-        return $plaintext . str_repeat("\0", $blockSize - $remainder);
+        return $plaintext.str_repeat("\0", $blockSize - $remainder);
     }
 
     /**
@@ -86,22 +87,17 @@ final class LegacyBlowfishDecryptorTest extends TestCase
         //   - ASCII password (strPassword)
         //   - UTF-8 JSON (blobDetail, blobData)
         //   - Long blob (up to 10kB)
-        yield 'short ascii password'
-            => ['pa55w0rd'];
-        yield 'longer ascii password'
-            => ['S3cret-P@ssphrase-With-Numbers-1234567890'];
-        yield 'utf8 japanese json'
-            => ['{"bank":"三菱UFJ","id":"user01","pin":"1234","備考":"テスト"}'];
-        yield 'long blob'
-            => [str_repeat('ABCDEFGH12345678', 256)]; // 4096 bytes, block-aligned
-        yield 'exactly one block'
-            => ['8bytesXX']; // 8 bytes == 1 block
+        yield 'short ascii password' => ['pa55w0rd'];
+        yield 'longer ascii password' => ['S3cret-P@ssphrase-With-Numbers-1234567890'];
+        yield 'utf8 japanese json' => ['{"bank":"三菱UFJ","id":"user01","pin":"1234","備考":"テスト"}'];
+        yield 'long blob' => [str_repeat('ABCDEFGH12345678', 256)]; // 4096 bytes, block-aligned
+        yield 'exactly one block' => ['8bytesXX']; // 8 bytes == 1 block
     }
 
     #[DataProvider('fixturePlaintextProvider')]
     public function testDecryptsKnownPlaintextCiphertextPair(string $plaintext): void
     {
-        $padded     = self::zeroPad($plaintext);
+        $padded = self::zeroPad($plaintext);
         $ciphertext = self::legacyEncrypt($padded, self::MASTER_SECRET);
 
         $decryptor = new LegacyBlowfishDecryptor(self::MASTER_SECRET);
@@ -113,7 +109,7 @@ final class LegacyBlowfishDecryptorTest extends TestCase
     {
         // 10-byte plaintext -> padded to 16 bytes (two blocks) with 6 NULs.
         // The decryptor must strip them back off.
-        $plaintext  = 'abcdefghij';
+        $plaintext = 'abcdefghij';
         $ciphertext = self::legacyEncrypt(self::zeroPad($plaintext), self::MASTER_SECRET);
 
         $decryptor = new LegacyBlowfishDecryptor(self::MASTER_SECRET);
@@ -125,7 +121,7 @@ final class LegacyBlowfishDecryptorTest extends TestCase
     {
         // Legacy format predates AEAD. Passing a non-empty AAD must NOT
         // change the result, to keep the CipherInterface shape consistent.
-        $plaintext  = 'hello world';
+        $plaintext = 'hello world';
         $ciphertext = self::legacyEncrypt(self::zeroPad($plaintext), self::MASTER_SECRET);
 
         $decryptor = new LegacyBlowfishDecryptor(self::MASTER_SECRET);

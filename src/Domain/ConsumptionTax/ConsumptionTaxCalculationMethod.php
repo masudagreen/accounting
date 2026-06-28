@@ -20,7 +20,7 @@ enum ConsumptionTaxCalculationMethod: string
     public function label(): string
     {
         return match ($this) {
-            self::Principle  => '原則課税',
+            self::Principle => '原則課税',
             self::Simplified => '簡易課税',
             self::TwoPercent => '2割特例',
         };

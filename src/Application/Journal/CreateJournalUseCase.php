@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Domain\Journal\Journal;
 use Rucaro\Domain\Journal\JournalLine;
@@ -34,12 +32,10 @@ final readonly class CreateJournalUseCase
     public function execute(CreateJournalUseCaseInput $input): Journal
     {
         if (count($input->lines) < 2) {
-            throw ValidationException::withErrors([
-                'lines' => ['at least 2 lines are required (one debit, one credit)'],
-            ]);
+            throw ValidationException::withErrors(['lines' => ['at least 2 lines are required (one debit, one credit)']]);
         }
 
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $bookedAt = $now;
 
         /** @var list<JournalLine> $lines */
@@ -59,10 +55,17 @@ final readonly class CreateJournalUseCase
                 memo: $raw->memo,
                 bookedAt: $bookedAt,
             );
-            $lineNo++;
+            ++$lineNo;
         }
 
         $total = Journal::balance($lines);
+
+        // Admin "承認スキップ" path: skip draft and persist as posted in
+        // one shot. The non-admin path keeps the historical draft → review
+        // workflow.
+        $status = $input->skipApproval ? 'posted' : 'draft';
+        $approvedBy = $input->skipApproval ? $input->createdBy : null;
+        $approvedAt = $input->skipApproval ? $now : null;
 
         $journal = new Journal(
             id: $this->ulids->generate(),
@@ -73,12 +76,12 @@ final readonly class CreateJournalUseCase
             summary: $input->summary,
             totalAmount: $total,
             currencyCode: $input->currencyCode,
-            status: 'draft',
+            status: $status,
             source: $input->source,
             sourceReceiptId: $input->sourceReceiptId,
             createdBy: $input->createdBy,
-            approvedBy: null,
-            approvedAt: null,
+            approvedBy: $approvedBy,
+            approvedAt: $approvedAt,
             createdAt: $now,
             updatedAt: $now,
             deletedAt: null,
@@ -86,6 +89,7 @@ final readonly class CreateJournalUseCase
         );
 
         $this->journals->save($journal);
+
         return $journal;
     }
 }

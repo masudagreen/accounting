@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use InvalidArgumentException;
 use Rucaro\Domain\Journal\JournalStatus;
 use Rucaro\Domain\Journal\ValueObject\JournalDate;
 
@@ -24,11 +23,11 @@ use Rucaro\Domain\Journal\ValueObject\JournalDate;
 final readonly class JournalSearchCriteria
 {
     public const SORT_BY_JOURNAL_DATE = 'journal_date';
-    public const SORT_BY_SUMMARY      = 'summary';
+    public const SORT_BY_SUMMARY = 'summary';
     public const SORT_BY_TOTAL_AMOUNT = 'total_amount';
-    public const SORT_BY_STATUS       = 'status';
-    public const SORT_BY_CREATED_AT   = 'created_at';
-    public const SORT_BY_CREATED_BY   = 'created_by';
+    public const SORT_BY_STATUS = 'status';
+    public const SORT_BY_CREATED_AT = 'created_at';
+    public const SORT_BY_CREATED_BY = 'created_by';
 
     /** @var list<string> */
     public const SORT_BY_ALLOW_LIST = [
@@ -40,7 +39,7 @@ final readonly class JournalSearchCriteria
         self::SORT_BY_CREATED_BY,
     ];
 
-    public const SORT_ORDER_ASC  = 'asc';
+    public const SORT_ORDER_ASC = 'asc';
     public const SORT_ORDER_DESC = 'desc';
 
     /** @var list<string> */
@@ -65,20 +64,22 @@ final readonly class JournalSearchCriteria
         public bool $includeTrashed = false,
         public string $sortBy = self::SORT_BY_JOURNAL_DATE,
         public string $sortOrder = self::SORT_ORDER_DESC,
+        /**
+         * Filter by calendar month (1–12) regardless of year. Used when the
+         * journal-list filter has a month picked but no year — without this,
+         * the previous code silently dropped the month filter entirely
+         * because `from`/`to` was only built when year was set.
+         */
+        public ?int $monthOnly = null,
     ) {
+        if ($monthOnly !== null && ($monthOnly < 1 || $monthOnly > 12)) {
+            throw new \InvalidArgumentException(sprintf('monthOnly must be 1..12 (got %d)', $monthOnly));
+        }
         if (!in_array($sortBy, self::SORT_BY_ALLOW_LIST, true)) {
-            throw new InvalidArgumentException(sprintf(
-                "sortBy must be one of: %s (got '%s')",
-                implode(', ', self::SORT_BY_ALLOW_LIST),
-                $sortBy,
-            ));
+            throw new \InvalidArgumentException(sprintf("sortBy must be one of: %s (got '%s')", implode(', ', self::SORT_BY_ALLOW_LIST), $sortBy));
         }
         if (!in_array($sortOrder, self::SORT_ORDER_ALLOW_LIST, true)) {
-            throw new InvalidArgumentException(sprintf(
-                "sortOrder must be one of: %s (got '%s')",
-                implode(', ', self::SORT_ORDER_ALLOW_LIST),
-                $sortOrder,
-            ));
+            throw new \InvalidArgumentException(sprintf("sortOrder must be one of: %s (got '%s')", implode(', ', self::SORT_ORDER_ALLOW_LIST), $sortOrder));
         }
     }
 
@@ -100,6 +101,7 @@ final readonly class JournalSearchCriteria
         $order = in_array($orderCandidate, self::SORT_ORDER_ALLOW_LIST, true)
             ? $orderCandidate
             : self::SORT_ORDER_DESC;
+
         return [$by, $order];
     }
 }

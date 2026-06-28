@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Approval\ExpirePastDueApprovalsUseCase;
@@ -41,12 +39,13 @@ final class ExpirePastDueApprovalsUseCaseTest extends TestCase
     private function token(string $seed, string $expiresIso, bool $expired): ApprovalToken
     {
         unset($expired);
-        $tz = new DateTimeZone('UTC');
-        $issued = new DateTimeImmutable('2026-04-18T00:00:00Z', $tz);
-        $expires = new DateTimeImmutable($expiresIso, $tz);
+        $tz = new \DateTimeZone('UTC');
+        $issued = new \DateTimeImmutable('2026-04-18T00:00:00Z', $tz);
+        $expires = new \DateTimeImmutable($expiresIso, $tz);
         $hash = str_pad($seed, 64, '0');
+
         return new ApprovalToken(
-            id: '01HW7K9B2QV7C8Y4ZAPPR00000' . $seed,
+            id: '01HW7K9B2QV7C8Y4ZAPPR00000'.$seed,
             targetKind: ApprovalTargetKind::Journal,
             targetId: '01HW7K9B2QV7C8Y4ZJRNL000001',
             tokenHash: $hash,

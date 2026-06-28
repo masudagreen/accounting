@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\Ulid;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -34,7 +32,7 @@ final class UlidGeneratorTest extends TestCase
     public function testEncodeDecodeIsLossless(): void
     {
         // Deterministic input: timestamp = 0, randomness = 10 bytes of 0xFF.
-        $epoch = new DateTimeImmutable('@0');
+        $epoch = new \DateTimeImmutable('@0');
         $bin = UlidGenerator::buildBinary($epoch, str_repeat("\xFF", 10));
 
         $encoded = UlidGenerator::encode($bin);
@@ -71,13 +69,15 @@ final class UlidGeneratorTest extends TestCase
 
     public function testTimestampBitsAppearInFirstTenChars(): void
     {
-        $time = new DateTimeImmutable('2026-04-21T12:00:00.000Z', new DateTimeZone('UTC'));
+        $time = new \DateTimeImmutable('2026-04-21T12:00:00.000Z', new \DateTimeZone('UTC'));
 
-        $clock = new class ($time) implements ClockInterface {
-            public function __construct(private DateTimeImmutable $now)
+        $clock = new class($time) implements ClockInterface {
+            public function __construct(private \DateTimeImmutable $now)
             {
             }
-            public function getCurrentTime(): DateTimeImmutable
+
+            #[\Override]
+            public function getCurrentTime(): \DateTimeImmutable
             {
                 return $this->now;
             }

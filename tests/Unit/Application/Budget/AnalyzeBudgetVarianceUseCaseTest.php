@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Budget;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Budget\AnalyzeBudgetVarianceInput;
@@ -23,9 +22,9 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
 {
     private const ENTITY_ID = '01HAAAAAAAAAAAAAAAAAAAAAA1';
     private const FISCAL_ID = '01HAAAAAAAAAAAAAAAAAAAAAA2';
-    private const SALES_ID  = '01HAAAAAAAAAAAAAAAAAAAAAC0';
-    private const COGS_ID   = '01HAAAAAAAAAAAAAAAAAAAAAC1';
-    private const SGA_ID    = '01HAAAAAAAAAAAAAAAAAAAAAC2';
+    private const SALES_ID = '01HAAAAAAAAAAAAAAAAAAAAAC0';
+    private const COGS_ID = '01HAAAAAAAAAAAAAAAAAAAAAC1';
+    private const SGA_ID = '01HAAAAAAAAAAAAAAAAAAAAAC2';
 
     public function testProducesOneRowPerAccountWithVariance(): void
     {
@@ -46,8 +45,8 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
 
         $result = $uc->execute(new AnalyzeBudgetVarianceInput(
             budgetId: $budget->id,
-            fiscalTermStartDate: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            asOf: new DateTimeImmutable('2026-04-30T00:00:00Z'),
+            fiscalTermStartDate: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            asOf: new \DateTimeImmutable('2026-04-30T00:00:00Z'),
         ));
 
         self::assertCount(3, $result->rows);
@@ -86,8 +85,8 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
 
         $result = $uc->execute(new AnalyzeBudgetVarianceInput(
             budgetId: $budget->id,
-            fiscalTermStartDate: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            asOf: new DateTimeImmutable('2026-04-30T00:00:00Z'),
+            fiscalTermStartDate: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            asOf: new \DateTimeImmutable('2026-04-30T00:00:00Z'),
         ));
         $unplanned = null;
         foreach ($result->rows as $row) {
@@ -115,8 +114,8 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
         // 6 months elapsed → budget-to-date = 6x monthly budget.
         $result = $uc->execute(new AnalyzeBudgetVarianceInput(
             budgetId: $budget->id,
-            fiscalTermStartDate: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            asOf: new DateTimeImmutable('2026-09-30T00:00:00Z'),
+            fiscalTermStartDate: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            asOf: new \DateTimeImmutable('2026-09-30T00:00:00Z'),
         ));
 
         $byId = [];
@@ -130,7 +129,7 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
 
     private function seedBudget(InMemoryBudgetRepository $repo): Budget
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $budget = new Budget(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: self::ENTITY_ID,
@@ -171,6 +170,7 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
             updatedAt: $now,
         );
         $repo->save($budget);
+
         return $budget;
     }
 
@@ -187,7 +187,7 @@ final class AnalyzeBudgetVarianceUseCaseTest extends TestCase
         $query->addLine(
             entityId: self::ENTITY_ID,
             fiscalTermId: self::FISCAL_ID,
-            date: new DateTimeImmutable('2026-04-15T00:00:00Z'),
+            date: new \DateTimeImmutable('2026-04-15T00:00:00Z'),
             accountId: $accountId,
             accountCode: $code,
             accountName: $name,

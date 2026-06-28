@@ -16,6 +16,7 @@ use Rucaro\Application\Approval\Port\MailSenderInterface;
  */
 final class NullMailSender implements MailSenderInterface
 {
+    #[\Override]
     public function send(MailEnvelope $envelope): void
     {
         // Intentionally empty.

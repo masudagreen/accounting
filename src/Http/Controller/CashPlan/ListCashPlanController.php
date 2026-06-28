@@ -37,6 +37,7 @@ final readonly class ListCashPlanController
         }
 
         $plans = $this->useCase->execute($entityId, $fiscalTermId);
+
         return EnvelopeResponse::list(
             CashPlanJsonSerializer::toArrayList($plans),
             ['total' => count($plans)],

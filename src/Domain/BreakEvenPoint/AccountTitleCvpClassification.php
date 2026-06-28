@@ -27,9 +27,7 @@ final readonly class AccountTitleCvpClassification
     ) {
         $normalized = Decimal::normalize($variableRatio);
         if (Decimal::compare($normalized, '0.0000') < 0 || Decimal::compare($normalized, '1.0000') > 0) {
-            throw ValidationException::withErrors([
-                'variableRatio' => ['variableRatio must be between 0 and 1 inclusive.'],
-            ]);
+            throw ValidationException::withErrors(['variableRatio' => ['variableRatio must be between 0 and 1 inclusive.']]);
         }
     }
 
@@ -52,6 +50,7 @@ final readonly class AccountTitleCvpClassification
             CvpCostType::Fixed => '0.0000',
             CvpCostType::SemiVariable => $variableRatio,
         };
+
         return new self(
             entityId: $entityId,
             accountTitleId: $accountTitleId,

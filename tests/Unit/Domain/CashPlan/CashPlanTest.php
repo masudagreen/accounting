@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\CashPlan;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\CashPlan\CashPlan;
@@ -94,7 +93,8 @@ final class CashPlanTest extends TestCase
         string $name = 'Plan A',
         string $currency = 'JPY',
     ): CashPlan {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new CashPlan(
             id: '01HAAAAAAAAAAAAAAAAAAAAAAA',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAAB',
@@ -117,7 +117,7 @@ final class CashPlanTest extends TestCase
     private function entry(CashPlanCategory $category, string $label, array $amounts): CashPlanEntry
     {
         return new CashPlanEntry(
-            id: '01HAAAAAAAAAAAAAAAAAAAAA' . chr(ord('0') + count($amounts) % 10) . 'A',
+            id: '01HAAAAAAAAAAAAAAAAAAAAA'.chr(ord('0') + count($amounts) % 10).'A',
             cashPlanId: '01HAAAAAAAAAAAAAAAAAAAAAAA',
             category: $category,
             label: $label,

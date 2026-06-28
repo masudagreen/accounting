@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FixedAsset;
 
-use DateTimeZone;
 use Rucaro\Domain\FixedAsset\DepreciationScheduleRepositoryInterface;
-use Rucaro\Domain\FixedAsset\FixedAsset;
 use Rucaro\Domain\FixedAsset\FixedAssetRepositoryInterface;
 use Rucaro\Support\Clock\ClockInterface;
 
@@ -39,7 +37,7 @@ final readonly class GetFixedAssetLedgerUseCase
             entityId: $input->entityId,
             fiscalTermId: $input->fiscalTermId,
             books: $books,
-            generatedAt: $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC')),
+            generatedAt: $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC')),
         );
     }
 }

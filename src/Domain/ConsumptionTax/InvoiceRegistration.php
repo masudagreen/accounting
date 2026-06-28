@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 
 /**
@@ -28,30 +27,24 @@ final readonly class InvoiceRegistration
         public string $counterpartyName,
         public ?string $registrationNumber,
         public bool $isRegistered,
-        public ?DateTimeImmutable $registeredFrom,
-        public ?DateTimeImmutable $registeredUntil,
+        public ?\DateTimeImmutable $registeredFrom,
+        public ?\DateTimeImmutable $registeredUntil,
         public ?string $notes,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
         if (trim($counterpartyName) === '' || mb_strlen($counterpartyName) > 255) {
-            throw ValidationException::withErrors([
-                'counterpartyName' => ['counterpartyName must be 1..255 chars.'],
-            ]);
+            throw ValidationException::withErrors(['counterpartyName' => ['counterpartyName must be 1..255 chars.']]);
         }
         if ($registrationNumber !== null && !preg_match('/^T\d{13}$/', $registrationNumber)) {
-            throw ValidationException::withErrors([
-                'registrationNumber' => ['registrationNumber must match /^T\\d{13}$/.'],
-            ]);
+            throw ValidationException::withErrors(['registrationNumber' => ['registrationNumber must match /^T\\d{13}$/.']]);
         }
         if ($registeredFrom !== null && $registeredUntil !== null && $registeredUntil < $registeredFrom) {
-            throw ValidationException::withErrors([
-                'registeredUntil' => ['registeredUntil must be on or after registeredFrom.'],
-            ]);
+            throw ValidationException::withErrors(['registeredUntil' => ['registeredUntil must be on or after registeredFrom.']]);
         }
     }
 
-    public function isRegisteredOn(DateTimeImmutable $at): bool
+    public function isRegisteredOn(\DateTimeImmutable $at): bool
     {
         if (!$this->isRegistered) {
             return false;
@@ -62,6 +55,7 @@ final readonly class InvoiceRegistration
         if ($this->registeredUntil !== null && $at > $this->registeredUntil) {
             return false;
         }
+
         return true;
     }
 }

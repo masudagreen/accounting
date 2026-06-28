@@ -16,26 +16,27 @@ final class EnvelopeResponse
     /**
      * @param array<string, mixed>|list<mixed>|null $data
      * @param array<string, int>|null $meta
-     * @param array<string, string>   $extraHeaders
+     * @param array<string, string> $extraHeaders
      */
     public static function ok(
-        array|null $data = null,
+        ?array $data = null,
         ?array $meta = null,
         int $status = 200,
         array $extraHeaders = [],
     ): JsonResponse {
         $payload = [
             'success' => true,
-            'data'    => $data,
-            'error'   => null,
-            'meta'    => $meta,
+            'data' => $data,
+            'error' => null,
+            'meta' => $meta,
         ];
+
         return JsonResponse::of($status, $payload, $extraHeaders);
     }
 
     /**
      * @param array<string, int> $meta
-     * @param list<mixed>        $items
+     * @param list<mixed> $items
      */
     public static function list(
         array $items,
@@ -44,10 +45,11 @@ final class EnvelopeResponse
     ): JsonResponse {
         $payload = [
             'success' => true,
-            'data'    => $items,
-            'error'   => null,
-            'meta'    => $meta,
+            'data' => $items,
+            'error' => null,
+            'meta' => $meta,
         ];
+
         return JsonResponse::of($status, $payload);
     }
 }

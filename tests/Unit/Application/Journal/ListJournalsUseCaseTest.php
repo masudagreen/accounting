@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\ListJournalsUseCase;
@@ -37,7 +36,7 @@ final class ListJournalsUseCaseTest extends TestCase
     public function testPaginationSplitsResults(): void
     {
         $repo = new InMemoryJournalRepo();
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; ++$i) {
             $repo->save($this->journal(sprintf('01HW7K9B2QV7C8Y4ZJRNL00000%d', $i), 'ENT1'));
         }
         $useCase = new ListJournalsUseCase($repo);
@@ -65,7 +64,7 @@ final class ListJournalsUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             ),
             new JournalLine(
                 id: '01HW7K9B2QV7C8Y4ZJLINE00002',
@@ -78,15 +77,16 @@ final class ListJournalsUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             ),
         ];
+
         return new Journal(
             id: $id,
             entityId: $entityId,
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             summary: 'Test',
             totalAmount: '100.0000',
             currencyCode: 'JPY',
@@ -96,8 +96,8 @@ final class ListJournalsUseCaseTest extends TestCase
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: null,
             approvedAt: null,
-            createdAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             deletedAt: null,
             lines: $lines,
         );

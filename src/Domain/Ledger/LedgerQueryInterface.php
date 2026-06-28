@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Ledger;
 
-use DateTimeImmutable;
-
 /**
  * Port for building a {@see Ledger} read model directly from the
  * Journal tables. Implementations live in the Infrastructure layer.
@@ -27,7 +25,7 @@ interface LedgerQueryInterface
         string $entityId,
         string $fiscalTermId,
         ?string $accountTitleId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): Ledger;
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Ledger;
 
-use DateTimeImmutable;
-
 /**
  * One row of a general ledger (総勘定元帳の 1 行).
  *
@@ -32,7 +30,7 @@ final readonly class LedgerEntry
     public function __construct(
         public string $journalEntryId,
         public string $journalEntryLineId,
-        public DateTimeImmutable $entryDate,
+        public \DateTimeImmutable $entryDate,
         public string $summary,
         public string $memo,
         public string $counterAccountCode,

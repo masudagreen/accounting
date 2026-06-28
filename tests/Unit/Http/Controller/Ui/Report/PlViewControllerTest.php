@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCase;
@@ -29,11 +26,13 @@ use Rucaro\Tests\Support\Fake\FrozenClock;
 #[CoversClass(PlViewController::class)]
 final class PlViewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -77,8 +76,8 @@ final class PlViewControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new PlViewController(
             useCase: new GenerateFinancialStatementUseCase(
@@ -92,6 +91,7 @@ final class PlViewControllerTest extends TestCase
             ),
             pdfGenerator: new StubFsGenerator($emitPdf),
             period: new PeriodQueryHelper(self::inMemoryPdo()),
+            fiscalTerms: new \Rucaro\Support\Web\FiscalTermLookup(self::inMemoryPdo()),
             session: $session,
             csrf: new CsrfTokenManager($clock),
             flash: new FlashMessageBag(),
@@ -99,22 +99,24 @@ final class PlViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
 
 final class StubTrialBalanceQuery implements TrialBalanceQueryInterface
 {
+    #[\Override]
     public function queryByPeriod(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): \Rucaro\Domain\TrialBalance\TrialBalance {
         return new \Rucaro\Domain\TrialBalance\TrialBalance(
             entityId: $entityId,
@@ -123,11 +125,12 @@ final class StubTrialBalanceQuery implements TrialBalanceQueryInterface
             toDate: $to,
             currencyCode: 'JPY',
             rows: [],
-            generatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
         );
     }
 
-    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?DateTimeImmutable
+    #[\Override]
+    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?\DateTimeImmutable
     {
         return null;
     }
@@ -139,6 +142,7 @@ final class StubFsGenerator implements FinancialStatementGeneratorInterface
     {
     }
 
+    #[\Override]
     public function render(FinancialStatement $statement): string
     {
         return $this->emitStub ? "%PDF-STUB\nfake fs pdf\n%%EOF" : '';
@@ -147,15 +151,18 @@ final class StubFsGenerator implements FinancialStatementGeneratorInterface
 
 final class StubTrialBalanceSnapshots implements TrialBalanceSnapshotRepositoryInterface
 {
+    #[\Override]
     public function saveAll(array $snapshots): void
     {
     }
 
-    public function deleteByMonth(string $entityId, string $fiscalTermId, DateTimeImmutable $monthEnd): void
+    #[\Override]
+    public function deleteByMonth(string $entityId, string $fiscalTermId, \DateTimeImmutable $monthEnd): void
     {
     }
 
-    public function findByMonth(string $entityId, string $fiscalTermId, DateTimeImmutable $monthEnd): array
+    #[\Override]
+    public function findByMonth(string $entityId, string $fiscalTermId, \DateTimeImmutable $monthEnd): array
     {
         return [];
     }
@@ -163,6 +170,7 @@ final class StubTrialBalanceSnapshots implements TrialBalanceSnapshotRepositoryI
 
 final class StubAccountTitleRepoForPl implements AccountTitleRepositoryInterface
 {
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -174,6 +182,7 @@ final class StubAccountTitleRepoForPl implements AccountTitleRepositoryInterface
         return [];
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -183,24 +192,29 @@ final class StubAccountTitleRepoForPl implements AccountTitleRepositoryInterface
         return 0;
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         return null;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return [];
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         return false;

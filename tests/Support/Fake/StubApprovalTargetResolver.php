@@ -25,17 +25,19 @@ final class StubApprovalTargetResolver implements ApprovalTargetResolverInterfac
         $this->targets[$this->key($target->kind(), $target->id())] = $target;
     }
 
+    #[\Override]
     public function resolve(ApprovalTargetKind $kind, string $id): ApprovalTargetInterface
     {
         $key = $this->key($kind, $id);
         if (!isset($this->targets[$key])) {
             throw EntityNotFoundException::for($kind->value, $id);
         }
+
         return $this->targets[$key];
     }
 
     private function key(ApprovalTargetKind $kind, string $id): string
     {
-        return $kind->value . ':' . $id;
+        return $kind->value.':'.$id;
     }
 }

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\Journal\JournalSearchCriteria;
 use Rucaro\Application\Journal\JournalSearchResult;
 use Rucaro\Domain\Exception\EntityNotFoundException;
@@ -25,11 +22,12 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoJournalRepository implements JournalRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
         private readonly UlidGenerator $ulids,
     ) {
     }
 
+    #[\Override]
     public function save(Journal $journal): void
     {
         $needsTransaction = !$this->pdo->inTransaction();
@@ -55,17 +53,23 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         }
     }
 
-    public function delete(string $id, DateTimeImmutable $at, string $deletedBy): void
+    #[\Override]
+    public function delete(string $id, \DateTimeImmutable $at, string $deletedBy): void
     {
+        // ATTR_EMULATE_PREPARES=false forbids reusing the same named
+        // placeholder twice, so the two columns get distinct binds even
+        // though they take the same value.
         $stmt = $this->pdo->prepare(
             'UPDATE journal_entries
-                SET deleted_at = :at, updated_at = :at
+                SET deleted_at = :deleted_at, updated_at = :updated_at
               WHERE id = :id AND deleted_at IS NULL
               LIMIT 1',
         );
+        $ts = self::fmtTs($at);
         $stmt->execute([
             ':id' => UlidGenerator::decode($id),
-            ':at' => self::fmtTs($at),
+            ':deleted_at' => $ts,
+            ':updated_at' => $ts,
         ]);
         if ($stmt->rowCount() === 0) {
             throw new EntityNotFoundException(sprintf('Journal %s not found or already deleted.', $id));
@@ -76,6 +80,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         unset($deletedBy);
     }
 
+    #[\Override]
     public function findByCriteria(JournalSearchCriteria $criteria): JournalSearchResult
     {
         [$where, $params, $joinLines] = $this->buildCriteriaFilter($criteria);
@@ -93,24 +98,24 @@ final class PdoJournalRepository implements JournalRepositoryInterface
                        je.created_by, je.approved_by, je.approved_at, je.created_at, je.updated_at, je.deleted_at';
 
         $orderBy = $this->buildOrderBy($criteria);
-        $sql = $select . ' FROM ' . $from . ' WHERE ' . $where
-             . ' ORDER BY ' . $orderBy . ' LIMIT :_limit OFFSET :_offset';
+        $sql = $select.' FROM '.$from.' WHERE '.$where
+             .' ORDER BY '.$orderBy.' LIMIT :_limit OFFSET :_offset';
         $stmt = $this->pdo->prepare($sql);
         foreach ($params as $k => $v) {
             $stmt->bindValue($k, $v);
         }
-        $stmt->bindValue(':_limit', $criteria->pageSize, PDO::PARAM_INT);
-        $stmt->bindValue(':_offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':_limit', $criteria->pageSize, \PDO::PARAM_INT);
+        $stmt->bindValue(':_offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $journals = [];
         foreach ($rows as $row) {
             $journals[] = $this->hydrate($row, $this->loadLines((string) $row['id']));
         }
 
-        $countSql = 'SELECT COUNT(DISTINCT je.id) FROM ' . $from . ' WHERE ' . $where;
+        $countSql = 'SELECT COUNT(DISTINCT je.id) FROM '.$from.' WHERE '.$where;
         $countStmt = $this->pdo->prepare($countSql);
         $countStmt->execute($params);
         /** @var string|false $c */
@@ -125,6 +130,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         );
     }
 
+    #[\Override]
     public function findById(string $id): ?Journal
     {
         $stmt = $this->pdo->prepare(
@@ -137,13 +143,15 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         );
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row, $this->loadLines((string) $row['id']));
     }
 
+    #[\Override]
     public function searchByEntity(
         string $entityId,
         int $page,
@@ -171,26 +179,28 @@ final class PdoJournalRepository implements JournalRepositoryInterface
                        total_amount, currency_code, status, source, source_receipt_id,
                        created_by, approved_by, approved_at, created_at, updated_at, deleted_at
                 FROM journal_entries
-                WHERE ' . $where . '
+                WHERE '.$where.'
                 ORDER BY booked_at DESC, id DESC
                 LIMIT :_limit OFFSET :_offset';
         $stmt = $this->pdo->prepare($sql);
         foreach ($params as $k => $v) {
             $stmt->bindValue($k, $v);
         }
-        $stmt->bindValue(':_limit', $pageSize, PDO::PARAM_INT);
-        $stmt->bindValue(':_offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':_limit', $pageSize, \PDO::PARAM_INT);
+        $stmt->bindValue(':_offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $journals = [];
         foreach ($rows as $row) {
             $journals[] = $this->hydrate($row, $this->loadLines((string) $row['id']));
         }
+
         return $journals;
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $fiscalTermId = null,
@@ -211,10 +221,11 @@ final class PdoJournalRepository implements JournalRepositoryInterface
             $search,
             $includeTrashed,
         );
-        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM journal_entries WHERE ' . $where);
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM journal_entries WHERE '.$where);
         $stmt->execute($params);
         /** @var string|false $c */
         $c = $stmt->fetchColumn();
+
         return $c === false ? 0 : (int) $c;
     }
 
@@ -259,8 +270,9 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         }
         if ($search !== null && $search !== '') {
             $clauses[] = 'summary LIKE :search';
-            $params[':search'] = '%' . $search . '%';
+            $params[':search'] = '%'.$search.'%';
         }
+
         return [implode(' AND ', $clauses), $params];
     }
 
@@ -287,6 +299,12 @@ final class PdoJournalRepository implements JournalRepositoryInterface
             $clauses[] = 'je.journal_date <= :to';
             $params[':to'] = $criteria->to->toPrimitive();
         }
+        if ($criteria->monthOnly !== null) {
+            // Calendar-month filter without a year — used by the journal
+            // list page when month is picked but year is left blank.
+            $clauses[] = 'MONTH(je.journal_date) = :month';
+            $params[':month'] = $criteria->monthOnly;
+        }
         if ($criteria->status !== null) {
             $clauses[] = 'je.status = :status';
             $params[':status'] = $criteria->status->value;
@@ -297,7 +315,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         }
         if ($criteria->textQuery !== null && $criteria->textQuery !== '') {
             $clauses[] = 'je.summary LIKE :search';
-            $params[':search'] = '%' . $criteria->textQuery . '%';
+            $params[':search'] = '%'.$criteria->textQuery.'%';
         }
 
         $joinLines = false;
@@ -326,6 +344,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         $direction = strtolower($criteria->sortOrder) === JournalSearchCriteria::SORT_ORDER_ASC
             ? 'ASC'
             : 'DESC';
+
         // je.<column> — every allow-listed value maps to a real column on
         // journal_entries, so prefixing is safe and keeps the query planner
         // happy when the lines join is present.
@@ -336,6 +355,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
     {
         $stmt = $this->pdo->prepare('SELECT 1 FROM journal_entries WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
+
         return $stmt->fetchColumn() !== false;
     }
 
@@ -463,6 +483,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
 
     /**
      * @param string $entryIdBinary Raw 16-byte entry id as stored in DB
+     *
      * @return list<JournalLine>
      */
     private function loadLines(string $entryIdBinary): array
@@ -476,7 +497,7 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         );
         $stmt->execute([':entry' => $entryIdBinary]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $lines = [];
         foreach ($rows as $row) {
@@ -493,15 +514,16 @@ final class PdoJournalRepository implements JournalRepositoryInterface
                 taxAmount: (string) ($row['tax_amount'] ?? '0.0000'),
                 isTaxReduced: self::toBool($row['is_tax_reduced'] ?? false),
                 memo: (string) ($row['memo'] ?? ''),
-                bookedAt: self::parseTimestamp($row['booked_at'] ?? null) ?? new DateTimeImmutable('@0'),
+                bookedAt: self::parseTimestamp($row['booked_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             );
         }
+
         return $lines;
     }
 
     /**
      * @param array<string, mixed> $row
-     * @param list<JournalLine>    $lines
+     * @param list<JournalLine> $lines
      */
     private function hydrate(array $row, array $lines): Journal
     {
@@ -509,8 +531,8 @@ final class PdoJournalRepository implements JournalRepositoryInterface
             id: self::stringifyId($row['id'] ?? ''),
             entityId: self::stringifyId($row['entity_id'] ?? ''),
             fiscalTermId: self::stringifyId($row['fiscal_term_id'] ?? ''),
-            journalDate: new DateTimeImmutable((string) ($row['journal_date'] ?? '1970-01-01'), new DateTimeZone('UTC')),
-            bookedAt: self::parseTimestamp($row['booked_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            journalDate: new \DateTimeImmutable((string) ($row['journal_date'] ?? '1970-01-01'), new \DateTimeZone('UTC')),
+            bookedAt: self::parseTimestamp($row['booked_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             summary: (string) ($row['summary'] ?? ''),
             totalAmount: (string) ($row['total_amount'] ?? '0.0000'),
             currencyCode: (string) ($row['currency_code'] ?? 'JPY'),
@@ -524,18 +546,19 @@ final class PdoJournalRepository implements JournalRepositoryInterface
                 ? self::stringifyId($row['approved_by'])
                 : null,
             approvedAt: self::parseTimestamp($row['approved_at'] ?? null),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             deletedAt: self::parseTimestamp($row['deleted_at'] ?? null),
             lines: $lines,
         );
     }
 
-    private static function stringifyId(mixed $raw): string
+    private static function stringifyId(string $raw): string
     {
-        if (!is_string($raw) || $raw === '') {
+        if ($raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -550,23 +573,24 @@ final class PdoJournalRepository implements JournalRepositoryInterface
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function fmtTs(DateTimeImmutable $t): string
+    private static function fmtTs(\DateTimeImmutable $t): string
     {
-        return $t->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
+        return $t->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
     }
 }

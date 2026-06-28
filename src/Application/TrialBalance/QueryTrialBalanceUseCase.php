@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
+use Rucaro\Domain\Ledger\OpeningBalanceRepositoryInterface;
 use Rucaro\Domain\TrialBalance\TrialBalance;
 use Rucaro\Domain\TrialBalance\TrialBalanceQueryInterface;
 use Rucaro\Domain\TrialBalance\TrialBalanceRow;
 use Rucaro\Domain\TrialBalance\TrialBalanceSnapshotRepositoryInterface;
+use Rucaro\Infrastructure\Ledger\ZeroOpeningBalanceRepository;
 use Rucaro\Support\Clock\ClockInterface;
 use Rucaro\Support\Clock\SystemClock;
 
@@ -25,19 +25,40 @@ use Rucaro\Support\Clock\SystemClock;
  *
  * Rows from both sources are merged by accountTitleId so the caller always
  * receives one row per account, regardless of how it was produced.
+ *
+ * Phase B-3b: After the per-period SUM rows are assembled, the use case
+ * folds in 期首繰越 (opening balance) for balance-sheet rows
+ * (asset / liability / equity). PL rows (revenue / expense) are deliberately
+ * left untouched — opening for those resets every term as part of period-end
+ * close. Without this step a multi-period import silently truncates running
+ * balances; see RC-8 in `plan/reality-check-report.md`.
  */
 final readonly class QueryTrialBalanceUseCase
 {
+    /** @var array<string, true> Account categories that carry forward. */
+    private const BS_CATEGORIES = [
+        'asset' => true,
+        'liability' => true,
+        'equity' => true,
+    ];
+
+    private OpeningBalanceRepositoryInterface $openingBalances;
+
     public function __construct(
         private TrialBalanceQueryInterface $query,
         private TrialBalanceSnapshotRepositoryInterface $snapshots,
         private ClockInterface $clock = new SystemClock(),
+        ?OpeningBalanceRepositoryInterface $openingBalances = null,
     ) {
+        // Default to the no-op repository so existing callers (and the legacy
+        // monthly-snapshot pipeline) keep working without recompilation. The
+        // production container wires PdoOpeningBalanceRepository (B-3a).
+        $this->openingBalances = $openingBalances ?? new ZeroOpeningBalanceRepository();
     }
 
     public function execute(QueryTrialBalanceUseCaseInput $input): TrialBalance
     {
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $latestSnapshot = $this->query->latestSnapshotDate($input->entityId, $input->fiscalTermId);
 
         if ($latestSnapshot === null || $latestSnapshot > $input->asOf) {
@@ -48,14 +69,18 @@ final readonly class QueryTrialBalanceUseCase
                 $input->fiscalTermStartDate,
                 $input->asOf,
             );
-            return $this->rebuildWith($input, $live->rows, $generatedAt);
+            $rows = $this->applyOpeningBalances($input, $live->rows);
+
+            return $this->rebuildWith($input, $rows, $generatedAt);
         }
 
         $snapshotRows = $this->collectSnapshotRows($input, $latestSnapshot);
 
         $tailFrom = $this->addOneDay($latestSnapshot);
         if ($tailFrom > $input->asOf) {
-            return $this->rebuildWith($input, $snapshotRows, $generatedAt);
+            $rows = $this->applyOpeningBalances($input, $snapshotRows);
+
+            return $this->rebuildWith($input, $rows, $generatedAt);
         }
 
         $tail = $this->query->queryByPeriod(
@@ -65,6 +90,8 @@ final readonly class QueryTrialBalanceUseCase
             $input->asOf,
         );
         $merged = $this->mergeRows($snapshotRows, $tail->rows);
+        $merged = $this->applyOpeningBalances($input, $merged);
+
         return $this->rebuildWith($input, $merged, $generatedAt);
     }
 
@@ -73,7 +100,7 @@ final readonly class QueryTrialBalanceUseCase
      */
     private function collectSnapshotRows(
         QueryTrialBalanceUseCaseInput $input,
-        DateTimeImmutable $monthEnd,
+        \DateTimeImmutable $monthEnd,
     ): array {
         $snapshots = $this->snapshots->findByMonth(
             $input->entityId,
@@ -109,12 +136,14 @@ final readonly class QueryTrialBalanceUseCase
                 lineCount: $s->lineCount,
             );
         }
+
         return $rows;
     }
 
     /**
      * @param list<TrialBalanceRow> $a
      * @param list<TrialBalanceRow> $b
+     *
      * @return list<TrialBalanceRow>
      */
     private function mergeRows(array $a, array $b): array
@@ -136,7 +165,39 @@ final readonly class QueryTrialBalanceUseCase
             $result,
             static fn (TrialBalanceRow $x, TrialBalanceRow $y): int => strcmp($x->accountTitleCode, $y->accountTitleCode),
         );
+
         return $result;
+    }
+
+    /**
+     * Fold `opening_balances` into BS rows (asset / liability / equity).
+     *
+     * PL rows are skipped: their balance resets every term and the carry
+     * happens via 損益計算 → 利益剰余金 at close, not via per-account opening.
+     *
+     * @param list<TrialBalanceRow> $rows
+     *
+     * @return list<TrialBalanceRow>
+     */
+    private function applyOpeningBalances(
+        QueryTrialBalanceUseCaseInput $input,
+        array $rows,
+    ): array {
+        $out = [];
+        foreach ($rows as $row) {
+            if (!isset(self::BS_CATEGORIES[$row->accountCategory])) {
+                $out[] = $row;
+                continue;
+            }
+            $opening = $this->openingBalances->findOpeningBalance(
+                $input->entityId,
+                $input->fiscalTermId,
+                $row->accountTitleId,
+            );
+            $out[] = $row->withOpeningBalance($opening);
+        }
+
+        return $out;
     }
 
     /**
@@ -145,7 +206,7 @@ final readonly class QueryTrialBalanceUseCase
     private function rebuildWith(
         QueryTrialBalanceUseCaseInput $input,
         array $rows,
-        DateTimeImmutable $generatedAt,
+        \DateTimeImmutable $generatedAt,
     ): TrialBalance {
         return new TrialBalance(
             entityId: $input->entityId,
@@ -158,7 +219,7 @@ final readonly class QueryTrialBalanceUseCase
         );
     }
 
-    private function addOneDay(DateTimeImmutable $d): DateTimeImmutable
+    private function addOneDay(\DateTimeImmutable $d): \DateTimeImmutable
     {
         return $d->modify('+1 day');
     }

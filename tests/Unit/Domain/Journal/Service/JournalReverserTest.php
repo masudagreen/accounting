@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Journal\Service;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Journal\Journal;
@@ -24,7 +23,7 @@ final class JournalReverserTest extends TestCase
         ]);
 
         $reverser = new JournalReverser(new UlidGenerator(new FrozenClock()));
-        $reversedAt = new DateTimeImmutable('2026-04-22T09:00:00Z');
+        $reversedAt = new \DateTimeImmutable('2026-04-22T09:00:00Z');
         $reversal = $reverser->reverse($source, $reversedAt, '01HW7K9B2QV7C8Y4ZUSER000001', 'corrected');
 
         self::assertCount(2, $reversal->lines);
@@ -45,7 +44,7 @@ final class JournalReverserTest extends TestCase
         $reverser = new JournalReverser(new UlidGenerator(new FrozenClock()));
         $reversal = $reverser->reverse(
             $source,
-            new DateTimeImmutable('2026-04-22T09:00:00Z'),
+            new \DateTimeImmutable('2026-04-22T09:00:00Z'),
             '01HW7K9B2QV7C8Y4ZUSER000001',
             'fix',
         );
@@ -66,7 +65,7 @@ final class JournalReverserTest extends TestCase
         $reverser = new JournalReverser(new UlidGenerator(new FrozenClock()));
         $reversal = $reverser->reverse(
             $source,
-            new DateTimeImmutable('2026-04-22T09:00:00Z'),
+            new \DateTimeImmutable('2026-04-22T09:00:00Z'),
             '01HW7K9B2QV7C8Y4ZUSER000001',
             'typo',
         );
@@ -93,17 +92,17 @@ final class JournalReverserTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             );
-            $lineNo++;
+            ++$lineNo;
         }
 
         return new Journal(
             id: '01HW7K9B2QV7C8Y4ZJRNL000001',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             summary: 'Original',
             totalAmount: Journal::balance($lines),
             currencyCode: 'JPY',
@@ -112,9 +111,9 @@ final class JournalReverserTest extends TestCase
             sourceReceiptId: null,
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: '01HW7K9B2QV7C8Y4ZUSER000001',
-            approvedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
-            createdAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            approvedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             deletedAt: null,
             lines: $lines,
         );

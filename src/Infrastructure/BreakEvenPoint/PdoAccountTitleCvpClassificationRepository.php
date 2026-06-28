@@ -21,11 +21,12 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCvpClassificationRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
         private readonly UlidGenerator $ulids,
     ) {
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $sql = 'SELECT entity_id, account_title_id, cost_type, variable_ratio, notes
@@ -35,13 +36,15 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':e' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_values(array_filter(array_map(
             fn (array $r): ?AccountTitleCvpClassification => $this->hydrate($r),
             $rows,
         )));
     }
 
+    #[\Override]
     public function findByAccountTitle(string $entityId, string $accountTitleId): ?AccountTitleCvpClassification
     {
         $stmt = $this->pdo->prepare(
@@ -54,13 +57,15 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
             ':a' => UlidGenerator::decode($accountTitleId),
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function save(AccountTitleCvpClassification $classification): void
     {
         $sql = <<<'SQL'
@@ -76,14 +81,15 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':id' => UlidGenerator::decode($this->ulids->generate()),
-            ':e'  => UlidGenerator::decode($classification->entityId),
-            ':a'  => UlidGenerator::decode($classification->accountTitleId),
-            ':t'  => $classification->costType->value,
-            ':r'  => $classification->variableRatio,
-            ':n'  => $classification->notes,
+            ':e' => UlidGenerator::decode($classification->entityId),
+            ':a' => UlidGenerator::decode($classification->accountTitleId),
+            ':t' => $classification->costType->value,
+            ':r' => $classification->variableRatio,
+            ':n' => $classification->notes,
         ]);
     }
 
+    #[\Override]
     public function saveMany(array $classifications): void
     {
         if ($classifications === []) {
@@ -108,6 +114,7 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
         }
     }
 
+    #[\Override]
     public function delete(string $entityId, string $accountTitleId): void
     {
         $stmt = $this->pdo->prepare(
@@ -130,6 +137,7 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
         } catch (\InvalidArgumentException) {
             return null;
         }
+
         return new AccountTitleCvpClassification(
             entityId: self::encodeId($r['entity_id'] ?? ''),
             accountTitleId: self::encodeId($r['account_title_id'] ?? ''),
@@ -144,6 +152,7 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -153,6 +162,7 @@ final class PdoAccountTitleCvpClassificationRepository implements AccountTitleCv
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 }

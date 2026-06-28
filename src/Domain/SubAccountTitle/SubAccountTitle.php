@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\SubAccountTitle;
 
-use DateTimeImmutable;
-
 /**
  * Sub-account title (補助科目) row in a flat table under its parent
  * {@see \Rucaro\Domain\AccountTitle\AccountTitle}.
@@ -22,8 +20,8 @@ final readonly class SubAccountTitle
         public string $name,
         public int $sortOrder,
         public bool $isActive,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 }

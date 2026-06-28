@@ -28,7 +28,7 @@ final class AccountTitleValidator
         if ($codeTrim === '') {
             $errors['code'][] = 'コードを入力してください。';
         } elseif (strlen($codeTrim) > self::CODE_MAX_LENGTH) {
-            $errors['code'][] = 'コードは ' . self::CODE_MAX_LENGTH . ' 文字以内で入力してください。';
+            $errors['code'][] = 'コードは '.self::CODE_MAX_LENGTH.' 文字以内で入力してください。';
         } elseif (!preg_match('/^[A-Za-z0-9_\-]+$/', $codeTrim)) {
             $errors['code'][] = 'コードは半角英数字・ハイフン・アンダースコアのみ使用できます。';
         }
@@ -37,7 +37,7 @@ final class AccountTitleValidator
         if ($nameTrim === '') {
             $errors['name'][] = '名称を入力してください。';
         } elseif (mb_strlen($nameTrim) > self::NAME_MAX_LENGTH) {
-            $errors['name'][] = '名称は ' . self::NAME_MAX_LENGTH . ' 文字以内で入力してください。';
+            $errors['name'][] = '名称は '.self::NAME_MAX_LENGTH.' 文字以内で入力してください。';
         }
 
         if (!in_array($category, AccountTitle::CATEGORIES, true)) {

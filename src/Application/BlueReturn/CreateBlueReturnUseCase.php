@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\BlueReturn;
 
-use InvalidArgumentException;
 use Rucaro\Domain\BlueReturn\BlueReturnForm;
 use Rucaro\Domain\BlueReturn\BlueReturnRepositoryInterface;
 use Rucaro\Domain\BlueReturn\BlueReturnSnapshot;
@@ -37,32 +36,26 @@ final readonly class CreateBlueReturnUseCase
     public function execute(CreateBlueReturnInput $input): BlueReturnOutput
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->createdBy)) {
-            throw new InvalidArgumentException('createdBy must be a ULID.');
+            throw new \InvalidArgumentException('createdBy must be a ULID.');
         }
 
         $entity = $this->entities->findById($input->entityId);
         if ($entity === null) {
-            throw ValidationException::withErrors([
-                'entityId' => [sprintf('entity %s was not found.', $input->entityId)],
-            ]);
+            throw ValidationException::withErrors(['entityId' => [sprintf('entity %s was not found.', $input->entityId)]]);
         }
         if ($entity->isCorporate) {
-            throw ValidationException::withErrors([
-                'entityId' => ['blue return forms are only available for individual entrepreneurs.'],
-            ]);
+            throw ValidationException::withErrors(['entityId' => ['blue return forms are only available for individual entrepreneurs.']]);
         }
 
         $existing = $this->forms->findByEntityAndFiscalTerm($input->entityId, $input->fiscalTermId);
         if ($existing !== null) {
-            throw ValidationException::withErrors([
-                'fiscalTermId' => ['a blue return form already exists for this fiscal term.'],
-            ]);
+            throw ValidationException::withErrors(['fiscalTermId' => ['a blue return form already exists for this fiscal term.']]);
         }
 
         $snapshot = $input->snapshot === []
@@ -84,6 +77,7 @@ final readonly class CreateBlueReturnUseCase
             deletedAt: null,
         );
         $this->forms->save($form);
+
         return new BlueReturnOutput($form);
     }
 }

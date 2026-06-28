@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\User;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\User\User;
 use Rucaro\Domain\User\UserRepositoryInterface;
@@ -21,13 +19,14 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoUserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findByEmail(string $email): ?User
     {
-        $sql = 'SELECT id, login_id, display_name, email, password_hash, is_active,
+        $sql = 'SELECT id, login_id, display_name, email, password_hash, is_active, role,
                        last_login_at, created_at, updated_at, deleted_at
                 FROM users
                 WHERE email = :email AND deleted_at IS NULL
@@ -35,16 +34,18 @@ final class PdoUserRepository implements UserRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':email' => $email]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findById(string $id): ?User
     {
-        $sql = 'SELECT id, login_id, display_name, email, password_hash, is_active,
+        $sql = 'SELECT id, login_id, display_name, email, password_hash, is_active, role,
                        last_login_at, created_at, updated_at, deleted_at
                 FROM users
                 WHERE id = :id AND deleted_at IS NULL
@@ -52,18 +53,20 @@ final class PdoUserRepository implements UserRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
-    public function touchLastLogin(string $id, DateTimeImmutable $at): void
+    #[\Override]
+    public function touchLastLogin(string $id, \DateTimeImmutable $at): void
     {
         $stmt = $this->pdo->prepare('UPDATE users SET last_login_at = :at WHERE id = :id');
         $stmt->execute([
-            ':at' => $at->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u'),
+            ':at' => $at->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s.u'),
             ':id' => UlidGenerator::decode($id),
         ]);
     }
@@ -81,10 +84,20 @@ final class PdoUserRepository implements UserRepositoryInterface
             passwordHash: (string) ($row['password_hash'] ?? ''),
             isActive: self::toBool($row['is_active'] ?? false),
             lastLoginAt: self::parseTimestamp($row['last_login_at'] ?? null),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             deletedAt: self::parseTimestamp($row['deleted_at'] ?? null),
+            role: self::normaliseRole($row['role'] ?? null),
         );
+    }
+
+    private static function normaliseRole(mixed $raw): string
+    {
+        if (!is_string($raw) || $raw === '') {
+            return User::ROLE_ADMIN;
+        }
+
+        return $raw === User::ROLE_CLERK ? User::ROLE_CLERK : User::ROLE_ADMIN;
     }
 
     private static function stringifyId(mixed $raw): string
@@ -92,6 +105,7 @@ final class PdoUserRepository implements UserRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -106,10 +120,11 @@ final class PdoUserRepository implements UserRepositoryInterface
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -119,7 +134,7 @@ final class PdoUserRepository implements UserRepositoryInterface
         }
         // MariaDB TIMESTAMP(6) comes back as "YYYY-MM-DD HH:MM:SS.uuuuuu".
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\ConsumptionTax;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCategoryCode;
 use Rucaro\Domain\ConsumptionTax\TaxableTransaction;
 use Rucaro\Domain\ConsumptionTax\TaxableTransactionQueryInterface;
@@ -50,20 +47,21 @@ final class PdoTaxableTransactionQueryService implements TaxableTransactionQuery
         ORDER BY je.journal_date ASC
         SQL;
 
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
-    public function findByPeriod(string $entityId, DateTimeImmutable $from, DateTimeImmutable $to): array
+    #[\Override]
+    public function findByPeriod(string $entityId, \DateTimeImmutable $from, \DateTimeImmutable $to): array
     {
         $stmt = $this->pdo->prepare(self::QUERY_SQL);
         $stmt->execute([
             ':entity' => UlidGenerator::decode($entityId),
-            ':from'   => $from->format('Y-m-d'),
-            ':to'     => $to->format('Y-m-d'),
+            ':from' => $from->format('Y-m-d'),
+            ':to' => $to->format('Y-m-d'),
         ]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         /** @var list<TaxableTransaction> $out */
         $out = [];
         foreach ($rows as $r) {
@@ -74,7 +72,7 @@ final class PdoTaxableTransactionQueryService implements TaxableTransactionQuery
             $amountExcluding = (string) ($r['amount'] ?? '0.0000');
             $tax = (string) ($r['tax_amount'] ?? '0.0000');
             $out[] = new TaxableTransaction(
-                bookedOn: new DateTimeImmutable((string) ($r['journal_date'] ?? '1970-01-01'), new DateTimeZone('UTC')),
+                bookedOn: new \DateTimeImmutable((string) ($r['journal_date'] ?? '1970-01-01'), new \DateTimeZone('UTC')),
                 categoryCode: $code,
                 ratePercent: (string) ($r['rate_percent'] ?? '0.00'),
                 isReduced: (int) ($r['is_reduced'] ?? 0) === 1,
@@ -82,6 +80,7 @@ final class PdoTaxableTransactionQueryService implements TaxableTransactionQuery
                 taxAmount: $tax,
             );
         }
+
         return $out;
     }
 }

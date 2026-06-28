@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateInterval;
-use DateTimeZone;
 use Rucaro\Application\Approval\Port\ApprovalNotifierInterface;
 use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 use Rucaro\Domain\Approval\ApprovalToken;
@@ -49,12 +47,12 @@ final readonly class IssueApprovalTokenUseCase
         $target = $this->targets->resolve($input->targetKind, $input->targetId);
 
         $generated = $this->tokenGenerator->generate();
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $ttlHours = $input->ttlHours ?? $this->defaultTtlHours;
         if ($ttlHours < 1) {
             $ttlHours = $this->defaultTtlHours;
         }
-        $expiresAt = $now->add(new DateInterval(sprintf('PT%dH', $ttlHours)));
+        $expiresAt = $now->add(new \DateInterval(sprintf('PT%dH', $ttlHours)));
 
         $token = new ApprovalToken(
             id: $this->ulids->generate(),

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\BlueReturn;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\BlueReturn\CreateBlueReturnInput;
@@ -116,7 +115,8 @@ final class CreateBlueReturnUseCaseTest extends TestCase
 
     private function individualEntity(): Entity
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new Entity(
             id: self::ENTITY_ID,
             ownerUserId: self::OWNER_ID,
@@ -134,7 +134,8 @@ final class CreateBlueReturnUseCaseTest extends TestCase
 
     private function corporateEntity(): Entity
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new Entity(
             id: self::ENTITY_ID,
             ownerUserId: self::OWNER_ID,

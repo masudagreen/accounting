@@ -17,6 +17,7 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
         $this->items[] = $e;
     }
 
+    #[\Override]
     public function listByOwner(
         string $ownerUserId,
         int $page,
@@ -25,9 +26,11 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
         ?bool $isActive = null,
     ): array {
         $filtered = $this->filter($ownerUserId, $search, $isActive);
+
         return array_slice($filtered, ($page - 1) * $pageSize, $pageSize);
     }
 
+    #[\Override]
     public function countByOwner(
         string $ownerUserId,
         ?string $search = null,
@@ -36,6 +39,7 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
         return count($this->filter($ownerUserId, $search, $isActive));
     }
 
+    #[\Override]
     public function findById(string $id): ?Entity
     {
         foreach ($this->items as $e) {
@@ -43,20 +47,24 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
                 return $e;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function save(Entity $entity): void
     {
         foreach ($this->items as $i => $e) {
             if ($e->id === $entity->id) {
                 $this->items[$i] = $entity;
+
                 return;
             }
         }
         $this->items[] = $entity;
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
         unset($deletedAt);
@@ -64,6 +72,7 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
             if ($e->id === $id) {
                 unset($this->items[$i]);
                 $this->items = array_values($this->items);
+
                 return;
             }
         }
@@ -88,6 +97,7 @@ final class InMemoryEntityRepo implements EntityRepositoryInterface
             }
             $out[] = $e;
         }
+
         return $out;
     }
 }

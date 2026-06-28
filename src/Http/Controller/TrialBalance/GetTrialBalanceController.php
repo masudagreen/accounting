@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCase;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCaseInput;
 use Rucaro\Http\Middleware\AuthenticateBearer;
@@ -35,7 +32,7 @@ final readonly class GetTrialBalanceController
     public function __construct(
         private QueryTrialBalanceUseCase $useCase,
         private AuthenticateBearer $auth,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -56,7 +53,7 @@ final readonly class GetTrialBalanceController
         }
 
         $asOf = self::parseDate($request->queryString('asOf'))
-            ?? new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
         $from = self::parseDate($request->queryString('from'))
             ?? $this->lookupFiscalTermStart($fiscalTermId)
@@ -73,10 +70,11 @@ final readonly class GetTrialBalanceController
 
         if ($format === 'csv') {
             $csv = TrialBalanceSerializer::toCsv($tb);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'text/csv; charset=utf-8',
+                    'Content-Type' => 'text/csv; charset=utf-8',
                     'Content-Disposition' => 'attachment; filename="trial-balance.csv"',
                 ],
                 body: $csv,
@@ -86,7 +84,7 @@ final readonly class GetTrialBalanceController
         return EnvelopeResponse::ok(TrialBalanceSerializer::toArray($tb));
     }
 
-    private static function parseDate(?string $raw): ?DateTimeImmutable
+    private static function parseDate(?string $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -95,13 +93,13 @@ final readonly class GetTrialBalanceController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private function lookupFiscalTermStart(string $fiscalTermId): ?DateTimeImmutable
+    private function lookupFiscalTermStart(string $fiscalTermId): ?\DateTimeImmutable
     {
         $stmt = $this->pdo->prepare('SELECT start_date FROM fiscal_terms WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
@@ -111,7 +109,7 @@ final readonly class GetTrialBalanceController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

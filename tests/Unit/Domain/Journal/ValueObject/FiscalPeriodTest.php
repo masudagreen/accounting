@@ -69,8 +69,8 @@ final class FiscalPeriodTest extends TestCase
 
         self::assertSame([
             'fiscalTermId' => '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            'startDate'    => '2026-04-01',
-            'endDate'      => '2027-03-31',
+            'startDate' => '2026-04-01',
+            'endDate' => '2027-03-31',
         ], $p->toPrimitive());
     }
 

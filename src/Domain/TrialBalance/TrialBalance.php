@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\TrialBalance;
 
-use DateTimeImmutable;
 use Rucaro\Support\Decimal\Decimal;
 
 /**
@@ -23,11 +22,11 @@ final readonly class TrialBalance
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public string $currencyCode,
         public array $rows,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 
@@ -40,6 +39,7 @@ final readonly class TrialBalance
         foreach ($this->rows as $row) {
             $sum = Decimal::add($sum, $row->debitTotal);
         }
+
         return Decimal::normalize($sum);
     }
 
@@ -52,6 +52,7 @@ final readonly class TrialBalance
         foreach ($this->rows as $row) {
             $sum = Decimal::add($sum, $row->creditTotal);
         }
+
         return Decimal::normalize($sum);
     }
 

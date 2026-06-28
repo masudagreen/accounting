@@ -63,16 +63,17 @@ final readonly class EntityController
         ));
         $rows = array_map(
             static fn (Entity $e): array => [
-                'id'              => $e->id,
-                'name'            => $e->name,
-                'nationCode'      => $e->nationCode,
-                'currencyCode'    => $e->currencyCode,
+                'id' => $e->id,
+                'name' => $e->name,
+                'nationCode' => $e->nationCode,
+                'currencyCode' => $e->currencyCode,
                 'fiscalStartMmDd' => $e->fiscalStartMmDd,
-                'isActive'        => $e->isActive,
-                'isCorporate'     => $e->isCorporate,
+                'isActive' => $e->isActive,
+                'isCorporate' => $e->isCorporate,
             ],
             $out->items,
         );
+
         return HtmlResponse::ok($this->view->render('masters/entities/list.html.tpl', array_merge(
             $this->commonViewData('事業主マスタ'),
             ['rows' => $rows, 'total' => $out->total],
@@ -86,6 +87,7 @@ final readonly class EntityController
         if ($guard instanceof HtmlResponse) {
             return $guard;
         }
+
         return $this->renderForm(
             mode: 'new',
             formAction: '/ui/masters/entities/new',
@@ -106,6 +108,7 @@ final readonly class EntityController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/entities/new');
         }
         $values = self::valuesFromBody($body);
@@ -120,6 +123,7 @@ final readonly class EntityController
                 isCorporate: $values['is_corporate'] === '1',
             ));
             $this->flash->addSuccess('事業主を登録しました。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         } catch (ValidationException $e) {
             return $this->renderForm(
@@ -134,7 +138,7 @@ final readonly class EntityController
                 mode: 'new',
                 formAction: '/ui/masters/entities/new',
                 values: $values,
-                errors: ['_' => ['登録に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['登録に失敗しました: '.$e->getMessage()]],
                 status: 500,
             );
         }
@@ -150,11 +154,13 @@ final readonly class EntityController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の事業主が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         }
+
         return $this->renderForm(
             mode: 'edit',
-            formAction: '/ui/masters/entities/' . $existing->id,
+            formAction: '/ui/masters/entities/'.$existing->id,
             values: self::valuesFromEntity($existing),
             errors: [],
             status: 200,
@@ -170,7 +176,8 @@ final readonly class EntityController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/masters/entities/' . $id);
+
+            return HtmlResponse::redirect('/ui/masters/entities/'.$id);
         }
         $values = self::valuesFromBody($body);
         try {
@@ -184,14 +191,16 @@ final readonly class EntityController
                 isCorporate: $values['is_corporate'] === '1',
             ));
             $this->flash->addSuccess('事業主を更新しました。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の事業主が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         } catch (ValidationException $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/entities/' . $id,
+                formAction: '/ui/masters/entities/'.$id,
                 values: $values,
                 errors: $e->errors(),
                 status: 422,
@@ -199,9 +208,9 @@ final readonly class EntityController
         } catch (\Throwable $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/entities/' . $id,
+                formAction: '/ui/masters/entities/'.$id,
                 values: $values,
-                errors: ['_' => ['更新に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['更新に失敗しました: '.$e->getMessage()]],
                 status: 500,
             );
         }
@@ -217,20 +226,22 @@ final readonly class EntityController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の事業主が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         }
         $data = array_merge(
             $this->commonViewData('事業主の削除確認'),
             [
                 'target' => [
-                    'id'           => $existing->id,
-                    'name'         => $existing->name,
-                    'nationCode'   => $existing->nationCode,
+                    'id' => $existing->id,
+                    'name' => $existing->name,
+                    'nationCode' => $existing->nationCode,
                     'currencyCode' => $existing->currencyCode,
                 ],
-                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
+                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
             ],
         );
+
         return HtmlResponse::ok($this->view->render('masters/entities/delete-confirm.html.tpl', $data));
     }
 
@@ -241,8 +252,9 @@ final readonly class EntityController
             return $guard;
         }
         $body = MasterFormSupport::parseForm($request);
-        if (!$this->csrf->validateToken(self::CSRF_FORM_ID . '_delete', MasterFormSupport::str($body, '_csrf'))) {
+        if (!$this->csrf->validateToken(self::CSRF_FORM_ID.'_delete', MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/entities');
         }
         try {
@@ -251,8 +263,9 @@ final readonly class EntityController
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の事業主が見つかりません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
         }
+
         return HtmlResponse::redirect('/ui/masters/entities');
     }
 
@@ -261,6 +274,7 @@ final readonly class EntityController
         if ($this->session->getUserId() === null) {
             return HtmlResponse::redirect('/ui/login');
         }
+
         return null;
     }
 
@@ -270,20 +284,20 @@ final readonly class EntityController
     private function commonViewData(string $title): array
     {
         return [
-            'page_title'         => $title,
-            'active_nav'         => 'masters',
-            'active_master'      => 'entities',
-            'csrf_logout_token'  => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'  => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'  => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'  => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_delete_token'  => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
-            'display_name'       => $this->session->getDisplayName() ?? '',
-            'user_email'         => $this->session->getEmail() ?? '',
-            'entities'           => [],
+            'page_title' => $title,
+            'active_nav' => 'masters',
+            'active_master' => 'entities',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_delete_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
             'selected_entity_id' => $this->session->getSelectedEntity() ?? '',
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'     => $this->flash->consume(),
+            'flash_messages' => $this->flash->consume(),
         ];
     }
 
@@ -301,14 +315,15 @@ final readonly class EntityController
         $data = array_merge(
             $this->commonViewData($mode === 'new' ? '事業主の新規追加' : '事業主の編集'),
             [
-                'form_mode'       => $mode,
-                'form_action'     => $formAction,
-                'form_values'     => $values,
-                'form_errors'     => $errors,
+                'form_mode' => $mode,
+                'form_action' => $formAction,
+                'form_values' => $values,
+                'form_errors' => $errors,
                 'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
                 'csrf_form_field' => self::CSRF_FORM_ID,
             ],
         );
+
         return HtmlResponse::of($status, $this->view->render('masters/entities/form.html.tpl', $data));
     }
 
@@ -318,28 +333,29 @@ final readonly class EntityController
     private static function blankValues(): array
     {
         return [
-            'name'              => '',
-            'nation_code'       => 'JPN',
-            'currency_code'     => 'JPY',
+            'name' => '',
+            'nation_code' => 'JPN',
+            'currency_code' => 'JPY',
             'fiscal_start_mmdd' => '0101',
-            'is_active'         => '1',
-            'is_corporate'      => '1',
+            'is_active' => '1',
+            'is_corporate' => '1',
         ];
     }
 
     /**
      * @param array<string, mixed> $body
+     *
      * @return array<string, string>
      */
     private static function valuesFromBody(array $body): array
     {
         return [
-            'name'              => MasterFormSupport::str($body, 'name'),
-            'nation_code'       => MasterFormSupport::str($body, 'nation_code', 'JPN'),
-            'currency_code'     => MasterFormSupport::str($body, 'currency_code', 'JPY'),
+            'name' => MasterFormSupport::str($body, 'name'),
+            'nation_code' => MasterFormSupport::str($body, 'nation_code', 'JPN'),
+            'currency_code' => MasterFormSupport::str($body, 'currency_code', 'JPY'),
             'fiscal_start_mmdd' => MasterFormSupport::str($body, 'fiscal_start_mmdd', '0101'),
-            'is_active'         => MasterFormSupport::bool($body, 'is_active') ? '1' : '0',
-            'is_corporate'      => MasterFormSupport::bool($body, 'is_corporate') ? '1' : '0',
+            'is_active' => MasterFormSupport::bool($body, 'is_active') ? '1' : '0',
+            'is_corporate' => MasterFormSupport::bool($body, 'is_corporate') ? '1' : '0',
         ];
     }
 
@@ -349,12 +365,12 @@ final readonly class EntityController
     private static function valuesFromEntity(Entity $e): array
     {
         return [
-            'name'              => $e->name,
-            'nation_code'       => $e->nationCode,
-            'currency_code'     => $e->currencyCode,
+            'name' => $e->name,
+            'nation_code' => $e->nationCode,
+            'currency_code' => $e->currencyCode,
             'fiscal_start_mmdd' => $e->fiscalStartMmDd,
-            'is_active'         => $e->isActive ? '1' : '0',
-            'is_corporate'      => $e->isCorporate ? '1' : '0',
+            'is_active' => $e->isActive ? '1' : '0',
+            'is_corporate' => $e->isCorporate ? '1' : '0',
         ];
     }
 }

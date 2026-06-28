@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Ledger;
 
-use DateTimeImmutable;
-
 /**
  * General Ledger aggregate (総勘定元帳).
  *
@@ -25,11 +23,11 @@ final readonly class Ledger
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public string $currencyCode,
         public array $books,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 }

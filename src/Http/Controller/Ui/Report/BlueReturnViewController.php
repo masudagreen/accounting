@@ -45,6 +45,7 @@ final readonly class BlueReturnViewController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addError('会計単位 (entity) が未選択です。上部ナビから選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
@@ -65,36 +66,38 @@ final readonly class BlueReturnViewController
         $format = strtolower($request->queryString('format') ?? 'html');
         if ($format === 'pdf' && $form !== null) {
             $pdf = $this->pdfGenerator->render($form);
+
             return new HtmlResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => sprintf(
                         'attachment; filename="blue-return-%s.pdf"',
                         $form->fiscalTermId,
                     ),
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
 
         $data = [
-            'page_title'           => '青色申告決算書',
-            'active_nav'           => 'blue_return',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'selected_entity_id'   => $entityId,
+            'page_title' => '青色申告決算書',
+            'active_nav' => 'blue_return',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $fiscalTermId ?? '',
-            'entities'             => [],
-            'has_form'             => $form !== null,
-            'form'                 => $form !== null ? self::formToArray($form) : null,
-            'flash_messages'       => $this->flash->consume(),
+            'entities' => [],
+            'has_form' => $form !== null,
+            'form' => $form !== null ? self::formToArray($form) : null,
+            'flash_messages' => $this->flash->consume(),
         ];
+
         return HtmlResponse::ok($this->view->render('blue_return/view.html.tpl', $data));
     }
 
@@ -104,14 +107,14 @@ final readonly class BlueReturnViewController
     private static function formToArray(BlueReturnForm $form): array
     {
         return [
-            'id'             => $form->id,
-            'formType'       => $form->formType->value,
-            'status'         => $form->status->value,
-            'finalizedAt'    => $form->finalizedAt?->format('Y-m-d H:i:s') ?? '',
-            'page1Pl'        => $form->snapshot->page1Pl,
-            'page2Monthly'   => $form->snapshot->page2Monthly,
+            'id' => $form->id,
+            'formType' => $form->formType->value,
+            'status' => $form->status->value,
+            'finalizedAt' => $form->finalizedAt?->format('Y-m-d H:i:s') ?? '',
+            'page1Pl' => $form->snapshot->page1Pl,
+            'page2Monthly' => $form->snapshot->page2Monthly,
             'page3Breakdown' => $form->snapshot->page3Breakdown,
-            'page4Bs'        => $form->snapshot->page4Bs,
+            'page4Bs' => $form->snapshot->page4Bs,
         ];
     }
 }

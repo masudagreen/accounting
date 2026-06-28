@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\StatementOfChangesInEquity\Service\StatementOfChangesInEquityBuilder;
@@ -23,8 +21,8 @@ final class StatementOfChangesInEquityJsonSerializerTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [SsSectionCode::CapitalStock->value => '10000000.0000'],
             adjustments: [new SsManualAdjustment(
@@ -39,7 +37,7 @@ final class StatementOfChangesInEquityJsonSerializerTest extends TestCase
                 notes: null,
             )],
             netIncome: '3000000.0000',
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
 
         $payload = StatementOfChangesInEquityJsonSerializer::statementToArray($ss);

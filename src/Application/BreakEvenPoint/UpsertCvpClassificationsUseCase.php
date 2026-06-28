@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\BreakEvenPoint;
 
-use InvalidArgumentException;
 use Rucaro\Domain\BreakEvenPoint\AccountTitleCvpClassification;
 use Rucaro\Domain\BreakEvenPoint\AccountTitleCvpClassificationRepositoryInterface;
 use Rucaro\Domain\BreakEvenPoint\CvpCostType;
@@ -28,26 +27,23 @@ final readonly class UpsertCvpClassificationsUseCase
 
     /**
      * @param list<UpsertCvpClassificationInput> $rows
+     *
      * @return list<AccountTitleCvpClassification>
      */
     public function execute(string $entityId, array $rows): array
     {
         if (!UlidGenerator::isValid($entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         $built = [];
         foreach ($rows as $idx => $row) {
             if (!UlidGenerator::isValid($row->accountTitleId)) {
-                throw ValidationException::withErrors([
-                    "rows.$idx.accountTitleId" => ['accountTitleId must be a ULID.'],
-                ]);
+                throw ValidationException::withErrors(["rows.$idx.accountTitleId" => ['accountTitleId must be a ULID.']]);
             }
             try {
                 $type = CvpCostType::fromString($row->costType);
-            } catch (InvalidArgumentException $e) {
-                throw ValidationException::withErrors([
-                    "rows.$idx.costType" => [$e->getMessage()],
-                ]);
+            } catch (\InvalidArgumentException $e) {
+                throw ValidationException::withErrors(["rows.$idx.costType" => [$e->getMessage()]]);
             }
             $built[] = AccountTitleCvpClassification::canonicalise(
                 entityId: $entityId,
@@ -58,6 +54,7 @@ final readonly class UpsertCvpClassificationsUseCase
             );
         }
         $this->repo->saveMany($built);
+
         return $built;
     }
 }

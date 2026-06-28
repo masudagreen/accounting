@@ -16,10 +16,11 @@ use Rucaro\Infrastructure\Crypto\VersionedCipher;
 final class VersionedCipherTest extends TestCase
 {
     private const MASTER_KEY_B64 = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8';
-    private const LEGACY_SECRET  = 'legacy-master-secret-xyz';
+    private const LEGACY_SECRET = 'legacy-master-secret-xyz';
 
     private AesGcmCipher $aesGcmCipher;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->aesGcmCipher = new AesGcmCipher(self::MASTER_KEY_B64);
@@ -59,15 +60,15 @@ final class VersionedCipherTest extends TestCase
 
         // Build a legacy blob using the same reference recipe documented in
         // encrypted-columns.md §4. Padded to a block boundary.
-        $plaintext  = 'legacy-pw';
-        $padded     = $plaintext . str_repeat("\0", 8 - (strlen($plaintext) % 8));
-        $key        = substr(md5(self::LEGACY_SECRET), 0, 56);
-        $iv         = substr(md5($key), 0, 8);
+        $plaintext = 'legacy-pw';
+        $padded = $plaintext.str_repeat("\0", 8 - (strlen($plaintext) % 8));
+        $key = substr(md5(self::LEGACY_SECRET), 0, 56);
+        $iv = substr(md5($key), 0, 8);
         $ciphertext = openssl_encrypt(
             $padded,
             'bf-cbc',
             $key,
-            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+            \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
             $iv,
         );
         self::assertNotFalse($ciphertext);
@@ -95,7 +96,7 @@ final class VersionedCipherTest extends TestCase
         $legacy = new LegacyBlowfishDecryptor('unused-in-this-test');
         $cipher = new VersionedCipher($this->aesGcmCipher, $legacy);
 
-        $token    = $this->aesGcmCipher->encrypt('payload', 'ctx');
+        $token = $this->aesGcmCipher->encrypt('payload', 'ctx');
         $tampered = self::flipTagBit($token);
 
         try {
@@ -109,18 +110,18 @@ final class VersionedCipherTest extends TestCase
 
     private static function flipTagBit(string $token): string
     {
-        $parts = explode(':', $token, 3);
+        $parts = array_pad(explode(':', $token, 3), 3, '');
         self::assertCount(3, $parts);
 
         $payload = $parts[2];
-        $pad     = strlen($payload) % 4;
+        $pad = strlen($payload) % 4;
         if ($pad !== 0) {
             $payload .= str_repeat('=', 4 - $pad);
         }
         $decoded = base64_decode(strtr($payload, '-_', '+/'), true);
         self::assertIsString($decoded);
 
-        $idx           = strlen($decoded) - 1;
+        $idx = strlen($decoded) - 1;
         $decoded[$idx] = chr(ord($decoded[$idx]) ^ 0x01);
 
         $parts[2] = rtrim(strtr(base64_encode($decoded), '+/', '-_'), '=');

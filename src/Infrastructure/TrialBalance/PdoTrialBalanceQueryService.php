@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\TrialBalance\TrialBalance;
 use Rucaro\Domain\TrialBalance\TrialBalanceQueryInterface;
@@ -52,25 +50,26 @@ final class PdoTrialBalanceQueryService implements TrialBalanceQueryInterface
         SQL;
 
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function queryByPeriod(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): TrialBalance {
         $stmt = $this->pdo->prepare(self::SUM_SQL);
         $stmt->execute([
             ':entity' => UlidGenerator::decode($entityId),
-            ':term'   => UlidGenerator::decode($fiscalTermId),
-            ':from'   => $from->format('Y-m-d'),
-            ':to'     => $to->format('Y-m-d'),
+            ':term' => UlidGenerator::decode($fiscalTermId),
+            ':from' => $from->format('Y-m-d'),
+            ':to' => $to->format('Y-m-d'),
         ]);
         /** @var list<array<string, mixed>> $rawRows */
-        $rawRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rawRows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $rows = [];
         foreach ($rawRows as $r) {
@@ -93,11 +92,12 @@ final class PdoTrialBalanceQueryService implements TrialBalanceQueryInterface
             toDate: $to,
             currencyCode: 'JPY',
             rows: $rows,
-            generatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
         );
     }
 
-    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?DateTimeImmutable
+    #[\Override]
+    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?\DateTimeImmutable
     {
         $stmt = $this->pdo->prepare(
             'SELECT MAX(snapshot_date) AS latest
@@ -106,7 +106,7 @@ final class PdoTrialBalanceQueryService implements TrialBalanceQueryInterface
         );
         $stmt->execute([
             ':entity' => UlidGenerator::decode($entityId),
-            ':term'   => UlidGenerator::decode($fiscalTermId),
+            ':term' => UlidGenerator::decode($fiscalTermId),
         ]);
         /** @var string|false $raw */
         $raw = $stmt->fetchColumn();
@@ -114,7 +114,7 @@ final class PdoTrialBalanceQueryService implements TrialBalanceQueryInterface
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
@@ -125,6 +125,7 @@ final class PdoTrialBalanceQueryService implements TrialBalanceQueryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 }

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
-use RuntimeException;
-
 /**
  * Import legacy `accountingEntity` rows into new `entities`.
  *
@@ -18,8 +15,8 @@ use RuntimeException;
 final class LegacyEntityImporter
 {
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly bool $dryRun,
     ) {
@@ -32,7 +29,7 @@ final class LegacyEntityImporter
         $rows = $this->source->query(
             'SELECT id, stampRegister, stampUpdate, strTitle, strNation, strCurrency
                FROM accountingEntity
-              ORDER BY id'
+              ORDER BY id',
         );
         if ($rows === false) {
             return ImportReport::empty('entities', ['source query failed']);
@@ -50,7 +47,7 @@ final class LegacyEntityImporter
                 fiscal_start_mmdd, is_active, created_at, updated_at)
              VALUES
                (:id, :owner, :name, :nation, :currency,
-                :mmdd, :active, :ca, :ua)'
+                :mmdd, :active, :ca, :ua)',
         );
 
         foreach ($rows as $r) {
@@ -86,13 +83,13 @@ final class LegacyEntityImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $binaryUlid, PDO::PARAM_LOB);
-            $insert->bindValue(':owner', $ownerBin, PDO::PARAM_LOB);
+            $insert->bindValue(':id', $binaryUlid, \PDO::PARAM_LOB);
+            $insert->bindValue(':owner', $ownerBin, \PDO::PARAM_LOB);
             $insert->bindValue(':name', $title);
             $insert->bindValue(':nation', $nation);
             $insert->bindValue(':currency', $currency);
             $insert->bindValue(':mmdd', $mmdd);
-            $insert->bindValue(':active', true, PDO::PARAM_BOOL);
+            $insert->bindValue(':active', true, \PDO::PARAM_BOOL);
             $insert->bindValue(':ca', $createdAt);
             $insert->bindValue(':ua', $updatedAt);
             $insert->execute();
@@ -106,13 +103,14 @@ final class LegacyEntityImporter
     {
         $stmt = $this->source->query('SELECT id FROM baseAccount ORDER BY id LIMIT 1');
         if ($stmt === false) {
-            throw new RuntimeException('pickOwnerUserUlid: cannot read baseAccount');
+            throw new \RuntimeException('pickOwnerUserUlid: cannot read baseAccount');
         }
         /** @var array<string,mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
-            throw new RuntimeException('pickOwnerUserUlid: no user in baseAccount');
+            throw new \RuntimeException('pickOwnerUserUlid: no user in baseAccount');
         }
+
         return $this->idMap->require(IdMapping::TABLE_USERS, (int) $row['id']);
     }
 
@@ -127,7 +125,7 @@ final class LegacyEntityImporter
                FROM accountingEntityJpn
               WHERE idEntity = :e
               ORDER BY numFiscalPeriod ASC
-              LIMIT 1'
+              LIMIT 1',
         );
         $stmt->execute([':e' => $entityId]);
         /** @var string|false $month */
@@ -139,6 +137,7 @@ final class LegacyEntityImporter
         if ($m < 1 || $m > 12) {
             return '0101';
         }
+
         return sprintf('%02d01', $m);
     }
 }

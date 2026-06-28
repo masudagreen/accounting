@@ -31,6 +31,7 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
     ) {
     }
 
+    #[\Override]
     public function render(BreakEvenPointAnalysis $analysis): string
     {
         $html = $this->renderHtml($analysis);
@@ -52,6 +53,7 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -59,12 +61,13 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'analysis'        => $this->buildViewModel($analysis),
-            'title'           => '損益分岐点分析 (Break-Even Point)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'analysis' => $this->buildViewModel($analysis),
+            'title' => '損益分岐点分析 (Break-Even Point)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('break_even_point.html.tpl');
     }
 
@@ -74,48 +77,48 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
     private function buildViewModel(BreakEvenPointAnalysis $a): array
     {
         return [
-            'entityId'                => $a->entityId,
-            'fiscalTermId'            => $a->fiscalTermId,
-            'fromDate'                => $a->fromDate->format('Y-m-d'),
-            'toDate'                  => $a->toDate->format('Y-m-d'),
-            'currencyCode'            => $a->currencyCode,
-            'sales'                   => self::fmtSigned($a->sales),
-            'variableCosts'           => self::fmtSigned($a->variableCosts),
-            'fixedCosts'              => self::fmtSigned($a->fixedCosts),
-            'contributionMargin'      => self::fmtSigned($a->contributionMargin),
-            'contributionMarginRate'  => self::fmtPct($a->contributionMarginRate),
-            'bepSales'                => self::fmtSigned($a->bepSales),
-            'bepRatio'                => self::fmtPct($a->bepRatio),
-            'safetyMarginRatio'       => self::fmtPct($a->safetyMarginRatio),
-            'operatingProfit'         => self::fmtSigned($a->operatingProfit),
-            'isBelowBreakEven'        => $a->isBelowBreakEven(),
-            'salesBreakdown'          => array_map(
+            'entityId' => $a->entityId,
+            'fiscalTermId' => $a->fiscalTermId,
+            'fromDate' => $a->fromDate->format('Y-m-d'),
+            'toDate' => $a->toDate->format('Y-m-d'),
+            'currencyCode' => $a->currencyCode,
+            'sales' => self::fmtSigned($a->sales),
+            'variableCosts' => self::fmtSigned($a->variableCosts),
+            'fixedCosts' => self::fmtSigned($a->fixedCosts),
+            'contributionMargin' => self::fmtSigned($a->contributionMargin),
+            'contributionMarginRate' => self::fmtPct($a->contributionMarginRate),
+            'bepSales' => self::fmtSigned($a->bepSales),
+            'bepRatio' => self::fmtPct($a->bepRatio),
+            'safetyMarginRatio' => self::fmtPct($a->safetyMarginRatio),
+            'operatingProfit' => self::fmtSigned($a->operatingProfit),
+            'isBelowBreakEven' => $a->isBelowBreakEven(),
+            'salesBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'   => $r['accountTitleCode'],
-                    'name'   => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'amount' => self::fmtSigned($r['amount']),
                 ],
                 $a->salesBreakdown,
             ),
-            'variableBreakdown'       => array_map(
+            'variableBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'     => $r['accountTitleCode'],
-                    'name'     => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'costType' => $r['costType'],
-                    'amount'   => self::fmtSigned($r['amount']),
+                    'amount' => self::fmtSigned($r['amount']),
                 ],
                 $a->variableBreakdown,
             ),
-            'fixedBreakdown'          => array_map(
+            'fixedBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'     => $r['accountTitleCode'],
-                    'name'     => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'costType' => $r['costType'],
-                    'amount'   => self::fmtSigned($r['amount']),
+                    'amount' => self::fmtSigned($r['amount']),
                 ],
                 $a->fixedBreakdown,
             ),
-            'generatedAt'             => $a->generatedAt->format('Y-m-d H:i:s'),
+            'generatedAt' => $a->generatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -126,7 +129,8 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
         }
         $num = (float) $amount;
         $abs = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $abs . ')' : $abs;
+
+        return $num < 0 ? '('.$abs.')' : $abs;
     }
 
     /** Render a 0..1 decimal string as a percentage to 1 decimal place. */
@@ -135,7 +139,8 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
         if ($ratio === '' || !is_numeric($ratio)) {
             return '0.0%';
         }
-        return number_format((float) $ratio * 100.0, 1, '.', '') . '%';
+
+        return number_format((float) $ratio * 100.0, 1, '.', '').'%';
     }
 
     private function buildSmarty(): Smarty
@@ -144,17 +149,19 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -180,7 +187,7 @@ final class DompdfBreakEvenPointGenerator implements BreakEvenPointPdfGeneratorI
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

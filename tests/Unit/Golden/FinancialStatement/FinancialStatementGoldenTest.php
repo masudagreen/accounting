@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Golden\FinancialStatement;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -55,12 +54,12 @@ final class FinancialStatementGoldenTest extends TestCase
                 FsKind::ProfitAndLoss,
                 [
                     'operating_revenue' => '10000.0000',
-                    'cost_of_sales'     => '0.0000',
-                    'gross_profit'      => '10000.0000',
-                    'operating_income'  => '10000.0000',
-                    'ordinary_income'   => '10000.0000',
-                    'pretax_income'     => '10000.0000',
-                    'net_income'        => '10000.0000',
+                    'cost_of_sales' => '0.0000',
+                    'gross_profit' => '10000.0000',
+                    'operating_income' => '10000.0000',
+                    'ordinary_income' => '10000.0000',
+                    'pretax_income' => '10000.0000',
+                    'net_income' => '10000.0000',
                 ],
             ],
             '2-sales-and-cost' => [
@@ -70,9 +69,9 @@ final class FinancialStatementGoldenTest extends TestCase
                 ],
                 FsKind::ProfitAndLoss,
                 [
-                    'gross_profit'     => '8000.0000',
+                    'gross_profit' => '8000.0000',
                     'operating_income' => '8000.0000',
-                    'net_income'       => '8000.0000',
+                    'net_income' => '8000.0000',
                 ],
             ],
             '3-including-sga' => [
@@ -83,9 +82,9 @@ final class FinancialStatementGoldenTest extends TestCase
                 ],
                 FsKind::ProfitAndLoss,
                 [
-                    'gross_profit'     => '15000.0000',
+                    'gross_profit' => '15000.0000',
                     'operating_income' => '10000.0000',
-                    'net_income'       => '10000.0000',
+                    'net_income' => '10000.0000',
                 ],
             ],
             '4-with-non-op-revenue' => [
@@ -93,13 +92,13 @@ final class FinancialStatementGoldenTest extends TestCase
                     ['S',  '401', '売上',    'revenue', 'credit', 'credit', '30000'],
                     ['C',  '501', '仕入',    'expense', 'debit',  'debit',  '15000'],
                     ['G',  '502', '販管費',  'expense', 'debit',  'debit',  '5000'],
-                    ['NR', '411', '受取利息','revenue', 'credit', 'credit', '800'],
+                    ['NR', '411', '受取利息', 'revenue', 'credit', 'credit', '800'],
                 ],
                 FsKind::ProfitAndLoss,
                 [
                     'operating_income' => '10000.0000',
-                    'ordinary_income'  => '10800.0000',
-                    'net_income'       => '10800.0000',
+                    'ordinary_income' => '10800.0000',
+                    'net_income' => '10800.0000',
                 ],
             ],
             '5-with-non-op-expense' => [
@@ -107,13 +106,13 @@ final class FinancialStatementGoldenTest extends TestCase
                     ['S',  '401', '売上',    'revenue', 'credit', 'credit', '30000'],
                     ['C',  '501', '仕入',    'expense', 'debit',  'debit',  '15000'],
                     ['G',  '502', '販管費',  'expense', 'debit',  'debit',  '5000'],
-                    ['NR', '411', '受取利息','revenue', 'credit', 'credit', '800'],
-                    ['NE', '511', '支払利息','expense', 'debit',  'debit',  '300'],
+                    ['NR', '411', '受取利息', 'revenue', 'credit', 'credit', '800'],
+                    ['NE', '511', '支払利息', 'expense', 'debit',  'debit',  '300'],
                 ],
                 FsKind::ProfitAndLoss,
                 [
                     'ordinary_income' => '10500.0000',
-                    'net_income'      => '10500.0000',
+                    'net_income' => '10500.0000',
                 ],
             ],
             '6-with-extraordinary-gain' => [
@@ -125,8 +124,8 @@ final class FinancialStatementGoldenTest extends TestCase
                 FsKind::ProfitAndLoss,
                 [
                     'ordinary_income' => '15000.0000',
-                    'pretax_income'   => '17000.0000',
-                    'net_income'      => '17000.0000',
+                    'pretax_income' => '17000.0000',
+                    'net_income' => '17000.0000',
                 ],
             ],
             '7-with-extraordinary-loss' => [
@@ -138,8 +137,8 @@ final class FinancialStatementGoldenTest extends TestCase
                 FsKind::ProfitAndLoss,
                 [
                     'ordinary_income' => '15000.0000',
-                    'pretax_income'   => '13500.0000',
-                    'net_income'      => '13500.0000',
+                    'pretax_income' => '13500.0000',
+                    'net_income' => '13500.0000',
                 ],
             ],
             '8-with-income-tax' => [
@@ -147,12 +146,12 @@ final class FinancialStatementGoldenTest extends TestCase
                     ['S',  '401', '売上',   'revenue', 'credit', 'credit', '40000'],
                     ['C',  '501', '仕入',   'expense', 'debit',  'debit',  '18000'],
                     ['G',  '502', '販管費', 'expense', 'debit',  'debit',  '4000'],
-                    ['TX', '591', '法人税等','expense','debit',  'debit',  '6000'],
+                    ['TX', '591', '法人税等', 'expense', 'debit',  'debit',  '6000'],
                 ],
                 FsKind::ProfitAndLoss,
                 [
                     'pretax_income' => '18000.0000',
-                    'net_income'    => '12000.0000',
+                    'net_income' => '12000.0000',
                 ],
             ],
             '9-multi-entry-aggregation' => [
@@ -166,9 +165,9 @@ final class FinancialStatementGoldenTest extends TestCase
                 FsKind::ProfitAndLoss,
                 [
                     'operating_revenue' => '10000.0000',
-                    'cost_of_sales'     => '5000.0000',
-                    'gross_profit'      => '5000.0000',
-                    'net_income'        => '5000.0000',
+                    'cost_of_sales' => '5000.0000',
+                    'gross_profit' => '5000.0000',
+                    'net_income' => '5000.0000',
                 ],
             ],
         ];
@@ -189,7 +188,7 @@ final class FinancialStatementGoldenTest extends TestCase
 
         // Feed journal lines (id, code, name, category, normalSide, side, amount).
         foreach ($journalLines as [$id, $code, $name, $category, $normalSide, $side, $amount]) {
-            $tb->addLine('ENT', 'TRM', new DateTimeImmutable('2026-04-05'), $id, $code, $name, $category, $normalSide, $side, $amount);
+            $tb->addLine('ENT', 'TRM', new \DateTimeImmutable('2026-04-05'), $id, $code, $name, $category, $normalSide, $side, $amount);
         }
 
         // Map every unique account id to a canonical PL section.
@@ -215,8 +214,8 @@ final class FinancialStatementGoldenTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::ProfitAndLoss,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         foreach ($expected as $code => $want) {
@@ -233,10 +232,10 @@ final class FinancialStatementGoldenTest extends TestCase
         $defs = new InMemoryFsSectionDefinitionRepository();
 
         // 売掛金 1000 / 貸倒引当金 40 → current_asset = 960.
-        $tb->addLine('ENT', 'TRM', new DateTimeImmutable('2026-04-05'), 'AR',  '121', '売掛金',     'asset', 'debit', 'debit', '1000');
-        $tb->addLine('ENT', 'TRM', new DateTimeImmutable('2026-04-05'), 'ALL', '129', '貸倒引当金', 'asset', 'debit', 'debit', '40');
+        $tb->addLine('ENT', 'TRM', new \DateTimeImmutable('2026-04-05'), 'AR', '121', '売掛金', 'asset', 'debit', 'debit', '1000');
+        $tb->addLine('ENT', 'TRM', new \DateTimeImmutable('2026-04-05'), 'ALL', '129', '貸倒引当金', 'asset', 'debit', 'debit', '40');
 
-        $mappings->seed('ENT', 'AR',  FsKind::BalanceSheet, 'current_asset', 1,  10);
+        $mappings->seed('ENT', 'AR', FsKind::BalanceSheet, 'current_asset', 1, 10);
         $mappings->seed('ENT', 'ALL', FsKind::BalanceSheet, 'current_asset', -1, 20);
 
         $port = new GenerateFinancialStatementFromMappingUseCase(
@@ -251,8 +250,8 @@ final class FinancialStatementGoldenTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertSame('960.0000', $fs->bs['current_asset']->subtotal);
@@ -263,14 +262,14 @@ final class FinancialStatementGoldenTest extends TestCase
     private static function sectionForId(string $id): string
     {
         return match ($id) {
-            'S'    => 'operating_revenue',
-            'C'    => 'cost_of_sales',
-            'G'    => 'sga',
-            'NR'   => 'non_operating_revenue',
-            'NE'   => 'non_operating_expense',
-            'EG'   => 'extraordinary_gain',
-            'EL'   => 'extraordinary_loss',
-            'TX'   => 'income_tax',
+            'S' => 'operating_revenue',
+            'C' => 'cost_of_sales',
+            'G' => 'sga',
+            'NR' => 'non_operating_revenue',
+            'NE' => 'non_operating_expense',
+            'EG' => 'extraordinary_gain',
+            'EL' => 'extraordinary_loss',
+            'TX' => 'income_tax',
             default => 'operating_revenue',
         };
     }

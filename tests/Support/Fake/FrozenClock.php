@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Support\Clock\ClockInterface;
 
 /**
@@ -16,14 +14,15 @@ use Rucaro\Support\Clock\ClockInterface;
  */
 final class FrozenClock implements ClockInterface
 {
-    private DateTimeImmutable $now;
+    private \DateTimeImmutable $now;
 
     public function __construct(string $iso = '2026-04-21T12:00:00.000Z')
     {
-        $this->now = new DateTimeImmutable($iso, new DateTimeZone('UTC'));
+        $this->now = new \DateTimeImmutable($iso, new \DateTimeZone('UTC'));
     }
 
-    public function getCurrentTime(): DateTimeImmutable
+    #[\Override]
+    public function getCurrentTime(): \DateTimeImmutable
     {
         return $this->now;
     }
@@ -33,7 +32,7 @@ final class FrozenClock implements ClockInterface
         $this->now = $this->now->modify($modifier) ?: $this->now;
     }
 
-    public function set(DateTimeImmutable $at): void
+    public function set(\DateTimeImmutable $at): void
     {
         $this->now = $at;
     }

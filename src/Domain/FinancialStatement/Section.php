@@ -17,14 +17,14 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final readonly class Section
 {
-    public const CODE_ASSETS         = 'assets';
-    public const CODE_LIABILITIES    = 'liabilities';
-    public const CODE_EQUITY         = 'equity';
-    public const CODE_REVENUE        = 'revenue';
-    public const CODE_EXPENSES       = 'expenses';
-    public const CODE_OPERATING_CF   = 'operating';
-    public const CODE_INVESTING_CF   = 'investing';
-    public const CODE_FINANCING_CF   = 'financing';
+    public const CODE_ASSETS = 'assets';
+    public const CODE_LIABILITIES = 'liabilities';
+    public const CODE_EQUITY = 'equity';
+    public const CODE_REVENUE = 'revenue';
+    public const CODE_EXPENSES = 'expenses';
+    public const CODE_OPERATING_CF = 'operating';
+    public const CODE_INVESTING_CF = 'investing';
+    public const CODE_FINANCING_CF = 'financing';
 
     /**
      * @param list<FinancialStatementLine> $lines
@@ -57,6 +57,7 @@ final readonly class Section
             }
             $sum = Decimal::add($sum, $line->amount);
         }
+
         return new self(
             code: $code,
             label: $label,
@@ -91,6 +92,7 @@ final readonly class Section
         $lines = $this->lines;
         $lines[] = $line;
         $rebuilt = self::fromLines($this->code, $this->label, $lines);
+
         return new self(
             code: $rebuilt->code,
             label: $rebuilt->label,

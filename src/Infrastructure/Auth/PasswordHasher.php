@@ -16,7 +16,7 @@ namespace Rucaro\Infrastructure\Auth;
  */
 final class PasswordHasher
 {
-    private const ALGO = PASSWORD_ARGON2ID;
+    private const ALGO = \PASSWORD_ARGON2ID;
 
     /**
      * @var array<string, int>
@@ -25,16 +25,16 @@ final class PasswordHasher
 
     /**
      * @param array<string, int>|null $options Overrides the defaults. Keys:
-     *   - memory_cost (KiB)
-     *   - time_cost   (iterations)
-     *   - threads     (parallelism)
+     *                                         - memory_cost (KiB)
+     *                                         - time_cost   (iterations)
+     *                                         - threads     (parallelism)
      */
     public function __construct(?array $options = null)
     {
         $this->options = $options ?? [
             'memory_cost' => 65_536, // 64 MiB
-            'time_cost'   => 4,
-            'threads'     => 1,
+            'time_cost' => 4,
+            'threads' => 1,
         ];
     }
 
@@ -42,6 +42,7 @@ final class PasswordHasher
     {
         /** @var non-empty-string $hash */
         $hash = password_hash($plaintext, self::ALGO, $this->options);
+
         return $hash;
     }
 

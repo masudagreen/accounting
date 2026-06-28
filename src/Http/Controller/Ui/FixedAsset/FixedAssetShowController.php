@@ -45,6 +45,7 @@ final readonly class FixedAssetShowController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
         if (!UlidGenerator::isValid($id)) {
@@ -58,29 +59,29 @@ final readonly class FixedAssetShowController
         $schedules = $this->schedules->findByAsset($asset->id);
         usort(
             $schedules,
-            static fn (DepreciationScheduleEntry $a, DepreciationScheduleEntry $b): int
-                => $a->periodNumber <=> $b->periodNumber,
+            static fn (DepreciationScheduleEntry $a, DepreciationScheduleEntry $b): int => $a->periodNumber <=> $b->periodNumber,
         );
 
         $data = [
-            'page_title'           => '固定資産詳細',
-            'active_nav'           => 'fixed_assets',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '固定資産詳細',
+            'active_nav' => 'fixed_assets',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'asset'                => self::assetToArray($asset),
-            'schedules'            => array_map(self::entryToArray(...), $schedules),
-            'method_options'       => FixedAssetNewController::methodOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'asset' => self::assetToArray($asset),
+            'schedules' => array_map(self::entryToArray(...), $schedules),
+            'method_options' => FixedAssetNewController::methodOptions(),
         ];
+
         return HtmlResponse::ok($this->view->render('fixed_assets/show.html.tpl', $data));
     }
 
@@ -90,21 +91,21 @@ final readonly class FixedAssetShowController
     public static function assetToArray(FixedAsset $a): array
     {
         return [
-            'id'               => $a->id,
-            'assetCode'        => $a->assetCode,
-            'assetName'        => $a->assetName,
-            'categoryCode'     => $a->categoryCode,
-            'acquisitionDate'  => $a->acquisitionDate->format('Y-m-d'),
+            'id' => $a->id,
+            'assetCode' => $a->assetCode,
+            'assetName' => $a->assetName,
+            'categoryCode' => $a->categoryCode,
+            'acquisitionDate' => $a->acquisitionDate->format('Y-m-d'),
             'serviceStartDate' => $a->serviceStartDate->format('Y-m-d'),
-            'disposalDate'     => $a->disposalDate?->format('Y-m-d') ?? '',
-            'acquisitionCost'  => $a->acquisitionCost,
-            'residualValue'    => $a->residualValue,
-            'usefulLifeYears'  => $a->usefulLifeYears,
-            'method'           => $a->method->value,
-            'quantity'         => $a->quantity,
-            'departmentCode'   => $a->departmentCode ?? '',
-            'note'             => $a->note ?? '',
-            'isDisposed'       => $a->disposalDate !== null,
+            'disposalDate' => $a->disposalDate?->format('Y-m-d') ?? '',
+            'acquisitionCost' => $a->acquisitionCost,
+            'residualValue' => $a->residualValue,
+            'usefulLifeYears' => $a->usefulLifeYears,
+            'method' => $a->method->value,
+            'quantity' => $a->quantity,
+            'departmentCode' => $a->departmentCode ?? '',
+            'note' => $a->note ?? '',
+            'isDisposed' => $a->disposalDate !== null,
         ];
     }
 
@@ -114,15 +115,15 @@ final readonly class FixedAssetShowController
     private static function entryToArray(DepreciationScheduleEntry $e): array
     {
         return [
-            'periodNumber'            => $e->periodNumber,
-            'periodStartDate'         => $e->periodStartDate->format('Y-m-d'),
-            'periodEndDate'           => $e->periodEndDate->format('Y-m-d'),
-            'monthsInService'         => $e->monthsInService,
-            'openingBookValue'        => $e->openingBookValue,
-            'depreciationAmount'      => $e->depreciationAmount,
+            'periodNumber' => $e->periodNumber,
+            'periodStartDate' => $e->periodStartDate->format('Y-m-d'),
+            'periodEndDate' => $e->periodEndDate->format('Y-m-d'),
+            'monthsInService' => $e->monthsInService,
+            'openingBookValue' => $e->openingBookValue,
+            'depreciationAmount' => $e->depreciationAmount,
             'accumulatedDepreciation' => $e->accumulatedDepreciation,
-            'closingBookValue'        => $e->closingBookValue,
-            'isPosted'                => $e->isPosted,
+            'closingBookValue' => $e->closingBookValue,
+            'isPosted' => $e->isPosted,
         ];
     }
 }

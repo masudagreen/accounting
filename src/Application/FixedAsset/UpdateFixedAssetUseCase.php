@@ -50,9 +50,7 @@ final readonly class UpdateFixedAssetUseCase
         if (isset($patch['method'])) {
             $maybe = DepreciationMethod::tryFrom($patch['method']);
             if ($maybe === null) {
-                throw ValidationException::withErrors([
-                    'method' => [sprintf('method "%s" is not a supported depreciation method.', $patch['method'])],
-                ]);
+                throw ValidationException::withErrors(['method' => [sprintf('method "%s" is not a supported depreciation method.', $patch['method'])]]);
             }
             $method = $maybe;
         }
@@ -89,6 +87,7 @@ final readonly class UpdateFixedAssetUseCase
             deletedAt: $existing->deletedAt,
         );
         $this->assets->save($next);
+
         return $next;
     }
 }

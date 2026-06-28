@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 
 /**
@@ -28,30 +27,24 @@ final readonly class ConsumptionTaxRate
         public string $code,
         public string $label,
         public string $ratePercent,
-        public DateTimeImmutable $effectiveFrom,
-        public ?DateTimeImmutable $effectiveUntil,
+        public \DateTimeImmutable $effectiveFrom,
+        public ?\DateTimeImmutable $effectiveUntil,
         public bool $isTaxable,
         public bool $isReduced,
         public int $sortOrder = 0,
     ) {
         if ($code === '' || strlen($code) > 32) {
-            throw ValidationException::withErrors([
-                'code' => ['code must be 1..32 chars.'],
-            ]);
+            throw ValidationException::withErrors(['code' => ['code must be 1..32 chars.']]);
         }
         if (!preg_match('/^\d{1,2}(\.\d{1,2})?$/', $ratePercent)) {
-            throw ValidationException::withErrors([
-                'ratePercent' => ['ratePercent must be a positive decimal in [0.00, 99.99].'],
-            ]);
+            throw ValidationException::withErrors(['ratePercent' => ['ratePercent must be a positive decimal in [0.00, 99.99].']]);
         }
         if ($effectiveUntil !== null && $effectiveUntil < $effectiveFrom) {
-            throw ValidationException::withErrors([
-                'effectiveUntil' => ['effectiveUntil must be on or after effectiveFrom.'],
-            ]);
+            throw ValidationException::withErrors(['effectiveUntil' => ['effectiveUntil must be on or after effectiveFrom.']]);
         }
     }
 
-    public function isEffectiveOn(DateTimeImmutable $at): bool
+    public function isEffectiveOn(\DateTimeImmutable $at): bool
     {
         if ($at < $this->effectiveFrom) {
             return false;
@@ -59,6 +52,7 @@ final readonly class ConsumptionTaxRate
         if ($this->effectiveUntil !== null && $at > $this->effectiveUntil) {
             return false;
         }
+
         return true;
     }
 
@@ -78,23 +72,30 @@ final readonly class ConsumptionTaxRate
     public function taxFromGross(string $gross): string
     {
         if (function_exists('bcadd')) {
+            /** @psalm-suppress ArgumentTypeCoercion ratePercent / gross are constrained at construction to Decimal-shaped numeric strings */
             $factor = bcadd('1', bcdiv($this->ratePercent, '100', 8), 8);
+            /** @psalm-suppress ArgumentTypeCoercion ratePercent / gross are constrained at construction to Decimal-shaped numeric strings */
             $base = bcdiv($gross, $factor, 8);
+
+            /** @psalm-suppress ArgumentTypeCoercion ratePercent / gross are constrained at construction to Decimal-shaped numeric strings */
             return bcsub($gross, $base, 4);
         }
         $grossF = (float) $gross;
         $rateF = (float) $this->ratePercent / 100.0;
         $base = $grossF / (1.0 + $rateF);
         $tax = $grossF - $base;
+
         return number_format($tax, 4, '.', '');
     }
 
     private static function multiplyPercent(string $amount, string $percent): string
     {
         if (function_exists('bcmul')) {
+            /** @psalm-suppress ArgumentTypeCoercion amount / percent are Decimal-shaped numeric strings by ConsumptionTaxRate contract */
             return bcdiv(bcmul($amount, $percent, 8), '100', 4);
         }
         $v = ((float) $amount) * ((float) $percent) / 100.0;
+
         return number_format($v, 4, '.', '');
     }
 }

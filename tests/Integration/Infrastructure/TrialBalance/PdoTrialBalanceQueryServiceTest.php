@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Infrastructure\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +29,7 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 #[CoversClass(PdoTrialBalanceSnapshotRepository::class)]
 final class PdoTrialBalanceQueryServiceTest extends TestCase
 {
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
     private string $dbName = '';
     private UlidGenerator $ulids;
 
@@ -41,9 +39,10 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
     private string $salesAccountId = '';
     private string $userId = '';
 
+    #[\Override]
     protected function setUp(): void
     {
-        $dsn  = getenv('RUCARO_TEST_DB_DSN');
+        $dsn = getenv('RUCARO_TEST_DB_DSN');
         $user = getenv('RUCARO_TEST_DB_USER');
         $pass = getenv('RUCARO_TEST_DB_PASS');
         $name = getenv('RUCARO_TEST_DB_NAME') ?: 'rucaro_test';
@@ -52,28 +51,28 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
             $this->markTestSkipped('RUCARO_TEST_DB_* env vars are not set; skipping DB integration test.');
         }
 
-        $root = new PDO($dsn, $user, $pass === false ? '' : $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        $root = new \PDO($dsn, $user, $pass === false ? '' : $pass, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ]);
         $root->exec("DROP DATABASE IF EXISTS `$name`");
         $root->exec("CREATE DATABASE `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 
         $this->dbName = $name;
-        $this->pdo = new PDO(
-            $dsn . ';dbname=' . $name,
+        $this->pdo = new \PDO(
+            $dsn.';dbname='.$name,
             $user,
             $pass === false ? '' : $pass,
             [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false,
             ],
         );
-        $this->pdo->exec("SET NAMES utf8mb4");
+        $this->pdo->exec('SET NAMES utf8mb4');
         $this->pdo->exec("SET time_zone = '+00:00'");
 
         $runner = new MigrationRunner(
             $this->pdo,
-            dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'migrate',
+            dirname(__DIR__, 4).\DIRECTORY_SEPARATOR.'scripts'.\DIRECTORY_SEPARATOR.'migrate',
         );
         $runner->up();
 
@@ -81,6 +80,7 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $this->seed();
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->pdo !== null && $this->dbName !== '') {
@@ -95,8 +95,8 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $tb = $svc->queryByPeriod(
             $this->entityId,
             $this->fiscalTermId,
-            new DateTimeImmutable('2026-04-01'),
-            new DateTimeImmutable('2026-04-30'),
+            new \DateTimeImmutable('2026-04-01'),
+            new \DateTimeImmutable('2026-04-30'),
         );
 
         self::assertCount(2, $tb->rows);
@@ -110,7 +110,7 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
 
         // Cash is debit-normal
         self::assertSame('8000.0000', $tb->rows[0]->debitTotal);
-        self::assertSame('0.0000',    $tb->rows[0]->creditTotal);
+        self::assertSame('0.0000', $tb->rows[0]->creditTotal);
         self::assertSame('8000.0000', $tb->rows[0]->balance);
     }
 
@@ -120,21 +120,21 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $pdo = $this->requirePdo();
         $draftId = $this->ulids->generate();
         $this->insertJournalEntry($draftId, 'draft', '2026-04-15', '999.0000', null);
-        $this->insertJournalLine($draftId, 1, 'debit',  $this->cashAccountId,  '999.0000');
+        $this->insertJournalLine($draftId, 1, 'debit', $this->cashAccountId, '999.0000');
         $this->insertJournalLine($draftId, 2, 'credit', $this->salesAccountId, '999.0000');
 
         // Soft-deleted entry
         $deletedId = $this->ulids->generate();
         $this->insertJournalEntry($deletedId, 'posted', '2026-04-16', '777.0000', '2026-04-17 00:00:00.000000');
-        $this->insertJournalLine($deletedId, 1, 'debit',  $this->cashAccountId,  '777.0000');
+        $this->insertJournalLine($deletedId, 1, 'debit', $this->cashAccountId, '777.0000');
         $this->insertJournalLine($deletedId, 2, 'credit', $this->salesAccountId, '777.0000');
 
         $svc = new PdoTrialBalanceQueryService($pdo);
         $tb = $svc->queryByPeriod(
             $this->entityId,
             $this->fiscalTermId,
-            new DateTimeImmutable('2026-04-01'),
-            new DateTimeImmutable('2026-04-30'),
+            new \DateTimeImmutable('2026-04-01'),
+            new \DateTimeImmutable('2026-04-30'),
         );
 
         // Only the two posted, non-deleted seed entries (8000 each side) count.
@@ -146,8 +146,8 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $pdo = $this->requirePdo();
         $repo = new PdoTrialBalanceSnapshotRepository($pdo);
 
-        $monthEnd = new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC'));
-        $generatedAt = new DateTimeImmutable('2026-04-30T12:00:00Z', new DateTimeZone('UTC'));
+        $monthEnd = new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC'));
+        $generatedAt = new \DateTimeImmutable('2026-04-30T12:00:00Z', new \DateTimeZone('UTC'));
 
         $repo->saveAll([
             new TrialBalanceSnapshot(
@@ -196,13 +196,13 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
             id: $this->ulids->generate(),
             entityId: $this->entityId,
             fiscalTermId: $this->fiscalTermId,
-            snapshotDate: new DateTimeImmutable($date, new DateTimeZone('UTC')),
+            snapshotDate: new \DateTimeImmutable($date, new \DateTimeZone('UTC')),
             accountTitleId: $this->cashAccountId,
             debitTotal: $debit,
             creditTotal: $credit,
             balance: $debit,
             lineCount: 1,
-            generatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
         );
     }
 
@@ -217,20 +217,20 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $this->userId = $this->ulids->generate();
         $pdo->prepare(
             'INSERT INTO users (id, email, email_normalized, password_hash, display_name, role, is_active, created_at, updated_at)
-             VALUES (:id, :em, :emn, :pw, :dn, :role, 1, NOW(6), NOW(6))'
+             VALUES (:id, :em, :emn, :pw, :dn, :role, 1, NOW(6), NOW(6))',
         )->execute([
-            ':id'  => UlidGenerator::decode($this->userId),
-            ':em'  => 'tb-test@example.com',
+            ':id' => UlidGenerator::decode($this->userId),
+            ':em' => 'tb-test@example.com',
             ':emn' => 'tb-test@example.com',
-            ':pw'  => 'x',
-            ':dn'  => 'TB test',
+            ':pw' => 'x',
+            ':dn' => 'TB test',
             ':role' => 'owner',
         ]);
 
         $this->entityId = $this->ulids->generate();
         $pdo->prepare(
             'INSERT INTO entities (id, owner_user_id, name, nation_code, currency_code, fiscal_start_mmdd, is_active, created_at, updated_at)
-             VALUES (:id, :ow, :nm, "JPN", "JPY", "0401", 1, NOW(6), NOW(6))'
+             VALUES (:id, :ow, :nm, "JPN", "JPY", "0401", 1, NOW(6), NOW(6))',
         )->execute([
             ':id' => UlidGenerator::decode($this->entityId),
             ':ow' => UlidGenerator::decode($this->userId),
@@ -240,9 +240,9 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $this->fiscalTermId = $this->ulids->generate();
         $pdo->prepare(
             'INSERT INTO fiscal_terms (id, entity_id, fiscal_period, start_date, end_date, is_closed, created_at, updated_at)
-             VALUES (:id, :ent, 1, "2026-04-01", "2027-03-31", 0, NOW(6), NOW(6))'
+             VALUES (:id, :ent, 1, "2026-04-01", "2027-03-31", 0, NOW(6), NOW(6))',
         )->execute([
-            ':id'  => UlidGenerator::decode($this->fiscalTermId),
+            ':id' => UlidGenerator::decode($this->fiscalTermId),
             ':ent' => UlidGenerator::decode($this->entityId),
         ]);
 
@@ -250,37 +250,37 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
         $this->salesAccountId = $this->ulids->generate();
         $pdo->prepare(
             'INSERT INTO account_titles (id, entity_id, code, name, category, normal_side, sort_order, is_active, created_at, updated_at)
-             VALUES (:id, :ent, :c, :n, :cat, :ns, :so, 1, NOW(6), NOW(6))'
+             VALUES (:id, :ent, :c, :n, :cat, :ns, :so, 1, NOW(6), NOW(6))',
         )->execute([
-            ':id'  => UlidGenerator::decode($this->cashAccountId),
+            ':id' => UlidGenerator::decode($this->cashAccountId),
             ':ent' => UlidGenerator::decode($this->entityId),
-            ':c'   => '101',
-            ':n'   => '現金',
+            ':c' => '101',
+            ':n' => '現金',
             ':cat' => 'asset',
-            ':ns'  => 'debit',
-            ':so'  => 1,
+            ':ns' => 'debit',
+            ':so' => 1,
         ]);
         $pdo->prepare(
             'INSERT INTO account_titles (id, entity_id, code, name, category, normal_side, sort_order, is_active, created_at, updated_at)
-             VALUES (:id, :ent, :c, :n, :cat, :ns, :so, 1, NOW(6), NOW(6))'
+             VALUES (:id, :ent, :c, :n, :cat, :ns, :so, 1, NOW(6), NOW(6))',
         )->execute([
-            ':id'  => UlidGenerator::decode($this->salesAccountId),
+            ':id' => UlidGenerator::decode($this->salesAccountId),
             ':ent' => UlidGenerator::decode($this->entityId),
-            ':c'   => '401',
-            ':n'   => '売上',
+            ':c' => '401',
+            ':n' => '売上',
             ':cat' => 'revenue',
-            ':ns'  => 'credit',
-            ':so'  => 2,
+            ':ns' => 'credit',
+            ':so' => 2,
         ]);
 
         $postedA = $this->ulids->generate();
         $this->insertJournalEntry($postedA, 'posted', '2026-04-05', '5000.0000', null);
-        $this->insertJournalLine($postedA, 1, 'debit',  $this->cashAccountId,  '5000.0000');
+        $this->insertJournalLine($postedA, 1, 'debit', $this->cashAccountId, '5000.0000');
         $this->insertJournalLine($postedA, 2, 'credit', $this->salesAccountId, '5000.0000');
 
         $postedB = $this->ulids->generate();
         $this->insertJournalEntry($postedB, 'posted', '2026-04-20', '3000.0000', null);
-        $this->insertJournalLine($postedB, 1, 'debit',  $this->cashAccountId,  '3000.0000');
+        $this->insertJournalLine($postedB, 1, 'debit', $this->cashAccountId, '3000.0000');
         $this->insertJournalLine($postedB, 2, 'credit', $this->salesAccountId, '3000.0000');
     }
 
@@ -301,18 +301,18 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
                 :id, :ent, :term, :dt, :bk, :sum,
                 :tot, "JPY", :st, "manual", :cb,
                 NOW(6), NOW(6), :del
-             )'
+             )',
         )->execute([
-            ':id'   => UlidGenerator::decode($id),
-            ':ent'  => UlidGenerator::decode($this->entityId),
+            ':id' => UlidGenerator::decode($id),
+            ':ent' => UlidGenerator::decode($this->entityId),
             ':term' => UlidGenerator::decode($this->fiscalTermId),
-            ':dt'   => $date,
-            ':bk'   => $date . ' 12:00:00.000000',
-            ':sum'  => 'seed',
-            ':tot'  => $total,
-            ':st'   => $status,
-            ':cb'   => UlidGenerator::decode($this->userId),
-            ':del'  => $deletedAt,
+            ':dt' => $date,
+            ':bk' => $date.' 12:00:00.000000',
+            ':sum' => 'seed',
+            ':tot' => $total,
+            ':st' => $status,
+            ':cb' => UlidGenerator::decode($this->userId),
+            ':del' => $deletedAt,
         ]);
     }
 
@@ -329,22 +329,23 @@ final class PdoTrialBalanceQueryServiceTest extends TestCase
                 id, entry_id, line_no, side, account_title_id, amount, booked_at, created_at, updated_at
              ) VALUES (
                 :id, :entry, :ln, :side, :acc, :amt, NOW(6), NOW(6), NOW(6)
-             )'
+             )',
         )->execute([
-            ':id'    => UlidGenerator::decode($this->ulids->generate()),
+            ':id' => UlidGenerator::decode($this->ulids->generate()),
             ':entry' => UlidGenerator::decode($entryId),
-            ':ln'    => $lineNo,
-            ':side'  => $side,
-            ':acc'   => UlidGenerator::decode($accountId),
-            ':amt'   => $amount,
+            ':ln' => $lineNo,
+            ':side' => $side,
+            ':acc' => UlidGenerator::decode($accountId),
+            ':amt' => $amount,
         ]);
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         if ($this->pdo === null) {
             throw new \RuntimeException('PDO not initialised; integration test should have been skipped.');
         }
+
         return $this->pdo;
     }
 }

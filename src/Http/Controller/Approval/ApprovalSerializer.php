@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Approval;
 
-use DateTimeZone;
 use Rucaro\Domain\Approval\ApprovalTargetInterface;
 use Rucaro\Domain\Approval\ApprovalToken;
 
@@ -22,18 +21,18 @@ final class ApprovalSerializer
     public static function token(ApprovalToken $token, string $status): array
     {
         return [
-            'id'             => $token->id,
-            'prefix'         => $token->tokenPrefix,
-            'targetKind'     => $token->targetKind->value,
-            'targetId'       => $token->targetId,
-            'channel'        => $token->channel->value,
-            'recipient'      => $token->recipient,
-            'issuedAt'       => self::fmt($token->issuedAt),
-            'expiresAt'      => self::fmt($token->expiresAt),
-            'respondedAt'    => $token->respondedAt !== null ? self::fmt($token->respondedAt) : null,
-            'decision'       => $token->decision?->value,
+            'id' => $token->id,
+            'prefix' => $token->tokenPrefix,
+            'targetKind' => $token->targetKind->value,
+            'targetId' => $token->targetId,
+            'channel' => $token->channel->value,
+            'recipient' => $token->recipient,
+            'issuedAt' => self::fmt($token->issuedAt),
+            'expiresAt' => self::fmt($token->expiresAt),
+            'respondedAt' => $token->respondedAt !== null ? self::fmt($token->respondedAt) : null,
+            'decision' => $token->decision?->value,
             'responseDetail' => $token->responseDetail,
-            'status'         => $status,
+            'status' => $status,
         ];
     }
 
@@ -43,8 +42,8 @@ final class ApprovalSerializer
     public static function target(ApprovalTargetInterface $target): array
     {
         return [
-            'kind'    => $target->kind()->value,
-            'id'      => $target->id(),
+            'kind' => $target->kind()->value,
+            'id' => $target->id(),
             'summary' => $target->summary(),
             'details' => $target->details(),
         ];
@@ -52,6 +51,6 @@ final class ApprovalSerializer
 
     private static function fmt(\DateTimeImmutable $t): string
     {
-        return $t->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z');
+        return $t->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z');
     }
 }

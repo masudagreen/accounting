@@ -22,9 +22,7 @@ final readonly class UpdateSsAdjustmentUseCase
     {
         $existing = $this->repo->findById($input->id);
         if ($existing === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('ss adjustment %s was not found.', $input->id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('ss adjustment %s was not found.', $input->id)]]);
         }
         $updated = $existing->with(
             sectionCode: $input->sectionCode,
@@ -35,6 +33,7 @@ final readonly class UpdateSsAdjustmentUseCase
             notes: $input->notes,
         );
         $this->repo->save($updated);
+
         return new SsAdjustmentOutput($updated);
     }
 }

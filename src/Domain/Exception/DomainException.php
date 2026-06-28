@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rucaro\Domain\Exception;
 
 use RuntimeException;
-use Throwable;
 
 /**
  * Base class for all domain-level exceptions.
@@ -25,7 +24,7 @@ use Throwable;
  *
  * @phpstan-consistent-constructor
  */
-abstract class DomainException extends RuntimeException
+abstract class DomainException extends \RuntimeException
 {
     /**
      * @param array<string, mixed> $context
@@ -34,7 +33,7 @@ abstract class DomainException extends RuntimeException
         string $message,
         protected readonly ?string $domainCode = null,
         protected readonly array $context = [],
-        ?Throwable $previous = null,
+        ?\Throwable $previous = null,
     ) {
         parent::__construct($message, 0, $previous);
     }

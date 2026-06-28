@@ -52,15 +52,10 @@ use Rucaro\Http\Controller\FinancialStatementNotes\CreateFsNoteController;
 use Rucaro\Http\Controller\FinancialStatementNotes\DeleteFsNoteController;
 use Rucaro\Http\Controller\FinancialStatementNotes\ExportFsNotesController;
 use Rucaro\Http\Controller\FinancialStatementNotes\GetFsNoteController;
-use Rucaro\Http\Controller\FinancialStatementNotes\ListFsNoteTemplatesController;
 use Rucaro\Http\Controller\FinancialStatementNotes\ListFsNotesController;
+use Rucaro\Http\Controller\FinancialStatementNotes\ListFsNoteTemplatesController;
 use Rucaro\Http\Controller\FinancialStatementNotes\ReorderFsNotesController;
 use Rucaro\Http\Controller\FinancialStatementNotes\UpdateFsNoteController;
-use Rucaro\Http\Controller\StatementOfChangesInEquity\CreateSsAdjustmentController;
-use Rucaro\Http\Controller\StatementOfChangesInEquity\DeleteSsAdjustmentController;
-use Rucaro\Http\Controller\StatementOfChangesInEquity\GetStatementOfChangesInEquityController;
-use Rucaro\Http\Controller\StatementOfChangesInEquity\ListSsAdjustmentsController;
-use Rucaro\Http\Controller\StatementOfChangesInEquity\UpdateSsAdjustmentController;
 use Rucaro\Http\Controller\FixedAsset\CreateFixedAssetController;
 use Rucaro\Http\Controller\FixedAsset\DisposeFixedAssetController;
 use Rucaro\Http\Controller\FixedAsset\GenerateDepreciationController;
@@ -76,6 +71,11 @@ use Rucaro\Http\Controller\Journal\GetJournalController;
 use Rucaro\Http\Controller\Journal\ListJournalController;
 use Rucaro\Http\Controller\Journal\UpdateJournalController;
 use Rucaro\Http\Controller\Ledger\GetLedgerController;
+use Rucaro\Http\Controller\StatementOfChangesInEquity\CreateSsAdjustmentController;
+use Rucaro\Http\Controller\StatementOfChangesInEquity\DeleteSsAdjustmentController;
+use Rucaro\Http\Controller\StatementOfChangesInEquity\GetStatementOfChangesInEquityController;
+use Rucaro\Http\Controller\StatementOfChangesInEquity\ListSsAdjustmentsController;
+use Rucaro\Http\Controller\StatementOfChangesInEquity\UpdateSsAdjustmentController;
 use Rucaro\Http\Controller\TrialBalance\GetTrialBalanceController;
 use Rucaro\Http\Response\ErrorResponse;
 use Rucaro\Http\Response\JsonResponse;
@@ -105,9 +105,9 @@ final class ApiKernel
         if ($request->method === 'GET' && $request->path === '/api/v1/healthz') {
             return JsonResponse::of(200, [
                 'success' => true,
-                'data'    => ['status' => 'ok'],
-                'error'   => null,
-                'meta'    => null,
+                'data' => ['status' => 'ok'],
+                'error' => null,
+                'meta' => null,
             ]);
         }
 
@@ -122,12 +122,13 @@ final class ApiKernel
         if (class_exists(\FastRoute\RouteCollector::class)) {
             return $this->handleWithFastRoute($request, $this->container);
         }
+
         return $this->handleFallback($request, $this->container);
     }
 
     private function handleWithFastRoute(ServerRequest $request, ContainerInterface $container): JsonResponse
     {
-        $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r): void {
+        $dispatcher = \FastRoute\simpleDispatcher(static function (\FastRoute\RouteCollector $r): void {
             $r->addRoute('POST', '/api/v1/auth/login', LoginController::class);
             $r->addRoute('GET', '/api/v1/auth/me', MeController::class);
             $r->addRoute('GET', '/api/v1/entities', ListEntityController::class);
@@ -169,48 +170,48 @@ final class ApiKernel
             $r->addRoute('GET', '/api/v1/cvp-classifications', ListCvpClassificationController::class);
             $r->addRoute('PUT', '/api/v1/cvp-classifications', PutCvpClassificationController::class);
             // Phase 6 Wave 6-F: consumption-tax port.
-            $r->addRoute('GET',  '/api/v1/consumption-tax/rates', ListConsumptionTaxRatesController::class);
-            $r->addRoute('GET',  '/api/v1/consumption-tax/categories', ListConsumptionTaxCategoriesController::class);
-            $r->addRoute('GET',  '/api/v1/consumption-tax/account-title-defaults', ListAccountTitleTaxDefaultsController::class);
-            $r->addRoute('PUT',  '/api/v1/consumption-tax/account-title-defaults', PutAccountTitleTaxDefaultsController::class);
-            $r->addRoute('GET',  '/api/v1/consumption-tax/invoice-registrations', ListInvoiceRegistrationsController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/rates', ListConsumptionTaxRatesController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/categories', ListConsumptionTaxCategoriesController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/account-title-defaults', ListAccountTitleTaxDefaultsController::class);
+            $r->addRoute('PUT', '/api/v1/consumption-tax/account-title-defaults', PutAccountTitleTaxDefaultsController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/invoice-registrations', ListInvoiceRegistrationsController::class);
             $r->addRoute('POST', '/api/v1/consumption-tax/invoice-registrations', UpsertInvoiceRegistrationController::class);
             $r->addRoute('PATCH', '/api/v1/consumption-tax/invoice-registrations/{id}', UpsertInvoiceRegistrationController::class);
-            $r->addRoute('GET',  '/api/v1/consumption-tax/periods', ListConsumptionTaxPeriodsController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/periods', ListConsumptionTaxPeriodsController::class);
             $r->addRoute('POST', '/api/v1/consumption-tax/periods', CreateConsumptionTaxPeriodController::class);
             $r->addRoute('POST', '/api/v1/consumption-tax/periods/{id}/calculate', CalculateConsumptionTaxController::class);
-            $r->addRoute('GET',  '/api/v1/consumption-tax/periods/{id}/report', GetConsumptionTaxReportController::class);
+            $r->addRoute('GET', '/api/v1/consumption-tax/periods/{id}/report', GetConsumptionTaxReportController::class);
             // Phase 6 Wave 6-G: budget port.
-            $r->addRoute('GET',    '/api/v1/budgets', ListBudgetController::class);
-            $r->addRoute('POST',   '/api/v1/budgets', CreateBudgetController::class);
-            $r->addRoute('GET',    '/api/v1/budgets/{id}', GetBudgetController::class);
-            $r->addRoute('PATCH',  '/api/v1/budgets/{id}', UpdateBudgetController::class);
+            $r->addRoute('GET', '/api/v1/budgets', ListBudgetController::class);
+            $r->addRoute('POST', '/api/v1/budgets', CreateBudgetController::class);
+            $r->addRoute('GET', '/api/v1/budgets/{id}', GetBudgetController::class);
+            $r->addRoute('PATCH', '/api/v1/budgets/{id}', UpdateBudgetController::class);
             $r->addRoute('DELETE', '/api/v1/budgets/{id}', DeleteBudgetController::class);
-            $r->addRoute('POST',   '/api/v1/budgets/{id}/approve', ApproveBudgetController::class);
-            $r->addRoute('POST',   '/api/v1/budgets/{id}/lock', LockBudgetController::class);
-            $r->addRoute('GET',    '/api/v1/budgets/{id}/variance-analysis', GetBudgetVarianceController::class);
+            $r->addRoute('POST', '/api/v1/budgets/{id}/approve', ApproveBudgetController::class);
+            $r->addRoute('POST', '/api/v1/budgets/{id}/lock', LockBudgetController::class);
+            $r->addRoute('GET', '/api/v1/budgets/{id}/variance-analysis', GetBudgetVarianceController::class);
             // Phase 6 Wave 6-H-2: statement of changes in equity port.
-            $r->addRoute('GET',    '/api/v1/statement-of-changes-in-equity', GetStatementOfChangesInEquityController::class);
-            $r->addRoute('GET',    '/api/v1/ss-adjustments', ListSsAdjustmentsController::class);
-            $r->addRoute('POST',   '/api/v1/ss-adjustments', CreateSsAdjustmentController::class);
-            $r->addRoute('PATCH',  '/api/v1/ss-adjustments/{id}', UpdateSsAdjustmentController::class);
+            $r->addRoute('GET', '/api/v1/statement-of-changes-in-equity', GetStatementOfChangesInEquityController::class);
+            $r->addRoute('GET', '/api/v1/ss-adjustments', ListSsAdjustmentsController::class);
+            $r->addRoute('POST', '/api/v1/ss-adjustments', CreateSsAdjustmentController::class);
+            $r->addRoute('PATCH', '/api/v1/ss-adjustments/{id}', UpdateSsAdjustmentController::class);
             $r->addRoute('DELETE', '/api/v1/ss-adjustments/{id}', DeleteSsAdjustmentController::class);
             // Phase 6 Wave 6-H-1: blue return port (個人事業主 青色申告決算書).
-            $r->addRoute('GET',    '/api/v1/blue-returns', ListBlueReturnController::class);
-            $r->addRoute('POST',   '/api/v1/blue-returns', CreateBlueReturnController::class);
-            $r->addRoute('GET',    '/api/v1/blue-returns/{id}', GetBlueReturnController::class);
-            $r->addRoute('PATCH',  '/api/v1/blue-returns/{id}', UpdateBlueReturnController::class);
+            $r->addRoute('GET', '/api/v1/blue-returns', ListBlueReturnController::class);
+            $r->addRoute('POST', '/api/v1/blue-returns', CreateBlueReturnController::class);
+            $r->addRoute('GET', '/api/v1/blue-returns/{id}', GetBlueReturnController::class);
+            $r->addRoute('PATCH', '/api/v1/blue-returns/{id}', UpdateBlueReturnController::class);
             $r->addRoute('DELETE', '/api/v1/blue-returns/{id}', DeleteBlueReturnController::class);
-            $r->addRoute('POST',   '/api/v1/blue-returns/{id}/finalize', FinalizeBlueReturnController::class);
+            $r->addRoute('POST', '/api/v1/blue-returns/{id}/finalize', FinalizeBlueReturnController::class);
             // Phase 6 Wave 6-H-3: financial statement notes port (注記表).
-            $r->addRoute('GET',    '/api/v1/fs-note-templates', ListFsNoteTemplatesController::class);
-            $r->addRoute('GET',    '/api/v1/fs-notes', ListFsNotesController::class);
-            $r->addRoute('POST',   '/api/v1/fs-notes', CreateFsNoteController::class);
-            $r->addRoute('POST',   '/api/v1/fs-notes/bulk-import', BulkImportFsNotesController::class);
-            $r->addRoute('POST',   '/api/v1/fs-notes/reorder', ReorderFsNotesController::class);
-            $r->addRoute('GET',    '/api/v1/fs-notes/export', ExportFsNotesController::class);
-            $r->addRoute('GET',    '/api/v1/fs-notes/{id}', GetFsNoteController::class);
-            $r->addRoute('PATCH',  '/api/v1/fs-notes/{id}', UpdateFsNoteController::class);
+            $r->addRoute('GET', '/api/v1/fs-note-templates', ListFsNoteTemplatesController::class);
+            $r->addRoute('GET', '/api/v1/fs-notes', ListFsNotesController::class);
+            $r->addRoute('POST', '/api/v1/fs-notes', CreateFsNoteController::class);
+            $r->addRoute('POST', '/api/v1/fs-notes/bulk-import', BulkImportFsNotesController::class);
+            $r->addRoute('POST', '/api/v1/fs-notes/reorder', ReorderFsNotesController::class);
+            $r->addRoute('GET', '/api/v1/fs-notes/export', ExportFsNotesController::class);
+            $r->addRoute('GET', '/api/v1/fs-notes/{id}', GetFsNoteController::class);
+            $r->addRoute('PATCH', '/api/v1/fs-notes/{id}', UpdateFsNoteController::class);
             $r->addRoute('DELETE', '/api/v1/fs-notes/{id}', DeleteFsNoteController::class);
         });
 
@@ -221,6 +222,7 @@ final class ApiKernel
             case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
                 /** @var list<string> $allowed */
                 $allowed = $info[1];
+
                 return ErrorResponse::of(
                     405,
                     'METHOD_NOT_ALLOWED',
@@ -234,8 +236,10 @@ final class ApiKernel
                 /** @var array<string, string> $params */
                 $params = is_array($info[2] ?? null) ? $info[2] : [];
                 $req = $params === [] ? $request : self::mergePathParams($request, $params);
+
                 return $this->invoke($handler, $req, $container);
         }
+
         return ErrorResponse::notFound();
     }
 
@@ -248,6 +252,7 @@ final class ApiKernel
         foreach ($params as $k => $v) {
             $query[$k] = $v;
         }
+
         return new ServerRequest(
             method: $request->method,
             path: $request->path,
@@ -339,6 +344,7 @@ final class ApiKernel
                 return $this->invoke($handler, $request, $container);
             }
         }
+
         return ErrorResponse::notFound();
     }
 
@@ -354,6 +360,7 @@ final class ApiKernel
         }
         /** @var JsonResponse $response */
         $response = $controller($request);
+
         return $response;
     }
 }

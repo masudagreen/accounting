@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Budget;
 
-use InvalidArgumentException;
 use Rucaro\Domain\Budget\Budget;
 use Rucaro\Domain\Budget\BudgetLineItem;
 use Rucaro\Domain\Budget\BudgetRepositoryInterface;
@@ -32,13 +31,13 @@ final readonly class CreateBudgetUseCase
     public function execute(CreateBudgetInput $input): BudgetOutput
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->createdBy)) {
-            throw new InvalidArgumentException('createdBy must be a ULID.');
+            throw new \InvalidArgumentException('createdBy must be a ULID.');
         }
 
         $existing = $this->budgets->findByEntityAndName(
@@ -47,9 +46,7 @@ final readonly class CreateBudgetUseCase
             $input->name,
         );
         if ($existing !== null) {
-            throw ValidationException::withErrors([
-                'name' => [sprintf('a budget named "%s" already exists for this fiscal term.', $input->name)],
-            ]);
+            throw ValidationException::withErrors(['name' => [sprintf('a budget named "%s" already exists for this fiscal term.', $input->name)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -77,21 +74,19 @@ final readonly class CreateBudgetUseCase
         );
 
         $this->budgets->save($budget);
+
         return new BudgetOutput($budget);
     }
 
     private function buildLineItem(string $budgetId, BudgetLineItemInput $li, int $idx): BudgetLineItem
     {
         if (!UlidGenerator::isValid($li->accountTitleId)) {
-            throw ValidationException::withErrors([
-                "lineItems.$idx.accountTitleId" => ['accountTitleId must be a ULID.'],
-            ]);
+            throw ValidationException::withErrors(["lineItems.$idx.accountTitleId" => ['accountTitleId must be a ULID.']]);
         }
         if ($li->subAccountTitleId !== null && !UlidGenerator::isValid($li->subAccountTitleId)) {
-            throw ValidationException::withErrors([
-                "lineItems.$idx.subAccountTitleId" => ['subAccountTitleId must be a ULID when provided.'],
-            ]);
+            throw ValidationException::withErrors(["lineItems.$idx.subAccountTitleId" => ['subAccountTitleId must be a ULID when provided.']]);
         }
+
         return new BudgetLineItem(
             id: $li->id ?? $this->ulids->generate(),
             budgetId: $budgetId,

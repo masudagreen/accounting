@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\ConsumptionTax\CalculateConsumptionTaxUseCase;
@@ -28,7 +27,7 @@ final class CalculateConsumptionTaxUseCaseTest extends TestCase
 
         $txs = new InMemoryTaxableTransactionQuery([
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-01'),
+                bookedOn: new \DateTimeImmutable('2026-10-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -36,7 +35,7 @@ final class CalculateConsumptionTaxUseCaseTest extends TestCase
                 taxAmount: '160000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-05'),
+                bookedOn: new \DateTimeImmutable('2026-10-05'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxablePurchase,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -65,13 +64,14 @@ final class CalculateConsumptionTaxUseCaseTest extends TestCase
 
     private function principlePeriod(): ConsumptionTaxPeriod
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAB1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAB2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,

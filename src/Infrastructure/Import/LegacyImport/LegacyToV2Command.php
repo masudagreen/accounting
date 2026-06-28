@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Auth\PasswordHasher;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,6 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'legacy:import', description: 'Import legacy Rucaro data into the new schema')]
 final class LegacyToV2Command extends Command
 {
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -40,18 +40,19 @@ final class LegacyToV2Command extends Command
                 'stage',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'all | users | entities | terms | account-titles | sub-accounts | journals | fixed-assets | fs-mappings',
-                'all'
+                'all | users | entities | terms | account-titles | sub-accounts | journals | fixed-assets | fs-mappings | opening-balances',
+                'all',
             )
             ->addOption('truncate-target', null, InputOption::VALUE_NONE, 'Delete previously-migrated rows before re-import')
             ->addOption(
                 'placeholder-password',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Argon2id placeholder password assigned to every migrated user (required)'
+                'Argon2id placeholder password assigned to every migrated user (required)',
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -60,12 +61,14 @@ final class LegacyToV2Command extends Command
         $apply = (bool) $input->getOption('apply');
         if ($dryRun === $apply) {
             $io->error('Exactly one of --dry-run or --apply must be set.');
+
             return Command::INVALID;
         }
 
         $placeholder = (string) $input->getOption('placeholder-password');
         if (strlen($placeholder) < 8) {
             $io->error('--placeholder-password is required (min 8 chars).');
+
             return Command::INVALID;
         }
 
@@ -80,7 +83,8 @@ final class LegacyToV2Command extends Command
             $source = $this->connect($host, $port, $user, $pass, $sourceDb);
             $target = $this->connect($host, $port, $user, $pass, $targetDb);
         } catch (\Throwable $e) {
-            $io->error('DB connect failed: ' . $e->getMessage());
+            $io->error('DB connect failed: '.$e->getMessage());
+
             return Command::FAILURE;
         }
 
@@ -96,7 +100,8 @@ final class LegacyToV2Command extends Command
         $stageOpt = (string) $input->getOption('stage');
         $stages = $this->resolveStages($stageOpt);
         if ($stages === []) {
-            $io->error('Invalid --stage value: ' . $stageOpt);
+            $io->error('Invalid --stage value: '.$stageOpt);
+
             return Command::INVALID;
         }
 
@@ -116,28 +121,31 @@ final class LegacyToV2Command extends Command
             $sourceDb,
             $targetDb,
         ));
-        $io->writeln('Stages: ' . implode(', ', $stages));
+        $io->writeln('Stages: '.implode(', ', $stages));
 
         try {
             $reports = $orchestrator->run($stages);
         } catch (\Throwable $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
 
         $this->renderReports($io, $reports);
+
         return Command::SUCCESS;
     }
 
-    private function connect(string $host, string $port, string $user, string $pass, string $db): PDO
+    private function connect(string $host, string $port, string $user, string $pass, string $db): \PDO
     {
         $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $db);
-        $pdo = new PDO($dsn, $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
+        $pdo = new \PDO($dsn, $user, $pass, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_EMULATE_PREPARES => false,
         ]);
         $pdo->exec("SET time_zone = '+00:00'");
+
         return $pdo;
     }
 
@@ -152,6 +160,7 @@ final class LegacyToV2Command extends Command
         if (in_array($stageOpt, ImportOrchestrator::DEFAULT_ORDER, true)) {
             return [$stageOpt];
         }
+
         return [];
     }
 
@@ -160,10 +169,17 @@ final class LegacyToV2Command extends Command
      * `legacy_id_mapping` registry to scope deletes so we do not touch
      * rows seeded by migrations or created by the dev user.
      */
-    private function truncateTarget(PDO $target, IdMapping $idMap): void
+    private function truncateTarget(\PDO $target, IdMapping $idMap): void
     {
+        // Eagerly create legacy_id_mapping if this is the first --apply
+        // --truncate-target run on a fresh target DB. Without this, the
+        // raw `SELECT new_ulid FROM legacy_id_mapping` below blows up with
+        // SQLSTATE[42S02] before any importer stage gets a chance to run.
+        $idMap->bootstrapSchema();
+
         // Delete in reverse FK order.
         $tables = [
+            'opening_balances',
             'account_title_fs_mappings',
             'journal_entry_lines',
             'journal_entries',
@@ -177,7 +193,7 @@ final class LegacyToV2Command extends Command
         $target->exec('SET FOREIGN_KEY_CHECKS=0');
         foreach ($tables as $tbl) {
             $sql = sprintf(
-                "DELETE FROM %s WHERE id IN (SELECT new_ulid FROM legacy_id_mapping)",
+                'DELETE FROM %s WHERE id IN (SELECT new_ulid FROM legacy_id_mapping)',
                 $tbl,
             );
             $target->exec($sql);
@@ -201,7 +217,7 @@ final class LegacyToV2Command extends Command
             if ($r->notes !== []) {
                 $io->writeln(sprintf('<comment>[%s notes]</>', $r->stage));
                 foreach (array_slice($r->notes, 0, 10) as $n) {
-                    $io->writeln('  - ' . $n);
+                    $io->writeln('  - '.$n);
                 }
                 if (count($r->notes) > 10) {
                     $io->writeln(sprintf('  ... (+%d more)', count($r->notes) - 10));

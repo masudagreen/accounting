@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Journal\Service;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Journal\Journal;
 use Rucaro\Domain\Journal\JournalLine;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -28,7 +27,7 @@ final class JournalReverser
 
     public function reverse(
         Journal $source,
-        DateTimeImmutable $reversedAt,
+        \DateTimeImmutable $reversedAt,
         string $reversedBy,
         string $reason,
     ): Journal {
@@ -49,7 +48,7 @@ final class JournalReverser
                 memo: $line->memo,
                 bookedAt: $reversedAt,
             );
-            $lineNo++;
+            ++$lineNo;
         }
 
         $summary = trim(sprintf('[REVERSED:%s] %s', $reason, $source->summary));

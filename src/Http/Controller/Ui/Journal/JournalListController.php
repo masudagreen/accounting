@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\Journal\JournalSearchCriteria;
 use Rucaro\Application\Journal\SearchJournalUseCase;
 use Rucaro\Domain\Journal\Journal;
+use Rucaro\Domain\Journal\JournalLine;
 use Rucaro\Domain\Journal\JournalStatus;
 use Rucaro\Domain\Journal\ValueObject\JournalDate;
 use Rucaro\Http\Controller\Ui\EntitySwitchController;
@@ -19,6 +18,7 @@ use Rucaro\Support\Web\CsrfTokenManager;
 use Rucaro\Support\Web\FlashMessageBag;
 use Rucaro\Support\Web\SessionStore;
 use Rucaro\Support\Web\SmartyViewRenderer;
+use Rucaro\Support\Web\UserDisplayLookup;
 
 /**
  * GET /ui/journals — paginated, sortable, filterable journal list.
@@ -40,6 +40,7 @@ final readonly class JournalListController
     public function __construct(
         private SearchJournalUseCase $search,
         private JournalUiContext $uiContext,
+        private UserDisplayLookup $userDisplay,
         private SessionStore $session,
         private CsrfTokenManager $csrf,
         private FlashMessageBag $flash,
@@ -56,23 +57,38 @@ final readonly class JournalListController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
-        $page     = $request->positiveInt('page', 1, 1);
+        $page = $request->positiveInt('page', 1, 1);
         $pageSize = $this->resolvePageSize($request->queryString('pageSize'));
         [$sortBy, $sortOrder] = JournalSearchCriteria::resolveSort(
             $request->queryString('sortBy'),
             $request->queryString('sortOrder'),
         );
 
-        $year    = $this->intOrNull($request->queryString('year'));
-        $month   = $this->intOrNull($request->queryString('month'));
+        $year = $this->intOrNull($request->queryString('year'));
+        $month = $this->intOrNull($request->queryString('month'));
         $account = $request->queryString('accountTitleId');
-        $status  = $this->resolveStatus($request->queryString('status'));
-        $query   = $request->queryString('q');
+        $status = $this->resolveStatus($request->queryString('status'));
+        $query = $request->queryString('q');
 
         [$from, $to] = self::yearMonthToRange($year, $month);
+        // Year unset + month set → no from/to window (it would have been
+        // null/null), but we still want the month filter to bite. Pass it
+        // to the criteria as a calendar-month-only filter.
+        $monthOnly = ($year === null && $month !== null && $month >= 1 && $month <= 12) ? $month : null;
+
+        // Same defence as JournalNewController: only honour the navbar
+        // session term when it actually belongs to the current entity, so
+        // a stale term from a previous entity doesn't silently filter the
+        // list to 0 rows after an entity switch.
+        $fiscalTerms = $this->uiContext->fiscalTermsForEntity($entityId);
+        $sessionTermId = $this->session->getSelectedFiscalTerm();
+        $criteriaTermId = ($sessionTermId !== null && self::termBelongsToEntity($sessionTermId, $fiscalTerms))
+            ? $sessionTermId
+            : null;
 
         $criteria = new JournalSearchCriteria(
             entityId: $entityId,
@@ -80,7 +96,7 @@ final readonly class JournalListController
             pageSize: $pageSize,
             from: $from,
             to: $to,
-            fiscalTermId: $this->session->getSelectedFiscalTerm(),
+            fiscalTermId: $criteriaTermId,
             accountTitleId: $account,
             status: $status,
             source: null,
@@ -88,75 +104,136 @@ final readonly class JournalListController
             includeTrashed: false,
             sortBy: $sortBy,
             sortOrder: $sortOrder,
+            monthOnly: $monthOnly,
         );
+
+        $accountTitles = $this->uiContext->accountTitlesForEntity($entityId);
+        // accountTitlesForEntity() already strips the legacy English alias
+        // suffix, so the shipped `name` is bare 「現金」 — just key by id.
+        $accountNameById = [];
+        foreach ($accountTitles as $a) {
+            $accountNameById[$a['id']] = $a['name'];
+        }
 
         try {
             $result = $this->search->execute($criteria);
+            // Resolve creator ULIDs once per page so we can show 「管理者」
+            // instead of a raw 26-char ULID code in the 起票者 column.
+            $creatorIds = [];
+            foreach ($result->items as $j) {
+                if ($j->createdBy !== '') {
+                    $creatorIds[] = $j->createdBy;
+                }
+            }
+            $creatorNameById = $this->userDisplay->displayNamesByIds($creatorIds);
             $items = array_map(
                 static fn (Journal $j): array => [
-                    'id'          => $j->id,
+                    'id' => $j->id,
                     'journalDate' => $j->journalDate->format('Y-m-d'),
-                    'summary'     => $j->summary,
-                    'totalAmount' => $j->totalAmount,
-                    'status'      => $j->status,
-                    'createdBy'   => $j->createdBy,
-                    'createdAt'   => $j->createdAt->format('Y-m-d H:i'),
+                    'summary' => $j->summary,
+                    'totalAmount' => JournalUiContext::formatAmount($j->totalAmount),
+                    'status' => $j->status,
+                    'createdBy' => $j->createdBy,
+                    'createdByName' => $creatorNameById[$j->createdBy] ?? '',
+                    'createdAt' => $j->createdAt->format('Y-m-d H:i'),
+                    'debitLabel' => self::sideLabel($j->lines, JournalLine::SIDE_DEBIT, $accountNameById),
+                    'creditLabel' => self::sideLabel($j->lines, JournalLine::SIDE_CREDIT, $accountNameById),
                 ],
                 $result->items,
             );
             $total = $result->total;
         } catch (\Throwable $e) {
-            $this->flash->addError('仕訳一覧の取得に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('仕訳一覧の取得に失敗しました: '.$e->getMessage());
             $items = [];
             $total = 0;
         }
 
-        $accountTitles = $this->uiContext->accountTitlesForEntity($entityId);
-        $fiscalTerms   = $this->uiContext->fiscalTermsForEntity($entityId);
-
         $data = [
-            'page_title'         => '仕訳一覧',
-            'active_nav'         => 'journals',
-            'csrf_logout_token'  => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'  => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'  => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'  => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'       => $this->session->getDisplayName() ?? '',
-            'user_email'         => $this->session->getEmail() ?? '',
-            'entities'           => [],
+            'page_title' => '仕訳一覧',
+            'active_nav' => 'journals',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => $this->uiContext->entitiesForUser((string) $this->session->getUserId()),
             'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'     => $this->flash->consume(),
-            'items'              => $items,
-            'total'              => $total,
-            'page'               => $page,
-            'page_size'          => $pageSize,
-            'page_sizes'         => self::PAGE_SIZES,
-            'total_pages'        => (int) max(1, (int) ceil($total / max(1, $pageSize))),
-            'sort_by'            => $sortBy,
-            'sort_order'         => $sortOrder,
-            'filter_year'        => $year !== null ? (string) $year : '',
-            'filter_month'       => $month !== null ? (string) $month : '',
-            'filter_account'     => $account ?? '',
-            'filter_status'      => $status?->value ?? '',
-            'filter_q'           => $query ?? '',
-            'status_options'     => self::STATUS_FILTERS,
-            'account_titles'     => $accountTitles,
-            'fiscal_terms'       => $fiscalTerms,
-            'year_options'       => self::buildYearOptions($fiscalTerms),
-            'query_string_base'  => self::buildQueryBase($page, $pageSize, $sortBy, $sortOrder, $year, $month, $account, $status?->value, $query),
+            'flash_messages' => $this->flash->consume(),
+            'items' => $items,
+            'total' => $total,
+            'page' => $page,
+            'page_size' => $pageSize,
+            'page_sizes' => self::PAGE_SIZES,
+            'total_pages' => max(1, (int) ceil($total / max(1, $pageSize))),
+            'sort_by' => $sortBy,
+            'sort_order' => $sortOrder,
+            'filter_year' => $year !== null ? (string) $year : '',
+            'filter_month' => $month !== null ? (string) $month : '',
+            'filter_account' => $account ?? '',
+            'filter_status' => $status?->value ?? '',
+            'filter_q' => $query ?? '',
+            'status_options' => self::STATUS_FILTERS,
+            'account_titles' => $accountTitles,
+            'fiscal_terms' => $fiscalTerms,
+            'year_options' => self::buildYearOptions($fiscalTerms),
+            'query_string_base' => self::buildQueryBase($page, $pageSize, $sortBy, $sortOrder, $year, $month, $account, $status?->value, $query),
         ];
         unset($userId, $request);
 
         return HtmlResponse::ok($this->view->render('journals/list.html.tpl', $data));
     }
 
+    /**
+     * Render one side of a journal in the legacy 仕訳帳 style: the bare
+     * account name when the side has a single line, otherwise 「諸口」.
+     *
+     * @param list<JournalLine> $lines
+     * @param array<string, string> $accountNameById
+     */
+    private static function sideLabel(array $lines, string $side, array $accountNameById): string
+    {
+        $picked = [];
+        foreach ($lines as $l) {
+            if ($l->side === $side) {
+                $picked[] = $l->accountTitleId;
+            }
+        }
+        if ($picked === []) {
+            return '';
+        }
+        if (count($picked) >= 2) {
+            return '諸口';
+        }
+
+        return $accountNameById[$picked[0]] ?? '不明科目';
+    }
+
+    /**
+     * @param list<array{id: string, fiscalPeriod: int, startDate: string, endDate: string}> $fiscalTerms
+     */
+    private static function termBelongsToEntity(string $termId, array $fiscalTerms): bool
+    {
+        foreach ($fiscalTerms as $t) {
+            if ($t['id'] === $termId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @psalm-return int<1, max>
+     */
     private function resolvePageSize(?string $raw): int
     {
         if ($raw === null) {
             return self::DEFAULT_PAGE_SIZE;
         }
         $n = (int) $raw;
+
         return in_array($n, self::PAGE_SIZES, true) ? $n : self::DEFAULT_PAGE_SIZE;
     }
 
@@ -170,6 +247,7 @@ final readonly class JournalListController
                 return $case;
             }
         }
+
         return null;
     }
 
@@ -178,6 +256,7 @@ final readonly class JournalListController
         if ($raw === null || $raw === '' || !ctype_digit($raw)) {
             return null;
         }
+
         return (int) $raw;
     }
 
@@ -189,14 +268,15 @@ final readonly class JournalListController
         if ($year === null) {
             return [null, null];
         }
-        $utc = new DateTimeZone('UTC');
+        $utc = new \DateTimeZone('UTC');
         if ($month !== null && $month >= 1 && $month <= 12) {
-            $from = new DateTimeImmutable(sprintf('%04d-%02d-01', $year, $month), $utc);
+            $from = new \DateTimeImmutable(sprintf('%04d-%02d-01', $year, $month), $utc);
             $to = $from->modify('last day of this month');
         } else {
-            $from = new DateTimeImmutable(sprintf('%04d-01-01', $year), $utc);
-            $to = new DateTimeImmutable(sprintf('%04d-12-31', $year), $utc);
+            $from = new \DateTimeImmutable(sprintf('%04d-01-01', $year), $utc);
+            $to = new \DateTimeImmutable(sprintf('%04d-12-31', $year), $utc);
         }
+
         return [new JournalDate($from), new JournalDate($to)];
     }
 
@@ -205,6 +285,7 @@ final readonly class JournalListController
      * back to "current year ± 3" when the entity has no terms yet.
      *
      * @param list<array{id: string, fiscalPeriod: int, startDate: string, endDate: string}> $fiscalTerms
+     *
      * @return list<int>
      */
     private static function buildYearOptions(array $fiscalTerms): array
@@ -220,14 +301,15 @@ final readonly class JournalListController
         }
         if ($years === []) {
             $now = (int) date('Y');
-            for ($y = $now - 3; $y <= $now + 1; $y++) {
+            for ($y = $now - 3; $y <= $now + 1; ++$y) {
                 $years[$y] = true;
             }
         }
         $keys = array_keys($years);
         sort($keys);
-        /** @var list<int> */
-        return array_values(array_reverse($keys));
+
+        /* @var list<int> */
+        return array_reverse($keys);
     }
 
     private static function buildQueryBase(
@@ -243,8 +325,8 @@ final readonly class JournalListController
     ): string {
         unset($page); // page never belongs in the base — each link re-injects it
         $parts = [
-            'pageSize'  => (string) $pageSize,
-            'sortBy'    => $sortBy,
+            'pageSize' => (string) $pageSize,
+            'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
         ];
         if ($year !== null) {
@@ -262,6 +344,7 @@ final readonly class JournalListController
         if ($query !== null && $query !== '') {
             $parts['q'] = $query;
         }
+
         return http_build_query($parts);
     }
 }

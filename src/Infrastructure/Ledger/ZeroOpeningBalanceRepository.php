@@ -18,12 +18,14 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class ZeroOpeningBalanceRepository implements OpeningBalanceRepositoryInterface
 {
+    #[\Override]
     public function findOpeningBalance(
         string $entityId,
         string $fiscalTermId,
         string $accountTitleId,
     ): string {
         unset($entityId, $fiscalTermId, $accountTitleId);
+
         return Decimal::normalize('0');
     }
 }

@@ -44,7 +44,7 @@ final class ValidationException extends DomainException
             return [];
         }
 
-        /** @var ErrorMap $errors */
+        /* @var ErrorMap $errors */
         return $errors;
     }
 }

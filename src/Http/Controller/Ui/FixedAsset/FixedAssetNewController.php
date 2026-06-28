@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FixedAsset\CreateFixedAssetInput;
 use Rucaro\Application\FixedAsset\CreateFixedAssetUseCase;
 use Rucaro\Domain\Exception\ValidationException;
@@ -45,6 +43,7 @@ final readonly class FixedAssetNewController
         if ($guard instanceof HtmlResponse) {
             return $guard;
         }
+
         return $this->renderForm(self::blankForm(), [], 200);
     }
 
@@ -62,22 +61,23 @@ final readonly class FixedAssetNewController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/fixed-assets/new');
         }
 
         $form = [
-            'assetCode'         => PlanningFormSupport::str($body, 'asset_code'),
-            'assetName'         => PlanningFormSupport::str($body, 'asset_name'),
-            'categoryCode'      => PlanningFormSupport::str($body, 'category_code'),
-            'acquisitionDate'   => PlanningFormSupport::str($body, 'acquisition_date'),
-            'serviceStartDate'  => PlanningFormSupport::str($body, 'service_start_date'),
-            'acquisitionCost'   => PlanningFormSupport::str($body, 'acquisition_cost'),
-            'residualValue'     => PlanningFormSupport::str($body, 'residual_value', '0'),
-            'usefulLifeYears'   => PlanningFormSupport::str($body, 'useful_life_years'),
-            'method'            => PlanningFormSupport::str($body, 'method', 'straight_line'),
-            'quantity'          => PlanningFormSupport::str($body, 'quantity', '1'),
-            'departmentCode'    => PlanningFormSupport::str($body, 'department_code'),
-            'note'              => PlanningFormSupport::str($body, 'note'),
+            'assetCode' => PlanningFormSupport::str($body, 'asset_code'),
+            'assetName' => PlanningFormSupport::str($body, 'asset_name'),
+            'categoryCode' => PlanningFormSupport::str($body, 'category_code'),
+            'acquisitionDate' => PlanningFormSupport::str($body, 'acquisition_date'),
+            'serviceStartDate' => PlanningFormSupport::str($body, 'service_start_date'),
+            'acquisitionCost' => PlanningFormSupport::str($body, 'acquisition_cost'),
+            'residualValue' => PlanningFormSupport::str($body, 'residual_value', '0'),
+            'usefulLifeYears' => PlanningFormSupport::str($body, 'useful_life_years'),
+            'method' => PlanningFormSupport::str($body, 'method', 'straight_line'),
+            'quantity' => PlanningFormSupport::str($body, 'quantity', '1'),
+            'departmentCode' => PlanningFormSupport::str($body, 'department_code'),
+            'note' => PlanningFormSupport::str($body, 'note'),
         ];
         $errors = [];
 
@@ -122,11 +122,12 @@ final readonly class FixedAssetNewController
                     createdBy: $userId,
                 ));
                 $this->flash->addSuccess('固定資産を登録しました。');
-                return HtmlResponse::redirect('/ui/fixed-assets/' . $out->asset->id);
+
+                return HtmlResponse::redirect('/ui/fixed-assets/'.$out->asset->id);
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['登録に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['登録に失敗しました: '.$e->getMessage()];
             }
         }
 
@@ -140,8 +141,10 @@ final readonly class FixedAssetNewController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -152,26 +155,27 @@ final readonly class FixedAssetNewController
     private function renderForm(array $form, array $errors, int $status): HtmlResponse
     {
         $data = [
-            'page_title'           => '新規固定資産',
-            'active_nav'           => 'fixed_assets',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => (string) $this->session->getSelectedEntity(),
+            'page_title' => '新規固定資産',
+            'active_nav' => 'fixed_assets',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => (string) $this->session->getSelectedEntity(),
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_mode'            => 'new',
-            'form_action'          => '/ui/fixed-assets/new',
-            'form'                 => $form,
-            'form_errors'          => $errors,
-            'method_options'       => self::methodOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'form_mode' => 'new',
+            'form_action' => '/ui/fixed-assets/new',
+            'form' => $form,
+            'form_errors' => $errors,
+            'method_options' => self::methodOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('fixed_assets/form.html.tpl', $data));
     }
 
@@ -181,28 +185,28 @@ final readonly class FixedAssetNewController
     private static function blankForm(): array
     {
         return [
-            'assetCode'         => '',
-            'assetName'         => '',
-            'categoryCode'      => '',
-            'acquisitionDate'   => '',
-            'serviceStartDate'  => '',
-            'acquisitionCost'   => '',
-            'residualValue'     => '0',
-            'usefulLifeYears'   => '',
-            'method'            => 'straight_line',
-            'quantity'          => '1',
-            'departmentCode'    => '',
-            'note'              => '',
+            'assetCode' => '',
+            'assetName' => '',
+            'categoryCode' => '',
+            'acquisitionDate' => '',
+            'serviceStartDate' => '',
+            'acquisitionCost' => '',
+            'residualValue' => '0',
+            'usefulLifeYears' => '',
+            'method' => 'straight_line',
+            'quantity' => '1',
+            'departmentCode' => '',
+            'note' => '',
         ];
     }
 
-    private static function parseDate(string $raw): ?DateTimeImmutable
+    private static function parseDate(string $raw): ?\DateTimeImmutable
     {
         if ($raw === '') {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
@@ -225,16 +229,16 @@ final readonly class FixedAssetNewController
     private static function methodLabel(DepreciationMethod $m): string
     {
         return match ($m) {
-            DepreciationMethod::StraightLine         => '定額法 (straight_line)',
-            DepreciationMethod::DecliningBalance     => '定率法 (declining_balance)',
+            DepreciationMethod::StraightLine => '定額法 (straight_line)',
+            DepreciationMethod::DecliningBalance => '定率法 (declining_balance)',
             DepreciationMethod::DecliningBalance2007 => '定率法 2007',
             DepreciationMethod::DecliningBalance2012 => '定率法 2012',
             DepreciationMethod::DecliningBalance2016 => '定率法 2016',
-            DepreciationMethod::OldStraightLine      => '旧定額法',
-            DepreciationMethod::OldDecliningBalance  => '旧定率法',
-            DepreciationMethod::OneShot              => '一括償却',
-            DepreciationMethod::ThreeYearEqual       => '3 年均等',
-            DepreciationMethod::None                 => '償却しない',
+            DepreciationMethod::OldStraightLine => '旧定額法',
+            DepreciationMethod::OldDecliningBalance => '旧定率法',
+            DepreciationMethod::OneShot => '一括償却',
+            DepreciationMethod::ThreeYearEqual => '3 年均等',
+            DepreciationMethod::None => '償却しない',
         };
     }
 }

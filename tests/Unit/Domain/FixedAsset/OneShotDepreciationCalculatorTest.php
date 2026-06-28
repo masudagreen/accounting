@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FixedAsset;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FixedAsset\Service\DepreciationCalculationRequest;
+use Rucaro\Domain\FixedAsset\Service\NoDepreciationCalculator;
 use Rucaro\Domain\FixedAsset\Service\OneShotDepreciationCalculator;
 use Rucaro\Domain\FixedAsset\Service\ThreeYearEqualDepreciationCalculator;
-use Rucaro\Domain\FixedAsset\Service\NoDepreciationCalculator;
 
 #[CoversClass(OneShotDepreciationCalculator::class)]
 #[CoversClass(ThreeYearEqualDepreciationCalculator::class)]
@@ -65,9 +64,9 @@ final class OneShotDepreciationCalculatorTest extends TestCase
             acquisitionCost: $cost,
             residualValue: '0.0000',
             usefulLifeYears: 1,
-            serviceStartDate: new DateTimeImmutable('2020-04-01'),
-            periodStartDate: new DateTimeImmutable('2020-04-01'),
-            periodEndDate: new DateTimeImmutable('2021-03-31'),
+            serviceStartDate: new \DateTimeImmutable('2020-04-01'),
+            periodStartDate: new \DateTimeImmutable('2020-04-01'),
+            periodEndDate: new \DateTimeImmutable('2021-03-31'),
             periodNumber: $periodNumber,
             monthsInService: 12,
             fiscalTermMonths: 12,

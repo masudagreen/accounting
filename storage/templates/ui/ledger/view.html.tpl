@@ -73,8 +73,17 @@
             </thead>
             <tbody>
               {foreach $book.entries as $e}
-                <tr>
-                  <td><code>{$e.entryDate|escape}</code></td>
+                {* Whole-row link to /ui/journals/{id} so operators can drill
+                   into the source journal from the ledger. data-href + JS
+                   handles the click; an inner-cell anchor is also provided
+                   so middle-click / Cmd-click for new tab still works and
+                   keyboard navigation lands somewhere meaningful. *}
+                <tr class="ledger-row-clickable" data-href="/ui/journals/{$e.journalEntryId|escape}" tabindex="0">
+                  <td>
+                    <a class="text-decoration-none text-reset" href="/ui/journals/{$e.journalEntryId|escape}">
+                      <code>{$e.entryDate|escape}</code>
+                    </a>
+                  </td>
                   <td><span class="small text-muted">{$e.counterAccountCode|escape}</span> {$e.counterAccountName|escape}</td>
                   <td>{$e.summary|escape}{if $e.memo !== ''} <span class="small text-muted">／ {$e.memo|escape}</span>{/if}</td>
                   <td class="text-end">{$e.debitAmount|escape}</td>
@@ -100,4 +109,34 @@
       </section>
     {/foreach}
   {/if}
+
+  <style>
+    .ledger-row-clickable { cursor: pointer; }
+    .ledger-row-clickable:hover { background-color: rgba(13, 110, 253, 0.06); }
+    .ledger-row-clickable:focus-visible { outline: 2px solid #0d6efd; outline-offset: -2px; }
+  </style>
+
+  <script>
+    (function () {
+      'use strict';
+      // Whole-row navigation. Skip when the user clicked an inner anchor /
+      // button (those have their own navigation), is text-selecting, or used
+      // a modifier key (Ctrl/Cmd/middle click → let the inner <a> open in a
+      // new tab via its href).
+      document.querySelectorAll('tr.ledger-row-clickable').forEach(function (row) {
+        row.addEventListener('click', function (e) {
+          if (e.target.closest('a, button, input, select, textarea, label')) return;
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+          if (window.getSelection && String(window.getSelection() || '') !== '') return;
+          var href = row.getAttribute('data-href');
+          if (href) window.location.href = href;
+        });
+        row.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          var href = row.getAttribute('data-href');
+          if (href) { e.preventDefault(); window.location.href = href; }
+        });
+      });
+    })();
+  </script>
 {/block}

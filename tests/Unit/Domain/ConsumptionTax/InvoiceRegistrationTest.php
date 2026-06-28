@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\InvoiceRegistration;
@@ -17,18 +16,18 @@ final class InvoiceRegistrationTest extends TestCase
     {
         $reg = $this->build(
             isRegistered: true,
-            regFrom: new DateTimeImmutable('2023-10-01'),
-            regUntil: new DateTimeImmutable('2024-12-31'),
+            regFrom: new \DateTimeImmutable('2023-10-01'),
+            regUntil: new \DateTimeImmutable('2024-12-31'),
         );
-        self::assertTrue($reg->isRegisteredOn(new DateTimeImmutable('2023-11-01')));
-        self::assertFalse($reg->isRegisteredOn(new DateTimeImmutable('2023-09-01')));
-        self::assertFalse($reg->isRegisteredOn(new DateTimeImmutable('2025-01-15')));
+        self::assertTrue($reg->isRegisteredOn(new \DateTimeImmutable('2023-11-01')));
+        self::assertFalse($reg->isRegisteredOn(new \DateTimeImmutable('2023-09-01')));
+        self::assertFalse($reg->isRegisteredOn(new \DateTimeImmutable('2025-01-15')));
     }
 
     public function testNotRegisteredAlwaysFalse(): void
     {
         $reg = $this->build(isRegistered: false);
-        self::assertFalse($reg->isRegisteredOn(new DateTimeImmutable('2024-01-15')));
+        self::assertFalse($reg->isRegisteredOn(new \DateTimeImmutable('2024-01-15')));
     }
 
     public function testRejectsInvalidRegistrationNumber(): void
@@ -54,8 +53,8 @@ final class InvoiceRegistrationTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->build(
             isRegistered: true,
-            regFrom: new DateTimeImmutable('2025-01-01'),
-            regUntil: new DateTimeImmutable('2024-01-01'),
+            regFrom: new \DateTimeImmutable('2025-01-01'),
+            regUntil: new \DateTimeImmutable('2024-01-01'),
         );
     }
 
@@ -63,10 +62,11 @@ final class InvoiceRegistrationTest extends TestCase
         string $name = 'ACME商事',
         ?string $regNumber = null,
         bool $isRegistered = false,
-        ?DateTimeImmutable $regFrom = null,
-        ?DateTimeImmutable $regUntil = null,
+        ?\DateTimeImmutable $regFrom = null,
+        ?\DateTimeImmutable $regUntil = null,
     ): InvoiceRegistration {
-        $now = new DateTimeImmutable('2024-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2024-04-01T00:00:00Z');
+
         return new InvoiceRegistration(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA2',

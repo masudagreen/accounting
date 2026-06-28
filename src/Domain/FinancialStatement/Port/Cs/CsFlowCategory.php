@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FinancialStatement\Port\Cs;
 
-use InvalidArgumentException;
-
 /**
  * Three flow-category buckets of the J-GAAP indirect-method Cash Flow Statement.
  *
@@ -26,13 +24,12 @@ enum CsFlowCategory: string
     public static function fromString(string $raw): self
     {
         $normalised = strtolower($raw);
+
         return match ($normalised) {
             'operating', 'op' => self::Operating,
             'investing', 'inv' => self::Investing,
             'financing', 'fin' => self::Financing,
-            default => throw new InvalidArgumentException(
-                'Unknown CsFlowCategory: ' . $raw,
-            ),
+            default => throw new \InvalidArgumentException('Unknown CsFlowCategory: '.$raw),
         };
     }
 }

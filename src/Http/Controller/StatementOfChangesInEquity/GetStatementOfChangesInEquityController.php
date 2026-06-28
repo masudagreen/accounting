@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\StatementOfChangesInEquity\GenerateStatementOfChangesInEquityInput;
 use Rucaro\Application\StatementOfChangesInEquity\GenerateStatementOfChangesInEquityUseCase;
 use Rucaro\Domain\StatementOfChangesInEquity\SsSectionCode;
@@ -43,14 +41,14 @@ final readonly class GetStatementOfChangesInEquityController
             return ErrorResponse::badRequest('fiscalTermId query parameter is required and must be a ULID.');
         }
 
-        $utc = new DateTimeZone('UTC');
+        $utc = new \DateTimeZone('UTC');
         try {
-            $fromDate = new DateTimeImmutable(
-                $request->queryString('fromDate') ?? 'first day of January ' . date('Y'),
+            $fromDate = new \DateTimeImmutable(
+                $request->queryString('fromDate') ?? 'first day of January '.date('Y'),
                 $utc,
             );
-            $toDate = new DateTimeImmutable(
-                $request->queryString('toDate') ?? 'last day of December ' . date('Y'),
+            $toDate = new \DateTimeImmutable(
+                $request->queryString('toDate') ?? 'last day of December '.date('Y'),
                 $utc,
             );
         } catch (\Exception $e) {
@@ -63,7 +61,7 @@ final readonly class GetStatementOfChangesInEquityController
             if (!is_numeric($netIncomeRaw)) {
                 return ErrorResponse::badRequest('netIncome must be numeric when provided.');
             }
-            $netIncome = (string) $netIncomeRaw;
+            $netIncome = $netIncomeRaw;
         }
 
         $openingBalances = self::parseOpeningBalances($request);
@@ -87,16 +85,18 @@ final readonly class GetStatementOfChangesInEquityController
         $format = strtolower($request->queryString('format') ?? 'json');
         if ($format === 'pdf') {
             $pdf = $this->pdf->render($ss);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="statement-of-changes-in-equity.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(StatementOfChangesInEquityJsonSerializer::statementToArray($ss));
     }
 
@@ -109,11 +109,12 @@ final readonly class GetStatementOfChangesInEquityController
     {
         $out = [];
         foreach (SsSectionCode::ordered() as $code) {
-            $raw = $request->queryString('opening.' . $code->value);
+            $raw = $request->queryString('opening.'.$code->value);
             if ($raw !== null && $raw !== '' && is_numeric($raw)) {
-                $out[$code->value] = (string) $raw;
+                $out[$code->value] = $raw;
             }
         }
+
         return $out;
     }
 }

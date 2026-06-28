@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\CashPlan;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Decimal\Decimal;
 
@@ -37,19 +36,15 @@ final readonly class CashPlan
         public ?string $notes,
         public array $entries,
         public string $createdBy,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt = null,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt = null,
     ) {
         if ($name === '' || mb_strlen($name) > 128) {
-            throw ValidationException::withErrors([
-                'name' => ['name must be 1..128 characters.'],
-            ]);
+            throw ValidationException::withErrors(['name' => ['name must be 1..128 characters.']]);
         }
         if (!preg_match('/^[A-Z]{3}$/', $currencyCode)) {
-            throw ValidationException::withErrors([
-                'currencyCode' => ['currencyCode must be 3 uppercase ASCII letters.'],
-            ]);
+            throw ValidationException::withErrors(['currencyCode' => ['currencyCode must be 3 uppercase ASCII letters.']]);
         }
         // openingBalance validation happens via Decimal::normalize below.
         Decimal::normalize($openingBalance);
@@ -67,9 +62,10 @@ final readonly class CashPlan
             if ($e->category->isInflow()) {
                 $delta = Decimal::add($delta, $amount);
             } else {
-                $delta = Decimal::add($delta, '-' . ltrim(Decimal::normalize($amount), '-'));
+                $delta = Decimal::add($delta, '-'.ltrim(Decimal::normalize($amount), '-'));
             }
         }
+
         return Decimal::normalize($delta);
     }
 
@@ -80,14 +76,13 @@ final readonly class CashPlan
     public function closingBalance(int $month): string
     {
         if ($month < 1 || $month > CashPlanEntry::MONTHS) {
-            throw ValidationException::withErrors([
-                'month' => [sprintf('month must be in 1..%d.', CashPlanEntry::MONTHS)],
-            ]);
+            throw ValidationException::withErrors(['month' => [sprintf('month must be in 1..%d.', CashPlanEntry::MONTHS)]]);
         }
         $balance = Decimal::normalize($this->openingBalance);
-        for ($m = 1; $m <= $month; $m++) {
+        for ($m = 1; $m <= $month; ++$m) {
             $balance = Decimal::add($balance, $this->monthlyDelta($m));
         }
+
         return Decimal::normalize($balance);
     }
 
@@ -98,23 +93,24 @@ final readonly class CashPlan
     {
         /** @var array<string, string> $sums */
         $sums = [
-            'operating_in'  => '0.0000',
+            'operating_in' => '0.0000',
             'operating_out' => '0.0000',
-            'investing_in'  => '0.0000',
+            'investing_in' => '0.0000',
             'investing_out' => '0.0000',
-            'financing_in'  => '0.0000',
+            'financing_in' => '0.0000',
             'financing_out' => '0.0000',
         ];
         foreach ($this->entries as $e) {
             $key = $e->category->value;
             $sums[$key] = Decimal::add($sums[$key], $e->total());
         }
+
         return [
-            'operating_in'  => Decimal::normalize($sums['operating_in']),
+            'operating_in' => Decimal::normalize($sums['operating_in']),
             'operating_out' => Decimal::normalize($sums['operating_out']),
-            'investing_in'  => Decimal::normalize($sums['investing_in']),
+            'investing_in' => Decimal::normalize($sums['investing_in']),
             'investing_out' => Decimal::normalize($sums['investing_out']),
-            'financing_in'  => Decimal::normalize($sums['financing_in']),
+            'financing_in' => Decimal::normalize($sums['financing_in']),
             'financing_out' => Decimal::normalize($sums['financing_out']),
         ];
     }
@@ -124,7 +120,7 @@ final readonly class CashPlan
      *
      * @param list<CashPlanEntry> $entries
      */
-    public function withEntries(array $entries, DateTimeImmutable $now): self
+    public function withEntries(array $entries, \DateTimeImmutable $now): self
     {
         return new self(
             id: $this->id,
@@ -147,7 +143,7 @@ final readonly class CashPlan
         string $openingBalance,
         string $currencyCode,
         ?string $notes,
-        DateTimeImmutable $now,
+        \DateTimeImmutable $now,
     ): self {
         return new self(
             id: $this->id,

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FinancialStatement\Multi;
 
-use DateTimeZone;
 use Rucaro\Domain\FinancialStatement\Multi\MultiPeriodFinancialStatement;
 use Rucaro\Domain\FinancialStatement\Multi\MultiPeriodSectionRow;
 use Rucaro\Infrastructure\FinancialStatement\JsonFinancialStatementSerializer;
@@ -32,46 +31,47 @@ final class MultiPeriodJsonSerializer
         $periods = [];
         foreach ($multi->periods as $entry) {
             $periods[] = [
-                'fiscalTermId'    => $entry->fiscalTermId,
+                'fiscalTermId' => $entry->fiscalTermId,
                 'fiscalTermLabel' => $entry->fiscalTermLabel,
-                'fromDate'        => $entry->fromDate->format('Y-m-d'),
-                'toDate'          => $entry->toDate->format('Y-m-d'),
-                'statement'       => JsonFinancialStatementSerializer::toArray($entry->statement),
+                'fromDate' => $entry->fromDate->format('Y-m-d'),
+                'toDate' => $entry->toDate->format('Y-m-d'),
+                'statement' => JsonFinancialStatementSerializer::toArray($entry->statement),
             ];
         }
 
         return [
-            'entityId'    => $multi->entityId,
-            'kind'        => $multi->kind->value,
-            'periods'     => $periods,
-            'comparison'  => [
+            'entityId' => $multi->entityId,
+            'kind' => $multi->kind->value,
+            'periods' => $periods,
+            'comparison' => [
                 'bs' => self::serializeRows(MultiPeriodRowBuilder::buildBs($multi)),
                 'pl' => self::serializeRows(MultiPeriodRowBuilder::buildPl($multi)),
                 'cs' => self::serializeRows(MultiPeriodRowBuilder::buildCs($multi)),
             ],
             'generatedAt' => $multi->generatedAt
-                ->setTimezone(new DateTimeZone('UTC'))
+                ->setTimezone(new \DateTimeZone('UTC'))
                 ->format('Y-m-d\TH:i:s.u\Z'),
         ];
     }
 
     /**
      * @param list<MultiPeriodSectionRow> $rows
+     *
      * @return list<array<string, mixed>>
      */
     private static function serializeRows(array $rows): array
     {
         return array_map(
             static fn (MultiPeriodSectionRow $row): array => [
-                'sectionCode'     => $row->sectionCode,
-                'lineCode'        => $row->lineCode,
-                'label'           => $row->label,
-                'amounts'         => $row->amounts,
-                'variance'        => $row->variance,
+                'sectionCode' => $row->sectionCode,
+                'lineCode' => $row->lineCode,
+                'label' => $row->label,
+                'amounts' => $row->amounts,
+                'variance' => $row->variance,
                 'variancePercent' => $row->variancePercent,
-                'depth'           => $row->depth,
-                'isSubtotal'      => $row->isSubtotal,
-                'isTotal'         => $row->isTotal,
+                'depth' => $row->depth,
+                'isSubtotal' => $row->isSubtotal,
+                'isTotal' => $row->isTotal,
             ],
             $rows,
         );

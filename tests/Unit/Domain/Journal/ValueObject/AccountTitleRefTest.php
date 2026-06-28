@@ -18,7 +18,7 @@ final class AccountTitleRefTest extends TestCase
         self::assertSame('01HW7K9B2QV7C8Y4ZACCTTL001', $ref->id);
         self::assertSame('1000', $ref->code);
         self::assertSame([
-            'id'   => '01HW7K9B2QV7C8Y4ZACCTTL001',
+            'id' => '01HW7K9B2QV7C8Y4ZACCTTL001',
             'code' => '1000',
         ], $ref->toPrimitive());
     }

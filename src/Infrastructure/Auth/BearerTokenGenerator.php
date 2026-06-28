@@ -29,10 +29,11 @@ final class BearerTokenGenerator
     {
         $bytes = random_bytes(self::TOKEN_BYTE_LENGTH);
         $plaintext = bin2hex($bytes);
+
         return [
             'plaintext' => $plaintext,
-            'hash'      => self::hash($plaintext),
-            'prefix'    => substr($plaintext, 0, self::PREFIX_LENGTH),
+            'hash' => self::hash($plaintext),
+            'prefix' => substr($plaintext, 0, self::PREFIX_LENGTH),
         ];
     }
 

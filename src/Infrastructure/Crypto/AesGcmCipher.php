@@ -24,11 +24,11 @@ use Rucaro\Infrastructure\Crypto\Exception\CryptoException;
  */
 final readonly class AesGcmCipher implements CipherInterface
 {
-    private const CIPHER       = 'aes-256-gcm';
-    private const NONCE_BYTES  = 12;
-    private const TAG_BYTES    = 16;
-    private const SCHEMA       = 'v2';
-    private const KEY_BYTES    = 32;
+    private const CIPHER = 'aes-256-gcm';
+    private const NONCE_BYTES = 12;
+    private const TAG_BYTES = 16;
+    private const SCHEMA = 'v2';
+    private const KEY_BYTES = 32;
 
     /**
      * Raw 32-byte master key decoded from the constructor argument.
@@ -36,13 +36,13 @@ final readonly class AesGcmCipher implements CipherInterface
     private string $masterKey;
 
     /**
-     * @param string $masterKeyBase64 Base64url-encoded 32-byte master key.
-     * @param string $keyId           Key version identifier (e.g. "k1").
-     *                                Used as the second token segment and
-     *                                mixed into the HKDF info string.
+     * @param string $masterKeyBase64 base64url-encoded 32-byte master key
+     * @param string $keyId Key version identifier (e.g. "k1").
+     *                      Used as the second token segment and
+     *                      mixed into the HKDF info string.
      *
-     * @throws CryptoException If the key does not decode to exactly 32 bytes
-     *                         or the keyId is empty/contains ':' (reserved).
+     * @throws CryptoException if the key does not decode to exactly 32 bytes
+     *                         or the keyId is empty/contains ':' (reserved)
      */
     public function __construct(
         string $masterKeyBase64,
@@ -54,49 +54,43 @@ final readonly class AesGcmCipher implements CipherInterface
 
         $raw = self::base64UrlDecode($masterKeyBase64);
         if (strlen($raw) !== self::KEY_BYTES) {
-            throw new CryptoException(sprintf(
-                'APP_ENCRYPTION_KEY must decode to exactly %d bytes, got %d.',
-                self::KEY_BYTES,
-                strlen($raw),
-            ));
+            throw new CryptoException(sprintf('APP_ENCRYPTION_KEY must decode to exactly %d bytes, got %d.', self::KEY_BYTES, strlen($raw)));
         }
         $this->masterKey = $raw;
     }
 
+    #[\Override]
     public function encrypt(string $plaintext, string $aad = ''): string
     {
-        $nonce   = random_bytes(self::NONCE_BYTES);
-        $tag     = '';
+        $nonce = random_bytes(self::NONCE_BYTES);
+        $tag = '';
         $derived = $this->deriveKey($aad);
 
         $cipher = openssl_encrypt(
             $plaintext,
             self::CIPHER,
             $derived,
-            OPENSSL_RAW_DATA,
+            \OPENSSL_RAW_DATA,
             $nonce,
             $tag,
             $aad,
             self::TAG_BYTES,
         );
         if ($cipher === false) {
-            throw new CryptoException(
-                'AES-GCM encryption failed: ' . (openssl_error_string() ?: 'unknown error'),
-            );
+            throw new CryptoException('AES-GCM encryption failed: '.(openssl_error_string() ?: 'unknown error'));
         }
 
-        $payload = $nonce . $cipher . $tag;
+        $payload = $nonce.$cipher.$tag;
 
         return sprintf('%s:%s:%s', self::SCHEMA, $this->keyId, self::base64UrlEncode($payload));
     }
 
+    #[\Override]
     public function decrypt(string $ciphertext, string $aad = ''): string
     {
         $parts = explode(':', $ciphertext, 3);
         if (count($parts) !== 3 || $parts[0] !== self::SCHEMA || $parts[1] !== $this->keyId) {
-            throw new CryptoException(
-                'Unsupported cipher token format: ' . substr($ciphertext, 0, 16),
-            );
+            throw new CryptoException('Unsupported cipher token format: '.substr($ciphertext, 0, 16));
         }
 
         $blob = self::base64UrlDecode($parts[2]);
@@ -105,23 +99,21 @@ final readonly class AesGcmCipher implements CipherInterface
             throw new CryptoException('Cipher payload too short.');
         }
 
-        $nonce      = substr($blob, 0, self::NONCE_BYTES);
-        $tag        = substr($blob, -self::TAG_BYTES);
+        $nonce = substr($blob, 0, self::NONCE_BYTES);
+        $tag = substr($blob, -self::TAG_BYTES);
         $cipherBody = substr($blob, self::NONCE_BYTES, -self::TAG_BYTES);
 
         $plain = openssl_decrypt(
             $cipherBody,
             self::CIPHER,
             $this->deriveKey($aad),
-            OPENSSL_RAW_DATA,
+            \OPENSSL_RAW_DATA,
             $nonce,
             $tag,
             $aad,
         );
         if ($plain === false) {
-            throw new CryptoException(
-                'AES-GCM decryption failed (tamper / wrong key / wrong AAD).',
-            );
+            throw new CryptoException('AES-GCM decryption failed (tamper / wrong key / wrong AAD).');
         }
 
         return $plain;

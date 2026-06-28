@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
 use Rucaro\Application\FinancialStatement\Multi\FinancialStatementProviderInterface;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
@@ -46,13 +44,14 @@ final class StubFinancialStatementProvider implements FinancialStatementProvider
         array $totals = [],
     ): void {
         $this->byTerm[$fiscalTermId] = [
-            'bs'     => $bs,
-            'pl'     => $pl,
-            'cs'     => $cs,
+            'bs' => $bs,
+            'pl' => $pl,
+            'cs' => $cs,
             'totals' => $totals,
         ];
     }
 
+    #[\Override]
     public function provide(GenerateFinancialStatementUseCaseInput $input): FinancialStatement
     {
         $data = $this->byTerm[$input->fiscalTermId] ?? [
@@ -70,12 +69,13 @@ final class StubFinancialStatementProvider implements FinancialStatementProvider
             pl: self::sections($data['pl']),
             cs: self::sections($data['cs']),
             totals: $data['totals'],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 
     /**
      * @param array<string, string> $map
+     *
      * @return array<string, Section>
      */
     private static function sections(array $map): array
@@ -96,6 +96,7 @@ final class StubFinancialStatementProvider implements FinancialStatementProvider
                 isTotal: false,
             );
         }
+
         return $out;
     }
 }

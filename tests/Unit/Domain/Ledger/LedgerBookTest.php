@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Ledger;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Ledger\LedgerBook;
@@ -118,7 +117,7 @@ final class LedgerBookTest extends TestCase
      * @return array{
      *     journalEntryId: string,
      *     journalEntryLineId: string,
-     *     entryDate: DateTimeImmutable,
+     *     entryDate: \DateTimeImmutable,
      *     summary: string,
      *     memo: string,
      *     counterAccountCode: string,
@@ -130,15 +129,15 @@ final class LedgerBookTest extends TestCase
     private function raw(string $date, string $side, string $amount): array
     {
         return [
-            'journalEntryId'     => 'E-' . $date,
-            'journalEntryLineId' => 'L-' . $date,
-            'entryDate'          => new DateTimeImmutable($date),
-            'summary'            => 'test',
-            'memo'               => '',
+            'journalEntryId' => 'E-'.$date,
+            'journalEntryLineId' => 'L-'.$date,
+            'entryDate' => new \DateTimeImmutable($date),
+            'summary' => 'test',
+            'memo' => '',
             'counterAccountCode' => '999',
             'counterAccountName' => 'counter',
-            'debitAmount'        => $side === 'debit' ? $amount : '0',
-            'creditAmount'       => $side === 'credit' ? $amount : '0',
+            'debitAmount' => $side === 'debit' ? $amount : '0',
+            'creditAmount' => $side === 'credit' ? $amount : '0',
         ];
     }
 }

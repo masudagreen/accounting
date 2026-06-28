@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Infrastructure\FinancialStatement\Port\Cs;
 
-use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Database\ConnectionFactory;
@@ -26,8 +24,9 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
     private string $dbname = '';
     private string $username = '';
     private string $password = '';
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
 
+    #[\Override]
     protected function setUp(): void
     {
         $user = getenv('RUCARO_TEST_DB_USER');
@@ -35,18 +34,18 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
             $this->markTestSkipped('RUCARO_TEST_DB_USER is not set; skipping DB integration test.');
         }
         $this->username = (string) $user;
-        $this->host     = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
-        $portEnv        = getenv('RUCARO_TEST_DB_PORT');
-        $this->port     = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
-        $this->dbname   = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
-        $pwEnv          = getenv('RUCARO_TEST_DB_PASSWORD');
+        $this->host = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
+        $portEnv = getenv('RUCARO_TEST_DB_PORT');
+        $this->port = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
+        $this->dbname = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
+        $pwEnv = getenv('RUCARO_TEST_DB_PASSWORD');
         $this->password = $pwEnv === false ? '' : (string) $pwEnv;
 
-        $root = new PDO(
+        $root = new \PDO(
             sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
             $this->username,
             $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
         );
         $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
         $root->exec(sprintf(
@@ -59,20 +58,21 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
         $this->seed($this->pdo);
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->dbname === '' || $this->username === '') {
             return;
         }
         try {
-            $root = new PDO(
+            $root = new \PDO(
                 sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
                 $this->username,
                 $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
             );
             $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
-        } catch (PDOException) {
+        } catch (\PDOException) {
             // best-effort cleanup
         }
     }
@@ -84,7 +84,7 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
 
         self::assertNotEmpty($defs);
         // Ordered by sort_order ascending.
-        for ($i = 1; $i < count($defs); $i++) {
+        for ($i = 1; $i < count($defs); ++$i) {
             self::assertGreaterThanOrEqual(
                 $defs[$i - 1]->sortOrder,
                 $defs[$i]->sortOrder,
@@ -131,9 +131,10 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
         throw new \RuntimeException("Missing section: $code");
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         self::assertNotNull($this->pdo);
+
         return $this->pdo;
     }
 
@@ -148,13 +149,13 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
         );
     }
 
-    private function migrate(PDO $pdo): void
+    private function migrate(\PDO $pdo): void
     {
         $sql = (string) file_get_contents(
-            dirname(__DIR__, 6) . DIRECTORY_SEPARATOR
-            . 'scripts' . DIRECTORY_SEPARATOR
-            . 'migrate' . DIRECTORY_SEPARATOR
-            . '0009_fs_cs_mappings.sql'
+            dirname(__DIR__, 6).\DIRECTORY_SEPARATOR
+            .'scripts'.\DIRECTORY_SEPARATOR
+            .'migrate'.\DIRECTORY_SEPARATOR
+            .'0009_fs_cs_mappings.sql',
         );
         // This test does not need the account_title_cs_mappings FK targets
         // (entities / account_titles) so trim the second statement's FKs
@@ -163,13 +164,13 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
         $pdo->exec($sections);
     }
 
-    private function seed(PDO $pdo): void
+    private function seed(\PDO $pdo): void
     {
         $sql = (string) file_get_contents(
-            dirname(__DIR__, 6) . DIRECTORY_SEPARATOR
-            . 'scripts' . DIRECTORY_SEPARATOR
-            . 'migrate' . DIRECTORY_SEPARATOR
-            . '0009_fs_cs_mappings_seed.sql'
+            dirname(__DIR__, 6).\DIRECTORY_SEPARATOR
+            .'scripts'.\DIRECTORY_SEPARATOR
+            .'migrate'.\DIRECTORY_SEPARATOR
+            .'0009_fs_cs_mappings_seed.sql',
         );
         $pdo->exec($sql);
     }
@@ -181,10 +182,11 @@ final class PdoCsSectionDefinitionRepositoryTest extends TestCase
      */
     private function extractStatement(string $sql, string $table): string
     {
-        $pattern = '/CREATE TABLE ' . preg_quote($table, '/') . '.*?;/s';
+        $pattern = '/CREATE TABLE '.preg_quote($table, '/').'.*?;/s';
         if (preg_match($pattern, $sql, $m) !== 1) {
             throw new \RuntimeException("CREATE TABLE for $table not found");
         }
+
         return $m[0];
     }
 }

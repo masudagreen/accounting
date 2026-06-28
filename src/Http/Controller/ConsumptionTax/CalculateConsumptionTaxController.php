@@ -37,6 +37,7 @@ final readonly class CalculateConsumptionTaxController
         } catch (EntityNotFoundException $e) {
             return ErrorResponse::notFound($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             ConsumptionTaxSettlementJsonSerializer::settlementToArray($settlement),
         );

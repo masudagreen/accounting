@@ -40,7 +40,7 @@ final class EntityNotFoundExceptionTest extends TestCase
         self::assertSame(
             [
                 'entity' => 'Account',
-                'id'     => 'a-7',
+                'id' => 'a-7',
             ],
             $exception->context(),
         );

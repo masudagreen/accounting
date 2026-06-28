@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\AccountTitle;
 
-use DateTimeImmutable;
-
 /**
  * Account title (Chart of Accounts entry).
  *
@@ -28,8 +26,8 @@ final readonly class AccountTitle
         public ?string $parentId,
         public int $sortOrder,
         public bool $isActive,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 }

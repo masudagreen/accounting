@@ -10,7 +10,7 @@ final readonly class CreateBlueReturnInput
 {
     /**
      * @param array<string, mixed> $snapshot raw 4-page payload; may be empty
-     *                                       to start from an empty skeleton.
+     *                                       to start from an empty skeleton
      */
     public function __construct(
         public string $entityId,

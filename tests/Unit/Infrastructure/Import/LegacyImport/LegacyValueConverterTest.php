@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\Import\LegacyImport;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Import\LegacyImport\LegacyValueConverter;
 
 /**
  * Pure conversion helpers under
- * {@see \Rucaro\Infrastructure\Import\LegacyImport\LegacyValueConverter}.
+ * {@see LegacyValueConverter}.
  *
  * No DB, no side effects — just input/output.
  */
@@ -51,7 +50,7 @@ final class LegacyValueConverterTest extends TestCase
         self::assertSame(['cash'], LegacyValueConverter::splitCommaArray(',cash,'));
         self::assertSame(
             ['cash', 'salaries'],
-            LegacyValueConverter::splitCommaArray(',cash,salaries,')
+            LegacyValueConverter::splitCommaArray(',cash,salaries,'),
         );
     }
 
@@ -59,7 +58,7 @@ final class LegacyValueConverterTest extends TestCase
     {
         self::assertSame(
             ['foo', 'bar'],
-            LegacyValueConverter::splitCommaArray(' , foo ,  , bar ,')
+            LegacyValueConverter::splitCommaArray(' , foo ,  , bar ,'),
         );
     }
 
@@ -79,13 +78,13 @@ final class LegacyValueConverterTest extends TestCase
 
     public function testFiscalTermDatesRejectsInvalidMonth(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         LegacyValueConverter::fiscalTermDates(2020, 13);
     }
 
     public function testFiscalTermDatesRejectsInvalidTermMonths(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         LegacyValueConverter::fiscalTermDates(2020, 4, 0);
     }
 
@@ -98,7 +97,7 @@ final class LegacyValueConverterTest extends TestCase
 
     public function testSyntheticAccountTitleCodeRejectsOutOfRange(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         LegacyValueConverter::syntheticAccountTitleCode(10_000);
     }
 }

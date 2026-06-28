@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\Report;
 
-use InvalidArgumentException;
 use Rucaro\Application\BreakEvenPoint\AnalyzeBreakEvenPointInput;
 use Rucaro\Application\BreakEvenPoint\AnalyzeBreakEvenPointUseCase;
 use Rucaro\Domain\BreakEvenPoint\BreakEvenPointAnalysis;
@@ -44,6 +43,7 @@ final readonly class BepViewController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addError('会計単位 (entity) が未選択です。上部ナビから選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
@@ -51,10 +51,11 @@ final readonly class BepViewController
             ?? $this->period->findLatestFiscalTermId($entityId);
         if ($fiscalTermId === null) {
             $this->flash->addError('会計期 (fiscal_term) が登録されていません。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
-        $year  = PeriodQueryHelper::parseYear($request->queryString('year'));
+        $year = PeriodQueryHelper::parseYear($request->queryString('year'));
         $month = PeriodQueryHelper::parseMonth($request->queryString('month'));
         [$from, $to, $termStart, $termEnd] = $this->period->resolve($fiscalTermId, $year, $month);
 
@@ -67,7 +68,7 @@ final readonly class BepViewController
                 fromDate: $from,
                 toDate: $to,
             ));
-        } catch (InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             $errorMessage = $e->getMessage();
         }
 
@@ -75,40 +76,42 @@ final readonly class BepViewController
         if ($format === 'pdf' && $analysis !== null) {
             $pdf = $this->pdfGenerator->render($analysis);
             $filename = sprintf('bep-%s.pdf', $to->format('Ymd'));
+
             return new HtmlResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
 
         $data = [
-            'page_title'           => '損益分岐点分析',
-            'active_nav'           => 'bep',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'selected_entity_id'   => $entityId,
+            'page_title' => '損益分岐点分析',
+            'active_nav' => 'bep',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $fiscalTermId,
-            'entities'             => [],
-            'year'                 => $year !== null ? (string) $year : '',
-            'month'                => $month !== null ? (string) $month : '',
-            'from_date'            => $from->format('Y-m-d'),
-            'to_date'              => $to->format('Y-m-d'),
-            'term_start'           => $termStart?->format('Y-m-d') ?? '',
-            'term_end'             => $termEnd?->format('Y-m-d') ?? '',
-            'has_analysis'         => $analysis !== null,
-            'error_message'        => $errorMessage,
-            'bep'                  => $analysis !== null ? self::analysisToArray($analysis) : null,
-            'flash_messages'       => $this->flash->consume(),
+            'entities' => [],
+            'year' => $year !== null ? (string) $year : '',
+            'month' => $month !== null ? (string) $month : '',
+            'from_date' => $from->format('Y-m-d'),
+            'to_date' => $to->format('Y-m-d'),
+            'term_start' => $termStart?->format('Y-m-d') ?? '',
+            'term_end' => $termEnd?->format('Y-m-d') ?? '',
+            'has_analysis' => $analysis !== null,
+            'error_message' => $errorMessage,
+            'bep' => $analysis !== null ? self::analysisToArray($analysis) : null,
+            'flash_messages' => $this->flash->consume(),
         ];
+
         return HtmlResponse::ok($this->view->render('bep/view.html.tpl', $data));
     }
 
@@ -118,39 +121,39 @@ final readonly class BepViewController
     private static function analysisToArray(BreakEvenPointAnalysis $a): array
     {
         return [
-            'sales'                  => ViewModelBuilder::formatAmount($a->sales),
-            'variableCosts'          => ViewModelBuilder::formatAmount($a->variableCosts),
-            'fixedCosts'             => ViewModelBuilder::formatAmount($a->fixedCosts),
-            'contributionMargin'     => ViewModelBuilder::formatAmount($a->contributionMargin),
+            'sales' => ViewModelBuilder::formatAmount($a->sales),
+            'variableCosts' => ViewModelBuilder::formatAmount($a->variableCosts),
+            'fixedCosts' => ViewModelBuilder::formatAmount($a->fixedCosts),
+            'contributionMargin' => ViewModelBuilder::formatAmount($a->contributionMargin),
             'contributionMarginRate' => self::formatPercent($a->contributionMarginRate),
-            'bepSales'               => ViewModelBuilder::formatAmount($a->bepSales),
-            'bepRatio'               => self::formatPercent($a->bepRatio),
-            'safetyMarginRatio'      => self::formatPercent($a->safetyMarginRatio),
-            'operatingProfit'        => ViewModelBuilder::formatAmount($a->operatingProfit),
-            'belowBep'               => $a->isBelowBreakEven(),
-            'salesBreakdown'         => array_map(
+            'bepSales' => ViewModelBuilder::formatAmount($a->bepSales),
+            'bepRatio' => self::formatPercent($a->bepRatio),
+            'safetyMarginRatio' => self::formatPercent($a->safetyMarginRatio),
+            'operatingProfit' => ViewModelBuilder::formatAmount($a->operatingProfit),
+            'belowBep' => $a->isBelowBreakEven(),
+            'salesBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'   => $r['accountTitleCode'],
-                    'name'   => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'amount' => ViewModelBuilder::formatAmount($r['amount']),
                 ],
                 $a->salesBreakdown,
             ),
-            'variableBreakdown'      => array_map(
+            'variableBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'     => $r['accountTitleCode'],
-                    'name'     => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'costType' => $r['costType'],
-                    'amount'   => ViewModelBuilder::formatAmount($r['amount']),
+                    'amount' => ViewModelBuilder::formatAmount($r['amount']),
                 ],
                 $a->variableBreakdown,
             ),
-            'fixedBreakdown'         => array_map(
+            'fixedBreakdown' => array_map(
                 static fn (array $r): array => [
-                    'code'     => $r['accountTitleCode'],
-                    'name'     => $r['accountTitleName'],
+                    'code' => $r['accountTitleCode'],
+                    'name' => $r['accountTitleName'],
                     'costType' => $r['costType'],
-                    'amount'   => ViewModelBuilder::formatAmount($r['amount']),
+                    'amount' => ViewModelBuilder::formatAmount($r['amount']),
                 ],
                 $a->fixedBreakdown,
             ),
@@ -167,6 +170,7 @@ final readonly class BepViewController
             return '0.0%';
         }
         $pct = ((float) $raw) * 100.0;
+
         return sprintf('%.1f%%', $pct);
     }
 }

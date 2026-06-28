@@ -11,11 +11,13 @@ use Rucaro\Support\Web\SessionStore;
 #[CoversClass(SessionStore::class)]
 final class SessionStoreTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -25,11 +27,11 @@ final class SessionStoreTest extends TestCase
     {
         $store = new SessionStore();
         $store->setUser(
-            userId:         '01HW7K9B2QV7C8Y4ZUSER000099',
+            userId: '01HW7K9B2QV7C8Y4ZUSER000099',
             plaintextToken: str_repeat('a', 64),
-            tokenId:        '01HW7K9B2QV7C8Y4ZTOKEN00099',
-            displayName:    '山田 太郎',
-            email:          'taro@example.com',
+            tokenId: '01HW7K9B2QV7C8Y4ZTOKEN00099',
+            displayName: '山田 太郎',
+            email: 'taro@example.com',
         );
 
         self::assertTrue($store->isAuthenticated());
@@ -68,6 +70,7 @@ final class SessionStoreTest extends TestCase
         $store->forgetUser();
 
         self::assertFalse($store->isAuthenticated());
+        /** @psalm-suppress RedundantCondition behavioural assertion: forgetUser() must not clear keys it does not own */
         self::assertSame('keep-me', $_SESSION['unrelated_key']);
     }
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Ledger;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\Ledger\Ledger;
 use Rucaro\Domain\Ledger\LedgerBook;
@@ -75,24 +73,25 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
         SQL;
 
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function query(
         string $entityId,
         string $fiscalTermId,
         ?string $accountTitleId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): Ledger {
         $accounts = $this->fetchAccounts($entityId, $accountTitleId);
         /** @var array<string, array{code:string, name:string, normal_side:string}> $accountsById */
         $accountsById = [];
         foreach ($accounts as $a) {
             $accountsById[$a['id']] = [
-                'code'        => $a['code'],
-                'name'        => $a['name'],
+                'code' => $a['code'],
+                'name' => $a['name'],
                 'normal_side' => $a['normal_side'],
             ];
         }
@@ -142,15 +141,15 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
             $entryDate = self::parseDate((string) $line['journal_date']);
             $entriesByAccount[$accountIdEncoded] ??= [];
             $entriesByAccount[$accountIdEncoded][] = [
-                'journalEntryId'     => self::encodeBinId($entryId),
+                'journalEntryId' => self::encodeBinId($entryId),
                 'journalEntryLineId' => self::encodeBinId((string) $line['line_id']),
-                'entryDate'          => $entryDate,
-                'summary'            => (string) $line['summary'],
-                'memo'               => (string) $line['memo'],
+                'entryDate' => $entryDate,
+                'summary' => (string) $line['summary'],
+                'memo' => (string) $line['memo'],
                 'counterAccountCode' => $counterCode,
                 'counterAccountName' => $counterName,
-                'debitAmount'        => $debit,
-                'creditAmount'       => $credit,
+                'debitAmount' => $debit,
+                'creditAmount' => $credit,
             ];
         }
 
@@ -180,7 +179,7 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
             toDate: $to,
             currencyCode: 'JPY',
             books: $books,
-            generatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
         );
     }
 
@@ -192,7 +191,7 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
         if ($accountTitleId !== null) {
             $stmt = $this->pdo->prepare(self::ACCOUNT_SQL_ONE);
             $stmt->execute([
-                ':entity'  => UlidGenerator::decode($entityId),
+                ':entity' => UlidGenerator::decode($entityId),
                 ':account' => UlidGenerator::decode($accountTitleId),
             ]);
         } else {
@@ -200,16 +199,17 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
             $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         }
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         $out = [];
         foreach ($rows as $r) {
             $out[] = [
-                'id'          => self::encodeBinId((string) ($r['id'] ?? '')),
-                'code'        => (string) ($r['code'] ?? ''),
-                'name'        => (string) ($r['name'] ?? ''),
+                'id' => self::encodeBinId((string) ($r['id'] ?? '')),
+                'code' => (string) ($r['code'] ?? ''),
+                'name' => (string) ($r['name'] ?? ''),
                 'normal_side' => (string) ($r['normal_side'] ?? LedgerBook::NORMAL_DEBIT),
             ];
         }
+
         return $out;
     }
 
@@ -219,24 +219,26 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
     private function fetchLines(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): array {
         $stmt = $this->pdo->prepare(self::LINES_SQL);
         $stmt->execute([
             ':entity' => UlidGenerator::decode($entityId),
-            ':term'   => UlidGenerator::decode($fiscalTermId),
-            ':from'   => $from->format('Y-m-d'),
-            ':to'     => $to->format('Y-m-d'),
+            ':term' => UlidGenerator::decode($fiscalTermId),
+            ':from' => $from->format('Y-m-d'),
+            ':to' => $to->format('Y-m-d'),
         ]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return $rows;
     }
 
     /**
      * @param list<array<string, mixed>> $entryLines
      * @param array<string, array{code:string, name:string, normal_side:string}> $accountsById
+     *
      * @return array{0:string, 1:string}
      */
     private function resolveCounter(
@@ -257,11 +259,13 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
             if ($meta !== null) {
                 return [$meta['code'], $meta['name']];
             }
+
             return ['', ''];
         }
         if (count($others) === 0) {
             return ['', ''];
         }
+
         return ['', LedgerEntry::COUNTER_SUNDRIES];
     }
 
@@ -270,15 +274,16 @@ final class PdoLedgerQueryService implements LedgerQueryInterface
         if ($raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseDate(string $raw): DateTimeImmutable
+    private static function parseDate(string $raw): \DateTimeImmutable
     {
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
-            return new DateTimeImmutable('1970-01-01', new DateTimeZone('UTC'));
+            return new \DateTimeImmutable('1970-01-01', new \DateTimeZone('UTC'));
         }
     }
 }

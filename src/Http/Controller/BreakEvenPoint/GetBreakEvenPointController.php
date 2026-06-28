@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\BreakEvenPoint;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\BreakEvenPoint\AnalyzeBreakEvenPointInput;
 use Rucaro\Application\BreakEvenPoint\AnalyzeBreakEvenPointUseCase;
 use Rucaro\Domain\BreakEvenPoint\BreakEvenPointPdfGeneratorInterface;
@@ -49,10 +47,10 @@ final readonly class GetBreakEvenPointController
             return ErrorResponse::badRequest('toDate must be YYYY-MM-DD.');
         }
         try {
-            $fromDate = new DateTimeImmutable($fromDateRaw, new DateTimeZone('UTC'));
-            $toDate = new DateTimeImmutable($toDateRaw, new DateTimeZone('UTC'));
+            $fromDate = new \DateTimeImmutable($fromDateRaw, new \DateTimeZone('UTC'));
+            $toDate = new \DateTimeImmutable($toDateRaw, new \DateTimeZone('UTC'));
         } catch (\Exception $e) {
-            return ErrorResponse::badRequest('invalid date: ' . $e->getMessage());
+            return ErrorResponse::badRequest('invalid date: '.$e->getMessage());
         }
         if ($fromDate > $toDate) {
             return ErrorResponse::badRequest('fromDate must be <= toDate.');
@@ -70,16 +68,18 @@ final readonly class GetBreakEvenPointController
         $format = strtolower($request->queryString('format') ?? 'json');
         if ($format === 'pdf') {
             $pdf = $this->generator->render($analysis);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="break-even-point.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(BreakEvenPointJsonSerializer::analysisToArray($analysis));
     }
 }

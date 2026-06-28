@@ -25,12 +25,12 @@ use Rucaro\Support\Decimal\Decimal;
 final class BlueReturnBuilder
 {
     /**
-     * @param array<string, string> $revenueByAccount     key = account label, value = decimal amount
+     * @param array<string, string> $revenueByAccount key = account label, value = decimal amount
      * @param array<string, string> $costOfSalesByAccount
      * @param array<string, string> $expensesByAccount
      * @param list<array{month:int,sales:string,purchase:string,salary:string}> $monthlyRows
-     * @param array<string, list<array<string, mixed>>>                          $breakdown
-     *     keys: depreciation / allowance / rent / interest / taxAccountant
+     * @param array<string, list<array<string, mixed>>> $breakdown
+     *                                                             keys: depreciation / allowance / rent / interest / taxAccountant
      * @param array<string, string> $assetsByAccount
      * @param array<string, string> $liabilitiesByAccount
      * @param array<string, string> $equityByAccount
@@ -46,9 +46,9 @@ final class BlueReturnBuilder
         array $liabilitiesByAccount,
         array $equityByAccount,
     ): BlueReturnSnapshot {
-        $revenueTotal   = self::sum($revenueByAccount);
-        $cogsTotal      = self::sum($costOfSalesByAccount);
-        $expensesTotal  = self::sum($expensesByAccount);
+        $revenueTotal = self::sum($revenueByAccount);
+        $cogsTotal = self::sum($costOfSalesByAccount);
+        $expensesTotal = self::sum($expensesByAccount);
 
         // 所得 = 収入 − 売上原価 − 経費
         $netIncome = Decimal::add(
@@ -57,63 +57,63 @@ final class BlueReturnBuilder
         );
 
         $monthlyTotals = [
-            'sales'    => '0.0000',
+            'sales' => '0.0000',
             'purchase' => '0.0000',
-            'salary'   => '0.0000',
+            'salary' => '0.0000',
         ];
         foreach ($monthlyRows as $row) {
-            $monthlyTotals['sales']    = Decimal::add($monthlyTotals['sales'], $row['sales']);
+            $monthlyTotals['sales'] = Decimal::add($monthlyTotals['sales'], $row['sales']);
             $monthlyTotals['purchase'] = Decimal::add($monthlyTotals['purchase'], $row['purchase']);
-            $monthlyTotals['salary']   = Decimal::add($monthlyTotals['salary'], $row['salary']);
+            $monthlyTotals['salary'] = Decimal::add($monthlyTotals['salary'], $row['salary']);
         }
 
         $page1 = [
-            'formType'        => $formType->value,
-            'revenue'         => self::toRows($revenueByAccount),
-            'revenueTotal'    => Decimal::normalize($revenueTotal),
-            'costOfSales'     => self::toRows($costOfSalesByAccount),
-            'costOfSalesTotal'=> Decimal::normalize($cogsTotal),
-            'expenses'        => self::toRows($expensesByAccount),
-            'expensesTotal'   => Decimal::normalize($expensesTotal),
-            'netIncome'       => Decimal::normalize($netIncome),
+            'formType' => $formType->value,
+            'revenue' => self::toRows($revenueByAccount),
+            'revenueTotal' => Decimal::normalize($revenueTotal),
+            'costOfSales' => self::toRows($costOfSalesByAccount),
+            'costOfSalesTotal' => Decimal::normalize($cogsTotal),
+            'expenses' => self::toRows($expensesByAccount),
+            'expensesTotal' => Decimal::normalize($expensesTotal),
+            'netIncome' => Decimal::normalize($netIncome),
         ];
 
         $page2 = [
             'months' => array_map(
                 static fn (array $r): array => [
-                    'month'    => $r['month'],
-                    'sales'    => Decimal::normalize($r['sales']),
+                    'month' => $r['month'],
+                    'sales' => Decimal::normalize($r['sales']),
                     'purchase' => Decimal::normalize($r['purchase']),
-                    'salary'   => Decimal::normalize($r['salary']),
+                    'salary' => Decimal::normalize($r['salary']),
                 ],
                 $monthlyRows,
             ),
             'totals' => [
-                'sales'    => Decimal::normalize($monthlyTotals['sales']),
+                'sales' => Decimal::normalize($monthlyTotals['sales']),
                 'purchase' => Decimal::normalize($monthlyTotals['purchase']),
-                'salary'   => Decimal::normalize($monthlyTotals['salary']),
+                'salary' => Decimal::normalize($monthlyTotals['salary']),
             ],
         ];
 
         $page3 = [
-            'depreciation'  => $breakdown['depreciation']  ?? [],
-            'allowance'     => $breakdown['allowance']     ?? [],
-            'rent'          => $breakdown['rent']          ?? [],
-            'interest'      => $breakdown['interest']      ?? [],
+            'depreciation' => $breakdown['depreciation'] ?? [],
+            'allowance' => $breakdown['allowance'] ?? [],
+            'rent' => $breakdown['rent'] ?? [],
+            'interest' => $breakdown['interest'] ?? [],
             'taxAccountant' => $breakdown['taxAccountant'] ?? [],
         ];
 
-        $assetsTotal      = self::sum($assetsByAccount);
+        $assetsTotal = self::sum($assetsByAccount);
         $liabilitiesTotal = self::sum($liabilitiesByAccount);
-        $equityTotal      = self::sum($equityByAccount);
+        $equityTotal = self::sum($equityByAccount);
 
         $page4 = [
-            'assets'           => self::toRows($assetsByAccount),
-            'assetsTotal'      => Decimal::normalize($assetsTotal),
-            'liabilities'      => self::toRows($liabilitiesByAccount),
+            'assets' => self::toRows($assetsByAccount),
+            'assetsTotal' => Decimal::normalize($assetsTotal),
+            'liabilities' => self::toRows($liabilitiesByAccount),
             'liabilitiesTotal' => Decimal::normalize($liabilitiesTotal),
-            'equity'           => self::toRows($equityByAccount),
-            'equityTotal'      => Decimal::normalize($equityTotal),
+            'equity' => self::toRows($equityByAccount),
+            'equityTotal' => Decimal::normalize($equityTotal),
         ];
 
         return new BlueReturnSnapshot(
@@ -130,7 +130,8 @@ final class BlueReturnBuilder
         if ($n === '0.0000') {
             return $n;
         }
-        return str_starts_with($n, '-') ? substr($n, 1) : '-' . $n;
+
+        return str_starts_with($n, '-') ? substr($n, 1) : '-'.$n;
     }
 
     /**
@@ -142,11 +143,13 @@ final class BlueReturnBuilder
         foreach ($byLabel as $v) {
             $acc = Decimal::add($acc, $v);
         }
+
         return $acc;
     }
 
     /**
      * @param array<string, string> $byLabel
+     *
      * @return list<array{label:string, amount:string}>
      */
     private static function toRows(array $byLabel): array
@@ -154,10 +157,11 @@ final class BlueReturnBuilder
         $out = [];
         foreach ($byLabel as $label => $amount) {
             $out[] = [
-                'label'  => (string) $label,
+                'label' => (string) $label,
                 'amount' => Decimal::normalize($amount),
             ];
         }
+
         return $out;
     }
 }

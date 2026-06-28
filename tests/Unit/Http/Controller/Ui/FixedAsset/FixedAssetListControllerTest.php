@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FixedAsset\ListFixedAssetsUseCase;
@@ -23,11 +21,13 @@ use Rucaro\Tests\Support\Fake\InMemoryFixedAssetRepository;
 #[CoversClass(FixedAssetListController::class)]
 final class FixedAssetListControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -68,20 +68,22 @@ final class FixedAssetListControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
+
         return new FixedAssetListController(
             listAssets: new ListFixedAssetsUseCase($repo),
-            session:    $session,
-            csrf:       new CsrfTokenManager($clock),
-            flash:      new FlashMessageBag(),
-            view:       new SmartyViewRenderer($templateDir, $compileDir),
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
     }
 
     private function makeAsset(string $entityId, string $code, string $name): FixedAsset
     {
-        $date = new DateTimeImmutable('2025-04-01', new DateTimeZone('UTC'));
+        $date = new \DateTimeImmutable('2025-04-01', new \DateTimeZone('UTC'));
+
         return new FixedAsset(
             id: '01HW000000000000000000ASSET',
             entityId: $entityId,

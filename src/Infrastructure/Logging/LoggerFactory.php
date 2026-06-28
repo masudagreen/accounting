@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Logging;
 
-use InvalidArgumentException;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\ErrorLogHandler;
@@ -17,11 +16,9 @@ use Monolog\Processor\PsrLogMessageProcessor;
 use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
 use Rucaro\Infrastructure\Logging\Exception\LoggerConfigurationException;
-use Throwable;
-use ValueError;
 
 /**
- * Builds {@see \Monolog\Logger} instances from the channel/handler map
+ * Builds {@see Logger} instances from the channel/handler map
  * defined in `config/logging.php`.
  *
  * Responsibilities:
@@ -45,11 +42,11 @@ final readonly class LoggerFactory
 
     /**
      * @param array<string, mixed>|null $config
-     *        Normally the return value of `config/logging.php`. Pass `null`
-     *        to load that file directly.
+     *                                          Normally the return value of `config/logging.php`. Pass `null`
+     *                                          to load that file directly.
      * @param string|null $projectRoot
-     *        Base directory used to resolve relative file paths. Defaults to
-     *        the repository root (two levels above this file).
+     *                                 Base directory used to resolve relative file paths. Defaults to
+     *                                 the repository root (two levels above this file).
      */
     public function __construct(
         ?array $config = null,
@@ -65,7 +62,7 @@ final readonly class LoggerFactory
         $channels = $resolved['channels'];
         $this->channels = $channels;
 
-        $this->defaultChannel = is_string($resolved['default'] ?? null)
+        $this->defaultChannel = isset($resolved['default']) && is_string($resolved['default'])
             ? $resolved['default']
             : 'app';
 
@@ -132,7 +129,6 @@ final readonly class LoggerFactory
      */
     private function buildStreamHandler(array $spec, Level $level): StreamHandler
     {
-        /** @var mixed $path */
         $path = $spec['path'] ?? null;
         if (!is_string($path) && !is_resource($path)) {
             throw LoggerConfigurationException::missingHandlerField('stream', 'path');
@@ -140,11 +136,8 @@ final readonly class LoggerFactory
 
         try {
             return new StreamHandler($path, $level);
-        } catch (InvalidArgumentException $e) {
-            throw new LoggerConfigurationException(
-                'failed to open stream: ' . $e->getMessage(),
-                previous: $e,
-            );
+        } catch (\InvalidArgumentException $e) {
+            throw new LoggerConfigurationException('failed to open stream: '.$e->getMessage(), previous: $e);
         }
     }
 
@@ -163,11 +156,8 @@ final readonly class LoggerFactory
 
         try {
             return new RotatingFileHandler($path, $maxFiles, $level);
-        } catch (Throwable $e) {
-            throw new LoggerConfigurationException(
-                'failed to initialise rotating_file handler: ' . $e->getMessage(),
-                previous: $e,
-            );
+        } catch (\Throwable $e) {
+            throw new LoggerConfigurationException('failed to initialise rotating_file handler: '.$e->getMessage(), previous: $e);
         }
     }
 
@@ -186,9 +176,7 @@ final readonly class LoggerFactory
                 allowInlineLineBreaks: true,
                 ignoreEmptyContextAndExtra: true,
             ),
-            default => throw LoggerConfigurationException::unknownHandlerType(
-                'formatter:' . $formatter,
-            ),
+            default => throw LoggerConfigurationException::unknownHandlerType('formatter:'.$formatter),
         };
     }
 
@@ -201,15 +189,16 @@ final readonly class LoggerFactory
         if (is_int($level)) {
             try {
                 return Level::from($level);
-            } catch (ValueError $e) {
+            } catch (\ValueError $e) {
                 throw LoggerConfigurationException::invalidLevel((string) $level);
             }
         }
 
         if (is_string($level) && $level !== '') {
             try {
+                /** @psalm-suppress ArgumentTypeCoercion Level::fromName throws on unknown names; we catch and rethrow as our own exception */
                 return Level::fromName(strtoupper($level));
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 throw LoggerConfigurationException::invalidLevel($level);
             }
         }
@@ -226,7 +215,7 @@ final readonly class LoggerFactory
             return $path;
         }
 
-        return rtrim($this->projectRoot, "/\\") . DIRECTORY_SEPARATOR . ltrim($path, "/\\");
+        return rtrim($this->projectRoot, '/\\').\DIRECTORY_SEPARATOR.ltrim($path, '/\\');
     }
 
     private function isAbsolutePath(string $path): bool
@@ -249,22 +238,17 @@ final readonly class LoggerFactory
      */
     private static function loadDefaultConfig(): array
     {
-        $path = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'logging.php';
+        $path = dirname(__DIR__, 3).\DIRECTORY_SEPARATOR.'config'.\DIRECTORY_SEPARATOR.'logging.php';
         if (!is_file($path)) {
-            throw new LoggerConfigurationException(
-                'default config file not found: ' . $path,
-            );
+            throw new LoggerConfigurationException('default config file not found: '.$path);
         }
 
-        /** @var mixed $loaded */
         $loaded = require $path;
         if (!is_array($loaded)) {
-            throw new LoggerConfigurationException(
-                'config/logging.php must return an array',
-            );
+            throw new LoggerConfigurationException('config/logging.php must return an array');
         }
 
-        /** @var array<string, mixed> $loaded */
+        /* @var array<string, mixed> $loaded */
         return $loaded;
     }
 }

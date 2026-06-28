@@ -57,9 +57,10 @@ final readonly class ReorderFsNotesController
         } catch (ValidationException $e) {
             return ErrorResponse::unprocessable($e->getMessage(), $e->errors());
         }
+
         return EnvelopeResponse::ok([
             'updated' => $updated,
-            'total'   => count($ids),
+            'total' => count($ids),
         ]);
     }
 
@@ -69,6 +70,7 @@ final readonly class ReorderFsNotesController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 }

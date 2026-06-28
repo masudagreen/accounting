@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\BlueReturn;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\BlueReturn\BlueReturnForm;
@@ -21,7 +20,7 @@ final class BlueReturnFormTest extends TestCase
     public function testFinalizeMovesDraftToFinalized(): void
     {
         $form = $this->draftForm();
-        $now = new DateTimeImmutable('2026-03-15T09:00:00Z');
+        $now = new \DateTimeImmutable('2026-03-15T09:00:00Z');
 
         $finalized = $form->finalize($now);
 
@@ -33,18 +32,18 @@ final class BlueReturnFormTest extends TestCase
 
     public function testFinalizeRejectsAlreadyFinalized(): void
     {
-        $form = $this->draftForm()->finalize(new DateTimeImmutable('2026-03-15T09:00:00Z'));
+        $form = $this->draftForm()->finalize(new \DateTimeImmutable('2026-03-15T09:00:00Z'));
         $this->expectException(InvariantViolationException::class);
-        $form->finalize(new DateTimeImmutable('2026-03-16T09:00:00Z'));
+        $form->finalize(new \DateTimeImmutable('2026-03-16T09:00:00Z'));
     }
 
     public function testWithSnapshotRejectedOnceFinalized(): void
     {
-        $form = $this->draftForm()->finalize(new DateTimeImmutable('2026-03-15T09:00:00Z'));
+        $form = $this->draftForm()->finalize(new \DateTimeImmutable('2026-03-15T09:00:00Z'));
         $this->expectException(InvariantViolationException::class);
         $form->withSnapshot(
             BlueReturnSnapshot::empty(BlueReturnFormType::General),
-            new DateTimeImmutable('2026-03-16T09:00:00Z'),
+            new \DateTimeImmutable('2026-03-16T09:00:00Z'),
         );
     }
 
@@ -58,7 +57,7 @@ final class BlueReturnFormTest extends TestCase
             page4Bs: [],
         );
 
-        $updated = $form->withSnapshot($newSnapshot, new DateTimeImmutable('2026-03-16T09:00:00Z'));
+        $updated = $form->withSnapshot($newSnapshot, new \DateTimeImmutable('2026-03-16T09:00:00Z'));
 
         self::assertSame('123', $updated->snapshot->page1Pl['netIncome']);
         self::assertSame(BlueReturnStatus::Draft, $updated->status);
@@ -66,9 +65,9 @@ final class BlueReturnFormTest extends TestCase
 
     public function testWithFormTypeRejectedOnceFinalized(): void
     {
-        $form = $this->draftForm()->finalize(new DateTimeImmutable('2026-03-15T09:00:00Z'));
+        $form = $this->draftForm()->finalize(new \DateTimeImmutable('2026-03-15T09:00:00Z'));
         $this->expectException(InvariantViolationException::class);
-        $form->withFormType(BlueReturnFormType::Agricultural, new DateTimeImmutable('2026-03-16T09:00:00Z'));
+        $form->withFormType(BlueReturnFormType::Agricultural, new \DateTimeImmutable('2026-03-16T09:00:00Z'));
     }
 
     public function testSnapshotFromArrayFillsMissingKeys(): void
@@ -103,7 +102,8 @@ final class BlueReturnFormTest extends TestCase
 
     private function draftForm(): BlueReturnForm
     {
-        $now = new DateTimeImmutable('2026-01-10T09:00:00Z');
+        $now = new \DateTimeImmutable('2026-01-10T09:00:00Z');
+
         return new BlueReturnForm(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAB1',

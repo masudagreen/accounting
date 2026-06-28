@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Result;
 
-use LogicException;
 use Throwable;
 
 /**
@@ -20,8 +19,8 @@ use Throwable;
 final readonly class Result
 {
     /**
-     * @param TValue|null        $value
-     * @param TError|null        $error
+     * @param TValue|null $value
+     * @param TError|null $error
      */
     private function __construct(
         public bool $isOk,
@@ -32,8 +31,10 @@ final readonly class Result
 
     /**
      * @template T
-     * @param  T $value
-     * @return self<T, never>
+     *
+     * @param T $value
+     *
+     * @psalm-return self<T, Throwable|string>
      */
     public static function ok(mixed $value): self
     {
@@ -42,8 +43,10 @@ final readonly class Result
 
     /**
      * @template E of Throwable|string
-     * @param  E $error
-     * @return self<never, E>
+     *
+     * @param E $error
+     *
+     * @psalm-return self<null, E>
      */
     public static function err(mixed $error): self
     {
@@ -60,12 +63,12 @@ final readonly class Result
      *
      * @return TValue
      *
-     * @throws LogicException when called on an error result.
+     * @throws \LogicException when called on an error result
      */
     public function unwrap(): mixed
     {
         if (!$this->isOk) {
-            throw new LogicException('Cannot unwrap() an Err result.');
+            throw new \LogicException('Cannot unwrap() an Err result.');
         }
 
         return $this->value;
@@ -74,12 +77,12 @@ final readonly class Result
     /**
      * @return TError
      *
-     * @throws LogicException when called on an ok result.
+     * @throws \LogicException when called on an ok result
      */
     public function unwrapErr(): mixed
     {
         if ($this->isOk) {
-            throw new LogicException('Cannot unwrapErr() an Ok result.');
+            throw new \LogicException('Cannot unwrapErr() an Ok result.');
         }
 
         return $this->error;

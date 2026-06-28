@@ -17,12 +17,12 @@ namespace Rucaro\Domain\StatementOfChangesInEquity;
  */
 enum SsSectionCode: string
 {
-    case CapitalStock           = 'capital_stock';            // 資本金
-    case CapitalSurplus         = 'capital_surplus';          // 資本剰余金
-    case RetainedEarnings       = 'retained_earnings';        // 利益剰余金
-    case TreasuryStock          = 'treasury_stock';           // 自己株式
-    case ValuationAdjustment    = 'valuation_adjustment';     // 評価換算差額等
-    case StockAcquisitionRight  = 'stock_acquisition_right';  // 新株予約権
+    case CapitalStock = 'capital_stock';            // 資本金
+    case CapitalSurplus = 'capital_surplus';          // 資本剰余金
+    case RetainedEarnings = 'retained_earnings';        // 利益剰余金
+    case TreasuryStock = 'treasury_stock';           // 自己株式
+    case ValuationAdjustment = 'valuation_adjustment';     // 評価換算差額等
+    case StockAcquisitionRight = 'stock_acquisition_right';  // 新株予約権
 
     /**
      * Default display label for the column header.
@@ -30,11 +30,11 @@ enum SsSectionCode: string
     public function label(): string
     {
         return match ($this) {
-            self::CapitalStock          => '資本金',
-            self::CapitalSurplus        => '資本剰余金',
-            self::RetainedEarnings      => '利益剰余金',
-            self::TreasuryStock         => '自己株式',
-            self::ValuationAdjustment   => '評価換算差額等',
+            self::CapitalStock => '資本金',
+            self::CapitalSurplus => '資本剰余金',
+            self::RetainedEarnings => '利益剰余金',
+            self::TreasuryStock => '自己株式',
+            self::ValuationAdjustment => '評価換算差額等',
             self::StockAcquisitionRight => '新株予約権',
         };
     }

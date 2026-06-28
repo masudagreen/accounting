@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
-
 /**
  * Import legacy `accountingEntityJpn` rows into new `fiscal_terms`.
  *
@@ -19,8 +17,8 @@ use PDO;
 final class LegacyFiscalTermImporter
 {
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly bool $dryRun,
     ) {
@@ -34,7 +32,7 @@ final class LegacyFiscalTermImporter
                FROM accountingEntityJpn
               WHERE numFiscalBeginningYear IS NOT NULL
                 AND numFiscalBeginningMonth IS NOT NULL
-              ORDER BY idEntity, numFiscalPeriod'
+              ORDER BY idEntity, numFiscalPeriod',
         );
         if ($rows === false) {
             return ImportReport::empty('fiscal_terms', ['source query failed']);
@@ -50,7 +48,7 @@ final class LegacyFiscalTermImporter
             'INSERT INTO fiscal_terms
                  (id, entity_id, fiscal_period, start_date, end_date, is_closed)
              VALUES
-                 (:id, :ent, :fp, :sd, :ed, :closed)'
+                 (:id, :ent, :fp, :sd, :ed, :closed)',
         );
 
         foreach ($rows as $r) {
@@ -92,12 +90,12 @@ final class LegacyFiscalTermImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $binaryUlid, PDO::PARAM_LOB);
-            $insert->bindValue(':ent', $entityBin, PDO::PARAM_LOB);
-            $insert->bindValue(':fp', $period, PDO::PARAM_INT);
+            $insert->bindValue(':id', $binaryUlid, \PDO::PARAM_LOB);
+            $insert->bindValue(':ent', $entityBin, \PDO::PARAM_LOB);
+            $insert->bindValue(':fp', $period, \PDO::PARAM_INT);
             $insert->bindValue(':sd', $dates['start']);
             $insert->bindValue(':ed', $dates['end']);
-            $insert->bindValue(':closed', false, PDO::PARAM_BOOL);
+            $insert->bindValue(':closed', false, \PDO::PARAM_BOOL);
             $insert->execute();
             ++$inserted;
         }

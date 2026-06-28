@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Migration;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Migration\MigrationRunner;
 
@@ -36,12 +35,13 @@ final class MigrationRunnerTest extends TestCase
         'approval_tokens',
     ];
 
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
     private string $dbName = '';
 
+    #[\Override]
     protected function setUp(): void
     {
-        $dsn  = getenv('RUCARO_TEST_DB_DSN');
+        $dsn = getenv('RUCARO_TEST_DB_DSN');
         $user = getenv('RUCARO_TEST_DB_USER');
         $pass = getenv('RUCARO_TEST_DB_PASS');
         $name = getenv('RUCARO_TEST_DB_NAME') ?: 'rucaro_test';
@@ -50,26 +50,27 @@ final class MigrationRunnerTest extends TestCase
             $this->markTestSkipped('RUCARO_TEST_DB_* env vars are not set; skipping DB integration test.');
         }
 
-        $root = new PDO($dsn, $user, $pass === false ? '' : $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        $root = new \PDO($dsn, $user, $pass === false ? '' : $pass, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ]);
         $root->exec("DROP DATABASE IF EXISTS `$name`");
         $root->exec("CREATE DATABASE `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 
         $this->dbName = $name;
-        $this->pdo = new PDO(
-            $dsn . ';dbname=' . $name,
+        $this->pdo = new \PDO(
+            $dsn.';dbname='.$name,
             $user,
             $pass === false ? '' : $pass,
             [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false,
             ],
         );
-        $this->pdo->exec("SET NAMES utf8mb4");
+        $this->pdo->exec('SET NAMES utf8mb4');
         $this->pdo->exec("SET time_zone = '+00:00'");
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->pdo !== null && $this->dbName !== '') {
@@ -79,7 +80,7 @@ final class MigrationRunnerTest extends TestCase
 
     public function testUpCreatesAllExpectedTables(): void
     {
-        $runner = new MigrationRunner($this->pdo, $this->migrationsDir());
+        $runner = new MigrationRunner($this->pdoOrFail(), $this->migrationsDir());
 
         $applied = $runner->up();
         $this->assertGreaterThanOrEqual(4, $applied, 'At least 4 migration files should be applied');
@@ -93,7 +94,7 @@ final class MigrationRunnerTest extends TestCase
 
     public function testDownRollsBackLastMigration(): void
     {
-        $runner = new MigrationRunner($this->pdo, $this->migrationsDir());
+        $runner = new MigrationRunner($this->pdoOrFail(), $this->migrationsDir());
         $runner->up();
 
         $tablesBefore = $this->listTables();
@@ -111,7 +112,7 @@ final class MigrationRunnerTest extends TestCase
 
     public function testStatusReflectsAppliedAndPending(): void
     {
-        $runner = new MigrationRunner($this->pdo, $this->migrationsDir());
+        $runner = new MigrationRunner($this->pdoOrFail(), $this->migrationsDir());
         $before = $runner->status();
         foreach ($before as $row) {
             if ($row['version'] === '0000') {
@@ -127,17 +128,30 @@ final class MigrationRunnerTest extends TestCase
         }
     }
 
+    private function pdoOrFail(): \PDO
+    {
+        if ($this->pdo === null) {
+            throw new \LogicException('setUp() did not establish a PDO connection; test should have been skipped.');
+        }
+
+        return $this->pdo;
+    }
+
     /** @return list<string> */
     private function listTables(): array
     {
-        $stmt = $this->pdo->query('SHOW TABLES');
-        $rows = $stmt->fetchAll(PDO::FETCH_NUM);
+        $stmt = $this->pdoOrFail()->query('SHOW TABLES');
+        if ($stmt === false) {
+            throw new \RuntimeException('SHOW TABLES failed');
+        }
+        $rows = $stmt->fetchAll(\PDO::FETCH_NUM);
+
         return array_map(static fn (array $r): string => (string) $r[0], $rows);
     }
 
     private function migrationsDir(): string
     {
-        return dirname(__DIR__, 3) . DIRECTORY_SEPARATOR
-            . 'scripts' . DIRECTORY_SEPARATOR . 'migrate';
+        return dirname(__DIR__, 3).\DIRECTORY_SEPARATOR
+            .'scripts'.\DIRECTORY_SEPARATOR.'migrate';
     }
 }

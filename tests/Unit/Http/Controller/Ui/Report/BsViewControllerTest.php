@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCase;
@@ -21,11 +20,13 @@ use Rucaro\Tests\Support\Fake\FrozenClock;
 #[CoversClass(BsViewController::class)]
 final class BsViewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -69,8 +70,8 @@ final class BsViewControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new BsViewController(
             useCase: new GenerateFinancialStatementUseCase(
@@ -84,6 +85,7 @@ final class BsViewControllerTest extends TestCase
             ),
             pdfGenerator: new StubFsGenerator($emitPdf),
             period: new PeriodQueryHelper(self::inMemoryPdo()),
+            fiscalTerms: new \Rucaro\Support\Web\FiscalTermLookup(self::inMemoryPdo()),
             session: $session,
             csrf: new CsrfTokenManager($clock),
             flash: new FlashMessageBag(),
@@ -91,11 +93,12 @@ final class BsViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }

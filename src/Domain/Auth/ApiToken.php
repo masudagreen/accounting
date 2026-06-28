@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Auth;
 
-use DateTimeImmutable;
-
 /**
  * Persisted opaque Bearer token (see `api_tokens` table, ADR-002 §4).
  *
@@ -21,12 +19,12 @@ final readonly class ApiToken
         public string $tokenHash,
         public string $tokenPrefix,
         public string $scopes,
-        public DateTimeImmutable $issuedAt,
-        public DateTimeImmutable $expiresAt,
-        public ?DateTimeImmutable $revokedAt,
-        public ?DateTimeImmutable $lastUsedAt,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $issuedAt,
+        public \DateTimeImmutable $expiresAt,
+        public ?\DateTimeImmutable $revokedAt,
+        public ?\DateTimeImmutable $lastUsedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 
@@ -35,12 +33,12 @@ final readonly class ApiToken
         return $this->revokedAt !== null;
     }
 
-    public function isExpired(DateTimeImmutable $now): bool
+    public function isExpired(\DateTimeImmutable $now): bool
     {
         return $this->expiresAt <= $now;
     }
 
-    public function isActive(DateTimeImmutable $now): bool
+    public function isActive(\DateTimeImmutable $now): bool
     {
         return !$this->isRevoked() && !$this->isExpired($now);
     }

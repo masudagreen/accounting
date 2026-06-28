@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Application\FinancialStatement\Multi\FiscalTermMetadata;
 use Rucaro\Application\FinancialStatement\Multi\FiscalTermMetadataRepositoryInterface;
@@ -21,10 +19,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findByIds(array $ids): array
     {
         if ($ids === []) {
@@ -36,7 +35,7 @@ final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataReposit
         $placeholders = implode(', ', array_fill(0, count($ids), '?'));
         $sql = 'SELECT id, fiscal_period, start_date, end_date
                 FROM fiscal_terms
-                WHERE id IN (' . $placeholders . ')';
+                WHERE id IN ('.$placeholders.')';
         $stmt = $this->pdo->prepare($sql);
 
         $binds = [];
@@ -54,9 +53,9 @@ final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataReposit
         $stmt->execute($binds);
 
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
-        $tz = new DateTimeZone('UTC');
+        $tz = new \DateTimeZone('UTC');
         $byBinary = [];
         foreach ($rows as $r) {
             $idRaw = $r['id'] ?? null;
@@ -70,8 +69,8 @@ final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataReposit
                 continue;
             }
             try {
-                $start = new DateTimeImmutable($startRaw, $tz);
-                $end = new DateTimeImmutable($endRaw, $tz);
+                $start = new \DateTimeImmutable($startRaw, $tz);
+                $end = new \DateTimeImmutable($endRaw, $tz);
             } catch (\Exception) {
                 continue;
             }
@@ -94,6 +93,7 @@ final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataReposit
                 $out[] = $byBinary[$binary];
             }
         }
+
         return $out;
     }
 
@@ -102,6 +102,7 @@ final class PdoFiscalTermMetadataRepository implements FiscalTermMetadataReposit
         if ($period <= 0) {
             return '期';
         }
-        return '第 ' . $period . ' 期';
+
+        return '第 '.$period.' 期';
     }
 }

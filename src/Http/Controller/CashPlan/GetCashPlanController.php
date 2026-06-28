@@ -40,16 +40,18 @@ final readonly class GetCashPlanController
         $format = strtolower($request->queryString('format') ?? 'json');
         if ($format === 'pdf') {
             $pdf = $this->generator->render($plan);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="cash-plan.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(CashPlanJsonSerializer::toArray($plan));
     }
 }

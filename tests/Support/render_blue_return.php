@@ -11,17 +11,16 @@ declare(strict_types=1);
 
 use Rucaro\Domain\BlueReturn\BlueReturnForm;
 use Rucaro\Domain\BlueReturn\BlueReturnFormType;
-use Rucaro\Domain\BlueReturn\BlueReturnSnapshot;
 use Rucaro\Domain\BlueReturn\BlueReturnStatus;
 use Rucaro\Domain\BlueReturn\Service\BlueReturnBuilder;
 use Rucaro\Infrastructure\BlueReturn\DompdfBlueReturnGenerator;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__.'/../../vendor/autoload.php';
 
 $repoRoot = dirname(__DIR__, 2);
-$templateDir = $repoRoot . '/storage/templates/blue_return';
-$compileDir = $repoRoot . '/storage/cache/smarty_blue_return';
-$fontDir = $repoRoot . '/storage/fonts';
+$templateDir = $repoRoot.'/storage/templates/blue_return';
+$compileDir = $repoRoot.'/storage/cache/smarty_blue_return';
+$fontDir = $repoRoot.'/storage/fonts';
 @mkdir($compileDir, 0775, true);
 
 $builder = new BlueReturnBuilder();
@@ -30,10 +29,10 @@ $snapshot = $builder->build(
     revenueByAccount: ['売上高' => '12000000.0000', '雑収入' => '120000.0000'],
     costOfSalesByAccount: ['仕入高' => '3800000.0000', '期末棚卸' => '-420000.0000'],
     expensesByAccount: [
-        '給料賃金'   => '2400000.0000',
-        '地代家賃'   => '1200000.0000',
+        '給料賃金' => '2400000.0000',
+        '地代家賃' => '1200000.0000',
         '水道光熱費' => '240000.0000',
-        '通信費'     => '180000.0000',
+        '通信費' => '180000.0000',
         '減価償却費' => '480000.0000',
     ],
     monthlyRows: [
@@ -69,16 +68,16 @@ $snapshot = $builder->build(
         ],
     ],
     assetsByAccount: [
-        '現金'       => '420000.0000',
-        '普通預金'   => '1800000.0000',
-        '売掛金'     => '860000.0000',
-        '棚卸資産'   => '420000.0000',
+        '現金' => '420000.0000',
+        '普通預金' => '1800000.0000',
+        '売掛金' => '860000.0000',
+        '棚卸資産' => '420000.0000',
         '車両運搬具' => '720000.0000',
         '工具器具備品' => '180000.0000',
     ],
     liabilitiesByAccount: [
-        '買掛金'   => '340000.0000',
-        '未払金'   => '120000.0000',
+        '買掛金' => '340000.0000',
+        '未払金' => '120000.0000',
         '長期借入金' => '1800000.0000',
     ],
     equityByAccount: [
@@ -86,7 +85,7 @@ $snapshot = $builder->build(
     ],
 );
 
-$now = new \DateTimeImmutable('2026-04-21T12:00:00Z');
+$now = new DateTimeImmutable('2026-04-21T12:00:00Z');
 $form = new BlueReturnForm(
     id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
     entityId: '01HAAAAAAAAAAAAAAAAAAAAAB1',
@@ -108,6 +107,6 @@ $generator = new DompdfBlueReturnGenerator(
 
 $pdf = $generator->render($form);
 
-$outPath = $argv[1] ?? ($repoRoot . '/blue-return.pdf');
+$outPath = $argv[1] ?? ($repoRoot.'/blue-return.pdf');
 file_put_contents($outPath, $pdf);
-echo "Wrote " . strlen($pdf) . " bytes to " . $outPath . PHP_EOL;
+echo 'Wrote '.strlen($pdf).' bytes to '.$outPath.\PHP_EOL;

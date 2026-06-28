@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
-
 /**
  * Pure, side-effect-free converters from legacy column values to
  * new schema values.
@@ -28,8 +24,9 @@ final class LegacyValueConverter
      */
     public static function stampToTimestamp(int $stamp): string
     {
-        $dt = (new DateTimeImmutable('@' . $stamp))
-            ->setTimezone(new DateTimeZone('UTC'));
+        $dt = (new \DateTimeImmutable('@'.$stamp))
+            ->setTimezone(new \DateTimeZone('UTC'));
+
         return $dt->format('Y-m-d H:i:s.u');
     }
 
@@ -41,8 +38,10 @@ final class LegacyValueConverter
      */
     public static function stampToDate(int $stamp, string $tz = 'Asia/Tokyo'): string
     {
-        $dt = (new DateTimeImmutable('@' . $stamp))
-            ->setTimezone(new DateTimeZone($tz));
+        $zone = $tz === '' ? 'Asia/Tokyo' : $tz;
+        $dt = (new \DateTimeImmutable('@'.$stamp))
+            ->setTimezone(new \DateTimeZone($zone));
+
         return $dt->format('Y-m-d');
     }
 
@@ -76,6 +75,7 @@ final class LegacyValueConverter
             }
             $out[] = $trimmed;
         }
+
         return $out;
     }
 
@@ -91,14 +91,15 @@ final class LegacyValueConverter
         int $termMonths = 12,
     ): array {
         if ($beginningMonth < 1 || $beginningMonth > 12) {
-            throw new InvalidArgumentException('fiscalTermDates: month must be 1..12');
+            throw new \InvalidArgumentException('fiscalTermDates: month must be 1..12');
         }
         if ($termMonths < 1 || $termMonths > 24) {
-            throw new InvalidArgumentException('fiscalTermDates: termMonths out of range');
+            throw new \InvalidArgumentException('fiscalTermDates: termMonths out of range');
         }
         $startDate = sprintf('%04d-%02d-01', $beginningYear, $beginningMonth);
-        $start = new DateTimeImmutable($startDate);
-        $end = $start->modify('+' . $termMonths . ' months')->modify('-1 day');
+        $start = new \DateTimeImmutable($startDate);
+        $end = $start->modify('+'.$termMonths.' months')->modify('-1 day');
+
         return [
             'start' => $start->format('Y-m-d'),
             'end' => $end->format('Y-m-d'),
@@ -115,8 +116,9 @@ final class LegacyValueConverter
     public static function syntheticAccountTitleCode(int $seq): string
     {
         if ($seq < 0 || $seq > 9999) {
-            throw new InvalidArgumentException('syntheticAccountTitleCode: seq out of range');
+            throw new \InvalidArgumentException('syntheticAccountTitleCode: seq out of range');
         }
+
         return sprintf('L%04d', $seq);
     }
 }

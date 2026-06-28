@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FixedAsset\DisposeFixedAssetUseCase;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Domain\Exception\ValidationException;
@@ -48,15 +46,17 @@ final readonly class FixedAssetDisposeController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
 
         $raw = PlanningFormSupport::str($body, 'disposal_date');
         try {
-            $at = $raw !== '' ? new DateTimeImmutable($raw, new DateTimeZone('UTC')) : $this->clock->getCurrentTime();
+            $at = $raw !== '' ? new \DateTimeImmutable($raw, new \DateTimeZone('UTC')) : $this->clock->getCurrentTime();
         } catch (\Exception) {
             $this->flash->addError('除却日は YYYY-MM-DD 形式で入力してください。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
         try {
             $this->disposeAsset->execute($id, $at);
@@ -64,10 +64,11 @@ final readonly class FixedAssetDisposeController
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の固定資産が見つかりません。');
         } catch (ValidationException $e) {
-            $this->flash->addError('除却処理に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('除却処理に失敗しました: '.$e->getMessage());
         } catch (\Throwable $e) {
-            $this->flash->addError('除却処理でエラーが発生しました: ' . $e->getMessage());
+            $this->flash->addError('除却処理でエラーが発生しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+        return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
     }
 }

@@ -15,7 +15,8 @@ interface FiscalTermMetadataRepositoryInterface
 {
     /**
      * @param list<string> $ids
-     * @return list<FiscalTermMetadata> Subset in insertion order by `ids`.
+     *
+     * @return list<FiscalTermMetadata> subset in insertion order by `ids`
      */
     public function findByIds(array $ids): array;
 }

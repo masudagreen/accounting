@@ -48,11 +48,11 @@ final readonly class PutAccountTitleTaxDefaultsController
             }
             $at = is_string($r['accountTitleId'] ?? null) ? (string) $r['accountTitleId'] : '';
             $cat = is_string($r['categoryCode'] ?? null) ? (string) $r['categoryCode'] : '';
-            $rate = array_key_exists('rateCode', $r) && is_string($r['rateCode']) ? (string) $r['rateCode'] : null;
+            $rate = array_key_exists('rateCode', $r) && is_string($r['rateCode']) ? $r['rateCode'] : null;
             $rows[] = [
                 'accountTitleId' => $at,
-                'categoryCode'   => $cat,
-                'rateCode'       => $rate,
+                'categoryCode' => $cat,
+                'rateCode' => $rate,
             ];
         }
         try {
@@ -60,6 +60,7 @@ final readonly class PutAccountTitleTaxDefaultsController
         } catch (ValidationException $e) {
             return ErrorResponse::unprocessable($e->getMessage(), $e->errors());
         }
+
         return EnvelopeResponse::list(
             ConsumptionTaxSettlementJsonSerializer::defaultsToArrayList($saved),
             ['total' => count($saved)],

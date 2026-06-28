@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Budget;
 
-use DateTimeImmutable;
-
 /**
  * Input for {@see AnalyzeBudgetVarianceUseCase}.
  *
@@ -18,8 +16,8 @@ final readonly class AnalyzeBudgetVarianceInput
 {
     public function __construct(
         public string $budgetId,
-        public DateTimeImmutable $fiscalTermStartDate,
-        public DateTimeImmutable $asOf,
+        public \DateTimeImmutable $fiscalTermStartDate,
+        public \DateTimeImmutable $asOf,
         public string $currencyCode = 'JPY',
     ) {
     }

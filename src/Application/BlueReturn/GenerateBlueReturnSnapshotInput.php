@@ -18,14 +18,14 @@ use Rucaro\Domain\BlueReturn\BlueReturnFormType;
 final readonly class GenerateBlueReturnSnapshotInput
 {
     /**
-     * @param array<string, string>                                              $revenueByAccount
-     * @param array<string, string>                                              $costOfSalesByAccount
-     * @param array<string, string>                                              $expensesByAccount
-     * @param list<array{month:int,sales:string,purchase:string,salary:string}>  $monthlyRows
-     * @param array<string, list<array<string, mixed>>>                          $breakdown
-     * @param array<string, string>                                              $assetsByAccount
-     * @param array<string, string>                                              $liabilitiesByAccount
-     * @param array<string, string>                                              $equityByAccount
+     * @param array<string, string> $revenueByAccount
+     * @param array<string, string> $costOfSalesByAccount
+     * @param array<string, string> $expensesByAccount
+     * @param list<array{month:int,sales:string,purchase:string,salary:string}> $monthlyRows
+     * @param array<string, list<array<string, mixed>>> $breakdown
+     * @param array<string, string> $assetsByAccount
+     * @param array<string, string> $liabilitiesByAccount
+     * @param array<string, string> $equityByAccount
      */
     public function __construct(
         public BlueReturnFormType $formType,

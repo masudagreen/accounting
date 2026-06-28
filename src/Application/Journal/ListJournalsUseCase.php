@@ -39,6 +39,7 @@ final readonly class ListJournalsUseCase
             $input->search,
             $input->includeTrashed,
         );
+
         return new ListJournalsUseCaseOutput(
             items: $items,
             total: $total,

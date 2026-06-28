@@ -13,7 +13,7 @@ final readonly class LoginUseCaseInput
         public string $password,
     ) {
         $errors = [];
-        if (trim($email) === '' || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        if (trim($email) === '' || filter_var($email, \FILTER_VALIDATE_EMAIL) === false) {
             $errors['email'] = ['email must be a valid address'];
         }
         if (strlen($password) < 8) {

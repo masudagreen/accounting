@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Validation;
 
-use Stringable;
-
 /**
  * Base class for domain value objects.
  *
@@ -19,7 +17,7 @@ use Stringable;
  * - `__toString()` renders the primitive as a string — handy in log lines and
  *   Smarty templates, where scalar coercion is common.
  */
-abstract readonly class AbstractValueObject implements Stringable
+abstract readonly class AbstractValueObject implements \Stringable
 {
     abstract public function toPrimitive(): mixed;
 
@@ -36,6 +34,7 @@ abstract readonly class AbstractValueObject implements Stringable
         return $this->toPrimitive() === $other->toPrimitive();
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $primitive = $this->toPrimitive();
@@ -44,7 +43,7 @@ abstract readonly class AbstractValueObject implements Stringable
             return $primitive;
         }
 
-        if (is_scalar($primitive) || $primitive instanceof Stringable) {
+        if (is_scalar($primitive) || $primitive instanceof \Stringable) {
             return (string) $primitive;
         }
 

@@ -58,11 +58,11 @@ final readonly class UpdateBudgetController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(BudgetJsonSerializer::toArray($out->budget));
     }
 
     /**
-     * @param mixed $raw
      * @return list<BudgetLineItemInput>
      */
     private static function parseLineItems(mixed $raw): array
@@ -86,26 +86,27 @@ final readonly class UpdateBudgetController
                 id: self::nullableString($li, 'id'),
             );
         }
+
         return $out;
     }
 
     /**
-     * @param mixed $raw
      * @return list<string>
      */
     private static function parseAmounts(mixed $raw): array
     {
         $out = [];
         if (is_array($raw)) {
-            for ($m = 1; $m <= BudgetLineItem::MONTHS; $m++) {
-                $v = $raw[$m - 1] ?? $raw['month_' . $m] ?? '0.0000';
+            for ($m = 1; $m <= BudgetLineItem::MONTHS; ++$m) {
+                $v = $raw[$m - 1] ?? $raw['month_'.$m] ?? '0.0000';
                 $out[] = is_string($v) ? $v : (string) $v;
             }
         } else {
-            for ($m = 1; $m <= BudgetLineItem::MONTHS; $m++) {
+            for ($m = 1; $m <= BudgetLineItem::MONTHS; ++$m) {
                 $out[] = '0.0000';
             }
         }
+
         return $out;
     }
 
@@ -115,6 +116,7 @@ final readonly class UpdateBudgetController
     private static function optionalString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) ? $v : null;
     }
 
@@ -124,6 +126,7 @@ final readonly class UpdateBudgetController
     private static function nullableString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 }

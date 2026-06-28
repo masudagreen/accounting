@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Auth;
 
-use DateTimeZone;
 use Rucaro\Application\Auth\GetMyProfileUseCase;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Http\Middleware\AuthenticateBearer;
@@ -34,14 +33,14 @@ final readonly class MeController
         }
 
         return EnvelopeResponse::ok(data: [
-            'id'          => $user->id,
-            'loginId'     => $user->loginId,
+            'id' => $user->id,
+            'loginId' => $user->loginId,
             'displayName' => $user->displayName,
-            'email'       => $user->email,
-            'isActive'    => $user->isActive,
-            'lastLoginAt' => $user->lastLoginAt?->setTimezone(new DateTimeZone('UTC'))?->format('Y-m-d\TH:i:s.u\Z'),
-            'createdAt'   => $user->createdAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
-            'updatedAt'   => $user->updatedAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'email' => $user->email,
+            'isActive' => $user->isActive,
+            'lastLoginAt' => $user->lastLoginAt?->setTimezone(new \DateTimeZone('UTC'))?->format('Y-m-d\TH:i:s.u\Z'),
+            'createdAt' => $user->createdAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'updatedAt' => $user->updatedAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
         ]);
     }
 }

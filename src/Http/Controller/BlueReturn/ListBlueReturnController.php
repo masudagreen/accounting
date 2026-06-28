@@ -36,6 +36,7 @@ final readonly class ListBlueReturnController
             return ErrorResponse::badRequest('fiscalTermId must be a ULID when provided.');
         }
         $forms = $this->useCase->execute($entityId, $fiscalTermId);
+
         return EnvelopeResponse::ok(BlueReturnJsonSerializer::toArrayList($forms));
     }
 }

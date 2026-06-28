@@ -8,7 +8,6 @@ use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCategoryCode;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxPeriod;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxSettlement;
-use Rucaro\Domain\ConsumptionTax\TaxableTransaction;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Decimal\Decimal;
 
@@ -30,21 +29,20 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
     ) {
     }
 
+    #[\Override]
     public function calculate(ConsumptionTaxPeriod $period, array $transactions): ConsumptionTaxSettlement
     {
         if ($period->calculationMethod !== ConsumptionTaxCalculationMethod::Principle) {
-            throw ValidationException::withErrors([
-                'calculationMethod' => ['period calculationMethod must be principle.'],
-            ]);
+            throw ValidationException::withErrors(['calculationMethod' => ['period calculationMethod must be principle.']]);
         }
 
-        $taxableSales    = '0.0000';
+        $taxableSales = '0.0000';
         $nonTaxableSales = '0.0000';
-        $exemptSales     = '0.0000';
-        $untaxedSales    = '0.0000';
-        $outputTaxTotal  = '0.0000';
-        $inputTaxTotal   = '0.0000';
-        $adjustment      = '0.0000';
+        $exemptSales = '0.0000';
+        $untaxedSales = '0.0000';
+        $outputTaxTotal = '0.0000';
+        $inputTaxTotal = '0.0000';
+        $adjustment = '0.0000';
 
         /** @var array<string, string> $salesByRate */
         $salesByRate = [];
@@ -63,7 +61,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
 
             if ($t->categoryCode->isSales()) {
                 match ($t->categoryCode) {
-                    ConsumptionTaxCategoryCode::TaxableSales => (function () use (
+                    ConsumptionTaxCategoryCode::TaxableSales => (static function () use (
                         &$taxableSales, &$outputTaxTotal, &$salesByRate, &$outputTaxByRate, $t, $rateCode
                     ): void {
                         $taxableSales = Decimal::add($taxableSales, $t->amountExcludingTax);
@@ -72,9 +70,9 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
                         self::addTo($outputTaxByRate, $rateCode, $t->taxAmount);
                     })(),
                     ConsumptionTaxCategoryCode::NonTaxableSales => $nonTaxableSales = Decimal::add($nonTaxableSales, $t->amountExcludingTax),
-                    ConsumptionTaxCategoryCode::ExemptSales     => $exemptSales     = Decimal::add($exemptSales,     $t->amountExcludingTax),
-                    ConsumptionTaxCategoryCode::UntaxedSales    => $untaxedSales    = Decimal::add($untaxedSales,    $t->amountExcludingTax),
-                    default                                      => null,
+                    ConsumptionTaxCategoryCode::ExemptSales => $exemptSales = Decimal::add($exemptSales, $t->amountExcludingTax),
+                    ConsumptionTaxCategoryCode::UntaxedSales => $untaxedSales = Decimal::add($untaxedSales, $t->amountExcludingTax),
+                    default => null,
                 };
                 continue;
             }
@@ -82,7 +80,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
             if ($t->categoryCode === ConsumptionTaxCategoryCode::TaxablePurchase) {
                 $inputTaxTotal = Decimal::add($inputTaxTotal, $t->taxAmount);
                 self::addTo($purchasesByRate, $rateCode, $t->amountExcludingTax);
-                self::addTo($inputTaxByRate,  $rateCode, $t->taxAmount);
+                self::addTo($inputTaxByRate, $rateCode, $t->taxAmount);
                 continue;
             }
             if ($t->categoryCode === ConsumptionTaxCategoryCode::TaxablePurchaseNonRegistered) {
@@ -91,7 +89,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
                 $adjustment = Decimal::add($adjustment, $disallowed);
                 $inputTaxTotal = Decimal::add($inputTaxTotal, $deductible);
                 self::addTo($purchasesByRate, $rateCode, $t->amountExcludingTax);
-                self::addTo($inputTaxByRate,  $rateCode, $deductible);
+                self::addTo($inputTaxByRate, $rateCode, $deductible);
             }
         }
 
@@ -101,7 +99,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
         // Net payable: output − deductible input. `adjustment` is already
         // folded into inputTaxTotal via the deductible portion; we surface
         // it in the settlement so the report can show the number.
-        $netPayable = Decimal::add($outputTaxTotal, '-' . ltrim(Decimal::normalize($inputTaxTotal), '-'));
+        $netPayable = Decimal::add($outputTaxTotal, '-'.ltrim(Decimal::normalize($inputTaxTotal), '-'));
 
         return new ConsumptionTaxSettlement(
             period: $period,
@@ -134,6 +132,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
 
     /**
      * @param array<string, string> $map
+     *
      * @return array<string, string>
      */
     private static function normalizeMap(array $map): array
@@ -142,6 +141,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
         foreach ($map as $k => $v) {
             $out[$k] = Decimal::normalize($v);
         }
+
         return $out;
     }
 
@@ -164,6 +164,7 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
         if (abs($n - 3.0) < 0.01) {
             return 'old_3';
         }
+
         return 'untaxed';
     }
 
@@ -173,9 +174,11 @@ final class PrincipleConsumptionTaxCalculator implements ConsumptionTaxCalculato
             return '0.0000';
         }
         if (function_exists('bcdiv')) {
+            /** @psalm-suppress ArgumentTypeCoercion num / den are Decimal-shaped numeric strings */
             return bcdiv($num, $den, 4);
         }
         $v = ((float) $num) / ((float) $den);
+
         return number_format($v, 4, '.', '');
     }
 }

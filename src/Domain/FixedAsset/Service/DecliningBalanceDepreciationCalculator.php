@@ -32,6 +32,7 @@ final class DecliningBalanceDepreciationCalculator implements DepreciationCalcul
     ) {
     }
 
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         $row = DecliningBalanceRateTable::lookup($this->method, $request->usefulLifeYears);

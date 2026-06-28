@@ -12,7 +12,7 @@ final class ErrorResponse
 {
     /**
      * @param array<string, mixed>|null $details
-     * @param array<string, string>     $extraHeaders
+     * @param array<string, string> $extraHeaders
      */
     public static function of(
         int $status,
@@ -22,7 +22,7 @@ final class ErrorResponse
         array $extraHeaders = [],
     ): JsonResponse {
         $error = [
-            'code'    => $code,
+            'code' => $code,
             'message' => $message,
         ];
         if ($details !== null) {
@@ -30,10 +30,11 @@ final class ErrorResponse
         }
         $payload = [
             'success' => false,
-            'data'    => null,
-            'error'   => $error,
-            'meta'    => null,
+            'data' => null,
+            'error' => $error,
+            'meta' => null,
         ];
+
         return JsonResponse::of($status, $payload, $extraHeaders);
     }
 

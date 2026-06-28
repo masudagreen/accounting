@@ -50,6 +50,7 @@ final readonly class ConsumptionTaxPeriodNewController
         $entityId = $this->session->getSelectedEntity();
         $terms = $this->ctx->fiscalTermsForEntity($entityId);
         $default = PlanningUiContext::defaultFiscalTermId($terms, $this->clock->getCurrentTime());
+
         return $this->renderForm(
             entityId: $entityId,
             form: self::blankForm($default),
@@ -70,16 +71,17 @@ final readonly class ConsumptionTaxPeriodNewController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/consumption-tax/periods/new');
         }
 
         $form = [
-            'fiscalTermId'             => PlanningFormSupport::str($body, 'fiscal_term_id'),
-            'periodFrom'               => PlanningFormSupport::str($body, 'period_from'),
-            'periodTo'                 => PlanningFormSupport::str($body, 'period_to'),
-            'method'                   => PlanningFormSupport::str($body, 'method', 'principle'),
+            'fiscalTermId' => PlanningFormSupport::str($body, 'fiscal_term_id'),
+            'periodFrom' => PlanningFormSupport::str($body, 'period_from'),
+            'periodTo' => PlanningFormSupport::str($body, 'period_to'),
+            'method' => PlanningFormSupport::str($body, 'method', 'principle'),
             'simplifiedBusinessCategory' => PlanningFormSupport::str($body, 'simplified_business_category'),
-            'isInterim'                => PlanningFormSupport::bool($body['is_interim'] ?? null) ? '1' : '',
+            'isInterim' => PlanningFormSupport::bool($body['is_interim'] ?? null) ? '1' : '',
         ];
 
         $errors = [];
@@ -104,11 +106,12 @@ final readonly class ConsumptionTaxPeriodNewController
                     isInterim: $form['isInterim'] === '1',
                 );
                 $this->flash->addSuccess('消費税申告期間を登録しました。');
+
                 return HtmlResponse::redirect('/ui/consumption-tax/periods');
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['登録に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['登録に失敗しました: '.$e->getMessage()];
             }
         }
 
@@ -122,8 +125,10 @@ final readonly class ConsumptionTaxPeriodNewController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -134,27 +139,28 @@ final readonly class ConsumptionTaxPeriodNewController
     private function renderForm(string $entityId, array $form, array $errors, int $status): HtmlResponse
     {
         $data = [
-            'page_title'           => '新規消費税申告期間',
-            'active_nav'           => 'consumption_tax',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '新規消費税申告期間',
+            'active_nav' => 'consumption_tax',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_action'          => '/ui/consumption-tax/periods/new',
-            'form'                 => $form,
-            'form_errors'          => $errors,
-            'fiscal_terms'         => $this->ctx->fiscalTermsForEntity($entityId),
-            'method_options'       => self::methodOptions(),
-            'category_options'     => self::categoryOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'form_action' => '/ui/consumption-tax/periods/new',
+            'form' => $form,
+            'form_errors' => $errors,
+            'fiscal_terms' => $this->ctx->fiscalTermsForEntity($entityId),
+            'method_options' => self::methodOptions(),
+            'category_options' => self::categoryOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('consumption_tax/period_form.html.tpl', $data));
     }
 
@@ -164,12 +170,12 @@ final readonly class ConsumptionTaxPeriodNewController
     private static function blankForm(?string $defaultTermId): array
     {
         return [
-            'fiscalTermId'               => $defaultTermId ?? '',
-            'periodFrom'                 => '',
-            'periodTo'                   => '',
-            'method'                     => 'principle',
+            'fiscalTermId' => $defaultTermId ?? '',
+            'periodFrom' => '',
+            'periodTo' => '',
+            'method' => 'principle',
             'simplifiedBusinessCategory' => '',
-            'isInterim'                  => '',
+            'isInterim' => '',
         ];
     }
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\Approval\ApprovalChannel;
 use Rucaro\Domain\Approval\ApprovalDecision;
@@ -29,20 +27,23 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function save(ApprovalToken $token): void
     {
         $existing = $this->findByTokenHash($token->tokenHash);
         if ($existing === null) {
             $this->insert($token);
+
             return;
         }
         $this->update($token);
     }
 
+    #[\Override]
     public function findByTokenHash(string $tokenHash): ?ApprovalToken
     {
         $stmt = $this->pdo->prepare(
@@ -56,10 +57,12 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         );
         $stmt->execute([':h' => $tokenHash]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByPrefix(string $tokenPrefix): ?ApprovalToken
     {
         $stmt = $this->pdo->prepare(
@@ -74,11 +77,13 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         );
         $stmt->execute([':p' => $tokenPrefix]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
-    public function expirePastDue(DateTimeImmutable $now): int
+    #[\Override]
+    public function expirePastDue(\DateTimeImmutable $now): int
     {
         // No-op row-level update — the domain treats "past expires_at without
         // response" as expired already. To surface an actionable count we use
@@ -90,7 +95,7 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         );
         $select->execute([':now' => self::fmtTs($now)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $select->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $select->fetchAll(\PDO::FETCH_ASSOC);
         if ($rows === []) {
             return 0;
         }
@@ -102,8 +107,9 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
                 continue;
             }
             $update->execute([':now' => self::fmtTs($now), ':id' => $idRaw]);
-            $count += 1;
+            ++$count;
         }
+
         return $count;
     }
 
@@ -185,14 +191,14 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
             tokenPrefix: self::asString($row['token_prefix'] ?? ''),
             channel: self::parseChannel($row['channel'] ?? null),
             recipient: self::asString($row['recipient'] ?? ''),
-            issuedAt: self::parseTimestamp($row['issued_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            expiresAt: self::parseTimestamp($row['expires_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            issuedAt: self::parseTimestamp($row['issued_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            expiresAt: self::parseTimestamp($row['expires_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             respondedAt: self::parseTimestamp($row['responded_at'] ?? null),
             decision: $decision,
             responseDetail: self::asString($row['response_detail'] ?? ''),
             issuedByUserId: self::stringifyId($row['issued_by_user_id'] ?? null),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
         );
     }
 
@@ -204,6 +210,7 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
                 return $parsed;
             }
         }
+
         return ApprovalTargetKind::Journal;
     }
 
@@ -215,6 +222,7 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
                 return $parsed;
             }
         }
+
         return ApprovalChannel::Null;
     }
 
@@ -226,6 +234,7 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         if ($actual !== $slot || $id === '') {
             return null;
         }
+
         return UlidGenerator::decode($id);
     }
 
@@ -234,6 +243,7 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -242,20 +252,20 @@ final class PdoApprovalTokenRepository implements ApprovalTokenRepositoryInterfa
         return is_string($raw) ? $raw : '';
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function fmtTs(DateTimeImmutable $t): string
+    private static function fmtTs(\DateTimeImmutable $t): string
     {
-        return $t->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
+        return $t->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
     }
 }

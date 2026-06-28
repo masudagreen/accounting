@@ -19,7 +19,7 @@ final class EntityNotFoundException extends DomainException
             domainCode: self::DOMAIN_CODE,
             context: [
                 'entity' => $entityName,
-                'id'     => $id,
+                'id' => $id,
             ],
         );
     }

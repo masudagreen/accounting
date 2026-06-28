@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\ConsumptionTax;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\ConsumptionTax\InvoiceRegistration;
 use Rucaro\Domain\ConsumptionTax\InvoiceRegistrationRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -50,14 +48,16 @@ final readonly class UpsertInvoiceRegistrationUseCase
             updatedAt: $now,
         );
         $this->registrations->save($registration);
+
         return $registration;
     }
 
-    private static function parseDate(?string $iso): ?DateTimeImmutable
+    private static function parseDate(?string $iso): ?\DateTimeImmutable
     {
         if ($iso === null || $iso === '') {
             return null;
         }
-        return new DateTimeImmutable($iso, new DateTimeZone('UTC'));
+
+        return new \DateTimeImmutable($iso, new \DateTimeZone('UTC'));
     }
 }

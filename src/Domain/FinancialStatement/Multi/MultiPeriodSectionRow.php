@@ -22,7 +22,7 @@ namespace Rucaro\Domain\FinancialStatement\Multi;
 final readonly class MultiPeriodSectionRow
 {
     /**
-     * @param array<string, string> $amounts fiscalTermId → scale-4 decimal.
+     * @param array<string, string> $amounts fiscalTermId → scale-4 decimal
      */
     public function __construct(
         public string $sectionCode,

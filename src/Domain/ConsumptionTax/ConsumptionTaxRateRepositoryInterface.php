@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
-
 /**
  * Read-only port for the `consumption_tax_rates` master table.
  */
@@ -19,5 +17,5 @@ interface ConsumptionTaxRateRepositoryInterface
     /**
      * @return list<ConsumptionTaxRate>
      */
-    public function findEffectiveOn(DateTimeImmutable $at): array;
+    public function findEffectiveOn(\DateTimeImmutable $at): array;
 }

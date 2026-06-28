@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\BlueReturn;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\BlueReturn\BlueReturnForm;
 use Rucaro\Domain\BlueReturn\BlueReturnFormType;
@@ -22,10 +20,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(BlueReturnForm $form): void
     {
         $sql = <<<'SQL'
@@ -46,20 +45,21 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'           => UlidGenerator::decode($form->id),
-            ':entity'       => UlidGenerator::decode($form->entityId),
-            ':ft'           => UlidGenerator::decode($form->fiscalTermId),
-            ':form_type'    => $form->formType->value,
-            ':snapshot'     => self::encodeSnapshot($form->snapshot),
-            ':status'       => $form->status->value,
+            ':id' => UlidGenerator::decode($form->id),
+            ':entity' => UlidGenerator::decode($form->entityId),
+            ':ft' => UlidGenerator::decode($form->fiscalTermId),
+            ':form_type' => $form->formType->value,
+            ':snapshot' => self::encodeSnapshot($form->snapshot),
+            ':status' => $form->status->value,
             ':finalized_at' => $form->finalizedAt?->format('Y-m-d H:i:s.u'),
-            ':created_by'   => UlidGenerator::decode($form->createdBy),
-            ':created_at'   => $form->createdAt->format('Y-m-d H:i:s.u'),
-            ':updated_at'   => $form->updatedAt->format('Y-m-d H:i:s.u'),
-            ':deleted_at'   => $form->deletedAt?->format('Y-m-d H:i:s.u'),
+            ':created_by' => UlidGenerator::decode($form->createdBy),
+            ':created_at' => $form->createdAt->format('Y-m-d H:i:s.u'),
+            ':updated_at' => $form->updatedAt->format('Y-m-d H:i:s.u'),
+            ':deleted_at' => $form->deletedAt?->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function findById(string $id): ?BlueReturnForm
     {
         $stmt = $this->pdo->prepare(
@@ -67,10 +67,12 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
         );
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): ?BlueReturnForm
     {
         $stmt = $this->pdo->prepare(
@@ -81,10 +83,12 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
             ':f' => UlidGenerator::decode($fiscalTermId),
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntity(
         string $entityId,
         ?string $fiscalTermId = null,
@@ -103,10 +107,12 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        return array_values(array_map([$this, 'hydrate'], $rows));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare(
@@ -119,8 +125,9 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
     {
         $json = json_encode(
             $snapshot->toArray(),
-            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+            \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES,
         );
+
         return $json === false ? '{}' : $json;
     }
 
@@ -130,7 +137,6 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
     private function hydrate(array $row): BlueReturnForm
     {
         $rawSnapshot = (string) ($row['snapshot_json'] ?? '{}');
-        /** @var mixed $decoded */
         $decoded = json_decode($rawSnapshot, true);
         $snapshot = is_array($decoded)
             ? BlueReturnSnapshot::fromArray($decoded)
@@ -161,23 +167,24 @@ final class PdoBlueReturnRepository implements BlueReturnRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

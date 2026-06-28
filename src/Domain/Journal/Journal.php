@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Journal;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\InvariantViolationException;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Domain\Journal\ValueObject\FiscalPeriod;
@@ -46,8 +45,8 @@ final readonly class Journal
         public string $id,
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $journalDate,
-        public DateTimeImmutable $bookedAt,
+        public \DateTimeImmutable $journalDate,
+        public \DateTimeImmutable $bookedAt,
         public string $summary,
         public string $totalAmount,
         public string $currencyCode,
@@ -56,21 +55,17 @@ final readonly class Journal
         public ?string $sourceReceiptId,
         public string $createdBy,
         public ?string $approvedBy,
-        public ?DateTimeImmutable $approvedAt,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt,
+        public ?\DateTimeImmutable $approvedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt,
         public array $lines,
     ) {
         if (!in_array($status, self::STATUSES, true)) {
-            throw ValidationException::withErrors([
-                'status' => [sprintf("status must be one of: %s", implode(', ', self::STATUSES))],
-            ]);
+            throw ValidationException::withErrors(['status' => [sprintf('status must be one of: %s', implode(', ', self::STATUSES))]]);
         }
         if (!in_array($source, self::SOURCES, true)) {
-            throw ValidationException::withErrors([
-                'source' => [sprintf("source must be one of: %s", implode(', ', self::SOURCES))],
-            ]);
+            throw ValidationException::withErrors(['source' => [sprintf('source must be one of: %s', implode(', ', self::SOURCES))]]);
         }
         self::ensureBalanced($lines, $totalAmount);
     }
@@ -84,10 +79,7 @@ final readonly class Journal
     public static function balance(array $lines): string
     {
         if (count($lines) < 2) {
-            throw InvariantViolationException::for('journal.min_lines', [
-                'expected' => 2,
-                'actual'   => count($lines),
-            ]);
+            throw InvariantViolationException::for('journal.min_lines', ['expected' => 2, 'actual' => count($lines)]);
         }
 
         $debit = '0.0000';
@@ -101,23 +93,15 @@ final readonly class Journal
         }
 
         if (Decimal::compare($debit, '0.0000') === 0) {
-            throw InvariantViolationException::for('journal.must_have_debit', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_have_debit', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
         if (Decimal::compare($credit, '0.0000') === 0) {
-            throw InvariantViolationException::for('journal.must_have_credit', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_have_credit', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
         if (Decimal::compare($debit, $credit) !== 0) {
-            throw InvariantViolationException::for('journal.must_balance', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_balance', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
+
         return Decimal::normalize($debit);
     }
 
@@ -128,10 +112,7 @@ final readonly class Journal
     {
         $computed = self::balance($lines);
         if (Decimal::compare($computed, $expectedTotal) !== 0) {
-            throw InvariantViolationException::for('journal.total_matches_debits', [
-                'expected' => $expectedTotal,
-                'actual'   => $computed,
-            ]);
+            throw InvariantViolationException::for('journal.total_matches_debits', ['expected' => $expectedTotal, 'actual' => $computed]);
         }
     }
 
@@ -157,16 +138,10 @@ final readonly class Journal
     public function assertWithinFiscalPeriod(FiscalPeriod $period): void
     {
         if (!$period->contains($this->entryDate())) {
-            throw InvariantViolationException::for('journal.entry_date_out_of_fiscal_period', [
-                'journalDate' => $this->entryDate()->toPrimitive(),
-                'period'      => $period->toPrimitive(),
-            ]);
+            throw InvariantViolationException::for('journal.entry_date_out_of_fiscal_period', ['journalDate' => $this->entryDate()->toPrimitive(), 'period' => $period->toPrimitive()]);
         }
         if ($this->fiscalTermId !== $period->fiscalTermId) {
-            throw InvariantViolationException::for('journal.fiscal_term_mismatch', [
-                'expected' => $period->fiscalTermId,
-                'actual'   => $this->fiscalTermId,
-            ]);
+            throw InvariantViolationException::for('journal.fiscal_term_mismatch', ['expected' => $period->fiscalTermId, 'actual' => $this->fiscalTermId]);
         }
     }
 
@@ -181,11 +156,31 @@ final readonly class Journal
     public function withLines(array $lines): self
     {
         if (!$this->statusEnum()->isMutable()) {
-            throw InvariantViolationException::for('journal.immutable_after_draft', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.immutable_after_draft', ['status' => $this->status]);
         }
+
+        return $this->rebuildWithLines($lines);
+    }
+
+    /**
+     * Admin escape hatch — rebuild the aggregate with new lines, skipping
+     * the "draft only" guard. Callers (UI controllers) MUST gate this on
+     * the operator's role; the domain trusts the call site.
+     *
+     * @param list<JournalLine> $lines
+     */
+    public function withLinesForced(array $lines): self
+    {
+        return $this->rebuildWithLines($lines);
+    }
+
+    /**
+     * @param list<JournalLine> $lines
+     */
+    private function rebuildWithLines(array $lines): self
+    {
         $total = self::balance($lines);
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -212,13 +207,12 @@ final readonly class Journal
      * Draft -> Approved transition. Idempotent on approved state? No:
      * re-approving signals a reviewer error, so we surface it.
      */
-    public function approve(DateTimeImmutable $at, string $approvedBy): self
+    public function approve(\DateTimeImmutable $at, string $approvedBy): self
     {
         if ($this->statusEnum() !== JournalStatus::Draft && $this->statusEnum() !== JournalStatus::PendingApproval) {
-            throw InvariantViolationException::for('journal.cannot_approve_from_status', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.cannot_approve_from_status', ['status' => $this->status]);
         }
+
         return $this->copyWith(
             status: JournalStatus::Approved->value,
             approvedBy: $approvedBy,
@@ -233,18 +227,15 @@ final readonly class Journal
      * (ADR-007, Phase 5). Rejection is terminal — the aggregate must be
      * cloned / edited into a fresh draft if the operator wants to retry.
      */
-    public function reject(DateTimeImmutable $at, string $rejectedBy, string $reason): self
+    public function reject(\DateTimeImmutable $at, string $rejectedBy, string $reason): self
     {
         if ($this->statusEnum() !== JournalStatus::Draft && $this->statusEnum() !== JournalStatus::PendingApproval) {
-            throw InvariantViolationException::for('journal.cannot_reject_from_status', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.cannot_reject_from_status', ['status' => $this->status]);
         }
         if (trim($reason) === '') {
-            throw ValidationException::withErrors([
-                'reason' => ['reason must be a non-empty string.'],
-            ]);
+            throw ValidationException::withErrors(['reason' => ['reason must be a non-empty string.']]);
         }
+
         return $this->copyWith(
             status: JournalStatus::Rejected->value,
             approvedBy: $rejectedBy,
@@ -257,16 +248,15 @@ final readonly class Journal
     /**
      * Approved -> Posted. Post requires a fiscal term + at least one line.
      */
-    public function post(DateTimeImmutable $at, string $postedBy): self
+    public function post(\DateTimeImmutable $at, string $postedBy): self
     {
         if ($this->statusEnum() !== JournalStatus::Approved) {
-            throw InvariantViolationException::for('journal.cannot_post_from_status', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.cannot_post_from_status', ['status' => $this->status]);
         }
         if ($this->fiscalTermId === '') {
             throw InvariantViolationException::for('journal.post_requires_fiscal_term', []);
         }
+
         return $this->copyWith(
             status: JournalStatus::Posted->value,
             approvedBy: $postedBy,
@@ -277,21 +267,18 @@ final readonly class Journal
 
     /**
      * Posted -> Reversed. Reversal leaves the aggregate as an audit record
-     * and triggers a new reversing journal via {@see \Rucaro\Domain\Journal\Service\JournalReverser}
+     * and triggers a new reversing journal via {@see Service\JournalReverser}
      * — this method handles the *source* side only.
      */
-    public function reverse(DateTimeImmutable $at, string $reversedBy, string $reason): self
+    public function reverse(\DateTimeImmutable $at, string $reversedBy, string $reason): self
     {
         if ($this->statusEnum() !== JournalStatus::Posted) {
-            throw InvariantViolationException::for('journal.cannot_reverse_from_status', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.cannot_reverse_from_status', ['status' => $this->status]);
         }
         if (trim($reason) === '') {
-            throw ValidationException::withErrors([
-                'reason' => ['reason must be a non-empty string.'],
-            ]);
+            throw ValidationException::withErrors(['reason' => ['reason must be a non-empty string.']]);
         }
+
         return $this->copyWith(
             status: JournalStatus::Reversed->value,
             approvedBy: $reversedBy,
@@ -305,18 +292,15 @@ final readonly class Journal
      * Draft -> Voided (soft void). Post-approval entries cannot be voided;
      * use {@see reverse} instead so the ledger remains auditable.
      */
-    public function void(DateTimeImmutable $at, string $voidedBy, string $reason): self
+    public function void(\DateTimeImmutable $at, string $voidedBy, string $reason): self
     {
         if ($this->statusEnum() !== JournalStatus::Draft) {
-            throw InvariantViolationException::for('journal.cannot_void_from_status', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.cannot_void_from_status', ['status' => $this->status]);
         }
         if (trim($reason) === '') {
-            throw ValidationException::withErrors([
-                'reason' => ['reason must be a non-empty string.'],
-            ]);
+            throw ValidationException::withErrors(['reason' => ['reason must be a non-empty string.']]);
         }
+
         return $this->copyWith(
             status: JournalStatus::Voided->value,
             deletedAt: $at,
@@ -330,13 +314,12 @@ final readonly class Journal
      * Soft-delete flag toggle, used by `DeleteJournalUseCase` when a draft
      * is discarded.
      */
-    public function softDelete(DateTimeImmutable $at): self
+    public function softDelete(\DateTimeImmutable $at): self
     {
         if (!$this->statusEnum()->isMutable()) {
-            throw InvariantViolationException::for('journal.immutable_after_draft', [
-                'status' => $this->status,
-            ]);
+            throw InvariantViolationException::for('journal.immutable_after_draft', ['status' => $this->status]);
         }
+
         return $this->copyWith(deletedAt: $at, updatedAt: $at);
     }
 
@@ -347,9 +330,9 @@ final readonly class Journal
     private function copyWith(
         ?string $status = null,
         ?string $approvedBy = null,
-        ?DateTimeImmutable $approvedAt = null,
-        ?DateTimeImmutable $updatedAt = null,
-        ?DateTimeImmutable $deletedAt = null,
+        ?\DateTimeImmutable $approvedAt = null,
+        ?\DateTimeImmutable $updatedAt = null,
+        ?\DateTimeImmutable $deletedAt = null,
         ?string $summary = null,
     ): self {
         return new self(

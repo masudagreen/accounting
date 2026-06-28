@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Approval\ApprovalToken;
 use Rucaro\Domain\Approval\ApprovalTokenRepositoryInterface;
 
@@ -20,16 +19,19 @@ final class InMemoryApprovalTokenRepository implements ApprovalTokenRepositoryIn
     /** @var array<string, ApprovalToken> */
     public array $byHash = [];
 
+    #[\Override]
     public function save(ApprovalToken $token): void
     {
         $this->byHash[$token->tokenHash] = $token;
     }
 
+    #[\Override]
     public function findByTokenHash(string $tokenHash): ?ApprovalToken
     {
         return $this->byHash[$tokenHash] ?? null;
     }
 
+    #[\Override]
     public function findByPrefix(string $tokenPrefix): ?ApprovalToken
     {
         $match = null;
@@ -41,17 +43,20 @@ final class InMemoryApprovalTokenRepository implements ApprovalTokenRepositoryIn
                 $match = $token;
             }
         }
+
         return $match;
     }
 
-    public function expirePastDue(DateTimeImmutable $now): int
+    #[\Override]
+    public function expirePastDue(\DateTimeImmutable $now): int
     {
         $count = 0;
         foreach ($this->byHash as $token) {
             if (!$token->isResponded() && $token->expiresAt <= $now) {
-                $count += 1;
+                ++$count;
             }
         }
+
         return $count;
     }
 }

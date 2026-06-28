@@ -14,6 +14,7 @@ use Rucaro\Application\Approval\Port\MessagingMessage;
  */
 final class NullMessagingChannel implements MessagingChannelInterface
 {
+    #[\Override]
     public function send(MessagingMessage $message): void
     {
         // Intentionally empty — see class docblock.

@@ -35,6 +35,7 @@ final readonly class GetFsNoteController
         if ($note === null) {
             return ErrorResponse::notFound(sprintf('fs note %s not found.', $id));
         }
+
         return EnvelopeResponse::ok(FsNoteJsonSerializer::toArray($note));
     }
 }

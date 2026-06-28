@@ -21,12 +21,14 @@ final class InMemoryOpeningBalanceRepository implements OpeningBalanceRepository
         $this->byAccount[$accountTitleId] = $amount;
     }
 
+    #[\Override]
     public function findOpeningBalance(
         string $entityId,
         string $fiscalTermId,
         string $accountTitleId,
     ): string {
         unset($entityId, $fiscalTermId);
+
         return Decimal::normalize($this->byAccount[$accountTitleId] ?? '0');
     }
 }

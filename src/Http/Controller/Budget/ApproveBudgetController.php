@@ -43,6 +43,7 @@ final readonly class ApproveBudgetController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(BudgetJsonSerializer::toArray($out->budget));
     }
 }

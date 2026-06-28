@@ -27,18 +27,17 @@ final class JournalApprovalTargetResolver implements ApprovalTargetResolverInter
     ) {
     }
 
+    #[\Override]
     public function resolve(ApprovalTargetKind $kind, string $id): ApprovalTargetInterface
     {
         if ($kind !== ApprovalTargetKind::Journal) {
-            throw new InvalidArgumentException(sprintf(
-                'JournalApprovalTargetResolver cannot resolve target kind %s; Phase 6 will add Receipt support.',
-                $kind->value,
-            ));
+            throw new \InvalidArgumentException(sprintf('JournalApprovalTargetResolver cannot resolve target kind %s; Phase 6 will add Receipt support.', $kind->value));
         }
         $journal = $this->journals->findById($id);
         if ($journal === null) {
             throw EntityNotFoundException::for('Journal', $id);
         }
+
         return new JournalApprovalTarget($journal, $this->journals);
     }
 }

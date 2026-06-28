@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\Planning;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCase;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCaseInput;
@@ -23,7 +21,7 @@ final readonly class PlanningUiContext
 {
     public function __construct(
         private ListAccountTitlesUseCase $listAccountTitles,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -40,12 +38,13 @@ final readonly class PlanningUiContext
             isActive: true,
             search: null,
         ));
+
         return array_map(
             static fn (AccountTitle $a): array => [
-                'id'         => $a->id,
-                'code'       => $a->code,
-                'name'       => $a->name,
-                'category'   => $a->category,
+                'id' => $a->id,
+                'code' => $a->code,
+                'name' => $a->name,
+                'category' => $a->category,
                 'normalSide' => $a->normalSide,
             ],
             $out->items,
@@ -67,7 +66,7 @@ final readonly class PlanningUiContext
         );
         $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -76,12 +75,13 @@ final readonly class PlanningUiContext
                 continue;
             }
             $out[] = [
-                'id'           => strlen($idRaw) === 16 ? UlidGenerator::encode($idRaw) : $idRaw,
+                'id' => strlen($idRaw) === 16 ? UlidGenerator::encode($idRaw) : $idRaw,
                 'fiscalPeriod' => (int) ($r['fiscal_period'] ?? 0),
-                'startDate'    => (string) ($r['start_date'] ?? ''),
-                'endDate'      => (string) ($r['end_date'] ?? ''),
+                'startDate' => (string) ($r['start_date'] ?? ''),
+                'endDate' => (string) ($r['end_date'] ?? ''),
             ];
         }
+
         return $out;
     }
 
@@ -100,7 +100,7 @@ final readonly class PlanningUiContext
         );
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
@@ -108,10 +108,11 @@ final readonly class PlanningUiContext
         if (!is_string($idRaw) || $idRaw === '') {
             return null;
         }
+
         return [
-            'id'        => strlen($idRaw) === 16 ? UlidGenerator::encode($idRaw) : $idRaw,
+            'id' => strlen($idRaw) === 16 ? UlidGenerator::encode($idRaw) : $idRaw,
             'startDate' => (string) ($row['start_date'] ?? ''),
-            'endDate'   => (string) ($row['end_date'] ?? ''),
+            'endDate' => (string) ($row['end_date'] ?? ''),
         ];
     }
 
@@ -121,12 +122,12 @@ final readonly class PlanningUiContext
      *
      * @param list<array{id: string, fiscalPeriod: int, startDate: string, endDate: string}> $terms
      */
-    public static function defaultFiscalTermId(array $terms, DateTimeImmutable $now): ?string
+    public static function defaultFiscalTermId(array $terms, \DateTimeImmutable $now): ?string
     {
         if ($terms === []) {
             return null;
         }
-        $today = $now->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d');
+        $today = $now->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d');
         foreach ($terms as $t) {
             if ($t['startDate'] !== '' && $t['endDate'] !== ''
                 && $today >= $t['startDate'] && $today <= $t['endDate']
@@ -134,6 +135,7 @@ final readonly class PlanningUiContext
                 return $t['id'];
             }
         }
+
         return $terms[0]['id'];
     }
 }

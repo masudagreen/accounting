@@ -42,9 +42,10 @@ final class FinancialStatementBuilder
     /**
      * Assemble sections for the given `FsKind`.
      *
-     * @param list<TrialBalanceRow>        $rows
-     * @param list<AccountTitleFsMapping>  $mappings
-     * @param list<FsSectionDefinition>    $definitions
+     * @param list<TrialBalanceRow> $rows
+     * @param list<AccountTitleFsMapping> $mappings
+     * @param list<FsSectionDefinition> $definitions
+     *
      * @return array<string, Section>
      */
     public function build(FsKind $kind, array $rows, array $mappings, array $definitions): array
@@ -72,6 +73,7 @@ final class FinancialStatementBuilder
 
     /**
      * @param list<TrialBalanceRow> $rows
+     *
      * @return array<string, TrialBalanceRow>
      */
     private static function indexRows(array $rows): array
@@ -80,11 +82,13 @@ final class FinancialStatementBuilder
         foreach ($rows as $row) {
             $out[$row->accountTitleId] = $row;
         }
+
         return $out;
     }
 
     /**
      * @param list<FsSectionDefinition> $definitions
+     *
      * @return array<string, FsSectionDefinition>
      */
     private static function indexDefinitions(array $definitions, FsKind $kind): array
@@ -96,15 +100,17 @@ final class FinancialStatementBuilder
             }
             $out[$d->code] = $d;
         }
+
         return $out;
     }
 
     /**
      * Accumulator shape: ['lines' => list<FinancialStatementLine>, 'subtotal' => string]
      *
-     * @param array<string, TrialBalanceRow>      $rowsByAccount
-     * @param list<AccountTitleFsMapping>         $mappings
-     * @param array<string, FsSectionDefinition>  $defsByCode
+     * @param array<string, TrialBalanceRow> $rowsByAccount
+     * @param list<AccountTitleFsMapping> $mappings
+     * @param array<string, FsSectionDefinition> $defsByCode
+     *
      * @return array<string, array{lines: list<FinancialStatementLine>, subtotal: string}>
      */
     private static function foldMappings(
@@ -127,6 +133,7 @@ final class FinancialStatementBuilder
             if ($a->sortOrder !== $b->sortOrder) {
                 return $a->sortOrder <=> $b->sortOrder;
             }
+
             return $a->accountTitleId <=> $b->accountTitleId;
         });
 
@@ -168,7 +175,7 @@ final class FinancialStatementBuilder
      * summarised before their parents are themselves consumed.
      *
      * @param array<string, array{lines: list<FinancialStatementLine>, subtotal: string}> $acc
-     * @param array<string, FsSectionDefinition>                                          $defsByCode
+     * @param array<string, FsSectionDefinition> $defsByCode
      */
     private static function rollUpChildren(array &$acc, array $defsByCode): void
     {
@@ -208,13 +215,14 @@ final class FinancialStatementBuilder
         $d = 0;
         $cursor = $code;
         while (isset($defsByCode[$cursor]) && $defsByCode[$cursor]->parentCode !== null) {
-            $d++;
+            ++$d;
             $cursor = $defsByCode[$cursor]->parentCode;
             if ($d > 32) {
                 // Cycle guard.
                 break;
             }
         }
+
         return $d;
     }
 
@@ -224,7 +232,7 @@ final class FinancialStatementBuilder
      * logic: each reference uses +/- to indicate sign.
      *
      * @param array<string, array{lines: list<FinancialStatementLine>, subtotal: string}> $acc
-     * @param array<string, FsSectionDefinition>                                          $defsByCode
+     * @param array<string, FsSectionDefinition> $defsByCode
      */
     private static function computeFormulaSubtotals(array &$acc, array $defsByCode): void
     {
@@ -254,7 +262,8 @@ final class FinancialStatementBuilder
 
     /**
      * @param array<string, array{lines: list<FinancialStatementLine>, subtotal: string}> $acc
-     * @param array<string, FsSectionDefinition>                                          $defsByCode
+     * @param array<string, FsSectionDefinition> $defsByCode
+     *
      * @return array<string, Section>
      */
     private static function materialise(array $acc, array $defsByCode): array
@@ -273,6 +282,7 @@ final class FinancialStatementBuilder
                 isTotal: $def->isTotal,
             );
         }
+
         return $sections;
     }
 
@@ -292,6 +302,7 @@ final class FinancialStatementBuilder
      *
      * @param array<string, Section> $bs
      * @param array<string, Section> $pl
+     *
      * @return array<string, Section>
      */
     public function applyNetIncomeCarryOver(array $bs, array $pl): array
@@ -373,14 +384,7 @@ final class FinancialStatementBuilder
         }
 
         if (Decimal::compare($assetTotal, $liabilityEquity) !== 0) {
-            throw InvariantViolationException::for(
-                'financial_statement.bs_must_balance',
-                [
-                    'asset_total'            => $assetTotal,
-                    'liability_equity_total' => $liabilityEquity,
-                    'delta'                  => self::subtract($assetTotal, $liabilityEquity),
-                ],
-            );
+            throw InvariantViolationException::for('financial_statement.bs_must_balance', ['asset_total' => $assetTotal, 'liability_equity_total' => $liabilityEquity, 'delta' => self::subtract($assetTotal, $liabilityEquity)]);
         }
     }
 
@@ -416,7 +420,8 @@ final class FinancialStatementBuilder
 
     private static function subtract(string $a, string $b): string
     {
-        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-' . Decimal::normalize($b));
+        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-'.Decimal::normalize($b));
+
         return Decimal::add($a, $negated);
     }
 
@@ -429,6 +434,7 @@ final class FinancialStatementBuilder
         if (str_starts_with($normalised, '-')) {
             return substr($normalised, 1);
         }
-        return '-' . $normalised;
+
+        return '-'.$normalised;
     }
 }

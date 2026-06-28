@@ -7,7 +7,6 @@ namespace Rucaro\Infrastructure\Database;
 use PDO;
 use PDOException;
 use Rucaro\Infrastructure\Database\Exception\DatabaseConnectionException;
-use Throwable;
 
 /**
  * Centralised factory for PDO connections.
@@ -28,16 +27,16 @@ final class ConnectionFactory
      * single method that actually calls `new PDO(...)`; the other two create*
      * helpers normalise input and delegate here.
      */
-    public static function createFromConfig(DatabaseConfig $config): PDO
+    public static function createFromConfig(DatabaseConfig $config): \PDO
     {
         $dsn = $config->toDsn();
         $options = $config->effectiveOptions();
 
         try {
-            $pdo = new PDO($dsn, $config->username, $config->password, $options);
-        } catch (PDOException $e) {
+            $pdo = new \PDO($dsn, $config->username, $config->password, $options);
+        } catch (\PDOException $e) {
             throw DatabaseConnectionException::fromPdoFailure($e->getMessage(), $e);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             // Belt-and-braces for driver-level errors that might not extend PDOException.
             throw DatabaseConnectionException::fromPdoFailure($e->getMessage(), $e);
         }
@@ -63,7 +62,7 @@ final class ConnectionFactory
      *
      * @param array<string, mixed> $config
      */
-    public static function createFromArray(array $config): PDO
+    public static function createFromArray(array $config): \PDO
     {
         return self::createFromConfig(self::configFromArray($config));
     }
@@ -78,7 +77,7 @@ final class ConnectionFactory
      *
      * @param array<string, string|int|bool|null>|null $env
      */
-    public static function createFromEnv(?array $env = null): PDO
+    public static function createFromEnv(?array $env = null): \PDO
     {
         return self::createFromConfig(self::configFromEnv($env));
     }
@@ -94,17 +93,13 @@ final class ConnectionFactory
     {
         $require = static function (array $cfg, string $key): string {
             if (!array_key_exists($key, $cfg)) {
-                throw DatabaseConnectionException::invalidConfig(
-                    sprintf('missing required key: %s', $key),
-                );
+                throw DatabaseConnectionException::invalidConfig(sprintf('missing required key: %s', $key));
             }
-            /** @var mixed $value */
             $value = $cfg[$key];
             if (!is_scalar($value) && $value !== null) {
-                throw DatabaseConnectionException::invalidConfig(
-                    sprintf('key must be scalar: %s', $key),
-                );
+                throw DatabaseConnectionException::invalidConfig(sprintf('key must be scalar: %s', $key));
             }
+
             return (string) $value;
         };
 
@@ -116,9 +111,7 @@ final class ConnectionFactory
         $normalisedOptions = [];
         foreach ($options as $k => $v) {
             if (!is_int($k)) {
-                throw DatabaseConnectionException::invalidConfig(
-                    'options keys must be PDO::ATTR_* integer constants',
-                );
+                throw DatabaseConnectionException::invalidConfig('options keys must be PDO::ATTR_* integer constants');
             }
             $normalisedOptions[$k] = $v;
         }
@@ -153,16 +146,14 @@ final class ConnectionFactory
             if (!array_key_exists($key, $src)) {
                 return null;
             }
-            /** @var mixed $v */
             $v = $src[$key];
             if ($v === null || $v === '') {
                 return null;
             }
             if (!is_scalar($v)) {
-                throw DatabaseConnectionException::invalidConfig(
-                    sprintf('env var must be scalar: %s', $key),
-                );
+                throw DatabaseConnectionException::invalidConfig(sprintf('env var must be scalar: %s', $key));
             }
+
             return (string) $v;
         };
 
@@ -199,20 +190,17 @@ final class ConnectionFactory
      * These are idempotent and safe to run even if the server defaults already
      * match; we always run them so behaviour is identical across hosts.
      */
-    private static function applySessionContract(PDO $pdo, DatabaseConfig $config): void
+    private static function applySessionContract(\PDO $pdo, DatabaseConfig $config): void
     {
         try {
-            $names = $pdo->prepare('SET NAMES ' . self::quoteIdent($pdo, $config->charset)
-                . ' COLLATE ' . self::quoteIdent($pdo, $config->collation));
+            $names = $pdo->prepare('SET NAMES '.self::quoteIdent($pdo, $config->charset)
+                .' COLLATE '.self::quoteIdent($pdo, $config->collation));
             $names->execute();
 
             $tz = $pdo->prepare("SET time_zone = '+00:00'");
             $tz->execute();
-        } catch (PDOException $e) {
-            throw DatabaseConnectionException::fromPdoFailure(
-                'failed to apply session defaults: ' . $e->getMessage(),
-                $e,
-            );
+        } catch (\PDOException $e) {
+            throw DatabaseConnectionException::fromPdoFailure('failed to apply session defaults: '.$e->getMessage(), $e);
         }
     }
 
@@ -222,14 +210,13 @@ final class ConnectionFactory
      * rely on PDO::quote because server names are restricted to
      * `[A-Za-z0-9_]` by spec.
      */
-    private static function quoteIdent(PDO $pdo, string $identifier): string
+    private static function quoteIdent(\PDO $pdo, string $identifier): string
     {
         if (!preg_match('/^[A-Za-z0-9_]+$/', $identifier)) {
-            throw DatabaseConnectionException::invalidConfig(
-                sprintf('invalid identifier: %s', $identifier),
-            );
+            throw DatabaseConnectionException::invalidConfig(sprintf('invalid identifier: %s', $identifier));
         }
         unset($pdo); // reserved for future per-driver quoting; keeps signature stable
+
         return $identifier;
     }
 }

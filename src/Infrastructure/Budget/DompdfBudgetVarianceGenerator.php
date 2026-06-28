@@ -29,6 +29,7 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
     ) {
     }
 
+    #[\Override]
     public function render(BudgetVarianceAnalysis $analysis): string
     {
         $html = $this->renderHtml($analysis);
@@ -50,6 +51,7 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -57,12 +59,13 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'analysis'        => $this->buildViewModel($analysis),
-            'title'           => '予実対比表 (Budget Variance)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'analysis' => $this->buildViewModel($analysis),
+            'title' => '予実対比表 (Budget Variance)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('variance.html.tpl');
     }
 
@@ -74,33 +77,34 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
         $rows = [];
         foreach ($analysis->rows as $r) {
             $rows[] = [
-                'accountTitleId'   => $r->accountTitleId,
+                'accountTitleId' => $r->accountTitleId,
                 'accountTitleCode' => $r->accountTitleCode,
                 'accountTitleName' => $r->accountTitleName,
-                'budget'           => self::fmt($r->budgetAmount),
-                'actual'           => self::fmt($r->actualAmount),
-                'variance'         => self::fmt($r->varianceAmount),
-                'usage'            => $r->usageRatePercent ?? 'N/A',
-                'isOverBudget'     => $r->isOverBudget(),
-                'isUnderBudget'    => $r->isUnderBudget(),
+                'budget' => self::fmt($r->budgetAmount),
+                'actual' => self::fmt($r->actualAmount),
+                'variance' => self::fmt($r->varianceAmount),
+                'usage' => $r->usageRatePercent ?? 'N/A',
+                'isOverBudget' => $r->isOverBudget(),
+                'isUnderBudget' => $r->isUnderBudget(),
             ];
         }
+
         return [
-            'budgetId'     => $analysis->budgetId,
-            'entityId'     => $analysis->entityId,
+            'budgetId' => $analysis->budgetId,
+            'entityId' => $analysis->entityId,
             'fiscalTermId' => $analysis->fiscalTermId,
-            'budgetName'   => $analysis->budgetName,
-            'status'       => $analysis->status->value,
-            'periodFrom'   => $analysis->periodFrom->format('Y-m-d'),
-            'periodTo'     => $analysis->periodTo->format('Y-m-d'),
+            'budgetName' => $analysis->budgetName,
+            'status' => $analysis->status->value,
+            'periodFrom' => $analysis->periodFrom->format('Y-m-d'),
+            'periodTo' => $analysis->periodTo->format('Y-m-d'),
             'currencyCode' => $analysis->currencyCode,
-            'rows'         => $rows,
-            'totals'       => [
-                'budget'   => self::fmt($analysis->totalBudget()),
-                'actual'   => self::fmt($analysis->totalActual()),
+            'rows' => $rows,
+            'totals' => [
+                'budget' => self::fmt($analysis->totalBudget()),
+                'actual' => self::fmt($analysis->totalActual()),
                 'variance' => self::fmt($analysis->totalVariance()),
             ],
-            'generatedAt'  => $analysis->generatedAt->format('Y-m-d H:i:s'),
+            'generatedAt' => $analysis->generatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -111,7 +115,8 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
         }
         $num = (float) $amount;
         $abs = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $abs . ')' : $abs;
+
+        return $num < 0 ? '('.$abs.')' : $abs;
     }
 
     private function buildSmarty(): Smarty
@@ -120,17 +125,19 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -156,7 +163,7 @@ final class DompdfBudgetVarianceGenerator implements BudgetVariancePdfGeneratorI
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

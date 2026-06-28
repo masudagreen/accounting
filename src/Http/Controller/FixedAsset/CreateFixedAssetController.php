@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FixedAsset\CreateFixedAssetInput;
 use Rucaro\Application\FixedAsset\CreateFixedAssetUseCase;
 use Rucaro\Domain\Exception\ValidationException;
@@ -67,6 +65,7 @@ final readonly class CreateFixedAssetController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(FixedAssetJsonSerializer::toArray($output->asset), null, 201);
     }
 
@@ -76,6 +75,7 @@ final readonly class CreateFixedAssetController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 
@@ -91,6 +91,7 @@ final readonly class CreateFixedAssetController
         if (is_string($v) && ctype_digit($v)) {
             return (int) $v;
         }
+
         return $default;
     }
 
@@ -103,6 +104,7 @@ final readonly class CreateFixedAssetController
         if (!is_string($v) || $v === '') {
             return null;
         }
+
         return UlidGenerator::isValid($v) ? $v : null;
     }
 
@@ -112,22 +114,21 @@ final readonly class CreateFixedAssetController
     private static function nullableString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     /**
      * @param array<string, mixed>|list<mixed> $json
      */
-    private static function requiredDate(array $json, string $key): DateTimeImmutable
+    private static function requiredDate(array $json, string $key): \DateTimeImmutable
     {
         $v = $json[$key] ?? null;
         if (!is_string($v) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $v)) {
-            throw ValidationException::withErrors([
-                $key => [sprintf('%s must be YYYY-MM-DD.', $key)],
-            ]);
+            throw ValidationException::withErrors([$key => [sprintf('%s must be YYYY-MM-DD.', $key)]]);
         }
         try {
-            return new DateTimeImmutable($v, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($v, new \DateTimeZone('UTC'));
         } catch (\Exception $e) {
             throw ValidationException::withErrors([$key => [$e->getMessage()]]);
         }

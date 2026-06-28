@@ -23,15 +23,11 @@ final readonly class MoneyAmount extends AbstractValueObject
     public function __construct(string $value)
     {
         if (preg_match('/^-?\d{1,14}(\.\d{1,4})?$/', $value) !== 1) {
-            throw ValidationException::withErrors([
-                'amount' => ['amount must match DECIMAL(18,4) format.'],
-            ]);
+            throw ValidationException::withErrors(['amount' => ['amount must match DECIMAL(18,4) format.']]);
         }
         $normalized = Decimal::normalize($value);
         if (Decimal::compare($normalized, '0.0000') < 0) {
-            throw ValidationException::withErrors([
-                'amount' => ['amount must be >= 0.'],
-            ]);
+            throw ValidationException::withErrors(['amount' => ['amount must be >= 0.']]);
         }
         $this->value = $normalized;
     }
@@ -61,13 +57,12 @@ final readonly class MoneyAmount extends AbstractValueObject
         // Subtract by adding the negated operand through the Decimal helper.
         $negated = str_starts_with($other->value, '-')
             ? substr($other->value, 1)
-            : '-' . $other->value;
+            : '-'.$other->value;
         $result = Decimal::add($this->value, $negated);
         if (Decimal::compare($result, '0.0000') < 0) {
-            throw ValidationException::withErrors([
-                'amount' => ['subtraction would yield a negative amount.'],
-            ]);
+            throw ValidationException::withErrors(['amount' => ['subtraction would yield a negative amount.']]);
         }
+
         return new self($result);
     }
 
@@ -81,6 +76,7 @@ final readonly class MoneyAmount extends AbstractValueObject
         return Decimal::compare($this->value, $other->value) >= 0;
     }
 
+    #[\Override]
     public function toPrimitive(): string
     {
         return $this->value;

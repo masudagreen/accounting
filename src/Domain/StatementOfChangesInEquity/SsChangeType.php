@@ -21,22 +21,22 @@ namespace Rucaro\Domain\StatementOfChangesInEquity;
  */
 enum SsChangeType: string
 {
-    case Dividend         = 'dividend';
-    case NewIssue         = 'new_issue';
+    case Dividend = 'dividend';
+    case NewIssue = 'new_issue';
     case TreasuryPurchase = 'treasury_purchase';
-    case TreasuryDispose  = 'treasury_dispose';
-    case NetIncome        = 'net_income';
-    case Other            = 'other';
+    case TreasuryDispose = 'treasury_dispose';
+    case NetIncome = 'net_income';
+    case Other = 'other';
 
     public function label(): string
     {
         return match ($this) {
-            self::Dividend         => '剰余金の配当',
-            self::NewIssue         => '新株の発行',
+            self::Dividend => '剰余金の配当',
+            self::NewIssue => '新株の発行',
             self::TreasuryPurchase => '自己株式の取得',
-            self::TreasuryDispose  => '自己株式の処分',
-            self::NetIncome        => '当期純利益',
-            self::Other            => 'その他変動',
+            self::TreasuryDispose => '自己株式の処分',
+            self::NetIncome => '当期純利益',
+            self::Other => 'その他変動',
         };
     }
 

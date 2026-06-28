@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FixedAsset\DisposeFixedAssetUseCase;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Http\Middleware\AuthenticateBearer;
@@ -41,11 +39,12 @@ final readonly class DisposeFixedAssetController
         try {
             $asset = $this->useCase->execute(
                 $id,
-                new DateTimeImmutable($disposalDateRaw, new DateTimeZone('UTC')),
+                new \DateTimeImmutable($disposalDateRaw, new \DateTimeZone('UTC')),
             );
         } catch (EntityNotFoundException) {
             return ErrorResponse::notFound('Fixed asset not found.');
         }
+
         return EnvelopeResponse::ok(FixedAssetJsonSerializer::toArray($asset));
     }
 }

@@ -8,7 +8,6 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Import\LegacyImport\IdMapping;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
-use RuntimeException;
 
 /**
  * IdMapping uses a persistent store. Driving it through sqlite :memory:
@@ -17,13 +16,14 @@ use RuntimeException;
  */
 final class IdMappingTest extends TestCase
 {
-    private PDO $pdo;
+    private \PDO $pdo;
 
+    #[\Override]
     protected function setUp(): void
     {
-        $this->pdo = new PDO('sqlite::memory:', null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        $this->pdo = new \PDO('sqlite::memory:', null, null, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         ]);
         // Replicate the MariaDB layout using sqlite-compatible types.
         $this->pdo->exec(
@@ -33,7 +33,7 @@ final class IdMappingTest extends TestCase
                 new_ulid     BLOB NOT NULL,
                 imported_at  TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (legacy_table, legacy_id)
-            )'
+            )',
         );
     }
 
@@ -58,7 +58,7 @@ final class IdMappingTest extends TestCase
     {
         $map = new IdMapping($this->pdo, new UlidGenerator());
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $map->require('baseAccount', 123);
     }
 
@@ -92,7 +92,36 @@ final class IdMappingTest extends TestCase
     public function testPersistRejectsWrongBinaryLength(): void
     {
         $map = new IdMapping($this->pdo, new UlidGenerator());
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $map->persist('baseAccount', 1, 'too-short');
+    }
+
+    /**
+     * Regression: `LegacyToV2Command::truncateTarget()` issued raw
+     * `DELETE ... WHERE id IN (SELECT new_ulid FROM legacy_id_mapping)`
+     * before the bookkeeping table was created, so the very first import
+     * run blew up with `SQLSTATE[42S02]: Base table or view not found`
+     * (see `plan/reality-check-report.md` RC-5).
+     *
+     * The fix is to call `IdMapping::bootstrapSchema()` eagerly. This
+     * test pins down that the helper is idempotent and safe to call when
+     * the table already exists (production re-run scenario), which the
+     * test setUp simulates by pre-creating the table.
+     *
+     * Note: the production `ensureSchema()` DDL is MariaDB-specific
+     * (`KEY ... ENGINE=InnoDB`). Verifying the fresh-DB path requires
+     * MariaDB and is exercised in integration via `legacy:import
+     * --truncate-target` against a freshly migrated target.
+     */
+    public function testBootstrapSchemaIsIdempotentWhenTableExists(): void
+    {
+        $map = new IdMapping($this->pdo, new UlidGenerator());
+
+        $map->bootstrapSchema();
+        $map->bootstrapSchema();
+
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM legacy_id_mapping');
+        self::assertNotFalse($stmt);
+        self::assertSame(0, (int) $stmt->fetchColumn());
     }
 }

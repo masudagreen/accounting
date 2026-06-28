@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\StatementOfChangesInEquity\Service;
 
-use DateTimeImmutable;
 use Rucaro\Domain\StatementOfChangesInEquity\SsChange;
 use Rucaro\Domain\StatementOfChangesInEquity\SsChangeType;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustment;
@@ -36,19 +35,19 @@ use Rucaro\Support\Decimal\Decimal;
 final class StatementOfChangesInEquityBuilder
 {
     /**
-     * @param array<string, string>      $openingBalances section_code => decimal
-     * @param list<SsManualAdjustment>   $adjustments
+     * @param array<string, string> $openingBalances section_code => decimal
+     * @param list<SsManualAdjustment> $adjustments
      */
     public function build(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $fromDate,
-        DateTimeImmutable $toDate,
+        \DateTimeImmutable $fromDate,
+        \DateTimeImmutable $toDate,
         string $currencyCode,
         array $openingBalances,
         array $adjustments,
         ?string $netIncome,
-        DateTimeImmutable $generatedAt,
+        \DateTimeImmutable $generatedAt,
     ): StatementOfChangesInEquity {
         $adjustmentsBySection = self::groupAdjustments($adjustments);
 
@@ -91,6 +90,7 @@ final class StatementOfChangesInEquityBuilder
 
     /**
      * @param list<SsManualAdjustment> $adjustments
+     *
      * @return array<string, list<SsManualAdjustment>>
      */
     private static function groupAdjustments(array $adjustments): array
@@ -101,6 +101,7 @@ final class StatementOfChangesInEquityBuilder
             if ($a->sortOrder !== $b->sortOrder) {
                 return $a->sortOrder <=> $b->sortOrder;
             }
+
             return $a->id <=> $b->id;
         });
 
@@ -108,6 +109,7 @@ final class StatementOfChangesInEquityBuilder
         foreach ($adjustments as $adj) {
             $out[$adj->sectionCode->value][] = $adj;
         }
+
         return $out;
     }
 
@@ -120,6 +122,7 @@ final class StatementOfChangesInEquityBuilder
         if ($raw === '' || !is_numeric($raw)) {
             return '0.0000';
         }
+
         return Decimal::normalize($raw);
     }
 }

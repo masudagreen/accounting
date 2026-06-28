@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\StatementOfChangesInEquity;
 
-use InvalidArgumentException;
 use Rucaro\Domain\StatementOfChangesInEquity\Service\StatementOfChangesInEquityBuilder;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustmentRepositoryInterface;
 use Rucaro\Domain\StatementOfChangesInEquity\StatementOfChangesInEquity;
@@ -31,13 +30,13 @@ final readonly class GenerateStatementOfChangesInEquityUseCase
     public function execute(GenerateStatementOfChangesInEquityInput $input): StatementOfChangesInEquity
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
         if ($input->toDate < $input->fromDate) {
-            throw new InvalidArgumentException('toDate must be on or after fromDate.');
+            throw new \InvalidArgumentException('toDate must be on or after fromDate.');
         }
 
         $adjustments = $this->repo->findByEntityAndFiscalTerm(

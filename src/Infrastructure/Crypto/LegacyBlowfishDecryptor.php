@@ -26,9 +26,9 @@ use Rucaro\Infrastructure\Crypto\Exception\CryptoException;
  */
 final readonly class LegacyBlowfishDecryptor
 {
-    private const CIPHER       = 'bf-cbc';
-    private const KEY_BYTES    = 56;
-    private const IV_BYTES     = 8;
+    private const CIPHER = 'bf-cbc';
+    private const KEY_BYTES = 56;
+    private const IV_BYTES = 8;
 
     public function __construct(private string $legacyMasterSecret)
     {
@@ -50,21 +50,19 @@ final readonly class LegacyBlowfishDecryptor
     /**
      * Not supported. Re-encrypting under the legacy scheme is a footgun.
      *
-     * @throws CryptoException Always.
+     * @throws CryptoException always
      */
     public function encrypt(string $plaintext, string $aad = ''): string
     {
-        throw new CryptoException(
-            'LegacyBlowfishDecryptor is read-only; use AesGcmCipher for new writes.',
-        );
+        throw new CryptoException('LegacyBlowfishDecryptor is read-only; use AesGcmCipher for new writes.');
     }
 
     /**
      * Decrypt a raw Blowfish-CBC blob from the legacy database.
      *
-     * @param string $ciphertext Raw binary blob as stored in the legacy BLOB column.
-     * @param string $aad        Ignored; the legacy scheme did not use AAD.
-     *                           Accepted for interface symmetry with {@see CipherInterface}.
+     * @param string $ciphertext raw binary blob as stored in the legacy BLOB column
+     * @param string $aad Ignored; the legacy scheme did not use AAD.
+     *                    Accepted for interface symmetry with {@see CipherInterface}.
      *
      * @throws CryptoException On any OpenSSL failure (incl. missing legacy provider).
      */
@@ -73,20 +71,17 @@ final readonly class LegacyBlowfishDecryptor
         unset($aad); // legacy format is not AEAD; AAD is ignored by design.
 
         $key = substr(md5($this->legacyMasterSecret), 0, self::KEY_BYTES);
-        $iv  = substr(md5($key), 0, self::IV_BYTES);
+        $iv = substr(md5($key), 0, self::IV_BYTES);
 
         $plain = openssl_decrypt(
             $ciphertext,
             self::CIPHER,
             $key,
-            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+            \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
             $iv,
         );
         if ($plain === false) {
-            throw new CryptoException(
-                'Legacy Blowfish decryption failed: '
-                . (openssl_error_string() ?: 'unknown (is the OpenSSL legacy provider enabled?)'),
-            );
+            throw new CryptoException('Legacy Blowfish decryption failed: '.(openssl_error_string() ?: 'unknown (is the OpenSSL legacy provider enabled?)'));
         }
 
         return rtrim($plain, "\0");

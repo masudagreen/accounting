@@ -18,10 +18,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoAccountTitleFsMappingRepository implements AccountTitleFsMappingRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $sql = 'SELECT m.account_title_id, m.fs_kind, m.fs_section_code,
@@ -35,7 +36,7 @@ final class PdoAccountTitleFsMappingRepository implements AccountTitleFsMappingR
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -72,6 +73,7 @@ final class PdoAccountTitleFsMappingRepository implements AccountTitleFsMappingR
                 displayLabel: $displayLabel,
             );
         }
+
         return $out;
     }
 }

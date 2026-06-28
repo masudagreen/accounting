@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateTimeZone;
 use Rucaro\Domain\Approval\ApprovalTokenRepositoryInterface;
 use Rucaro\Support\Clock\ClockInterface;
 
@@ -29,7 +28,8 @@ final readonly class ExpirePastDueApprovalsUseCase
      */
     public function execute(): int
     {
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
+
         return $this->tokens->expirePastDue($now);
     }
 }

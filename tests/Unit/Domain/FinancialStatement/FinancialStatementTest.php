@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FinancialStatement;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
@@ -26,14 +24,14 @@ final class FinancialStatementTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: ['assets' => $section],
             pl: [],
             cs: [],
             totals: ['total_assets' => '1000.0000'],
-            generatedAt: new DateTimeImmutable('2026-04-30T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T00:00:00Z', new \DateTimeZone('UTC')),
         );
 
         self::assertTrue($fs->hasBalanceSheet());

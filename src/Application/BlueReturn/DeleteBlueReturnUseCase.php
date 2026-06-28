@@ -29,10 +29,7 @@ final readonly class DeleteBlueReturnUseCase
             return;
         }
         if ($form->status !== BlueReturnStatus::Draft) {
-            throw InvariantViolationException::for('blue_return.delete.not_draft', [
-                'formId' => $form->id,
-                'status' => $form->status->value,
-            ]);
+            throw InvariantViolationException::for('blue_return.delete.not_draft', ['formId' => $form->id, 'status' => $form->status->value]);
         }
         $this->forms->delete($id);
     }

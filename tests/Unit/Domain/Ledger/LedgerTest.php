@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Ledger;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Ledger\Ledger;
@@ -39,11 +37,11 @@ final class LedgerTest extends TestCase
         $ledger = new Ledger(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
             currencyCode: 'JPY',
             books: [],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
 
         self::assertSame([], $ledger->books);
@@ -59,14 +57,15 @@ final class LedgerTest extends TestCase
             openingBalance: '0',
             rawEntries: [],
         );
+
         return new Ledger(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
             currencyCode: 'JPY',
             books: [$book],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 }

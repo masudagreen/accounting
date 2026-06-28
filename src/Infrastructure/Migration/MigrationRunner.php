@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Migration;
 
-use PDO;
-use PDOException;
-use RuntimeException;
-
 /**
  * Scans scripts/migrate/ for numbered .sql files and applies them in order.
  *
@@ -27,7 +23,7 @@ final class MigrationRunner
     private const BOOTSTRAP_VERSION = '0000';
 
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
         private readonly string $migrationsDir,
     ) {
     }
@@ -35,7 +31,7 @@ final class MigrationRunner
     /**
      * Apply every pending migration in ascending version order.
      *
-     * @return int Number of migrations applied.
+     * @return int number of migrations applied
      */
     public function up(): int
     {
@@ -44,25 +40,29 @@ final class MigrationRunner
         $applied = $this->loadAppliedVersions();
         $pending = array_filter(
             $this->discover(),
-            static fn (Migration $m): bool =>
-                $m->version !== self::BOOTSTRAP_VERSION
+            static fn (Migration $m): bool => $m->version !== self::BOOTSTRAP_VERSION
                 && !isset($applied[$m->version]),
         );
 
         $count = 0;
         foreach ($pending as $migration) {
             $this->executeSql($migration->readUpSql());
+            if ($migration->hasSeed()) {
+                $this->executeSql($migration->readSeedSql());
+            }
             $this->recordApplied($migration);
-            $count++;
+            ++$count;
         }
+
         return $count;
     }
 
     /**
      * Roll back the most recently applied migrations.
      *
-     * @param int $step Number of migrations to roll back (default 1).
-     * @return int Number of migrations actually rolled back.
+     * @param int $step number of migrations to roll back (default 1)
+     *
+     * @return int number of migrations actually rolled back
      */
     public function down(int $step = 1): int
     {
@@ -78,28 +78,23 @@ final class MigrationRunner
         }
 
         $applied = array_keys($this->loadAppliedVersions());
-        rsort($applied, SORT_STRING);
+        rsort($applied, \SORT_STRING);
         $targets = array_slice($applied, 0, $step);
 
         $count = 0;
         foreach ($targets as $version) {
             if (!isset($byVersion[$version])) {
-                throw new RuntimeException(sprintf(
-                    'Applied migration %s has no matching file on disk; cannot roll back.',
-                    $version,
-                ));
+                throw new \RuntimeException(sprintf('Applied migration %s has no matching file on disk; cannot roll back.', $version));
             }
             $migration = $byVersion[$version];
             if (!$migration->hasDown()) {
-                throw new RuntimeException(sprintf(
-                    'Migration %s has no .down.sql file; cannot roll back.',
-                    $version,
-                ));
+                throw new \RuntimeException(sprintf('Migration %s has no .down.sql file; cannot roll back.', $version));
             }
             $this->executeSql($migration->readDownSql());
             $this->forgetApplied($version);
-            $count++;
+            ++$count;
         }
+
         return $count;
     }
 
@@ -117,13 +112,14 @@ final class MigrationRunner
         foreach ($this->discover() as $migration) {
             $isBootstrap = $migration->version === self::BOOTSTRAP_VERSION;
             $rows[] = [
-                'version'    => $migration->version,
-                'name'       => $migration->name,
-                'applied'    => $isBootstrap ? true : isset($applied[$migration->version]),
+                'version' => $migration->version,
+                'name' => $migration->name,
+                'applied' => $isBootstrap ? true : isset($applied[$migration->version]),
                 'applied_at' => $applied[$migration->version] ?? null,
-                'bootstrap'  => $isBootstrap,
+                'bootstrap' => $isBootstrap,
             ];
         }
+
         return $rows;
     }
 
@@ -135,25 +131,28 @@ final class MigrationRunner
     public function discover(): array
     {
         if (!is_dir($this->migrationsDir)) {
-            throw new RuntimeException(sprintf(
-                'Migrations directory does not exist: %s',
-                $this->migrationsDir,
-            ));
+            throw new \RuntimeException(sprintf('Migrations directory does not exist: %s', $this->migrationsDir));
         }
 
-        $upFiles = glob(rtrim($this->migrationsDir, '/\\') . DIRECTORY_SEPARATOR . '*.sql') ?: [];
-        $byVersion = [];
+        $allFiles = glob(rtrim($this->migrationsDir, '/\\').\DIRECTORY_SEPARATOR.'*.sql') ?: [];
 
-        foreach ($upFiles as $path) {
+        // Pass 1: collect schema (up) files. Skip .down.sql and *_seed.sql
+        // here so they cannot collide with the schema entry under the same
+        // version key.
+        $byVersion = [];
+        foreach ($allFiles as $path) {
             $basename = basename($path);
             if (str_ends_with($basename, '.down.sql')) {
+                continue;
+            }
+            if (str_ends_with($basename, '_seed.sql')) {
                 continue;
             }
             if (!preg_match('/^(\d{4})_([A-Za-z0-9_\-]+)\.sql$/', $basename, $m)) {
                 continue;
             }
             [$version, $name] = [$m[1], $m[2]];
-            $downPath = substr($path, 0, -4) . '.down.sql';
+            $downPath = substr($path, 0, -4).'.down.sql';
             $byVersion[$version] = new Migration(
                 version: $version,
                 name: $name,
@@ -162,7 +161,33 @@ final class MigrationRunner
             );
         }
 
-        ksort($byVersion, SORT_STRING);
+        // Pass 2: attach companion *_seed.sql to its schema entry.
+        // Orphan seeds (no matching schema at the same version) are
+        // silently skipped — they must not be run on their own.
+        foreach ($allFiles as $path) {
+            $basename = basename($path);
+            if (!str_ends_with($basename, '_seed.sql')) {
+                continue;
+            }
+            if (!preg_match('/^(\d{4})_/', $basename, $m)) {
+                continue;
+            }
+            $version = $m[1];
+            if (!isset($byVersion[$version])) {
+                continue;
+            }
+            $existing = $byVersion[$version];
+            $byVersion[$version] = new Migration(
+                version: $existing->version,
+                name: $existing->name,
+                upPath: $existing->upPath,
+                downPath: $existing->downPath,
+                seedPath: $path,
+            );
+        }
+
+        ksort($byVersion, \SORT_STRING);
+
         return array_values($byVersion);
     }
 
@@ -170,12 +195,12 @@ final class MigrationRunner
     {
         $this->pdo->exec(
             'CREATE TABLE IF NOT EXISTS schema_migrations ('
-            . ' version VARCHAR(32) NOT NULL PRIMARY KEY,'
-            . ' applied_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),'
-            . ' checksum CHAR(64) NULL DEFAULT NULL'
-            . ') ENGINE=InnoDB'
-            . ' DEFAULT CHARACTER SET utf8mb4'
-            . ' COLLATE utf8mb4_unicode_ci'
+            .' version VARCHAR(32) NOT NULL PRIMARY KEY,'
+            .' applied_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),'
+            .' checksum CHAR(64) NULL DEFAULT NULL'
+            .') ENGINE=InnoDB'
+            .' DEFAULT CHARACTER SET utf8mb4'
+            .' COLLATE utf8mb4_unicode_ci',
         );
     }
 
@@ -185,22 +210,23 @@ final class MigrationRunner
     private function loadAppliedVersions(): array
     {
         $stmt = $this->pdo->query(
-            'SELECT version, applied_at FROM schema_migrations ORDER BY version ASC'
+            'SELECT version, applied_at FROM schema_migrations ORDER BY version ASC',
         );
         if ($stmt === false) {
             return [];
         }
         $out = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
             $out[(string) $row['version']] = (string) $row['applied_at'];
         }
+
         return $out;
     }
 
     private function recordApplied(Migration $migration): void
     {
         $stmt = $this->pdo->prepare(
-            'INSERT INTO schema_migrations (version, checksum) VALUES (:v, :c)'
+            'INSERT INTO schema_migrations (version, checksum) VALUES (:v, :c)',
         );
         $stmt->execute([
             ':v' => $migration->version,
@@ -211,7 +237,7 @@ final class MigrationRunner
     private function forgetApplied(string $version): void
     {
         $stmt = $this->pdo->prepare(
-            'DELETE FROM schema_migrations WHERE version = :v'
+            'DELETE FROM schema_migrations WHERE version = :v',
         );
         $stmt->execute([':v' => $version]);
     }
@@ -233,12 +259,8 @@ final class MigrationRunner
             }
             try {
                 $this->pdo->exec($trimmed);
-            } catch (PDOException $e) {
-                throw new RuntimeException(
-                    sprintf('Migration statement failed: %s', $e->getMessage()),
-                    0,
-                    $e,
-                );
+            } catch (\PDOException $e) {
+                throw new \RuntimeException(sprintf('Migration statement failed: %s', $e->getMessage()), 0, $e);
             }
         }
     }
@@ -258,7 +280,7 @@ final class MigrationRunner
         $inLineComment = false;
         $len = strlen($sql);
 
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $ch = $sql[$i];
             $next = $i + 1 < $len ? $sql[$i + 1] : '';
 
@@ -294,6 +316,7 @@ final class MigrationRunner
         if (trim($buffer) !== '') {
             $statements[] = $buffer;
         }
+
         return $statements;
     }
 }

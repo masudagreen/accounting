@@ -32,19 +32,13 @@ final readonly class SsManualAdjustment
         public ?string $notes,
     ) {
         if ($label === '' || mb_strlen($label) > 128) {
-            throw ValidationException::withErrors([
-                'label' => ['label must be 1..128 characters.'],
-            ]);
+            throw ValidationException::withErrors(['label' => ['label must be 1..128 characters.']]);
         }
         if ($notes !== null && mb_strlen($notes) > 255) {
-            throw ValidationException::withErrors([
-                'notes' => ['notes must be <= 255 characters when provided.'],
-            ]);
+            throw ValidationException::withErrors(['notes' => ['notes must be <= 255 characters when provided.']]);
         }
         if ($sortOrder < 0) {
-            throw ValidationException::withErrors([
-                'sortOrder' => ['sortOrder must be >= 0.'],
-            ]);
+            throw ValidationException::withErrors(['sortOrder' => ['sortOrder must be >= 0.']]);
         }
         // Trip fast on inputs bcmath/fixed-point cannot parse.
         Decimal::normalize($amount);

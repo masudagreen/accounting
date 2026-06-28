@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatement\Multi\GenerateMultiPeriodFinancialStatementInput;
@@ -110,11 +107,11 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
         $provider = new StubFinancialStatementProvider();
         // Previous period has zero amount → variance% undefined.
         $provider->seed('TERM_PRIOR', pl: ['operating_revenue' => '0.0000']);
-        $provider->seed('TERM_CURR',  pl: ['operating_revenue' => '1500.0000']);
+        $provider->seed('TERM_CURR', pl: ['operating_revenue' => '1500.0000']);
 
         $terms = new InMemoryFiscalTermMetadataRepository();
         $terms->seed('TERM_PRIOR', 1, '2025-04-01', '2026-03-31');
-        $terms->seed('TERM_CURR',  2, '2026-04-01', '2027-03-31');
+        $terms->seed('TERM_CURR', 2, '2026-04-01', '2027-03-31');
 
         $useCase = new GenerateMultiPeriodFinancialStatementUseCase(
             provider: $provider,
@@ -172,7 +169,7 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
             clock: new FrozenClock(),
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $useCase->execute(new GenerateMultiPeriodFinancialStatementInput(
             entityId: self::ENT,
             fiscalTermIds: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
@@ -188,7 +185,7 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
             clock: new FrozenClock(),
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $useCase->execute(new GenerateMultiPeriodFinancialStatementInput(
             entityId: self::ENT,
             fiscalTermIds: [],
@@ -204,7 +201,7 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
             clock: new FrozenClock(),
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $useCase->execute(new GenerateMultiPeriodFinancialStatementInput(
             entityId: self::ENT,
             fiscalTermIds: ['T1', 'T1'],
@@ -223,7 +220,7 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
             clock: new FrozenClock(),
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $useCase->execute(new GenerateMultiPeriodFinancialStatementInput(
             entityId: self::ENT,
             fiscalTermIds: ['TERM_KNOWN', 'TERM_MISSING'],
@@ -237,14 +234,14 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
         // Prior period reports operating_revenue; current period also reports
         // non_operating_revenue which the prior period didn't have.
         $provider->seed('TERM_PRIOR', pl: ['operating_revenue' => '1000.0000']);
-        $provider->seed('TERM_CURR',  pl: [
-            'operating_revenue'     => '1200.0000',
-            'non_operating_revenue' =>  '300.0000',
+        $provider->seed('TERM_CURR', pl: [
+            'operating_revenue' => '1200.0000',
+            'non_operating_revenue' => '300.0000',
         ]);
 
         $terms = new InMemoryFiscalTermMetadataRepository();
         $terms->seed('TERM_PRIOR', 1, '2025-04-01', '2026-03-31');
-        $terms->seed('TERM_CURR',  2, '2026-04-01', '2027-03-31');
+        $terms->seed('TERM_CURR', 2, '2026-04-01', '2027-03-31');
 
         $useCase = new GenerateMultiPeriodFinancialStatementUseCase(
             provider: $provider,
@@ -294,7 +291,7 @@ final class GenerateMultiPeriodFinancialStatementUseCaseTest extends TestCase
             $multi->generatedAt->getTimezone()->getName(),
         );
         self::assertEquals(
-            new DateTimeImmutable('2026-04-21T12:00:00Z', new DateTimeZone('UTC')),
+            new \DateTimeImmutable('2026-04-21T12:00:00Z', new \DateTimeZone('UTC')),
             $multi->generatedAt,
         );
     }

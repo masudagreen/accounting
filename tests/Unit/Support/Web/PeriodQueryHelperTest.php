@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Support\Web;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Support\Web\PeriodQueryHelper;
@@ -12,11 +11,12 @@ use Rucaro\Support\Web\PeriodQueryHelper;
 #[CoversClass(PeriodQueryHelper::class)]
 final class PeriodQueryHelperTest extends TestCase
 {
-    private function pdo(): PDO
+    private function pdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 

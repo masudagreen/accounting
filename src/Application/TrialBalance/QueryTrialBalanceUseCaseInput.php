@@ -19,8 +19,8 @@ final readonly class QueryTrialBalanceUseCaseInput
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fiscalTermStartDate,
-        public DateTimeImmutable $asOf,
+        public \DateTimeImmutable $fiscalTermStartDate,
+        public \DateTimeImmutable $asOf,
         public string $currencyCode = 'JPY',
     ) {
     }

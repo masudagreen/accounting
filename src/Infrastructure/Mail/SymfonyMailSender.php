@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Mail;
 
-use RuntimeException;
 use Rucaro\Application\Approval\Port\MailEnvelope;
 use Rucaro\Application\Approval\Port\MailSenderInterface;
 use Symfony\Component\Mailer\Mailer;
@@ -32,13 +31,14 @@ final class SymfonyMailSender implements MailSenderInterface
     ) {
     }
 
+    #[\Override]
     public function send(MailEnvelope $envelope): void
     {
         $mailer = $this->mailer ?? $this->buildMailer();
         $email = new Email();
         $from = $envelope->from ?? $this->fromAddress;
         if ($from === '') {
-            throw new RuntimeException('SymfonyMailSender requires a from address (env MAIL_FROM).');
+            throw new \RuntimeException('SymfonyMailSender requires a from address (env MAIL_FROM).');
         }
         $fromName = $envelope->fromName ?? $this->fromName;
         $email->from(new Address($from, $fromName));
@@ -57,11 +57,12 @@ final class SymfonyMailSender implements MailSenderInterface
     private function buildMailer(): MailerInterface
     {
         if ($this->dsn === '') {
-            throw new RuntimeException('SymfonyMailSender requires a MAIL_DSN value.');
+            throw new \RuntimeException('SymfonyMailSender requires a MAIL_DSN value.');
         }
         $transport = Transport::fromDsn($this->dsn);
         $mailer = new Mailer($transport);
         $this->mailer = $mailer;
+
         return $mailer;
     }
 }

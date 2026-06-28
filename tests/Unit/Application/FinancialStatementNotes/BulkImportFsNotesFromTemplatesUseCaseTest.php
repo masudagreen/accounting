@@ -120,6 +120,7 @@ final class BulkImportFsNotesFromTemplatesUseCaseTest extends TestCase
             defaultBody: '定率法を採用しております。',
             sortOrder: 20,
         ));
+
         return $repo;
     }
 }

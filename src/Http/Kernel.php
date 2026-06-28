@@ -24,24 +24,25 @@ final class Kernel
         if ($method === 'GET' && ($path === '/' || $path === '')) {
             return JsonResponse::of(200, [
                 'success' => true,
-                'data'    => [
-                    'name'    => 'Rucaro v2',
+                'data' => [
+                    'name' => 'Rucaro v2',
                     'message' => 'Rucaro Accounting v2 front controller is alive.',
                 ],
-                'error'   => null,
+                'error' => null,
             ]);
         }
 
         return JsonResponse::of(404, [
             'success' => false,
-            'data'    => null,
-            'error'   => ['code' => 'not_found', 'message' => 'Not Found'],
+            'data' => null,
+            'error' => ['code' => 'not_found', 'message' => 'Not Found'],
         ]);
     }
 
     private function pathOf(string $uri): string
     {
         $qmark = strpos($uri, '?');
+
         return $qmark === false ? $uri : substr($uri, 0, $qmark);
     }
 }

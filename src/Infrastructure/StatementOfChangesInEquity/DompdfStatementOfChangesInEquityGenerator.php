@@ -38,6 +38,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
     ) {
     }
 
+    #[\Override]
     public function render(StatementOfChangesInEquity $statement): string
     {
         $html = $this->renderHtml($statement);
@@ -59,6 +60,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -70,12 +72,13 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'ss'              => $this->buildViewModel($statement),
-            'title'           => '株主資本等変動計算書 (Statement of Changes in Equity)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'ss' => $this->buildViewModel($statement),
+            'title' => '株主資本等変動計算書 (Statement of Changes in Equity)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('ss.html.tpl');
     }
 
@@ -96,11 +99,11 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
                 continue;
             }
             $columns[] = [
-                'code'           => $code->value,
-                'label'          => $section->label,
+                'code' => $code->value,
+                'label' => $section->label,
                 'openingBalance' => self::fmt($section->openingBalance),
-                'endingBalance'  => self::fmt($section->endingBalance),
-                'totalChange'    => self::fmt($section->totalChange()),
+                'endingBalance' => self::fmt($section->endingBalance),
+                'totalChange' => self::fmt($section->totalChange()),
             ];
         }
 
@@ -122,7 +125,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
                 ];
             }
             $rows[] = [
-                'code'  => $type->value,
+                'code' => $type->value,
                 'label' => $type->label(),
                 'cells' => $cells,
             ];
@@ -131,19 +134,19 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
         $totals = $statement->totals();
 
         return [
-            'entityId'     => $statement->entityId,
+            'entityId' => $statement->entityId,
             'fiscalTermId' => $statement->fiscalTermId,
-            'fromDate'     => $statement->fromDate->format('Y-m-d'),
-            'toDate'       => $statement->toDate->format('Y-m-d'),
+            'fromDate' => $statement->fromDate->format('Y-m-d'),
+            'toDate' => $statement->toDate->format('Y-m-d'),
             'currencyCode' => $statement->currencyCode,
-            'columns'      => $columns,
-            'rows'         => $rows,
-            'totals'       => [
-                'opening'     => self::fmt($totals['opening']),
+            'columns' => $columns,
+            'rows' => $rows,
+            'totals' => [
+                'opening' => self::fmt($totals['opening']),
                 'totalChange' => self::fmt($totals['totalChange']),
-                'ending'      => self::fmt($totals['ending']),
+                'ending' => self::fmt($totals['ending']),
             ],
-            'generatedAt'  => $statement->generatedAt->format('Y-m-d H:i:s'),
+            'generatedAt' => $statement->generatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -155,6 +158,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
                 $sum = \Rucaro\Support\Decimal\Decimal::add($sum, $change->amount);
             }
         }
+
         return \Rucaro\Support\Decimal\Decimal::normalize($sum);
     }
 
@@ -165,6 +169,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
                 return $change->source;
             }
         }
+
         return SsChange::SOURCE_MANUAL;
     }
 
@@ -177,7 +182,8 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
         $isNegative = $num < 0;
         $abs = abs($num);
         $formatted = number_format($abs, 0, '.', ',');
-        return $isNegative ? '(' . $formatted . ')' : $formatted;
+
+        return $isNegative ? '('.$formatted.')' : $formatted;
     }
 
     private function buildSmarty(): Smarty
@@ -186,17 +192,19 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -222,7 +230,7 @@ final class DompdfStatementOfChangesInEquityGenerator implements StatementOfChan
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

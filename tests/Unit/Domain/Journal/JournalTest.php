@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Journal;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Exception\InvariantViolationException;
@@ -120,7 +119,7 @@ final class JournalTest extends TestCase
             taxAmount: '0.0000',
             isTaxReduced: false,
             memo: '',
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00.000Z'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00.000Z'),
         );
     }
 
@@ -133,8 +132,8 @@ final class JournalTest extends TestCase
             id: '01HW7K9B2QV7C8Y4ZJRNLMAIN00',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00.000Z'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00.000Z'),
             summary: 'Test journal',
             totalAmount: $total,
             currencyCode: 'JPY',
@@ -144,8 +143,8 @@ final class JournalTest extends TestCase
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: null,
             approvedAt: null,
-            createdAt: new DateTimeImmutable('2026-04-21T12:00:00.000Z'),
-            updatedAt: new DateTimeImmutable('2026-04-21T12:00:00.000Z'),
+            createdAt: new \DateTimeImmutable('2026-04-21T12:00:00.000Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-21T12:00:00.000Z'),
             deletedAt: null,
             lines: $lines,
         );

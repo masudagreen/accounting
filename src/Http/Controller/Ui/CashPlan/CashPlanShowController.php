@@ -53,24 +53,25 @@ final readonly class CashPlanShowController
         }
 
         $data = [
-            'page_title'           => '資金繰り計画詳細',
-            'active_nav'           => 'cash_plans',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '資金繰り計画詳細',
+            'active_nav' => 'cash_plans',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'plan'                 => self::planToArray($plan),
-            'monthly_deltas'       => self::monthlyDeltas($plan),
-            'running_balances'     => self::runningBalances($plan),
+            'flash_messages' => $this->flash->consume(),
+            'plan' => self::planToArray($plan),
+            'monthly_deltas' => self::monthlyDeltas($plan),
+            'running_balances' => self::runningBalances($plan),
         ];
+
         return HtmlResponse::ok($this->view->render('cash_plans/show.html.tpl', $data));
     }
 
@@ -80,20 +81,20 @@ final readonly class CashPlanShowController
     private static function planToArray(CashPlan $p): array
     {
         return [
-            'id'             => $p->id,
-            'name'           => $p->name,
+            'id' => $p->id,
+            'name' => $p->name,
             'openingBalance' => $p->openingBalance,
-            'currency'       => $p->currencyCode,
-            'notes'          => $p->notes ?? '',
-            'updatedAt'      => $p->updatedAt->format('Y-m-d H:i'),
-            'entries'        => array_map(
+            'currency' => $p->currencyCode,
+            'notes' => $p->notes ?? '',
+            'updatedAt' => $p->updatedAt->format('Y-m-d H:i'),
+            'entries' => array_map(
                 static fn (CashPlanEntry $e): array => [
-                    'id'       => $e->id,
+                    'id' => $e->id,
                     'category' => $e->category->value,
-                    'label'    => $e->label,
-                    'memo'     => $e->memo ?? '',
-                    'monthly'  => $e->monthlyAmounts,
-                    'total'    => $e->total(),
+                    'label' => $e->label,
+                    'memo' => $e->memo ?? '',
+                    'monthly' => $e->monthlyAmounts,
+                    'total' => $e->total(),
                 ],
                 $p->entries,
             ),
@@ -106,9 +107,10 @@ final readonly class CashPlanShowController
     private static function monthlyDeltas(CashPlan $p): array
     {
         $out = [];
-        for ($m = 1; $m <= 12; $m++) {
+        for ($m = 1; $m <= 12; ++$m) {
             $out[] = $p->monthlyDelta($m);
         }
+
         return $out;
     }
 
@@ -118,9 +120,10 @@ final readonly class CashPlanShowController
     private static function runningBalances(CashPlan $p): array
     {
         $out = [];
-        for ($m = 1; $m <= 12; $m++) {
+        for ($m = 1; $m <= 12; ++$m) {
             $out[] = $p->closingBalance($m);
         }
+
         return $out;
     }
 }

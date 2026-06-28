@@ -42,6 +42,7 @@ final readonly class CreateFiscalTermUseCase
             updatedAt: $now,
         );
         $this->repo->save($term);
+
         return $term;
     }
 }

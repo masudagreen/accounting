@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
@@ -22,7 +21,7 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
         $calc = new TwoPercentConsumptionTaxCalculator();
         $s = $calc->calculate($this->period(), [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-01'),
+                bookedOn: new \DateTimeImmutable('2026-10-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -41,7 +40,7 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
         $calc = new TwoPercentConsumptionTaxCalculator();
         $s = $calc->calculate($this->period(), [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-01'),
+                bookedOn: new \DateTimeImmutable('2026-10-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -49,7 +48,7 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
                 taxAmount: '80000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-02'),
+                bookedOn: new \DateTimeImmutable('2026-10-02'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '8.00',
                 isReduced: true,
@@ -67,7 +66,7 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
         $calc = new TwoPercentConsumptionTaxCalculator();
         $s = $calc->calculate($this->period(), [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-01'),
+                bookedOn: new \DateTimeImmutable('2026-10-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -75,7 +74,7 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
                 taxAmount: '100000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-10-02'),
+                bookedOn: new \DateTimeImmutable('2026-10-02'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxablePurchase,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -90,13 +89,13 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
 
     public function testRejectsNonTwoPercentPeriod(): void
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $period = new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,
@@ -111,13 +110,14 @@ final class TwoPercentConsumptionTaxCalculatorTest extends TestCase
 
     private function period(): ConsumptionTaxPeriod
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::TwoPercent,
             simplifiedBusinessCategory: null,
             isInterim: false,

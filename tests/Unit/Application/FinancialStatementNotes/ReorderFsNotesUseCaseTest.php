@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatementNotes;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatementNotes\ReorderFsNotesUseCase;
@@ -81,7 +80,8 @@ final class ReorderFsNotesUseCaseTest extends TestCase
         int $sortOrder,
         string $entityId = '01HAAAAAAAAAAAAAAAAAAAAAE1',
     ): FinancialStatementNote {
-        $now = new DateTimeImmutable('2026-04-21T12:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-21T12:00:00Z');
+
         return new FinancialStatementNote(
             id: $id,
             entityId: $entityId,

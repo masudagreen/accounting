@@ -77,6 +77,7 @@ final readonly class CreateSsAdjustmentController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             StatementOfChangesInEquityJsonSerializer::adjustmentToArray($out->adjustment),
             null,
@@ -96,6 +97,7 @@ final readonly class CreateSsAdjustmentController
         if (is_numeric($v)) {
             return (string) $v;
         }
+
         return $default;
     }
 
@@ -111,6 +113,7 @@ final readonly class CreateSsAdjustmentController
         if (is_numeric($v)) {
             return (int) $v;
         }
+
         return $default;
     }
 
@@ -120,6 +123,7 @@ final readonly class CreateSsAdjustmentController
     private static function nullableString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 }

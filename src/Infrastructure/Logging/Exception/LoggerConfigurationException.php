@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Logging\Exception;
 
-use RuntimeException;
-use Throwable;
-
 /**
  * Raised when the logging configuration cannot be resolved into a concrete
  * {@see \Monolog\Logger}.
@@ -14,17 +11,17 @@ use Throwable;
  * Every message is prefixed with "[LOG] " so operational grep stays trivial
  * and so logger-layer failures never masquerade as generic runtime errors.
  */
-final class LoggerConfigurationException extends RuntimeException
+final class LoggerConfigurationException extends \RuntimeException
 {
     private const MESSAGE_PREFIX = '[LOG] ';
 
     public function __construct(
         string $message,
         int $code = 0,
-        ?Throwable $previous = null,
+        ?\Throwable $previous = null,
     ) {
         if (!str_starts_with($message, self::MESSAGE_PREFIX)) {
-            $message = self::MESSAGE_PREFIX . $message;
+            $message = self::MESSAGE_PREFIX.$message;
         }
         parent::__construct($message, $code, $previous);
     }

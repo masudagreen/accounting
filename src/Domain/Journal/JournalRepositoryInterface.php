@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Journal;
 
-use DateTimeImmutable;
 use Rucaro\Application\Journal\JournalSearchCriteria;
 use Rucaro\Application\Journal\JournalSearchResult;
 
@@ -29,13 +28,14 @@ interface JournalRepositoryInterface
      * {@see \Rucaro\Domain\Exception\EntityNotFoundException} when the id
      * does not resolve to a live journal.
      */
-    public function delete(string $id, DateTimeImmutable $at, string $deletedBy): void;
+    public function delete(string $id, \DateTimeImmutable $at, string $deletedBy): void;
 
     /**
      * Legacy search entry point kept for the Phase 3 list controller.
      *
      * @param int<1, max> $page
      * @param int<1, max> $pageSize
+     *
      * @return list<Journal>
      */
     public function searchByEntity(

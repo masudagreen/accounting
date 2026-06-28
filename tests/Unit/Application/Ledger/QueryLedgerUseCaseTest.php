@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Ledger;
 
-use DateTimeImmutable;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Ledger\QueryLedgerUseCase;
@@ -27,8 +25,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'CASH',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertCount(1, $out->ledger->books);
@@ -47,8 +45,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'CASH',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         $first = $out->ledger->books[0]->entries[0];
@@ -64,16 +62,16 @@ final class QueryLedgerUseCaseTest extends TestCase
         $query->registerAccount('SALES', '401', '売上', LedgerBook::NORMAL_CREDIT);
 
         // One entry with three lines: CASH 3000 / BANK 7000 / SALES 10000
-        $query->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-15'), 'E1', 'L1', 1, 'debit', '3000',  'CASH',  'mixed sales');
-        $query->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-15'), 'E1', 'L2', 2, 'debit', '7000',  'BANK',  'mixed sales');
-        $query->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-15'), 'E1', 'L3', 3, 'credit','10000', 'SALES', 'mixed sales');
+        $query->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-15'), 'E1', 'L1', 1, 'debit', '3000', 'CASH', 'mixed sales');
+        $query->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-15'), 'E1', 'L2', 2, 'debit', '7000', 'BANK', 'mixed sales');
+        $query->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-15'), 'E1', 'L3', 3, 'credit', '10000', 'SALES', 'mixed sales');
 
         $out = $this->makeUseCase($query, [])->execute(new QueryLedgerUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'SALES',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertCount(1, $out->ledger->books[0]->entries);
@@ -89,8 +87,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'CASH',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         $entries = $out->ledger->books[0]->entries;
@@ -108,8 +106,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'SALES',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         $entries = $out->ledger->books[0]->entries;
@@ -126,8 +124,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: 'CASH',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         $book = $out->ledger->books[0];
@@ -144,8 +142,8 @@ final class QueryLedgerUseCaseTest extends TestCase
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             accountTitleId: null,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertCount(2, $out->ledger->books);
@@ -155,7 +153,7 @@ final class QueryLedgerUseCaseTest extends TestCase
 
     public function testMissingDateBoundsRaises(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->makeUseCase(new InMemoryLedgerQuery(), [])->execute(new QueryLedgerUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
@@ -174,6 +172,7 @@ final class QueryLedgerUseCaseTest extends TestCase
         foreach ($openingBalances as $id => $amount) {
             $repo->set($id, $amount);
         }
+
         return new QueryLedgerUseCase($query, $repo, new FrozenClock());
     }
 
@@ -184,12 +183,12 @@ final class QueryLedgerUseCaseTest extends TestCase
         $q->registerAccount('SALES', '401', '売上', LedgerBook::NORMAL_CREDIT);
 
         // Entry 1 (Apr 10): cash 5000 / sales 5000
-        $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'E1', 'L1', 1, 'debit',  '5000', 'CASH',  '4/10 sales');
-        $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'E1', 'L2', 2, 'credit', '5000', 'SALES', '4/10 sales');
+        $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'E1', 'L1', 1, 'debit', '5000', 'CASH', '4/10 sales');
+        $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'E1', 'L2', 2, 'credit', '5000', 'SALES', '4/10 sales');
 
         // Entry 2 (Apr 20): cash 3000 / sales 3000
-        $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-20'), 'E2', 'L3', 1, 'debit',  '3000', 'CASH',  '4/20 sales');
-        $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-20'), 'E2', 'L4', 2, 'credit', '3000', 'SALES', '4/20 sales');
+        $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-20'), 'E2', 'L3', 1, 'debit', '3000', 'CASH', '4/20 sales');
+        $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-20'), 'E2', 'L4', 2, 'credit', '3000', 'SALES', '4/20 sales');
 
         return $q;
     }

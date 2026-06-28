@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateTimeZone;
 use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 use Rucaro\Domain\Approval\ApprovalTokenRepositoryInterface;
 use Rucaro\Domain\Approval\Exception\TokenNotFoundException;
@@ -44,7 +43,7 @@ final readonly class ResendApprovalUseCase
         // Re-validate the target still exists before issuing a fresh token.
         $this->targets->resolve($existing->targetKind, $existing->targetId);
 
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $ttlHours = null;
         if ($existing->expiresAt > $now) {
             $remaining = $existing->expiresAt->getTimestamp() - $now->getTimestamp();

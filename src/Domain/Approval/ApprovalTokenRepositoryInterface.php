@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Approval;
 
-use DateTimeImmutable;
-
 /**
  * Repository port for {@see ApprovalToken}.
  *
@@ -27,5 +25,5 @@ interface ApprovalTokenRepositoryInterface
      * of tokens that were expired during the call, so callers can surface the
      * count to operator CLIs.
      */
-    public function expirePastDue(DateTimeImmutable $now): int;
+    public function expirePastDue(\DateTimeImmutable $now): int;
 }

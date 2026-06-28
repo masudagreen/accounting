@@ -19,7 +19,7 @@ final class ConsumptionTaxCalculatorFactory
     public function forMethod(ConsumptionTaxCalculationMethod $method): ConsumptionTaxCalculatorInterface
     {
         return match ($method) {
-            ConsumptionTaxCalculationMethod::Principle  => new PrincipleConsumptionTaxCalculator($this->invoiceDeduction),
+            ConsumptionTaxCalculationMethod::Principle => new PrincipleConsumptionTaxCalculator($this->invoiceDeduction),
             ConsumptionTaxCalculationMethod::Simplified => new SimplifiedConsumptionTaxCalculator(),
             ConsumptionTaxCalculationMethod::TwoPercent => new TwoPercentConsumptionTaxCalculator(),
         };

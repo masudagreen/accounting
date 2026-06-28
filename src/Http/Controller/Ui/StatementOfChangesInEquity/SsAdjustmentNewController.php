@@ -51,6 +51,7 @@ final readonly class SsAdjustmentNewController
         $entityId = $this->session->getSelectedEntity();
         $terms = $this->ctx->fiscalTermsForEntity($entityId);
         $default = PlanningUiContext::defaultFiscalTermId($terms, $this->clock->getCurrentTime());
+
         return $this->renderForm(
             entityId: $entityId,
             form: self::blankForm($default ?? ($this->session->getSelectedFiscalTerm() ?? '')),
@@ -71,17 +72,18 @@ final readonly class SsAdjustmentNewController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/ss-adjustments/new');
         }
 
         $form = [
             'fiscalTermId' => PlanningFormSupport::str($body, 'fiscal_term_id'),
-            'sectionCode'  => PlanningFormSupport::str($body, 'section_code'),
-            'changeType'   => PlanningFormSupport::str($body, 'change_type'),
-            'amount'       => PlanningFormSupport::str($body, 'amount', '0'),
-            'label'        => PlanningFormSupport::str($body, 'label'),
-            'sortOrder'    => PlanningFormSupport::str($body, 'sort_order', '0'),
-            'notes'        => PlanningFormSupport::str($body, 'notes'),
+            'sectionCode' => PlanningFormSupport::str($body, 'section_code'),
+            'changeType' => PlanningFormSupport::str($body, 'change_type'),
+            'amount' => PlanningFormSupport::str($body, 'amount', '0'),
+            'label' => PlanningFormSupport::str($body, 'label'),
+            'sortOrder' => PlanningFormSupport::str($body, 'sort_order', '0'),
+            'notes' => PlanningFormSupport::str($body, 'notes'),
         ];
 
         $errors = [];
@@ -113,11 +115,12 @@ final readonly class SsAdjustmentNewController
                     notes: $form['notes'] === '' ? null : $form['notes'],
                 ));
                 $this->flash->addSuccess('純資産変動調整を登録しました。');
-                return HtmlResponse::redirect('/ui/ss-adjustments?fiscalTermId=' . urlencode($form['fiscalTermId']));
+
+                return HtmlResponse::redirect('/ui/ss-adjustments?fiscalTermId='.urlencode($form['fiscalTermId']));
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['登録に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['登録に失敗しました: '.$e->getMessage()];
             }
         }
 
@@ -131,8 +134,10 @@ final readonly class SsAdjustmentNewController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -143,28 +148,29 @@ final readonly class SsAdjustmentNewController
     private function renderForm(string $entityId, array $form, array $errors, int $status): HtmlResponse
     {
         $data = [
-            'page_title'           => '新規純資産変動調整',
-            'active_nav'           => 'ss_adjustments',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '新規純資産変動調整',
+            'active_nav' => 'ss_adjustments',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_mode'            => 'new',
-            'form_action'          => '/ui/ss-adjustments/new',
-            'form'                 => $form,
-            'form_errors'          => $errors,
-            'fiscal_terms'         => $this->ctx->fiscalTermsForEntity($entityId),
-            'section_options'      => self::sectionOptions(),
-            'change_options'       => self::changeOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'form_mode' => 'new',
+            'form_action' => '/ui/ss-adjustments/new',
+            'form' => $form,
+            'form_errors' => $errors,
+            'fiscal_terms' => $this->ctx->fiscalTermsForEntity($entityId),
+            'section_options' => self::sectionOptions(),
+            'change_options' => self::changeOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('ss_adjustments/form.html.tpl', $data));
     }
 
@@ -175,12 +181,12 @@ final readonly class SsAdjustmentNewController
     {
         return [
             'fiscalTermId' => $defaultTermId,
-            'sectionCode'  => SsSectionCode::CapitalStock->value,
-            'changeType'   => SsChangeType::Other->value,
-            'amount'       => '0',
-            'label'        => '',
-            'sortOrder'    => '0',
-            'notes'        => '',
+            'sectionCode' => SsSectionCode::CapitalStock->value,
+            'changeType' => SsChangeType::Other->value,
+            'amount' => '0',
+            'label' => '',
+            'sortOrder' => '0',
+            'notes' => '',
         ];
     }
 

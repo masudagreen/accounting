@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\FinancialStatement;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
@@ -19,15 +17,17 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
 {
     private string $compileDir;
 
+    #[\Override]
     protected function setUp(): void
     {
-        $this->compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR
-            . 'rucaro-fs-smarty-' . bin2hex(random_bytes(4));
+        $this->compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR
+            .'rucaro-fs-smarty-'.bin2hex(random_bytes(4));
         if (!is_dir($this->compileDir)) {
             mkdir($this->compileDir, 0775, true);
         }
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if (is_dir($this->compileDir)) {
@@ -72,9 +72,10 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
     private function makeGenerator(): DompdfFinancialStatementGenerator
     {
         $repoRoot = dirname(__DIR__, 4);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage'
-            . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'fs';
-        $fontDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'fonts';
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'
+            .\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'fs';
+        $fontDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'fonts';
+
         return new DompdfFinancialStatementGenerator(
             templateDir: $templateDir,
             compileDir: $this->compileDir,
@@ -100,23 +101,23 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: [
-                Section::CODE_ASSETS      => $assets,
+                Section::CODE_ASSETS => $assets,
                 Section::CODE_LIABILITIES => $liabilities,
-                Section::CODE_EQUITY      => $equity,
+                Section::CODE_EQUITY => $equity,
             ],
             pl: [],
             cs: [],
             totals: [
-                'net_income'        => '100.0000',
-                'total_assets'      => '1500.0000',
+                'net_income' => '100.0000',
+                'total_assets' => '1500.0000',
                 'total_liabilities' => '400.0000',
-                'total_equity'      => '1100.0000',
+                'total_equity' => '1100.0000',
             ],
-            generatedAt: new DateTimeImmutable('2026-04-30T00:00:00.000000Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T00:00:00.000000Z', new \DateTimeZone('UTC')),
         );
     }
 
@@ -143,7 +144,7 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
             currencyCode: $bs->currencyCode,
             bs: $bs->bs,
             pl: [
-                Section::CODE_REVENUE  => $revenue,
+                Section::CODE_REVENUE => $revenue,
                 Section::CODE_EXPENSES => $expenses,
             ],
             cs: [
@@ -152,7 +153,7 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
                 Section::CODE_FINANCING_CF => Section::fromLines(Section::CODE_FINANCING_CF, '財務CF', []),
             ],
             totals: $bs->totals + [
-                'total_revenue'  => '2000.0000',
+                'total_revenue' => '2000.0000',
                 'total_expenses' => '1900.0000',
             ],
             generatedAt: $bs->generatedAt,
@@ -172,7 +173,7 @@ final class DompdfFinancialStatementGeneratorTest extends TestCase
             if ($entry === '.' || $entry === '..') {
                 continue;
             }
-            $full = $path . DIRECTORY_SEPARATOR . $entry;
+            $full = $path.\DIRECTORY_SEPARATOR.$entry;
             if (is_dir($full)) {
                 $this->rmrf($full);
             } else {

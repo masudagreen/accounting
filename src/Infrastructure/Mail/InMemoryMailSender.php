@@ -18,6 +18,7 @@ final class InMemoryMailSender implements MailSenderInterface
     /** @var list<MailEnvelope> */
     private array $sent = [];
 
+    #[\Override]
     public function send(MailEnvelope $envelope): void
     {
         $this->sent[] = $envelope;

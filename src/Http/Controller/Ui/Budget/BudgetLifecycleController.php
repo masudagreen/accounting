@@ -46,19 +46,21 @@ final readonly class BudgetLifecycleController
         }
         if (!$this->checkCsrf($request)) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+            return HtmlResponse::redirect('/ui/budgets/'.$id);
         }
         try {
             $this->approve->execute($id, $userId);
             $this->flash->addSuccess('予算を承認しました。');
         } catch (ValidationException $e) {
-            $this->flash->addError('承認に失敗しました: ' . self::firstError($e));
+            $this->flash->addError('承認に失敗しました: '.self::firstError($e));
         } catch (InvariantViolationException $e) {
             $this->flash->addError('ドラフト以外は承認できません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('承認処理でエラーが発生しました: ' . $e->getMessage());
+            $this->flash->addError('承認処理でエラーが発生しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+        return HtmlResponse::redirect('/ui/budgets/'.$id);
     }
 
     public function lockAction(ServerRequest $request, string $id = ''): HtmlResponse
@@ -69,19 +71,21 @@ final readonly class BudgetLifecycleController
         }
         if (!$this->checkCsrf($request)) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+            return HtmlResponse::redirect('/ui/budgets/'.$id);
         }
         try {
             $this->lock->execute($id);
             $this->flash->addSuccess('予算をロックしました。');
         } catch (ValidationException $e) {
-            $this->flash->addError('ロックに失敗しました: ' . self::firstError($e));
+            $this->flash->addError('ロックに失敗しました: '.self::firstError($e));
         } catch (InvariantViolationException $e) {
             $this->flash->addError('承認済みの予算のみロック可能です。');
         } catch (\Throwable $e) {
-            $this->flash->addError('ロック処理でエラーが発生しました: ' . $e->getMessage());
+            $this->flash->addError('ロック処理でエラーが発生しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+        return HtmlResponse::redirect('/ui/budgets/'.$id);
     }
 
     public function deleteAction(ServerRequest $request, string $id = ''): HtmlResponse
@@ -92,22 +96,25 @@ final readonly class BudgetLifecycleController
         }
         if (!$this->checkCsrf($request)) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+            return HtmlResponse::redirect('/ui/budgets/'.$id);
         }
         try {
             $this->delete->execute($id);
             $this->flash->addSuccess('予算を削除しました。');
+
             return HtmlResponse::redirect('/ui/budgets');
         } catch (InvariantViolationException) {
             $this->flash->addError('ドラフト以外の予算は削除できません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/budgets/' . $id);
+
+        return HtmlResponse::redirect('/ui/budgets/'.$id);
     }
 
     /**
-     * @return string|HtmlResponse ULID if caller is authenticated, redirect otherwise.
+     * @return string|HtmlResponse ULID if caller is authenticated, redirect otherwise
      */
     private function guard(string $id): string|HtmlResponse
     {
@@ -121,12 +128,14 @@ final readonly class BudgetLifecycleController
         if (!UlidGenerator::isValid($id)) {
             return HtmlResponse::notFound();
         }
+
         return $userId;
     }
 
     private function checkCsrf(ServerRequest $request): bool
     {
         $body = PlanningFormSupport::parseForm($request);
+
         return $this->csrf->validateToken(BudgetShowController::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'));
     }
 
@@ -137,6 +146,7 @@ final readonly class BudgetLifecycleController
                 return $msgs[0];
             }
         }
+
         return $e->getMessage();
     }
 }

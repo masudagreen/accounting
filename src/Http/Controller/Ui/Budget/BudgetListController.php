@@ -41,11 +41,12 @@ final readonly class BudgetListController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
         $fiscalTermId = $request->queryString('fiscalTermId');
-        $statusRaw    = $request->queryString('status');
+        $statusRaw = $request->queryString('status');
         $status = null;
         if ($statusRaw !== null) {
             $status = BudgetStatus::tryFrom($statusRaw);
@@ -54,43 +55,44 @@ final readonly class BudgetListController
         try {
             $budgets = $this->listBudgets->execute($entityId, $fiscalTermId, $status);
         } catch (\Throwable $e) {
-            $this->flash->addError('予算一覧の取得に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('予算一覧の取得に失敗しました: '.$e->getMessage());
             $budgets = [];
         }
 
         $items = array_map(
             static fn (Budget $b): array => [
-                'id'           => $b->id,
-                'name'         => $b->name,
-                'status'       => $b->status->value,
+                'id' => $b->id,
+                'name' => $b->name,
+                'status' => $b->status->value,
                 'fiscalTermId' => $b->fiscalTermId,
-                'annualTotal'  => $b->annualTotal(),
-                'lineCount'    => count($b->lineItems),
-                'updatedAt'    => $b->updatedAt->format('Y-m-d H:i'),
+                'annualTotal' => $b->annualTotal(),
+                'lineCount' => count($b->lineItems),
+                'updatedAt' => $b->updatedAt->format('Y-m-d H:i'),
             ],
             $budgets,
         );
 
         $data = [
-            'page_title'           => '予算一覧',
-            'active_nav'           => 'budgets',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '予算一覧',
+            'active_nav' => 'budgets',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'items'                => $items,
-            'total'                => count($items),
-            'filter_fiscal_term'   => $fiscalTermId ?? '',
-            'filter_status'        => $status?->value ?? '',
-            'fiscal_terms'         => $this->ctx->fiscalTermsForEntity($entityId),
-            'status_options'       => ['draft', 'approved', 'locked'],
+            'flash_messages' => $this->flash->consume(),
+            'items' => $items,
+            'total' => count($items),
+            'filter_fiscal_term' => $fiscalTermId ?? '',
+            'filter_status' => $status?->value ?? '',
+            'fiscal_terms' => $this->ctx->fiscalTermsForEntity($entityId),
+            'status_options' => ['draft', 'approved', 'locked'],
         ];
+
         return HtmlResponse::ok($this->view->render('budgets/list.html.tpl', $data));
     }
 }

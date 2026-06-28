@@ -27,6 +27,7 @@ final readonly class ListConsumptionTaxCategoriesController
             return ErrorResponse::unauthorized();
         }
         $cats = $this->useCase->execute();
+
         return EnvelopeResponse::list(
             ConsumptionTaxSettlementJsonSerializer::categoriesToArrayList($cats),
             ['total' => count($cats)],

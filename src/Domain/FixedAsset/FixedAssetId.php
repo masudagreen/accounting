@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FixedAsset;
 
-use InvalidArgumentException;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
 
 /**
@@ -15,11 +14,11 @@ final readonly class FixedAssetId
     public function __construct(public string $value)
     {
         if (!UlidGenerator::isValid($value)) {
-            throw new InvalidArgumentException(sprintf('FixedAssetId must be a ULID: %s', $value));
+            throw new \InvalidArgumentException(sprintf('FixedAssetId must be a ULID: %s', $value));
         }
     }
 
-    public function equals(FixedAssetId $other): bool
+    public function equals(self $other): bool
     {
         return $this->value === $other->value;
     }

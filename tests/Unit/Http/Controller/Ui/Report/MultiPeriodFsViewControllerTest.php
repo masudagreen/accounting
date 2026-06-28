@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
@@ -32,11 +29,13 @@ final class MultiPeriodFsViewControllerTest extends TestCase
     private const VALID_ULID = '01KPTM4YRB15BEXCNHE0WHGNV5';
     private const VALID_ENTITY = '01KPTM4YRBCKZZC6HKWYEG9H73';
 
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -102,8 +101,8 @@ final class MultiPeriodFsViewControllerTest extends TestCase
     ): MultiPeriodFsViewController {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new MultiPeriodFsViewController(
             useCase: new GenerateMultiPeriodFinancialStatementUseCase(
@@ -120,20 +119,23 @@ final class MultiPeriodFsViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
 
 final class StubFsProvider implements FinancialStatementProviderInterface
 {
+    #[\Override]
     public function provide(GenerateFinancialStatementUseCaseInput $input): FinancialStatement
     {
-        $utc = new DateTimeZone('UTC');
+        $utc = new \DateTimeZone('UTC');
+
         return new FinancialStatement(
             entityId: $input->entityId,
             fiscalTermId: $input->fiscalTermId,
@@ -145,25 +147,27 @@ final class StubFsProvider implements FinancialStatementProviderInterface
             pl: [],
             cs: [],
             totals: [],
-            generatedAt: new DateTimeImmutable('now', $utc),
+            generatedAt: new \DateTimeImmutable('now', $utc),
         );
     }
 }
 
 final class StubFiscalTermMetadataRepo implements FiscalTermMetadataRepositoryInterface
 {
+    #[\Override]
     public function findByIds(array $ids): array
     {
-        $utc = new DateTimeZone('UTC');
+        $utc = new \DateTimeZone('UTC');
         $out = [];
         foreach ($ids as $id) {
             $out[] = new FiscalTermMetadata(
                 id: $id,
                 label: '第 1 期',
-                startDate: new DateTimeImmutable('2025-01-01', $utc),
-                endDate: new DateTimeImmutable('2025-12-31', $utc),
+                startDate: new \DateTimeImmutable('2025-01-01', $utc),
+                endDate: new \DateTimeImmutable('2025-12-31', $utc),
             );
         }
+
         return $out;
     }
 }
@@ -174,11 +178,13 @@ final class StubMultiFsGenerator implements MultiPeriodFinancialStatementGenerat
     {
     }
 
+    #[\Override]
     public function render(MultiPeriodFinancialStatement $statement): string
     {
         return $this->emitStub ? "%PDF-STUB\nfake multi pdf\n%%EOF" : '';
     }
 
+    #[\Override]
     public function renderHtml(MultiPeriodFinancialStatement $statement): string
     {
         return '';

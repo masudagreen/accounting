@@ -66,11 +66,11 @@ final class MultiPeriodRowBuilder
             foreach ($sections as $code => $section) {
                 if (!isset($codes[$code])) {
                     $codes[$code] = [
-                        'code'       => $section->code,
-                        'label'      => $section->label,
-                        'sortOrder'  => $section->sortOrder,
+                        'code' => $section->code,
+                        'label' => $section->label,
+                        'sortOrder' => $section->sortOrder,
                         'isSubtotal' => $section->isSubtotal,
-                        'isTotal'    => $section->isTotal,
+                        'isTotal' => $section->isTotal,
                     ];
                 }
             }
@@ -82,6 +82,7 @@ final class MultiPeriodRowBuilder
             if ($a['sortOrder'] !== $b['sortOrder']) {
                 return $a['sortOrder'] <=> $b['sortOrder'];
             }
+
             return strcmp($a['code'], $b['code']);
         });
 
@@ -116,6 +117,7 @@ final class MultiPeriodRowBuilder
                 isTotal: $info['isTotal'],
             );
         }
+
         return $rows;
     }
 
@@ -127,10 +129,11 @@ final class MultiPeriodRowBuilder
         string $which,
     ): array {
         $fs = $entry->statement;
+
         return match ($which) {
-            'bs'    => $fs->bs,
-            'pl'    => $fs->pl,
-            'cs'    => $fs->cs,
+            'bs' => $fs->bs,
+            'pl' => $fs->pl,
+            'cs' => $fs->cs,
             default => [],
         };
     }
@@ -159,8 +162,9 @@ final class MultiPeriodRowBuilder
         $variBp = self::toInt4($variance);
         $prevBp = self::toInt4($previous);
         // Guard: toInt4 guaranteed non-zero for previous since compare != 0.
-        $signedPct = (int) round(($variBp / $prevBp) * 1_000_000);
+        $signedPct = (int) round(((float) $variBp / (float) $prevBp) * 1_000_000.0);
         $variancePercent = Decimal::normalize(self::fromInt4($signedPct));
+
         return [$variance, $variancePercent];
     }
 
@@ -172,7 +176,8 @@ final class MultiPeriodRowBuilder
         if (str_starts_with($v, '-')) {
             return substr($v, 1);
         }
-        return '-' . $v;
+
+        return '-'.$v;
     }
 
     private static function toInt4(string $v): int
@@ -184,9 +189,10 @@ final class MultiPeriodRowBuilder
         if ($dot === false) {
             $combined = $abs;
         } else {
-            $combined = substr($abs, 0, $dot) . substr($abs, $dot + 1);
+            $combined = substr($abs, 0, $dot).substr($abs, $dot + 1);
         }
         $n = (int) $combined;
+
         return $negative ? -$n : $n;
     }
 
@@ -194,10 +200,11 @@ final class MultiPeriodRowBuilder
     {
         $negative = $n < 0;
         $abs = (string) ($negative ? -$n : $n);
-        $abs = str_pad($abs, 5, '0', STR_PAD_LEFT);
+        $abs = str_pad($abs, 5, '0', \STR_PAD_LEFT);
         $intPart = substr($abs, 0, strlen($abs) - 4);
         $fracPart = substr($abs, strlen($abs) - 4);
-        $result = $intPart . '.' . $fracPart;
-        return $negative ? '-' . $result : $result;
+        $result = $intPart.'.'.$fracPart;
+
+        return $negative ? '-'.$result : $result;
     }
 }

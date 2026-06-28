@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FixedAsset;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FixedAsset\Service\DecliningBalanceDepreciationCalculator;
@@ -87,9 +86,9 @@ final class DecliningBalanceDepreciationCalculatorTest extends TestCase
             acquisitionCost: $cost,
             residualValue: '0.0000',
             usefulLifeYears: $usefulLife,
-            serviceStartDate: new DateTimeImmutable('2020-04-01'),
-            periodStartDate: new DateTimeImmutable('2020-04-01'),
-            periodEndDate: new DateTimeImmutable('2021-03-31'),
+            serviceStartDate: new \DateTimeImmutable('2020-04-01'),
+            periodStartDate: new \DateTimeImmutable('2020-04-01'),
+            periodEndDate: new \DateTimeImmutable('2021-03-31'),
             periodNumber: 1,
             monthsInService: 12,
             fiscalTermMonths: 12,

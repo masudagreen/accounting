@@ -51,6 +51,7 @@ final readonly class UpdateFiscalTermUseCase
             updatedAt: $now,
         );
         $this->repo->save($updated);
+
         return $updated;
     }
 }

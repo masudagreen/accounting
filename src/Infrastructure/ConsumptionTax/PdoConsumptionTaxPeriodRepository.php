@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\ConsumptionTax;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxPeriod;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxPeriodRepositoryInterface;
@@ -15,10 +12,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 
 final class PdoConsumptionTaxPeriodRepository implements ConsumptionTaxPeriodRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(ConsumptionTaxPeriod $period): void
     {
         $sql = <<<'SQL'
@@ -40,33 +38,36 @@ final class PdoConsumptionTaxPeriodRepository implements ConsumptionTaxPeriodRep
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'  => UlidGenerator::decode($period->id),
-            ':e'   => UlidGenerator::decode($period->entityId),
-            ':ft'  => UlidGenerator::decode($period->fiscalTermId),
-            ':pf'  => $period->periodFrom->format('Y-m-d'),
-            ':pt'  => $period->periodTo->format('Y-m-d'),
-            ':m'   => $period->calculationMethod->value,
+            ':id' => UlidGenerator::decode($period->id),
+            ':e' => UlidGenerator::decode($period->entityId),
+            ':ft' => UlidGenerator::decode($period->fiscalTermId),
+            ':pf' => $period->periodFrom->format('Y-m-d'),
+            ':pt' => $period->periodTo->format('Y-m-d'),
+            ':m' => $period->calculationMethod->value,
             ':sbc' => $period->simplifiedBusinessCategory?->value,
-            ':ii'  => $period->isInterim ? 1 : 0,
-            ':ss'  => $period->settlementStatus,
-            ':sa'  => $period->settledAt?->format('Y-m-d H:i:s.u'),
-            ':ca'  => $period->createdAt->format('Y-m-d H:i:s.u'),
-            ':ua'  => $period->updatedAt->format('Y-m-d H:i:s.u'),
+            ':ii' => $period->isInterim ? 1 : 0,
+            ':ss' => $period->settlementStatus,
+            ':sa' => $period->settledAt?->format('Y-m-d H:i:s.u'),
+            ':ca' => $period->createdAt->format('Y-m-d H:i:s.u'),
+            ':ua' => $period->updatedAt->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function findById(string $id): ?ConsumptionTaxPeriod
     {
         $stmt = $this->pdo->prepare('SELECT * FROM consumption_tax_periods WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntity(string $entityId): array
     {
         $stmt = $this->pdo->prepare(
@@ -74,10 +75,12 @@ final class PdoConsumptionTaxPeriodRepository implements ConsumptionTaxPeriodRep
         );
         $stmt->execute([':e' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        return array_values(array_map([$this, 'hydrate'], $rows));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare('DELETE FROM consumption_tax_periods WHERE id = :id');
@@ -95,6 +98,7 @@ final class PdoConsumptionTaxPeriodRepository implements ConsumptionTaxPeriodRep
         if ($sbcRaw !== null && $sbcRaw !== '') {
             $sbc = SimplifiedBusinessCategory::from((int) $sbcRaw);
         }
+
         return new ConsumptionTaxPeriod(
             id: self::encodeId($row['id'] ?? ''),
             entityId: self::encodeId($row['entity_id'] ?? ''),
@@ -116,28 +120,29 @@ final class PdoConsumptionTaxPeriodRepository implements ConsumptionTaxPeriodRep
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseDate(string $s): DateTimeImmutable
+    private static function parseDate(string $s): \DateTimeImmutable
     {
-        return new DateTimeImmutable($s, new DateTimeZone('UTC'));
+        return new \DateTimeImmutable($s, new \DateTimeZone('UTC'));
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

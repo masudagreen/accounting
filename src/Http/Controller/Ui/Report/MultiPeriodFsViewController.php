@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\Report;
 
-use InvalidArgumentException;
 use Rucaro\Application\FinancialStatement\Multi\GenerateMultiPeriodFinancialStatementInput;
 use Rucaro\Application\FinancialStatement\Multi\GenerateMultiPeriodFinancialStatementUseCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatementKind;
@@ -45,6 +44,7 @@ final readonly class MultiPeriodFsViewController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addError('会計単位 (entity) が未選択です。上部ナビから選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
@@ -73,7 +73,7 @@ final readonly class MultiPeriodFsViewController
                     fiscalTermIds: $termIds,
                     kind: $kind,
                 ));
-            } catch (InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException $e) {
                 $errorMessage = $e->getMessage();
             }
         } else {
@@ -87,40 +87,42 @@ final readonly class MultiPeriodFsViewController
                 strtolower($kind->value),
                 date('Ymd'),
             );
+
             return new HtmlResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
 
         $data = [
-            'page_title'           => '複数期比較決算書',
-            'active_nav'           => 'fs_multi',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'selected_entity_id'   => $entityId,
+            'page_title' => '複数期比較決算書',
+            'active_nav' => 'fs_multi',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'entities'             => [],
-            'term_ids_csv'         => implode(',', $termIds),
-            'kind'                 => $kind->value,
-            'error_message'        => $errorMessage,
-            'has_multi'            => $multi !== null,
-            'periods'              => $multi !== null ? self::periodsToArray($multi) : [],
-            'kind_is_all'          => $kind === FinancialStatementKind::All,
-            'kind_is_bs'           => $kind === FinancialStatementKind::BalanceSheet || $kind === FinancialStatementKind::All,
-            'kind_is_pl'           => $kind === FinancialStatementKind::ProfitAndLoss || $kind === FinancialStatementKind::All,
-            'kind_is_cs'           => $kind === FinancialStatementKind::CashFlow || $kind === FinancialStatementKind::All,
-            'flash_messages'       => $this->flash->consume(),
+            'entities' => [],
+            'term_ids_csv' => implode(',', $termIds),
+            'kind' => $kind->value,
+            'error_message' => $errorMessage,
+            'has_multi' => $multi !== null,
+            'periods' => $multi !== null ? self::periodsToArray($multi) : [],
+            'kind_is_all' => $kind === FinancialStatementKind::All,
+            'kind_is_bs' => $kind === FinancialStatementKind::BalanceSheet || $kind === FinancialStatementKind::All,
+            'kind_is_pl' => $kind === FinancialStatementKind::ProfitAndLoss || $kind === FinancialStatementKind::All,
+            'kind_is_cs' => $kind === FinancialStatementKind::CashFlow || $kind === FinancialStatementKind::All,
+            'flash_messages' => $this->flash->consume(),
         ];
+
         return HtmlResponse::ok($this->view->render('fs_multi/view.html.tpl', $data));
     }
 
@@ -133,6 +135,7 @@ final readonly class MultiPeriodFsViewController
         foreach ($multi->periods as $entry) {
             $out[] = self::entryToArray($entry);
         }
+
         return $out;
     }
 
@@ -143,13 +146,13 @@ final readonly class MultiPeriodFsViewController
     {
         return [
             'fiscalTermId' => $entry->fiscalTermId,
-            'label'        => $entry->fiscalTermLabel,
-            'fromDate'     => $entry->fromDate->format('Y-m-d'),
-            'toDate'       => $entry->toDate->format('Y-m-d'),
-            'bs'           => ViewModelBuilder::sectionMap($entry->statement->bs),
-            'pl'           => ViewModelBuilder::sectionMap($entry->statement->pl),
-            'cs'           => ViewModelBuilder::sectionMap($entry->statement->cs),
-            'totals'       => ViewModelBuilder::formatTotals($entry->statement->totals),
+            'label' => $entry->fiscalTermLabel,
+            'fromDate' => $entry->fromDate->format('Y-m-d'),
+            'toDate' => $entry->toDate->format('Y-m-d'),
+            'bs' => ViewModelBuilder::sectionMap($entry->statement->bs),
+            'pl' => ViewModelBuilder::sectionMap($entry->statement->pl),
+            'cs' => ViewModelBuilder::sectionMap($entry->statement->cs),
+            'totals' => ViewModelBuilder::formatTotals($entry->statement->totals),
         ];
     }
 
@@ -170,6 +173,7 @@ final readonly class MultiPeriodFsViewController
             }
             $out[] = $p;
         }
+
         return $out;
     }
 }

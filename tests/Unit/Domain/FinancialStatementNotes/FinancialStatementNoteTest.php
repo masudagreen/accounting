@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FinancialStatementNotes;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Exception\ValidationException;
@@ -55,7 +54,7 @@ final class FinancialStatementNoteTest extends TestCase
     public function testWithContentReplacesFields(): void
     {
         $n = self::make();
-        $later = new DateTimeImmutable('2026-06-01T00:00:00Z');
+        $later = new \DateTimeImmutable('2026-06-01T00:00:00Z');
         $updated = $n->withContent(FsNoteCategory::PlNotes, 'New', 'Body 2', $later);
 
         self::assertSame(FsNoteCategory::PlNotes, $updated->category);
@@ -69,7 +68,7 @@ final class FinancialStatementNoteTest extends TestCase
     public function testWithActiveFlipsFlag(): void
     {
         $n = self::make();
-        $updated = $n->withActive(false, new DateTimeImmutable('2026-06-01T00:00:00Z'));
+        $updated = $n->withActive(false, new \DateTimeImmutable('2026-06-01T00:00:00Z'));
         self::assertFalse($updated->isActive);
         self::assertTrue($n->isActive);
     }
@@ -77,7 +76,7 @@ final class FinancialStatementNoteTest extends TestCase
     public function testWithSortOrderUpdates(): void
     {
         $n = self::make();
-        $u = $n->withSortOrder(42, new DateTimeImmutable('2026-06-01T00:00:00Z'));
+        $u = $n->withSortOrder(42, new \DateTimeImmutable('2026-06-01T00:00:00Z'));
         self::assertSame(42, $u->sortOrder);
         self::assertSame(0, $n->sortOrder);
     }
@@ -95,7 +94,8 @@ final class FinancialStatementNoteTest extends TestCase
         int $sortOrder = 0,
         ?string $templateCode = null,
     ): FinancialStatementNote {
-        $now = new DateTimeImmutable('2026-04-21T12:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-21T12:00:00Z');
+
         return new FinancialStatementNote(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA2',

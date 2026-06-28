@@ -72,6 +72,7 @@ final class CreateCashPlanUseCaseTest extends TestCase
         $sales[0] = '1000000.0000';
         $salaries = $zeroes;
         $salaries[0] = '300000.0000';
+
         return new CreateCashPlanInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAAB',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAAC',

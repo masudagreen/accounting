@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Approval;
 
-use DateTimeZone;
 use Rucaro\Application\Approval\ResendApprovalUseCase;
 use Rucaro\Application\Approval\ResendApprovalUseCaseInput;
 use Rucaro\Domain\Approval\Exception\TokenNotFoundException;
@@ -56,9 +55,9 @@ final readonly class ResendApprovalController
 
         return EnvelopeResponse::ok(data: [
             'tokenPrefix' => $output->tokenPrefix,
-            'channel'     => $output->channel->value,
-            'recipient'   => $output->recipient,
-            'expiresAt'   => $output->expiresAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'channel' => $output->channel->value,
+            'recipient' => $output->recipient,
+            'expiresAt' => $output->expiresAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
         ]);
     }
 }

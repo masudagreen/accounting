@@ -31,10 +31,7 @@ final readonly class DeleteBudgetUseCase
             return;
         }
         if ($budget->status !== BudgetStatus::Draft) {
-            throw InvariantViolationException::for('budget.delete.not_draft', [
-                'budgetId' => $budget->id,
-                'status'   => $budget->status->value,
-            ]);
+            throw InvariantViolationException::for('budget.delete.not_draft', ['budgetId' => $budget->id, 'status' => $budget->status->value]);
         }
         $this->budgets->delete($id);
     }

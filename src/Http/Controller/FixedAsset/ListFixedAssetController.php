@@ -37,6 +37,7 @@ final readonly class ListFixedAssetController
             static fn ($a): array => FixedAssetJsonSerializer::toArray($a),
             $assets,
         );
+
         return EnvelopeResponse::ok(['items' => $data]);
     }
 }

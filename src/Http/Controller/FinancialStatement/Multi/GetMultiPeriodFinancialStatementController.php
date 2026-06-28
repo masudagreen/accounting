@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
 use Rucaro\Application\FinancialStatement\Multi\GenerateMultiPeriodFinancialStatementInput;
 use Rucaro\Application\FinancialStatement\Multi\GenerateMultiPeriodFinancialStatementUseCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatementKind;
@@ -88,7 +85,7 @@ final readonly class GetMultiPeriodFinancialStatementController
                 asOf: $asOf,
                 currencyCode: $currency,
             ));
-        } catch (InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
 
@@ -97,14 +94,15 @@ final readonly class GetMultiPeriodFinancialStatementController
             $filename = sprintf(
                 'multi-period-financial-statement-%s-%s.pdf',
                 strtolower($kind->value),
-                (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Ymd'),
+                (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Ymd'),
             );
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
@@ -129,10 +127,11 @@ final readonly class GetMultiPeriodFinancialStatementController
             }
             $out[] = $p;
         }
+
         return $out;
     }
 
-    private static function parseDate(?string $raw): ?DateTimeImmutable
+    private static function parseDate(?string $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -141,7 +140,7 @@ final readonly class GetMultiPeriodFinancialStatementController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

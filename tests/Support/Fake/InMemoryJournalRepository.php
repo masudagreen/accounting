@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
 use Rucaro\Application\Journal\JournalSearchCriteria;
 use Rucaro\Application\Journal\JournalSearchResult;
 use Rucaro\Domain\Exception\EntityNotFoundException;
@@ -22,31 +21,36 @@ final class InMemoryJournalRepository implements JournalRepositoryInterface
     /** @var array<string, Journal> */
     public array $byId = [];
 
+    #[\Override]
     public function save(Journal $journal): void
     {
         $this->byId[$journal->id] = $journal;
     }
 
+    #[\Override]
     public function findById(string $id): ?Journal
     {
         return $this->byId[$id] ?? null;
     }
 
+    #[\Override]
     public function findByCriteria(JournalSearchCriteria $criteria): JournalSearchResult
     {
         $matches = $this->filter($criteria);
         $total = count($matches);
         $offset = ($criteria->page - 1) * $criteria->pageSize;
         $paged = array_slice($matches, $offset, $criteria->pageSize);
+
         return new JournalSearchResult(
-            items: array_values($paged),
+            items: $paged,
             total: $total,
             page: $criteria->page,
             pageSize: $criteria->pageSize,
         );
     }
 
-    public function delete(string $id, DateTimeImmutable $at, string $deletedBy): void
+    #[\Override]
+    public function delete(string $id, \DateTimeImmutable $at, string $deletedBy): void
     {
         $existing = $this->byId[$id] ?? null;
         if ($existing === null || $existing->deletedAt !== null) {
@@ -56,6 +60,7 @@ final class InMemoryJournalRepository implements JournalRepositoryInterface
         unset($deletedBy);
     }
 
+    #[\Override]
     public function searchByEntity(
         string $entityId,
         int $page,
@@ -104,13 +109,16 @@ final class InMemoryJournalRepository implements JournalRepositoryInterface
                 if ($search !== null && $search !== '' && !str_contains($j->summary, $search)) {
                     return false;
                 }
+
                 return true;
             },
         ));
         $offset = ($page - 1) * $pageSize;
-        return array_values(array_slice($all, $offset, $pageSize));
+
+        return array_slice($all, $offset, $pageSize);
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $fiscalTermId = null,
@@ -124,7 +132,7 @@ final class InMemoryJournalRepository implements JournalRepositoryInterface
         return count($this->searchByEntity(
             $entityId,
             1,
-            PHP_INT_MAX,
+            \PHP_INT_MAX,
             $fiscalTermId,
             $from,
             $to,
@@ -193,6 +201,7 @@ final class InMemoryJournalRepository implements JournalRepositoryInterface
                         return false;
                     }
                 }
+
                 return true;
             },
         ));

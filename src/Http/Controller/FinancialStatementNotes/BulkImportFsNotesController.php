@@ -67,10 +67,11 @@ final readonly class BulkImportFsNotesController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             [
                 'inserted' => FsNoteJsonSerializer::toArrayList($inserted),
-                'skipped'  => max(0, count($codes) - count($inserted)),
+                'skipped' => max(0, count($codes) - count($inserted)),
             ],
             ['total' => count($inserted)],
             201,
@@ -83,6 +84,7 @@ final readonly class BulkImportFsNotesController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 }

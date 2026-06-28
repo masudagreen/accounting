@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCase;
 use Rucaro\Application\Ledger\QueryLedgerUseCase;
-use Rucaro\Application\Ledger\QueryLedgerUseCaseInput;
-use Rucaro\Application\Ledger\QueryLedgerUseCaseOutput;
 use Rucaro\Domain\AccountTitle\AccountTitle;
 use Rucaro\Domain\AccountTitle\AccountTitleRepositoryInterface;
 use Rucaro\Domain\Ledger\Ledger;
-use Rucaro\Domain\Ledger\LedgerBook;
-use Rucaro\Domain\Ledger\LedgerEntry;
 use Rucaro\Domain\Ledger\LedgerGeneratorInterface;
 use Rucaro\Domain\Ledger\LedgerQueryInterface;
 use Rucaro\Domain\Ledger\OpeningBalanceRepositoryInterface;
@@ -33,11 +26,13 @@ use Rucaro\Tests\Support\Fake\FrozenClock;
 #[CoversClass(LedgerViewController::class)]
 final class LedgerViewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -84,8 +79,8 @@ final class LedgerViewControllerTest extends TestCase
         $clock = new FrozenClock();
         $session ??= new SessionStore();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new LedgerViewController(
             queryLedger: new QueryLedgerUseCase(
@@ -96,6 +91,7 @@ final class LedgerViewControllerTest extends TestCase
             listAccountTitles: new ListAccountTitlesUseCase(new StubAccountTitleRepo()),
             pdfGenerator: new StubLedgerGenerator($returnStubPdf),
             period: new PeriodQueryHelper(self::inMemoryPdo()),
+            fiscalTerms: new \Rucaro\Support\Web\FiscalTermLookup(self::inMemoryPdo()),
             session: $session,
             csrf: new CsrfTokenManager($clock),
             flash: new FlashMessageBag(),
@@ -103,11 +99,12 @@ final class LedgerViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
@@ -117,27 +114,29 @@ final class LedgerViewControllerTest extends TestCase
  */
 final class StubLedgerQuery implements LedgerQueryInterface
 {
+    #[\Override]
     public function query(
         string $entityId,
         string $fiscalTermId,
         ?string $accountTitleId,
-        DateTimeImmutable $fromDate,
-        DateTimeImmutable $toDate,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): Ledger {
         return new Ledger(
             entityId: $entityId,
             fiscalTermId: $fiscalTermId,
-            fromDate: $fromDate,
-            toDate: $toDate,
+            fromDate: $from,
+            toDate: $to,
             currencyCode: 'JPY',
             books: [],
-            generatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
         );
     }
 }
 
 final class StubOpeningBalances implements OpeningBalanceRepositoryInterface
 {
+    #[\Override]
     public function findOpeningBalance(string $entityId, string $fiscalTermId, string $accountTitleId): string
     {
         return '0.0000';
@@ -146,6 +145,7 @@ final class StubOpeningBalances implements OpeningBalanceRepositoryInterface
 
 final class StubAccountTitleRepo implements AccountTitleRepositoryInterface
 {
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -157,6 +157,7 @@ final class StubAccountTitleRepo implements AccountTitleRepositoryInterface
         return [];
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -166,24 +167,29 @@ final class StubAccountTitleRepo implements AccountTitleRepositoryInterface
         return 0;
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         return null;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return [];
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         return false;
@@ -196,6 +202,7 @@ final class StubLedgerGenerator implements LedgerGeneratorInterface
     {
     }
 
+    #[\Override]
     public function render(Ledger $ledger): string
     {
         return $this->emitStub ? "%PDF-STUB\nfake pdf body\n%%EOF" : '';

@@ -47,6 +47,7 @@ final readonly class UpdateEntityUseCase
             isCorporate: $input->isCorporate,
         );
         $this->repo->save($updated);
+
         return $updated;
     }
 }

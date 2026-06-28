@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\BreakEvenPoint;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\BreakEvenPoint\AccountTitleCvpClassification;
@@ -49,12 +48,12 @@ final class BreakEvenPointCalculatorTest extends TestCase
         $out = $calc->calculate(
             entityId: 'at-entity',
             fiscalTermId: 'at-ft',
-            fromDate: new DateTimeImmutable('2025-04-01'),
-            toDate: new DateTimeImmutable('2026-03-31'),
+            fromDate: new \DateTimeImmutable('2025-04-01'),
+            toDate: new \DateTimeImmutable('2026-03-31'),
             currencyCode: 'JPY',
             trialBalance: $tb,
             classifications: $classifications,
-            generatedAt: new DateTimeImmutable('2026-04-21'),
+            generatedAt: new \DateTimeImmutable('2026-04-21'),
         );
         self::assertSame('1600000.0000', $out->sales);
         self::assertSame('200000.0000', $out->variableCosts);
@@ -81,14 +80,14 @@ final class BreakEvenPointCalculatorTest extends TestCase
         $out = $calc->calculate(
             entityId: 'at-entity',
             fiscalTermId: 'at-ft',
-            fromDate: new DateTimeImmutable('2025-04-01'),
-            toDate: new DateTimeImmutable('2025-04-30'),
+            fromDate: new \DateTimeImmutable('2025-04-01'),
+            toDate: new \DateTimeImmutable('2025-04-30'),
             currencyCode: 'JPY',
             trialBalance: $tb,
             classifications: [
                 new AccountTitleCvpClassification('at-entity', 'at-rent', CvpCostType::Fixed, '0.0000'),
             ],
-            generatedAt: new DateTimeImmutable('2026-04-21'),
+            generatedAt: new \DateTimeImmutable('2026-04-21'),
         );
         self::assertSame('0.0000', $out->sales);
         self::assertSame('50000.0000', $out->fixedCosts);
@@ -109,14 +108,14 @@ final class BreakEvenPointCalculatorTest extends TestCase
         $out = $calc->calculate(
             entityId: 'at-entity',
             fiscalTermId: 'at-ft',
-            fromDate: new DateTimeImmutable('2025-04-01'),
-            toDate: new DateTimeImmutable('2026-03-31'),
+            fromDate: new \DateTimeImmutable('2025-04-01'),
+            toDate: new \DateTimeImmutable('2026-03-31'),
             currencyCode: 'JPY',
             trialBalance: $tb,
             classifications: [
                 new AccountTitleCvpClassification('at-entity', 'at-util', CvpCostType::SemiVariable, '0.3000'),
             ],
-            generatedAt: new DateTimeImmutable('2026-04-21'),
+            generatedAt: new \DateTimeImmutable('2026-04-21'),
         );
         self::assertSame('30000.0000', $out->variableCosts);
         self::assertSame('70000.0000', $out->fixedCosts);
@@ -132,12 +131,12 @@ final class BreakEvenPointCalculatorTest extends TestCase
         $out = $calc->calculate(
             entityId: 'at-entity',
             fiscalTermId: 'at-ft',
-            fromDate: new DateTimeImmutable('2025-04-01'),
-            toDate: new DateTimeImmutable('2026-03-31'),
+            fromDate: new \DateTimeImmutable('2025-04-01'),
+            toDate: new \DateTimeImmutable('2026-03-31'),
             currencyCode: 'JPY',
             trialBalance: $tb,
             classifications: [],
-            generatedAt: new DateTimeImmutable('2026-04-21'),
+            generatedAt: new \DateTimeImmutable('2026-04-21'),
         );
         self::assertSame('0.0000', $out->variableCosts);
         self::assertSame('10000.0000', $out->fixedCosts);
@@ -151,11 +150,11 @@ final class BreakEvenPointCalculatorTest extends TestCase
         return new TrialBalance(
             entityId: 'at-entity',
             fiscalTermId: 'at-ft',
-            fromDate: new DateTimeImmutable('2025-04-01'),
-            toDate: new DateTimeImmutable('2026-03-31'),
+            fromDate: new \DateTimeImmutable('2025-04-01'),
+            toDate: new \DateTimeImmutable('2026-03-31'),
             currencyCode: 'JPY',
             rows: $rows,
-            generatedAt: new DateTimeImmutable('2026-04-21'),
+            generatedAt: new \DateTimeImmutable('2026-04-21'),
         );
     }
 

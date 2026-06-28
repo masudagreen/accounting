@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatement;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCase;
@@ -27,19 +26,19 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
         $useCase = $this->makeUseCase(function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
             $this->seedChart($r);
             // Balanced transaction: cash 5000 debit ←→ sales 5000 credit
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '5000.0000');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '5000.0000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '5000.0000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '5000.0000');
             // Expense of 2000 with matching asset decrease
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-15'), 'ACC_COST', '501', '仕入', 'expense', 'debit', 'debit', '2000.0000');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-15'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'credit', '2000.0000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-15'), 'ACC_COST', '501', '仕入', 'expense', 'debit', 'debit', '2000.0000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-15'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'credit', '2000.0000');
         });
 
         $fs = $useCase->execute(new GenerateFinancialStatementUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             kind: FinancialStatementKind::All,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         // Net income = Revenue 5000 - Expense 2000 = 3000
@@ -70,16 +69,16 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
     {
         $useCase = $this->makeUseCase(function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
             $this->seedChart($r);
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '100');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '100');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '100');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '100');
         });
 
         $fs = $useCase->execute(new GenerateFinancialStatementUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertTrue($fs->hasBalanceSheet());
@@ -92,16 +91,16 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
         $useCase = $this->makeUseCase(function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
             $this->seedChart($r);
             // Pure balance-sheet transfer: cash ←→ 資本金
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-05'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '10000');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-05'), 'ACC_EQUITY', '301', '資本金', 'equity', 'credit', 'credit', '10000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-05'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '10000');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-05'), 'ACC_EQUITY', '301', '資本金', 'equity', 'credit', 'credit', '10000');
         });
 
         $fs = $useCase->execute(new GenerateFinancialStatementUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             kind: FinancialStatementKind::All,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertSame('0.0000', $fs->totals['net_income']);
@@ -112,19 +111,19 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
 
     public function testCashFlowStubCapturesCashAccountsStartingWith11(): void
     {
-        $useCase = $this->makeUseCase(function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
+        $useCase = $this->makeUseCase(static function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
             $r->seed(self::ENT, 'ACC_CASH', '110', '現金', 'asset', 'debit');
             $r->seed(self::ENT, 'ACC_SALES', '401', '売上', 'revenue', 'credit');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_CASH', '110', '現金', 'asset', 'debit', 'debit', '7500');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '7500');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_CASH', '110', '現金', 'asset', 'debit', 'debit', '7500');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '7500');
         });
 
         $fs = $useCase->execute(new GenerateFinancialStatementUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             kind: FinancialStatementKind::CashFlow,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertTrue($fs->hasCashFlow());
@@ -141,16 +140,16 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
         $useCase = $this->makeUseCase(function (InMemoryTrialBalanceQuery $q, InMemoryAccountTitleRepository $r): void {
             $this->seedChart($r);
             // empty-category rows (simulate snapshot-only data)
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_CASH', '', '', '', 'debit', 'debit', '500');
-            $q->addLine(self::ENT, self::TERM, new DateTimeImmutable('2026-04-10'), 'ACC_SALES', '', '', '', 'credit', 'credit', '500');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_CASH', '', '', '', 'debit', 'debit', '500');
+            $q->addLine(self::ENT, self::TERM, new \DateTimeImmutable('2026-04-10'), 'ACC_SALES', '', '', '', 'credit', 'credit', '500');
         });
 
         $fs = $useCase->execute(new GenerateFinancialStatementUseCaseInput(
             entityId: self::ENT,
             fiscalTermId: self::TERM,
             kind: FinancialStatementKind::All,
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            asOf: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            asOf: new \DateTimeImmutable('2026-04-30'),
         ));
 
         // Should have found ACC_CASH (asset) on the BS and ACC_SALES (revenue) on the PL.
@@ -169,6 +168,7 @@ final class GenerateFinancialStatementUseCaseTest extends TestCase
         $seed($query, $accounts);
         $query->setLatestSnapshot(null);
         $tbUseCase = new QueryTrialBalanceUseCase($query, $snapshots, new FrozenClock());
+
         return new GenerateFinancialStatementUseCase(
             trialBalance: $tbUseCase,
             accounts: $accounts,

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\ConsumptionTax;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefault;
 use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefaultRepositoryInterface;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCategoryCode;
@@ -14,10 +11,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 
 final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTitleConsumptionTaxDefaultRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function findByEntity(string $entityId): array
     {
         $stmt = $this->pdo->prepare(
@@ -25,7 +23,7 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
         );
         $stmt->execute([':e' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         /** @var list<AccountTitleConsumptionTaxDefault> $out */
         $out = [];
         foreach ($rows as $r) {
@@ -34,9 +32,11 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
                 $out[] = $hydrated;
             }
         }
+
         return $out;
     }
 
+    #[\Override]
     public function findByAccountTitle(string $entityId, string $accountTitleId): ?AccountTitleConsumptionTaxDefault
     {
         $stmt = $this->pdo->prepare(
@@ -47,13 +47,15 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
             ':a' => UlidGenerator::decode($accountTitleId),
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function save(AccountTitleConsumptionTaxDefault $row): void
     {
         $sql = <<<'SQL'
@@ -68,16 +70,17 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'   => UlidGenerator::decode($row->id),
-            ':e'    => UlidGenerator::decode($row->entityId),
-            ':a'    => UlidGenerator::decode($row->accountTitleId),
-            ':cat'  => $row->defaultCategoryCode->value,
+            ':id' => UlidGenerator::decode($row->id),
+            ':e' => UlidGenerator::decode($row->entityId),
+            ':a' => UlidGenerator::decode($row->accountTitleId),
+            ':cat' => $row->defaultCategoryCode->value,
             ':rate' => $row->defaultRateCode,
-            ':ca'   => $row->createdAt->format('Y-m-d H:i:s.u'),
-            ':ua'   => $row->updatedAt->format('Y-m-d H:i:s.u'),
+            ':ca' => $row->createdAt->format('Y-m-d H:i:s.u'),
+            ':ua' => $row->updatedAt->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function saveAll(array $rows): void
     {
         $this->pdo->beginTransaction();
@@ -94,6 +97,7 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
         }
     }
 
+    #[\Override]
     public function delete(string $entityId, string $accountTitleId): void
     {
         $stmt = $this->pdo->prepare(
@@ -114,6 +118,7 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
         if ($code === null) {
             return null;
         }
+
         return new AccountTitleConsumptionTaxDefault(
             id: self::encodeId($row['id'] ?? ''),
             entityId: self::encodeId($row['entity_id'] ?? ''),
@@ -132,23 +137,24 @@ final class PdoAccountTitleConsumptionTaxDefaultRepository implements AccountTit
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rucaro\Domain\Journal\ValueObject;
 
 use DateTimeImmutable;
-use DateTimeInterface;
-use DateTimeZone;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Validation\AbstractValueObject;
 
@@ -22,38 +20,36 @@ use Rucaro\Support\Validation\AbstractValueObject;
  */
 final readonly class JournalDate extends AbstractValueObject
 {
-    private DateTimeImmutable $value;
+    private \DateTimeImmutable $value;
 
-    public function __construct(DateTimeInterface $value)
+    public function __construct(\DateTimeInterface $value)
     {
-        $this->value = DateTimeImmutable::createFromFormat(
+        $this->value = \DateTimeImmutable::createFromFormat(
             '!Y-m-d',
             $value->format('Y-m-d'),
-            new DateTimeZone('UTC'),
-        ) ?: new DateTimeImmutable('@0');
+            new \DateTimeZone('UTC'),
+        ) ?: new \DateTimeImmutable('@0');
     }
 
     public static function fromString(string $raw): self
     {
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw) !== 1) {
-            throw ValidationException::withErrors([
-                'journalDate' => ['journalDate must be an ISO 8601 date (YYYY-MM-DD).'],
-            ]);
+            throw ValidationException::withErrors(['journalDate' => ['journalDate must be an ISO 8601 date (YYYY-MM-DD).']]);
         }
-        $d = DateTimeImmutable::createFromFormat('!Y-m-d', $raw, new DateTimeZone('UTC'));
+        $d = \DateTimeImmutable::createFromFormat('!Y-m-d', $raw, new \DateTimeZone('UTC'));
         if ($d === false || $d->format('Y-m-d') !== $raw) {
-            throw ValidationException::withErrors([
-                'journalDate' => ['journalDate must be a real calendar date.'],
-            ]);
+            throw ValidationException::withErrors(['journalDate' => ['journalDate must be a real calendar date.']]);
         }
+
         return new self($d);
     }
 
-    public function toDateTime(): DateTimeImmutable
+    public function toDateTime(): \DateTimeImmutable
     {
         return $this->value;
     }
 
+    #[\Override]
     public function toPrimitive(): string
     {
         return $this->value->format('Y-m-d');

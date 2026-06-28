@@ -32,6 +32,7 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
     ) {
     }
 
+    #[\Override]
     public function render(Budget $budget): string
     {
         $html = $this->renderHtml($budget);
@@ -53,6 +54,7 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -60,12 +62,13 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'budget'          => $this->buildViewModel($budget),
-            'title'           => '予算書 (Budget)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'budget' => $this->buildViewModel($budget),
+            'title' => '予算書 (Budget)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('budget.html.tpl');
     }
 
@@ -82,12 +85,12 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
                 $cells[] = self::fmt($li->monthlyAmounts[$m - 1]);
             }
             $items[] = [
-                'accountTitleId'    => $li->accountTitleId,
+                'accountTitleId' => $li->accountTitleId,
                 'subAccountTitleId' => $li->subAccountTitleId,
-                'sortOrder'         => $li->sortOrder,
-                'memo'              => $li->memo,
-                'cells'             => $cells,
-                'total'             => self::fmt($li->totalAmount()),
+                'sortOrder' => $li->sortOrder,
+                'memo' => $li->memo,
+                'cells' => $cells,
+                'total' => self::fmt($li->totalAmount()),
             ];
         }
 
@@ -97,17 +100,17 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
         }
 
         return [
-            'id'             => $budget->id,
-            'entityId'       => $budget->entityId,
-            'fiscalTermId'   => $budget->fiscalTermId,
-            'name'           => $budget->name,
-            'status'         => $budget->status->value,
-            'notes'          => $budget->notes,
-            'months'         => $months,
-            'items'          => $items,
-            'monthlyTotals'  => $monthlyTotals,
-            'annualTotal'    => self::fmt($budget->annualTotal()),
-            'generatedAt'    => $budget->updatedAt->format('Y-m-d H:i:s'),
+            'id' => $budget->id,
+            'entityId' => $budget->entityId,
+            'fiscalTermId' => $budget->fiscalTermId,
+            'name' => $budget->name,
+            'status' => $budget->status->value,
+            'notes' => $budget->notes,
+            'months' => $months,
+            'items' => $items,
+            'monthlyTotals' => $monthlyTotals,
+            'annualTotal' => self::fmt($budget->annualTotal()),
+            'generatedAt' => $budget->updatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -116,6 +119,7 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
         if ($amount === '' || !is_numeric($amount)) {
             return '0';
         }
+
         return number_format((float) $amount, 0, '.', ',');
     }
 
@@ -125,17 +129,19 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -161,7 +167,7 @@ final class DompdfBudgetGenerator implements BudgetPdfGeneratorInterface
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

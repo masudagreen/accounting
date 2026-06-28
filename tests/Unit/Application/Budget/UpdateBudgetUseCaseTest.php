@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Budget;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Budget\BudgetLineItemInput;
@@ -52,7 +51,7 @@ final class UpdateBudgetUseCaseTest extends TestCase
         $repo = new InMemoryBudgetRepository();
         $draft = $this->seedDraft($repo);
         $approver = '01HAAAAAAAAAAAAAAAAAAAAAAP';
-        $approved = $draft->approve($approver, new DateTimeImmutable('2026-05-01T00:00:00Z'));
+        $approved = $draft->approve($approver, new \DateTimeImmutable('2026-05-01T00:00:00Z'));
         $repo->save($approved);
 
         $uc = new UpdateBudgetUseCase($repo, new UlidGenerator(new FrozenClock()), new FrozenClock());
@@ -73,7 +72,7 @@ final class UpdateBudgetUseCaseTest extends TestCase
 
     private function seedDraft(InMemoryBudgetRepository $repo): Budget
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $budget = new Budget(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
@@ -98,6 +97,7 @@ final class UpdateBudgetUseCaseTest extends TestCase
             updatedAt: $now,
         );
         $repo->save($budget);
+
         return $budget;
     }
 }

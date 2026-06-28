@@ -17,6 +17,11 @@
       </a>
     </li>
     <li class="nav-item">
+      <a class="nav-link{if isset($active_nav) && $active_nav == 'trial_balance'} active{/if}" href="/ui/trial-balance">
+        <i class="bi bi-table"></i> 合計残高試算表
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link{if isset($active_nav) && $active_nav == 'pl'} active{/if}" href="/ui/pl">
         <i class="bi bi-graph-up-arrow"></i> 損益計算書
       </a>

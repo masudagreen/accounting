@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FixedAsset;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FixedAsset\CreateFixedAssetInput;
@@ -50,8 +49,8 @@ final class CreateFixedAssetUseCaseTest extends TestCase
             assetAccountTitleId: null,
             accumulatedDepreciationAccountTitleId: null,
             depreciationExpenseAccountTitleId: null,
-            acquisitionDate: new DateTimeImmutable('2025-04-01'),
-            serviceStartDate: new DateTimeImmutable('2025-04-01'),
+            acquisitionDate: new \DateTimeImmutable('2025-04-01'),
+            serviceStartDate: new \DateTimeImmutable('2025-04-01'),
             acquisitionCost: '100000.0000',
             residualValue: '0.0000',
             usefulLifeYears: 5,
@@ -75,8 +74,8 @@ final class CreateFixedAssetUseCaseTest extends TestCase
             assetAccountTitleId: null,
             accumulatedDepreciationAccountTitleId: null,
             depreciationExpenseAccountTitleId: null,
-            acquisitionDate: new DateTimeImmutable('2025-04-01'),
-            serviceStartDate: new DateTimeImmutable('2025-04-01'),
+            acquisitionDate: new \DateTimeImmutable('2025-04-01'),
+            serviceStartDate: new \DateTimeImmutable('2025-04-01'),
             acquisitionCost: '1000000.0000',
             residualValue: '0.0000',
             usefulLifeYears: 10,

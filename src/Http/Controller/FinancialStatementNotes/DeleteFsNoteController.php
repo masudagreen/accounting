@@ -31,6 +31,7 @@ final readonly class DeleteFsNoteController
             return ErrorResponse::badRequest('id must be a ULID.');
         }
         $this->useCase->execute($id);
+
         return EnvelopeResponse::ok(['id' => $id, 'deleted' => true]);
     }
 }

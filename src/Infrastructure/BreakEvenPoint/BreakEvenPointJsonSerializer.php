@@ -18,25 +18,25 @@ final class BreakEvenPointJsonSerializer
     public static function analysisToArray(BreakEvenPointAnalysis $a): array
     {
         return [
-            'entityId'                => $a->entityId,
-            'fiscalTermId'            => $a->fiscalTermId,
-            'fromDate'                => $a->fromDate->format('Y-m-d'),
-            'toDate'                  => $a->toDate->format('Y-m-d'),
-            'currencyCode'            => $a->currencyCode,
-            'sales'                   => $a->sales,
-            'variableCosts'           => $a->variableCosts,
-            'fixedCosts'              => $a->fixedCosts,
-            'contributionMargin'      => $a->contributionMargin,
-            'contributionMarginRate'  => $a->contributionMarginRate,
-            'bepSales'                => $a->bepSales,
-            'bepRatio'                => $a->bepRatio,
-            'safetyMarginRatio'       => $a->safetyMarginRatio,
-            'operatingProfit'         => $a->operatingProfit,
-            'salesBreakdown'          => $a->salesBreakdown,
-            'variableBreakdown'       => $a->variableBreakdown,
-            'fixedBreakdown'          => $a->fixedBreakdown,
-            'isBelowBreakEven'        => $a->isBelowBreakEven(),
-            'generatedAt'             => $a->generatedAt->format(DATE_ATOM),
+            'entityId' => $a->entityId,
+            'fiscalTermId' => $a->fiscalTermId,
+            'fromDate' => $a->fromDate->format('Y-m-d'),
+            'toDate' => $a->toDate->format('Y-m-d'),
+            'currencyCode' => $a->currencyCode,
+            'sales' => $a->sales,
+            'variableCosts' => $a->variableCosts,
+            'fixedCosts' => $a->fixedCosts,
+            'contributionMargin' => $a->contributionMargin,
+            'contributionMarginRate' => $a->contributionMarginRate,
+            'bepSales' => $a->bepSales,
+            'bepRatio' => $a->bepRatio,
+            'safetyMarginRatio' => $a->safetyMarginRatio,
+            'operatingProfit' => $a->operatingProfit,
+            'salesBreakdown' => $a->salesBreakdown,
+            'variableBreakdown' => $a->variableBreakdown,
+            'fixedBreakdown' => $a->fixedBreakdown,
+            'isBelowBreakEven' => $a->isBelowBreakEven(),
+            'generatedAt' => $a->generatedAt->format(\DATE_ATOM),
         ];
     }
 
@@ -46,20 +46,21 @@ final class BreakEvenPointJsonSerializer
     public static function classificationToArray(AccountTitleCvpClassification $c): array
     {
         return [
-            'entityId'        => $c->entityId,
-            'accountTitleId'  => $c->accountTitleId,
-            'costType'        => $c->costType->value,
-            'variableRatio'   => $c->variableRatio,
-            'notes'           => $c->notes,
+            'entityId' => $c->entityId,
+            'accountTitleId' => $c->accountTitleId,
+            'costType' => $c->costType->value,
+            'variableRatio' => $c->variableRatio,
+            'notes' => $c->notes,
         ];
     }
 
     /**
      * @param list<AccountTitleCvpClassification> $rows
+     *
      * @return list<array<string, mixed>>
      */
     public static function classificationsToArray(array $rows): array
     {
-        return array_values(array_map([self::class, 'classificationToArray'], $rows));
+        return array_map([self::class, 'classificationToArray'], $rows);
     }
 }

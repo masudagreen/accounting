@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
-
 /**
  * Import legacy `accountingSubAccountTitleJpn` into `sub_account_titles`.
  *
@@ -16,8 +14,8 @@ use PDO;
 final class LegacySubAccountTitleImporter
 {
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly bool $dryRun,
     ) {
@@ -35,7 +33,7 @@ final class LegacySubAccountTitleImporter
             'SELECT id, idSubAccountTitle, idEntity, numFiscalPeriod,
                     idAccountTitle, strTitle
                FROM accountingSubAccountTitleJpn
-              ORDER BY id'
+              ORDER BY id',
         );
         if ($rows === false) {
             return ImportReport::empty('sub_accounts', ['source query failed']);
@@ -45,7 +43,7 @@ final class LegacySubAccountTitleImporter
             'INSERT INTO sub_account_titles
                  (id, account_title_id, code, name, sort_order, is_active)
              VALUES
-                 (:id, :at, :code, :name, :sort, :active)'
+                 (:id, :at, :code, :name, :sort, :active)',
         );
 
         $seq = 1;
@@ -81,12 +79,12 @@ final class LegacySubAccountTitleImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $binaryUlid, PDO::PARAM_LOB);
-            $insert->bindValue(':at', $atBin, PDO::PARAM_LOB);
+            $insert->bindValue(':id', $binaryUlid, \PDO::PARAM_LOB);
+            $insert->bindValue(':at', $atBin, \PDO::PARAM_LOB);
             $insert->bindValue(':code', $code);
             $insert->bindValue(':name', $name);
-            $insert->bindValue(':sort', $seq, PDO::PARAM_INT);
-            $insert->bindValue(':active', true, PDO::PARAM_BOOL);
+            $insert->bindValue(':sort', $seq, \PDO::PARAM_INT);
+            $insert->bindValue(':active', true, \PDO::PARAM_BOOL);
             $insert->execute();
             ++$inserted;
             ++$seq;

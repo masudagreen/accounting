@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FixedAsset;
 
-use PDO;
 use Rucaro\Domain\FixedAsset\DepreciationMethod;
 use Rucaro\Domain\FixedAsset\FixedAssetCategory;
 use Rucaro\Domain\FixedAsset\FixedAssetCategoryRepositoryInterface;
@@ -12,10 +11,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 
 final class PdoFixedAssetCategoryRepository implements FixedAssetCategoryRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function findAll(): array
     {
         $stmt = $this->pdo->prepare(
@@ -23,19 +23,22 @@ final class PdoFixedAssetCategoryRepository implements FixedAssetCategoryReposit
         );
         $stmt->execute();
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function findByCode(string $code): ?FixedAssetCategory
     {
         $stmt = $this->pdo->prepare('SELECT * FROM fixed_asset_categories WHERE code = :c LIMIT 1');
         $stmt->execute([':c' => $code]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
@@ -46,6 +49,7 @@ final class PdoFixedAssetCategoryRepository implements FixedAssetCategoryReposit
     {
         $rawId = $row['id'] ?? '';
         $id = is_string($rawId) && strlen($rawId) === 16 ? UlidGenerator::encode($rawId) : (string) $rawId;
+
         return new FixedAssetCategory(
             id: $id,
             code: (string) ($row['code'] ?? ''),

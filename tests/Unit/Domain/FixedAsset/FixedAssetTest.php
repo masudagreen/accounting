@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FixedAsset;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Exception\ValidationException;
@@ -29,8 +28,8 @@ final class FixedAssetTest extends TestCase
             assetAccountTitleId: null,
             accumulatedDepreciationAccountTitleId: null,
             depreciationExpenseAccountTitleId: null,
-            acquisitionDate: new DateTimeImmutable('2024-04-01'),
-            serviceStartDate: new DateTimeImmutable('2024-03-01'),
+            acquisitionDate: new \DateTimeImmutable('2024-04-01'),
+            serviceStartDate: new \DateTimeImmutable('2024-03-01'),
             disposalDate: null,
             acquisitionCost: '1000000.0000',
             residualValue: '0.0000',
@@ -40,8 +39,8 @@ final class FixedAssetTest extends TestCase
             departmentCode: null,
             note: null,
             createdBy: '01HAAAAAAAAAAAAAAAAAAAAAAC',
-            createdAt: new DateTimeImmutable(),
-            updatedAt: new DateTimeImmutable(),
+            createdAt: new \DateTimeImmutable(),
+            updatedAt: new \DateTimeImmutable(),
             deletedAt: null,
         );
     }
@@ -58,8 +57,8 @@ final class FixedAssetTest extends TestCase
             assetAccountTitleId: null,
             accumulatedDepreciationAccountTitleId: null,
             depreciationExpenseAccountTitleId: null,
-            acquisitionDate: new DateTimeImmutable('2024-04-01'),
-            serviceStartDate: new DateTimeImmutable('2024-04-01'),
+            acquisitionDate: new \DateTimeImmutable('2024-04-01'),
+            serviceStartDate: new \DateTimeImmutable('2024-04-01'),
             disposalDate: null,
             acquisitionCost: '0.0000',
             residualValue: '0.0000',
@@ -69,8 +68,8 @@ final class FixedAssetTest extends TestCase
             departmentCode: null,
             note: null,
             createdBy: '01HAAAAAAAAAAAAAAAAAAAAAAC',
-            createdAt: new DateTimeImmutable(),
-            updatedAt: new DateTimeImmutable(),
+            createdAt: new \DateTimeImmutable(),
+            updatedAt: new \DateTimeImmutable(),
             deletedAt: null,
         );
     }
@@ -112,8 +111,8 @@ final class FixedAssetTest extends TestCase
             assetAccountTitleId: null,
             accumulatedDepreciationAccountTitleId: null,
             depreciationExpenseAccountTitleId: null,
-            acquisitionDate: new DateTimeImmutable('2024-04-01'),
-            serviceStartDate: new DateTimeImmutable('2024-04-01'),
+            acquisitionDate: new \DateTimeImmutable('2024-04-01'),
+            serviceStartDate: new \DateTimeImmutable('2024-04-01'),
             disposalDate: null,
             acquisitionCost: '1000000.0000',
             residualValue: '0.0000',
@@ -123,11 +122,11 @@ final class FixedAssetTest extends TestCase
             departmentCode: null,
             note: null,
             createdBy: '01HAAAAAAAAAAAAAAAAAAAAAAC',
-            createdAt: new DateTimeImmutable('2024-04-01'),
-            updatedAt: new DateTimeImmutable('2024-04-01'),
+            createdAt: new \DateTimeImmutable('2024-04-01'),
+            updatedAt: new \DateTimeImmutable('2024-04-01'),
             deletedAt: null,
         );
-        $disposed = $asset->dispose(new DateTimeImmutable('2026-03-31'));
+        $disposed = $asset->dispose(new \DateTimeImmutable('2026-03-31'));
         self::assertSame('2026-03-31', $disposed->disposalDate?->format('Y-m-d'));
     }
 }

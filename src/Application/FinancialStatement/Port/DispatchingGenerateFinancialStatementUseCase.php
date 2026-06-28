@@ -35,6 +35,7 @@ final readonly class DispatchingGenerateFinancialStatementUseCase
         if ($entityMappings === []) {
             return $this->simplified->execute($input);
         }
+
         return $this->port->execute($input);
     }
 }

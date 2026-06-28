@@ -25,25 +25,25 @@ final class FinancialStatementBuilderTest extends TestCase
 
         $rows = [
             self::row('ACC_SALES', '401', '売上', 'revenue', 'credit', '0', '10000'),
-            self::row('ACC_COST',  '501', '仕入', 'expense', 'debit',  '4000', '0'),
-            self::row('ACC_SGA',   '502', '給料', 'expense', 'debit',  '2000', '0'),
+            self::row('ACC_COST', '501', '仕入', 'expense', 'debit', '4000', '0'),
+            self::row('ACC_SGA', '502', '給料', 'expense', 'debit', '2000', '0'),
         ];
         $mappings = [
             new AccountTitleFsMapping('ACC_SALES', FsKind::ProfitAndLoss, 'operating_revenue', 1, 10, null),
-            new AccountTitleFsMapping('ACC_COST',  FsKind::ProfitAndLoss, 'cost_of_sales',     1, 10, null),
-            new AccountTitleFsMapping('ACC_SGA',   FsKind::ProfitAndLoss, 'sga',               1, 10, null),
+            new AccountTitleFsMapping('ACC_COST', FsKind::ProfitAndLoss, 'cost_of_sales', 1, 10, null),
+            new AccountTitleFsMapping('ACC_SGA', FsKind::ProfitAndLoss, 'sga', 1, 10, null),
         ];
 
         $pl = $builder->build(FsKind::ProfitAndLoss, $rows, $mappings, $defs);
 
         self::assertSame('10000.0000', $pl['operating_revenue']->subtotal);
-        self::assertSame('4000.0000',  $pl['cost_of_sales']->subtotal);
-        self::assertSame('6000.0000',  $pl['gross_profit']->subtotal);       // 10000 - 4000
-        self::assertSame('2000.0000',  $pl['sga']->subtotal);
-        self::assertSame('4000.0000',  $pl['operating_income']->subtotal);   // 6000 - 2000
-        self::assertSame('4000.0000',  $pl['ordinary_income']->subtotal);    // + 0 - 0
-        self::assertSame('4000.0000',  $pl['pretax_income']->subtotal);      // + 0 - 0
-        self::assertSame('4000.0000',  $pl['net_income']->subtotal);
+        self::assertSame('4000.0000', $pl['cost_of_sales']->subtotal);
+        self::assertSame('6000.0000', $pl['gross_profit']->subtotal);       // 10000 - 4000
+        self::assertSame('2000.0000', $pl['sga']->subtotal);
+        self::assertSame('4000.0000', $pl['operating_income']->subtotal);   // 6000 - 2000
+        self::assertSame('4000.0000', $pl['ordinary_income']->subtotal);    // + 0 - 0
+        self::assertSame('4000.0000', $pl['pretax_income']->subtotal);      // + 0 - 0
+        self::assertSame('4000.0000', $pl['net_income']->subtotal);
     }
 
     public function testNonOperatingAndExtraordinaryFlowUpThroughStagedProfits(): void
@@ -53,23 +53,23 @@ final class FinancialStatementBuilderTest extends TestCase
 
         $rows = [
             self::row('S', '401', '売上', 'revenue', 'credit', '0', '100000'),
-            self::row('C', '501', '仕入', 'expense', 'debit',  '60000', '0'),
+            self::row('C', '501', '仕入', 'expense', 'debit', '60000', '0'),
             self::row('G', '502', '販管費', 'expense', 'debit', '20000', '0'),
-            self::row('NR','411', '受取利息', 'revenue', 'credit', '0', '1000'),
-            self::row('NE','511', '支払利息', 'expense', 'debit', '500', '0'),
-            self::row('EG','412', '固定資産売却益', 'revenue', 'credit', '0', '5000'),
-            self::row('EL','512', '災害損失', 'expense', 'debit', '3000', '0'),
-            self::row('TX','591', '法人税等', 'expense', 'debit', '6000', '0'),
+            self::row('NR', '411', '受取利息', 'revenue', 'credit', '0', '1000'),
+            self::row('NE', '511', '支払利息', 'expense', 'debit', '500', '0'),
+            self::row('EG', '412', '固定資産売却益', 'revenue', 'credit', '0', '5000'),
+            self::row('EL', '512', '災害損失', 'expense', 'debit', '3000', '0'),
+            self::row('TX', '591', '法人税等', 'expense', 'debit', '6000', '0'),
         ];
         $mappings = [
-            new AccountTitleFsMapping('S',  FsKind::ProfitAndLoss, 'operating_revenue',     1, 10, null),
-            new AccountTitleFsMapping('C',  FsKind::ProfitAndLoss, 'cost_of_sales',         1, 10, null),
-            new AccountTitleFsMapping('G',  FsKind::ProfitAndLoss, 'sga',                   1, 10, null),
+            new AccountTitleFsMapping('S', FsKind::ProfitAndLoss, 'operating_revenue', 1, 10, null),
+            new AccountTitleFsMapping('C', FsKind::ProfitAndLoss, 'cost_of_sales', 1, 10, null),
+            new AccountTitleFsMapping('G', FsKind::ProfitAndLoss, 'sga', 1, 10, null),
             new AccountTitleFsMapping('NR', FsKind::ProfitAndLoss, 'non_operating_revenue', 1, 10, null),
             new AccountTitleFsMapping('NE', FsKind::ProfitAndLoss, 'non_operating_expense', 1, 10, null),
-            new AccountTitleFsMapping('EG', FsKind::ProfitAndLoss, 'extraordinary_gain',    1, 10, null),
-            new AccountTitleFsMapping('EL', FsKind::ProfitAndLoss, 'extraordinary_loss',    1, 10, null),
-            new AccountTitleFsMapping('TX', FsKind::ProfitAndLoss, 'income_tax',            1, 10, null),
+            new AccountTitleFsMapping('EG', FsKind::ProfitAndLoss, 'extraordinary_gain', 1, 10, null),
+            new AccountTitleFsMapping('EL', FsKind::ProfitAndLoss, 'extraordinary_loss', 1, 10, null),
+            new AccountTitleFsMapping('TX', FsKind::ProfitAndLoss, 'income_tax', 1, 10, null),
         ];
 
         $pl = $builder->build(FsKind::ProfitAndLoss, $rows, $mappings, $defs);
@@ -88,11 +88,11 @@ final class FinancialStatementBuilderTest extends TestCase
 
         // 売掛金 1000, 貸倒引当金 50 (contra asset) → current_asset subtotal = 950.
         $rows = [
-            self::row('AR',  '121', '売掛金',      'asset', 'debit', '1000', '0'),
-            self::row('ALL', '129', '貸倒引当金',  'asset', 'debit', '50', '0'),
+            self::row('AR', '121', '売掛金', 'asset', 'debit', '1000', '0'),
+            self::row('ALL', '129', '貸倒引当金', 'asset', 'debit', '50', '0'),
         ];
         $mappings = [
-            new AccountTitleFsMapping('AR',  FsKind::BalanceSheet, 'current_asset', 1,  10, null),
+            new AccountTitleFsMapping('AR', FsKind::BalanceSheet, 'current_asset', 1, 10, null),
             new AccountTitleFsMapping('ALL', FsKind::BalanceSheet, 'current_asset', -1, 20, '貸倒引当金'),
         ];
 
@@ -109,21 +109,21 @@ final class FinancialStatementBuilderTest extends TestCase
         $defs = InMemoryFsSectionDefinitionRepository::jgaapStandard()[FsKind::BalanceSheet->value];
 
         $rows = [
-            self::row('CASH',  '101', '現金',     'asset', 'debit', '500', '0'),
-            self::row('BLDG',  '201', '建物',     'asset', 'debit', '3000', '0'),
-            self::row('GOOD',  '211', 'のれん',    'asset', 'debit', '200', '0'),
+            self::row('CASH', '101', '現金', 'asset', 'debit', '500', '0'),
+            self::row('BLDG', '201', '建物', 'asset', 'debit', '3000', '0'),
+            self::row('GOOD', '211', 'のれん', 'asset', 'debit', '200', '0'),
         ];
         $mappings = [
-            new AccountTitleFsMapping('CASH', FsKind::BalanceSheet, 'current_asset',    1, 10, null),
-            new AccountTitleFsMapping('BLDG', FsKind::BalanceSheet, 'tangible_asset',   1, 10, null),
+            new AccountTitleFsMapping('CASH', FsKind::BalanceSheet, 'current_asset', 1, 10, null),
+            new AccountTitleFsMapping('BLDG', FsKind::BalanceSheet, 'tangible_asset', 1, 10, null),
             new AccountTitleFsMapping('GOOD', FsKind::BalanceSheet, 'intangible_asset', 1, 10, null),
         ];
 
         $bs = $builder->build(FsKind::BalanceSheet, $rows, $mappings, $defs);
 
-        self::assertSame('500.0000',  $bs['current_asset']->subtotal);
+        self::assertSame('500.0000', $bs['current_asset']->subtotal);
         self::assertSame('3000.0000', $bs['tangible_asset']->subtotal);
-        self::assertSame('200.0000',  $bs['intangible_asset']->subtotal);
+        self::assertSame('200.0000', $bs['intangible_asset']->subtotal);
         // noncurrent_asset rolls up tangible + intangible + investment (0).
         self::assertSame('3200.0000', $bs['noncurrent_asset']->subtotal);
         // asset rolls up current + noncurrent + deferred (0) → 500 + 3200.
@@ -205,23 +205,23 @@ final class FinancialStatementBuilderTest extends TestCase
         // BS: cash 2_583_000 asset, 借入金 200_000 liability, 資本金 1_000_000.
         // After carry-over equity should rise by net income (1_383_000).
         $bsRows = [
-            self::row('CASH', '101', '現金',     'asset',     'debit',  '2583000', '0'),
-            self::row('LOAN', '211', '借入金',   'liability', 'credit', '0',       '200000'),
-            self::row('CAP',  '301', '資本金',   'equity',    'credit', '0',       '1000000'),
+            self::row('CASH', '101', '現金', 'asset', 'debit', '2583000', '0'),
+            self::row('LOAN', '211', '借入金', 'liability', 'credit', '0', '200000'),
+            self::row('CAP', '301', '資本金', 'equity', 'credit', '0', '1000000'),
         ];
         $bsMaps = [
-            new AccountTitleFsMapping('CASH', FsKind::BalanceSheet, 'current_asset',     1, 10, null),
+            new AccountTitleFsMapping('CASH', FsKind::BalanceSheet, 'current_asset', 1, 10, null),
             new AccountTitleFsMapping('LOAN', FsKind::BalanceSheet, 'current_liability', 1, 10, null),
-            new AccountTitleFsMapping('CAP',  FsKind::BalanceSheet, 'capital',           1, 10, null),
+            new AccountTitleFsMapping('CAP', FsKind::BalanceSheet, 'capital', 1, 10, null),
         ];
 
         $plRows = [
             self::row('S', '401', '売上', 'revenue', 'credit', '0', '2000000'),
-            self::row('C', '501', '仕入', 'expense', 'debit',  '617000', '0'),
+            self::row('C', '501', '仕入', 'expense', 'debit', '617000', '0'),
         ];
         $plMaps = [
             new AccountTitleFsMapping('S', FsKind::ProfitAndLoss, 'operating_revenue', 1, 10, null),
-            new AccountTitleFsMapping('C', FsKind::ProfitAndLoss, 'cost_of_sales',     1, 10, null),
+            new AccountTitleFsMapping('C', FsKind::ProfitAndLoss, 'cost_of_sales', 1, 10, null),
         ];
 
         $bs = $builder->build(FsKind::BalanceSheet, $bsRows, $bsMaps, $bsDefs);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatement\Port;
 
-use DateTimeZone;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCase;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCaseInput;
@@ -61,7 +60,7 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
 
     public function execute(GenerateFinancialStatementUseCaseInput $input): FinancialStatement
     {
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
 
         $tb = $this->trialBalance->execute(new QueryTrialBalanceUseCaseInput(
             entityId: $input->entityId,
@@ -139,24 +138,25 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
      * @param array<string, Section> $bs
      * @param array<string, Section> $pl
      * @param array<string, Section> $cs
+     *
      * @return array<string, string>
      */
     private static function buildTotals(array $bs, array $pl, array $cs = []): array
     {
         $totals = [
-            'net_income'        => $pl[FsSectionCode::PL_NET_INCOME]->subtotal ?? '0.0000',
-            'total_assets'      => $bs[FsSectionCode::BS_ASSET]->subtotal ?? '0.0000',
+            'net_income' => $pl[FsSectionCode::PL_NET_INCOME]->subtotal ?? '0.0000',
+            'total_assets' => $bs[FsSectionCode::BS_ASSET]->subtotal ?? '0.0000',
             'total_liabilities' => $bs[FsSectionCode::BS_LIABILITY]->subtotal ?? '0.0000',
-            'total_equity'      => $bs[FsSectionCode::BS_EQUITY]->subtotal ?? '0.0000',
-            'total_revenue'     => $pl[FsSectionCode::PL_OPERATING_REVENUE]->subtotal ?? '0.0000',
-            'total_expenses'    => self::sumOf(
+            'total_equity' => $bs[FsSectionCode::BS_EQUITY]->subtotal ?? '0.0000',
+            'total_revenue' => $pl[FsSectionCode::PL_OPERATING_REVENUE]->subtotal ?? '0.0000',
+            'total_expenses' => self::sumOf(
                 $pl[FsSectionCode::PL_COST_OF_SALES]->subtotal ?? '0.0000',
                 $pl[FsSectionCode::PL_SGA]->subtotal ?? '0.0000',
             ),
-            'gross_profit'      => $pl[FsSectionCode::PL_GROSS_PROFIT]->subtotal ?? '0.0000',
-            'operating_income'  => $pl[FsSectionCode::PL_OPERATING_INCOME]->subtotal ?? '0.0000',
-            'ordinary_income'   => $pl[FsSectionCode::PL_ORDINARY_INCOME]->subtotal ?? '0.0000',
-            'pretax_income'     => $pl[FsSectionCode::PL_PRETAX_INCOME]->subtotal ?? '0.0000',
+            'gross_profit' => $pl[FsSectionCode::PL_GROSS_PROFIT]->subtotal ?? '0.0000',
+            'operating_income' => $pl[FsSectionCode::PL_OPERATING_INCOME]->subtotal ?? '0.0000',
+            'ordinary_income' => $pl[FsSectionCode::PL_ORDINARY_INCOME]->subtotal ?? '0.0000',
+            'pretax_income' => $pl[FsSectionCode::PL_PRETAX_INCOME]->subtotal ?? '0.0000',
         ];
 
         if ($cs !== []) {
@@ -164,7 +164,7 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
             $totals['investing_cf_total'] = $cs[CsSectionCode::INVESTING_CF_TOTAL]->subtotal ?? '0.0000';
             $totals['financing_cf_total'] = $cs[CsSectionCode::FINANCING_CF_TOTAL]->subtotal ?? '0.0000';
             $totals['net_change_in_cash'] = $cs[CsSectionCode::NET_CHANGE_IN_CASH]->subtotal ?? '0.0000';
-            $totals['ending_cash']        = $cs[CsSectionCode::ENDING_CASH]->subtotal ?? '0.0000';
+            $totals['ending_cash'] = $cs[CsSectionCode::ENDING_CASH]->subtotal ?? '0.0000';
         }
 
         return $totals;
@@ -179,6 +179,7 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
 
     /**
      * @param list<\Rucaro\Domain\TrialBalance\TrialBalanceRow> $rows
+     *
      * @return array<string, Section>
      */
     private function buildCashFlow(
@@ -232,6 +233,7 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
      *
      * @param array<string, Section> $bs
      * @param array<string, Section> $pl
+     *
      * @return array<string, Section>
      */
     private function applyNetIncomeCarryOver(array $bs, array $pl): array
@@ -240,6 +242,7 @@ final readonly class GenerateFinancialStatementFromMappingUseCase
         if ($bs !== [] && $pl !== []) {
             $this->builder->assertBalanced($next);
         }
+
         return $next;
     }
 }

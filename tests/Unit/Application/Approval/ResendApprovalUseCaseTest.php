@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Approval\IssueApprovalTokenUseCase;
@@ -54,13 +52,13 @@ final class ResendApprovalUseCaseTest extends TestCase
      */
     private function fixture(): array
     {
-        $tz = new DateTimeZone('UTC');
+        $tz = new \DateTimeZone('UTC');
         $clock = new FrozenClock('2026-04-22T00:00:00.000Z');
 
         $plaintext = str_repeat('a', 64);
         $hash = BearerTokenGenerator::hash($plaintext);
-        $issued = new DateTimeImmutable('2026-04-21T00:00:00Z', $tz);
-        $expires = new DateTimeImmutable('2026-04-25T00:00:00Z', $tz);
+        $issued = new \DateTimeImmutable('2026-04-21T00:00:00Z', $tz);
+        $expires = new \DateTimeImmutable('2026-04-25T00:00:00Z', $tz);
 
         $token = new ApprovalToken(
             id: '01HW7K9B2QV7C8Y4ZAPPR0000001',
@@ -101,9 +99,9 @@ final class ResendApprovalUseCaseTest extends TestCase
         $resend = new ResendApprovalUseCase($repo, $issue, $resolver, $clock);
 
         return [
-            'resend'   => $resend,
-            'prefix'   => $token->tokenPrefix,
-            'repo'     => $repo,
+            'resend' => $resend,
+            'prefix' => $token->tokenPrefix,
+            'repo' => $repo,
             'notifier' => $notifier,
         ];
     }

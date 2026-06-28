@@ -22,7 +22,7 @@ final readonly class BudgetLineItem
     public const MONTHS = 12;
 
     /**
-     * @param list<string> $monthlyAmounts Exactly 12 scale-4 decimal strings.
+     * @param list<string> $monthlyAmounts exactly 12 scale-4 decimal strings
      */
     public function __construct(
         public string $id,
@@ -34,13 +34,7 @@ final readonly class BudgetLineItem
         public ?string $memo = null,
     ) {
         if (count($monthlyAmounts) !== self::MONTHS) {
-            throw ValidationException::withErrors([
-                'monthlyAmounts' => [sprintf(
-                    'monthlyAmounts must contain exactly %d entries, got %d.',
-                    self::MONTHS,
-                    count($monthlyAmounts),
-                )],
-            ]);
+            throw ValidationException::withErrors(['monthlyAmounts' => [sprintf('monthlyAmounts must contain exactly %d entries, got %d.', self::MONTHS, count($monthlyAmounts))]]);
         }
         foreach ($monthlyAmounts as $amount) {
             // normalize throws InvalidArgumentException on syntactic garbage,
@@ -48,9 +42,7 @@ final readonly class BudgetLineItem
             Decimal::normalize($amount);
         }
         if ($memo !== null && mb_strlen($memo) > 255) {
-            throw ValidationException::withErrors([
-                'memo' => ['memo must be <= 255 characters.'],
-            ]);
+            throw ValidationException::withErrors(['memo' => ['memo must be <= 255 characters.']]);
         }
     }
 
@@ -60,10 +52,9 @@ final readonly class BudgetLineItem
     public function amountForMonth(int $month): string
     {
         if ($month < 1 || $month > self::MONTHS) {
-            throw ValidationException::withErrors([
-                'month' => [sprintf('month must be in 1..%d.', self::MONTHS)],
-            ]);
+            throw ValidationException::withErrors(['month' => [sprintf('month must be in 1..%d.', self::MONTHS)]]);
         }
+
         return $this->monthlyAmounts[$month - 1];
     }
 
@@ -74,14 +65,13 @@ final readonly class BudgetLineItem
     public function cumulativeAmount(int $month): string
     {
         if ($month < 1 || $month > self::MONTHS) {
-            throw ValidationException::withErrors([
-                'month' => [sprintf('month must be in 1..%d.', self::MONTHS)],
-            ]);
+            throw ValidationException::withErrors(['month' => [sprintf('month must be in 1..%d.', self::MONTHS)]]);
         }
         $sum = '0.0000';
-        for ($m = 1; $m <= $month; $m++) {
+        for ($m = 1; $m <= $month; ++$m) {
             $sum = Decimal::add($sum, $this->monthlyAmounts[$m - 1]);
         }
+
         return Decimal::normalize($sum);
     }
 

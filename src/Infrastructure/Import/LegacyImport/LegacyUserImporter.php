@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Auth\PasswordHasher;
 
 /**
@@ -18,8 +17,8 @@ use Rucaro\Infrastructure\Auth\PasswordHasher;
 final class LegacyUserImporter
 {
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly PasswordHasher $hasher,
         private readonly string $placeholderPassword,
@@ -32,7 +31,7 @@ final class LegacyUserImporter
         $rows = $this->source->query(
             'SELECT id, stampRegister, stampUpdate, strCodeName, idLogin, strMailPc, flagLock
                FROM baseAccount
-              ORDER BY id'
+              ORDER BY id',
         );
         if ($rows === false) {
             return ImportReport::empty('users', ['source query failed']);
@@ -52,7 +51,7 @@ final class LegacyUserImporter
                 (id, login_id, display_name, email, password_hash,
                  is_active, created_at, updated_at)
              VALUES
-                (:id, :login, :name, :email, :pwh, :active, :ca, :ua)'
+                (:id, :login, :name, :email, :pwh, :active, :ca, :ua)',
         );
 
         foreach ($rows as $r) {
@@ -75,10 +74,10 @@ final class LegacyUserImporter
             $binaryUlid = $this->idMap->getOrCreate(IdMapping::TABLE_USERS, $legacyId);
 
             $createdAt = LegacyValueConverter::stampToTimestamp(
-                $stampRegister > 0 ? $stampRegister : time()
+                $stampRegister > 0 ? $stampRegister : time(),
             );
             $updatedAt = LegacyValueConverter::stampToTimestamp(
-                $stampUpdate > 0 ? $stampUpdate : time()
+                $stampUpdate > 0 ? $stampUpdate : time(),
             );
 
             if ($this->dryRun) {
@@ -87,12 +86,12 @@ final class LegacyUserImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $binaryUlid, PDO::PARAM_LOB);
+            $insert->bindValue(':id', $binaryUlid, \PDO::PARAM_LOB);
             $insert->bindValue(':login', $legacyLogin);
             $insert->bindValue(':name', $legacyName !== '' ? $legacyName : $legacyLogin);
             $insert->bindValue(':email', $legacyMail);
             $insert->bindValue(':pwh', $hash);
-            $insert->bindValue(':active', $flagLock === 0, PDO::PARAM_BOOL);
+            $insert->bindValue(':active', $flagLock === 0, \PDO::PARAM_BOOL);
             $insert->bindValue(':ca', $createdAt);
             $insert->bindValue(':ua', $updatedAt);
             $insert->execute();

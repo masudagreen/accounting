@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Auth;
 
-use DateInterval;
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\Auth\ApiToken;
 use Rucaro\Domain\Auth\ApiTokenRepositoryInterface;
 use Rucaro\Domain\Auth\InvalidCredentialsException;
@@ -55,8 +52,8 @@ final readonly class LoginUseCase
             throw InvalidCredentialsException::create();
         }
 
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
-        $expires = $now->add(new DateInterval('PT' . $this->lifetimeSeconds . 'S'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
+        $expires = $now->add(new \DateInterval('PT'.$this->lifetimeSeconds.'S'));
 
         $material = $this->tokenGenerator->generate();
 
@@ -85,6 +82,7 @@ final readonly class LoginUseCase
             loginId: $user->loginId,
             displayName: $user->displayName,
             email: $user->email,
+            role: $user->role,
         );
     }
 }

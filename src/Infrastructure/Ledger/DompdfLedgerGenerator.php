@@ -35,6 +35,7 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
     ) {
     }
 
+    #[\Override]
     public function render(Ledger $ledger): string
     {
         $html = $this->renderHtml($ledger);
@@ -56,6 +57,7 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -67,12 +69,13 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'ledger'          => $this->buildViewModel($ledger),
-            'title'           => '総勘定元帳 (General Ledger)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'ledger' => $this->buildViewModel($ledger),
+            'title' => '総勘定元帳 (General Ledger)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('ledger.html.tpl');
     }
 
@@ -82,33 +85,34 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
     private function buildViewModel(Ledger $ledger): array
     {
         $currency = $ledger->currencyCode;
+
         return [
-            'entityId'     => $ledger->entityId,
+            'entityId' => $ledger->entityId,
             'fiscalTermId' => $ledger->fiscalTermId,
-            'fromDate'     => $ledger->fromDate->format('Y-m-d'),
-            'toDate'       => $ledger->toDate->format('Y-m-d'),
+            'fromDate' => $ledger->fromDate->format('Y-m-d'),
+            'toDate' => $ledger->toDate->format('Y-m-d'),
             'currencyCode' => $currency,
-            'generatedAt'  => $ledger->generatedAt->format('Y-m-d H:i:s'),
-            'books'        => array_map(
+            'generatedAt' => $ledger->generatedAt->format('Y-m-d H:i:s'),
+            'books' => array_map(
                 static fn (LedgerBook $b): array => [
-                    'accountTitleId'   => $b->accountTitleId,
+                    'accountTitleId' => $b->accountTitleId,
                     'accountTitleCode' => $b->accountTitleCode,
                     'accountTitleName' => $b->accountTitleName,
-                    'normalSide'       => $b->normalSide,
-                    'openingBalance'   => self::formatAmount($b->openingBalance, $currency),
-                    'debitTotal'       => self::formatAmount($b->debitTotal, $currency),
-                    'creditTotal'      => self::formatAmount($b->creditTotal, $currency),
-                    'closingBalance'   => self::formatAmount($b->closingBalance, $currency),
-                    'entries'          => array_map(
+                    'normalSide' => $b->normalSide,
+                    'openingBalance' => self::formatAmount($b->openingBalance, $currency),
+                    'debitTotal' => self::formatAmount($b->debitTotal, $currency),
+                    'creditTotal' => self::formatAmount($b->creditTotal, $currency),
+                    'closingBalance' => self::formatAmount($b->closingBalance, $currency),
+                    'entries' => array_map(
                         static fn (LedgerEntry $e): array => [
-                            'entryDate'          => $e->entryDate->format('Y-m-d'),
-                            'summary'            => $e->summary,
-                            'memo'               => $e->memo,
+                            'entryDate' => $e->entryDate->format('Y-m-d'),
+                            'summary' => $e->summary,
+                            'memo' => $e->memo,
                             'counterAccountCode' => $e->counterAccountCode,
                             'counterAccountName' => $e->counterAccountName,
-                            'debitAmount'        => self::formatAmountOrBlank($e->debitAmount, $currency),
-                            'creditAmount'       => self::formatAmountOrBlank($e->creditAmount, $currency),
-                            'runningBalance'     => self::formatAmount($e->runningBalance, $currency),
+                            'debitAmount' => self::formatAmountOrBlank($e->debitAmount, $currency),
+                            'creditAmount' => self::formatAmountOrBlank($e->creditAmount, $currency),
+                            'runningBalance' => self::formatAmount($e->runningBalance, $currency),
                         ],
                         $b->entries,
                     ),
@@ -131,7 +135,8 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
         $isNegative = $num < 0;
         $abs = abs($num);
         $formatted = number_format($abs, $decimals, '.', ',');
-        return $isNegative ? '(' . $formatted . ')' : $formatted;
+
+        return $isNegative ? '('.$formatted.')' : $formatted;
     }
 
     /**
@@ -146,6 +151,7 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
         if ((float) $amount === 0.0) {
             return '';
         }
+
         return self::formatAmount($amount, $currency);
     }
 
@@ -155,17 +161,19 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -191,7 +199,7 @@ final class DompdfLedgerGenerator implements LedgerGeneratorInterface
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

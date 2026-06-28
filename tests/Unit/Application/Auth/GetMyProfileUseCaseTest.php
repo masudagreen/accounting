@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Auth;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Auth\GetMyProfileUseCase;
@@ -26,8 +25,8 @@ final class GetMyProfileUseCaseTest extends TestCase
             passwordHash: 'argon2id$...',
             isActive: true,
             lastLoginAt: null,
-            createdAt: new DateTimeImmutable('2026-04-01'),
-            updatedAt: new DateTimeImmutable('2026-04-01'),
+            createdAt: new \DateTimeImmutable('2026-04-01'),
+            updatedAt: new \DateTimeImmutable('2026-04-01'),
         ));
 
         $useCase = new GetMyProfileUseCase($repo);

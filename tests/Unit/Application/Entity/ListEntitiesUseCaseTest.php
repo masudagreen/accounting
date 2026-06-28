@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Entity;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Entity\ListEntitiesUseCase;
@@ -66,8 +65,8 @@ final class ListEntitiesUseCaseTest extends TestCase
             currencyCode: 'JPY',
             fiscalStartMmDd: '0401',
             isActive: true,
-            createdAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
         );
     }
 }

@@ -50,6 +50,7 @@ final readonly class BudgetNewController
         $entityId = $this->session->getSelectedEntity();
         $terms = $this->ctx->fiscalTermsForEntity($entityId);
         $default = PlanningUiContext::defaultFiscalTermId($terms, $this->clock->getCurrentTime());
+
         return $this->renderForm(
             entityId: $entityId,
             name: '',
@@ -75,11 +76,12 @@ final readonly class BudgetNewController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/budgets/new');
         }
 
-        $name         = PlanningFormSupport::str($body, 'name');
-        $notes        = PlanningFormSupport::str($body, 'notes');
+        $name = PlanningFormSupport::str($body, 'name');
+        $notes = PlanningFormSupport::str($body, 'notes');
         $fiscalTermId = PlanningFormSupport::str($body, 'fiscal_term_id');
 
         $rawLines = $body['lines'] ?? null;
@@ -96,7 +98,7 @@ final readonly class BudgetNewController
                 /** @var list<string> $monthly */
                 $monthly = [];
                 $hasAmount = false;
-                for ($i = 0; $i < 12; $i++) {
+                for ($i = 0; $i < 12; ++$i) {
                     $v = is_array($monthlyRaw) ? ($monthlyRaw[$i] ?? null) : null;
                     $amt = PlanningFormSupport::normalizeAmount(is_string($v) ? $v : '');
                     $monthly[] = $amt;
@@ -110,8 +112,8 @@ final readonly class BudgetNewController
                 }
                 $formLines[] = [
                     'account_title_id' => $accountId,
-                    'monthly'          => $monthly,
-                    'memo'             => $memo,
+                    'monthly' => $monthly,
+                    'memo' => $memo,
                 ];
                 if ($accountId !== '') {
                     $lineInputs[] = new BudgetLineItemInput(
@@ -150,11 +152,12 @@ final readonly class BudgetNewController
                     createdBy: $userId,
                 ));
                 $this->flash->addSuccess('予算を作成しました（Draft）。');
-                return HtmlResponse::redirect('/ui/budgets/' . $out->budget->id);
+
+                return HtmlResponse::redirect('/ui/budgets/'.$out->budget->id);
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['登録に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['登録に失敗しました: '.$e->getMessage()];
             }
         }
 
@@ -176,8 +179,10 @@ final readonly class BudgetNewController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -195,30 +200,31 @@ final readonly class BudgetNewController
         int $status,
     ): HtmlResponse {
         $data = [
-            'page_title'           => '新規予算',
-            'active_nav'           => 'budgets',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '新規予算',
+            'active_nav' => 'budgets',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_mode'            => 'new',
-            'form_action'          => '/ui/budgets/new',
-            'form_name'            => $name,
-            'form_notes'           => $notes,
-            'form_fiscal_term_id'  => $fiscalTermId,
-            'form_lines'           => $lines,
-            'form_errors'          => $errors,
-            'account_titles'       => $this->ctx->accountTitlesForEntity($entityId),
-            'fiscal_terms'         => $this->ctx->fiscalTermsForEntity($entityId),
+            'flash_messages' => $this->flash->consume(),
+            'form_mode' => 'new',
+            'form_action' => '/ui/budgets/new',
+            'form_name' => $name,
+            'form_notes' => $notes,
+            'form_fiscal_term_id' => $fiscalTermId,
+            'form_lines' => $lines,
+            'form_errors' => $errors,
+            'account_titles' => $this->ctx->accountTitlesForEntity($entityId),
+            'fiscal_terms' => $this->ctx->fiscalTermsForEntity($entityId),
         ];
+
         return HtmlResponse::of($status, $this->view->render('budgets/form.html.tpl', $data));
     }
 
@@ -229,10 +235,11 @@ final readonly class BudgetNewController
     {
         /** @var list<string> $monthly */
         $monthly = array_fill(0, 12, '');
+
         return [
             'account_title_id' => '',
-            'monthly'          => $monthly,
-            'memo'             => '',
+            'monthly' => $monthly,
+            'memo' => '',
         ];
     }
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\FinancialStatement;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
@@ -24,14 +22,14 @@ final class JsonFinancialStatementSerializerTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: [],
             pl: [],
             cs: [],
             totals: [],
-            generatedAt: new DateTimeImmutable('2026-04-30T01:02:03.000000Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T01:02:03.000000Z', new \DateTimeZone('UTC')),
         );
         $arr = JsonFinancialStatementSerializer::toArray($fs);
         self::assertNull($arr['bs']);
@@ -54,14 +52,14 @@ final class JsonFinancialStatementSerializerTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::All,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: [Section::CODE_ASSETS => $assets],
             pl: [Section::CODE_REVENUE => $revenue],
             cs: [],
             totals: ['net_income' => '2000.0000', 'total_assets' => '1000.0000'],
-            generatedAt: new DateTimeImmutable('2026-04-30T00:00:00.000000Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T00:00:00.000000Z', new \DateTimeZone('UTC')),
         );
         $arr = JsonFinancialStatementSerializer::toArray($fs);
 
@@ -152,22 +150,22 @@ final class JsonFinancialStatementSerializerTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::BalanceSheet,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: [
-                FsSectionCode::BS_ASSET          => $asset,
-                FsSectionCode::BS_CURRENT_ASSET  => $currentAsset,
-                FsSectionCode::BS_ASSET_TOTAL    => $assetTotal,
-                FsSectionCode::BS_LIABILITY      => $liability,
+                FsSectionCode::BS_ASSET => $asset,
+                FsSectionCode::BS_CURRENT_ASSET => $currentAsset,
+                FsSectionCode::BS_ASSET_TOTAL => $assetTotal,
+                FsSectionCode::BS_LIABILITY => $liability,
                 FsSectionCode::BS_LIABILITY_TOTAL => $liabilityTotal,
-                FsSectionCode::BS_EQUITY         => $equity,
-                FsSectionCode::BS_EQUITY_TOTAL   => $equityTotal,
+                FsSectionCode::BS_EQUITY => $equity,
+                FsSectionCode::BS_EQUITY_TOTAL => $equityTotal,
             ],
             pl: [],
             cs: [],
             totals: ['total_assets' => '2583000.0000'],
-            generatedAt: new DateTimeImmutable('2026-04-30T00:00:00.000000Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T00:00:00.000000Z', new \DateTimeZone('UTC')),
         );
         $arr = JsonFinancialStatementSerializer::toArray($fs);
 
@@ -178,6 +176,7 @@ final class JsonFinancialStatementSerializerTest extends TestCase
         self::assertArrayHasKey('equity', $arr['bs']);
         self::assertArrayHasKey('totals', $arr['bs']);
 
+        /** @var list<array<string, mixed>> $sections */
         $sections = $arr['bs']['sections'];
         self::assertCount(7, $sections);
         // Order by sortOrder ascending.
@@ -197,7 +196,7 @@ final class JsonFinancialStatementSerializerTest extends TestCase
 
         // Top-level totals shortcut.
         self::assertSame('2583000.0000', $arr['bs']['totals']['assets']);
-        self::assertSame('200000.0000',  $arr['bs']['totals']['liabilities']);
+        self::assertSame('200000.0000', $arr['bs']['totals']['liabilities']);
         self::assertSame('2383000.0000', $arr['bs']['totals']['equity']);
 
         // Back-compat flat keys still present and populated from the J-GAAP root.
@@ -229,17 +228,17 @@ final class JsonFinancialStatementSerializerTest extends TestCase
             entityId: 'ENT',
             fiscalTermId: 'TRM',
             kind: FinancialStatementKind::ProfitAndLoss,
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2026-04-30', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2026-04-30', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             bs: [],
             pl: [
-                'net_income'         => $netIncome,
-                'operating_revenue'  => $revenue,
+                'net_income' => $netIncome,
+                'operating_revenue' => $revenue,
             ],
             cs: [],
             totals: ['net_income' => '10000.0000'],
-            generatedAt: new DateTimeImmutable('2026-04-30T00:00:00.000000Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-30T00:00:00.000000Z', new \DateTimeZone('UTC')),
         );
         $arr = JsonFinancialStatementSerializer::toArray($fs);
 

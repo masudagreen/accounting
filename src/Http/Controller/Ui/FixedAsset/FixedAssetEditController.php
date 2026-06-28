@@ -43,7 +43,8 @@ final readonly class FixedAssetEditController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(FixedAssetShowController::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
 
         /**
@@ -94,11 +95,12 @@ final readonly class FixedAssetEditController
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の固定資産が見つかりません。');
         } catch (ValidationException $e) {
-            $this->flash->addError('入力内容に誤りがあります: ' . self::firstError($e));
+            $this->flash->addError('入力内容に誤りがあります: '.self::firstError($e));
         } catch (\Throwable $e) {
-            $this->flash->addError('更新に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('更新に失敗しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+        return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
     }
 
     private static function firstError(ValidationException $e): string
@@ -108,6 +110,7 @@ final readonly class FixedAssetEditController
                 return $msgs[0];
             }
         }
+
         return $e->getMessage();
     }
 }

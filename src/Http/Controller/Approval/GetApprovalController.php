@@ -51,7 +51,7 @@ final readonly class GetApprovalController
         }
 
         return EnvelopeResponse::ok(data: [
-            'token'  => ApprovalSerializer::token($output->token, $output->status),
+            'token' => ApprovalSerializer::token($output->token, $output->status),
             'target' => ApprovalSerializer::target($output->target),
         ]);
     }

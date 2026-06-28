@@ -45,7 +45,7 @@
         <tbody>
           {foreach $budget.lines as $li}
             <tr>
-              <td><code class="small">{$li.accountTitleId|truncate:10:""|escape}…</code></td>
+              <td>{if isset($account_name_by_id[$li.accountTitleId])}{$account_name_by_id[$li.accountTitleId]|escape}{else}<code class="small text-muted">{$li.accountTitleId|truncate:10:""|escape}…</code>{/if}</td>
               {section name=m start=0 loop=12 step=1}<td class="text-end">{$li.monthly[$smarty.section.m.index]|escape}</td>{/section}
               <td class="text-end"><strong>{$li.total|escape}</strong></td>
               <td><small>{$li.memo|escape}</small></td>

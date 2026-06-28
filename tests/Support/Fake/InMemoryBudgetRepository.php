@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\Budget\Budget;
 use Rucaro\Domain\Budget\BudgetRepositoryInterface;
 use Rucaro\Domain\Budget\BudgetStatus;
@@ -21,20 +19,24 @@ final class InMemoryBudgetRepository implements BudgetRepositoryInterface
     /** @var array<string, Budget> */
     private array $byId = [];
 
+    #[\Override]
     public function save(Budget $budget): void
     {
         $this->byId[$budget->id] = $budget;
     }
 
+    #[\Override]
     public function findById(string $id): ?Budget
     {
         $budget = $this->byId[$id] ?? null;
         if ($budget === null || $budget->deletedAt !== null) {
             return null;
         }
+
         return $budget;
     }
 
+    #[\Override]
     public function findByEntityAndName(string $entityId, string $fiscalTermId, string $name): ?Budget
     {
         foreach ($this->byId as $b) {
@@ -45,9 +47,11 @@ final class InMemoryBudgetRepository implements BudgetRepositoryInterface
                 return $b;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findByEntity(
         string $entityId,
         ?string $fiscalTermId = null,
@@ -70,16 +74,18 @@ final class InMemoryBudgetRepository implements BudgetRepositoryInterface
             }
             $out[] = $b;
         }
-        return array_values($out);
+
+        return $out;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $existing = $this->byId[$id] ?? null;
         if ($existing === null || $existing->deletedAt !== null) {
             return;
         }
-        $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $this->byId[$id] = new Budget(
             id: $existing->id,
             entityId: $existing->entityId,

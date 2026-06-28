@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Budget;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\Budget\Budget;
 use Rucaro\Domain\Budget\BudgetLineItem;
@@ -22,10 +20,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoBudgetRepository implements BudgetRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(Budget $budget): void
     {
         $this->pdo->beginTransaction();
@@ -46,6 +45,7 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         }
     }
 
+    #[\Override]
     public function findById(string $id): ?Budget
     {
         $stmt = $this->pdo->prepare(
@@ -53,13 +53,15 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         );
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndName(string $entityId, string $fiscalTermId, string $name): ?Budget
     {
         $stmt = $this->pdo->prepare(
@@ -71,13 +73,15 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
             ':n' => $name,
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntity(
         string $entityId,
         ?string $fiscalTermId = null,
@@ -101,10 +105,12 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        return array_values(array_map([$this, 'hydrate'], $rows));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare(
@@ -136,18 +142,18 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'          => UlidGenerator::decode($budget->id),
-            ':entity'      => UlidGenerator::decode($budget->entityId),
-            ':ft'          => UlidGenerator::decode($budget->fiscalTermId),
-            ':name'        => $budget->name,
-            ':status'      => $budget->status->value,
+            ':id' => UlidGenerator::decode($budget->id),
+            ':entity' => UlidGenerator::decode($budget->entityId),
+            ':ft' => UlidGenerator::decode($budget->fiscalTermId),
+            ':name' => $budget->name,
+            ':status' => $budget->status->value,
             ':approved_by' => $budget->approvedBy !== null ? UlidGenerator::decode($budget->approvedBy) : null,
             ':approved_at' => $budget->approvedAt?->format('Y-m-d H:i:s.u'),
-            ':notes'       => $budget->notes,
-            ':created_by'  => UlidGenerator::decode($budget->createdBy),
-            ':created_at'  => $budget->createdAt->format('Y-m-d H:i:s.u'),
-            ':updated_at'  => $budget->updatedAt->format('Y-m-d H:i:s.u'),
-            ':deleted_at'  => $budget->deletedAt?->format('Y-m-d H:i:s.u'),
+            ':notes' => $budget->notes,
+            ':created_by' => UlidGenerator::decode($budget->createdBy),
+            ':created_at' => $budget->createdAt->format('Y-m-d H:i:s.u'),
+            ':updated_at' => $budget->updatedAt->format('Y-m-d H:i:s.u'),
+            ':deleted_at' => $budget->deletedAt?->format('Y-m-d H:i:s.u'),
         ]);
     }
 
@@ -168,15 +174,15 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $params = [
-            ':id'   => UlidGenerator::decode($li->id),
-            ':b'    => UlidGenerator::decode($budgetId),
-            ':at'   => UlidGenerator::decode($li->accountTitleId),
-            ':sat'  => $li->subAccountTitleId !== null ? UlidGenerator::decode($li->subAccountTitleId) : null,
-            ':so'   => $li->sortOrder,
+            ':id' => UlidGenerator::decode($li->id),
+            ':b' => UlidGenerator::decode($budgetId),
+            ':at' => UlidGenerator::decode($li->accountTitleId),
+            ':sat' => $li->subAccountTitleId !== null ? UlidGenerator::decode($li->subAccountTitleId) : null,
+            ':so' => $li->sortOrder,
             ':memo' => $li->memo,
         ];
-        for ($i = 1; $i <= BudgetLineItem::MONTHS; $i++) {
-            $params[':m' . $i] = $li->monthlyAmounts[$i - 1];
+        for ($i = 1; $i <= BudgetLineItem::MONTHS; ++$i) {
+            $params[':m'.$i] = $li->monthlyAmounts[$i - 1];
         }
         $stmt->execute($params);
     }
@@ -217,14 +223,14 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         );
         $stmt->execute([':b' => UlidGenerator::decode($budgetId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
             /** @var list<string> $amounts */
             $amounts = [];
-            for ($m = 1; $m <= BudgetLineItem::MONTHS; $m++) {
-                $amounts[] = (string) ($r['month_' . $m] ?? '0.0000');
+            for ($m = 1; $m <= BudgetLineItem::MONTHS; ++$m) {
+                $amounts[] = (string) ($r['month_'.$m] ?? '0.0000');
             }
             $out[] = new BudgetLineItem(
                 id: self::encodeId($r['id'] ?? ''),
@@ -236,6 +242,7 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
                 memo: self::nullableString($r['memo'] ?? null),
             );
         }
+
         return $out;
     }
 
@@ -244,6 +251,7 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -255,6 +263,7 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return null;
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -264,23 +273,24 @@ final class PdoBudgetRepository implements BudgetRepositoryInterface
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

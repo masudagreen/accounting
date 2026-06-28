@@ -12,16 +12,19 @@ final class InMemoryConsumptionTaxPeriodRepository implements ConsumptionTaxPeri
     /** @var array<string, ConsumptionTaxPeriod> */
     private array $rows = [];
 
+    #[\Override]
     public function save(ConsumptionTaxPeriod $period): void
     {
         $this->rows[$period->id] = $period;
     }
 
+    #[\Override]
     public function findById(string $id): ?ConsumptionTaxPeriod
     {
         return $this->rows[$id] ?? null;
     }
 
+    #[\Override]
     public function findByEntity(string $entityId): array
     {
         /** @var list<ConsumptionTaxPeriod> $out */
@@ -31,11 +34,12 @@ final class InMemoryConsumptionTaxPeriodRepository implements ConsumptionTaxPeri
                 $out[] = $p;
             }
         }
-        usort($out, static fn (ConsumptionTaxPeriod $a, ConsumptionTaxPeriod $b): int
-            => $a->periodFrom <=> $b->periodFrom);
+        usort($out, static fn (ConsumptionTaxPeriod $a, ConsumptionTaxPeriod $b): int => $a->periodFrom <=> $b->periodFrom);
+
         return $out;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         unset($this->rows[$id]);

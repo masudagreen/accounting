@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Support\Clock;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Support\Clock\ClockInterface;
@@ -24,13 +22,13 @@ final class SystemClockTest extends TestCase
         $clock = new SystemClock();
         $now = $clock->getCurrentTime();
 
-        self::assertInstanceOf(DateTimeImmutable::class, $now);
+        self::assertInstanceOf(\DateTimeImmutable::class, $now);
         self::assertSame('Asia/Tokyo', $now->getTimezone()->getName());
     }
 
     public function testCustomTimezoneIsHonoured(): void
     {
-        $clock = new SystemClock(new DateTimeZone('UTC'));
+        $clock = new SystemClock(new \DateTimeZone('UTC'));
         $now = $clock->getCurrentTime();
 
         self::assertSame('UTC', $now->getTimezone()->getName());

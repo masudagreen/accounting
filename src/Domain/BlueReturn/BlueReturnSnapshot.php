@@ -21,10 +21,10 @@ namespace Rucaro\Domain\BlueReturn;
 final readonly class BlueReturnSnapshot
 {
     /**
-     * @param array<string, mixed>  $page1Pl
-     * @param array<string, mixed>  $page2Monthly
-     * @param array<string, mixed>  $page3Breakdown
-     * @param array<string, mixed>  $page4Bs
+     * @param array<string, mixed> $page1Pl
+     * @param array<string, mixed> $page2Monthly
+     * @param array<string, mixed> $page3Breakdown
+     * @param array<string, mixed> $page4Bs
      */
     public function __construct(
         public array $page1Pl,
@@ -42,10 +42,10 @@ final readonly class BlueReturnSnapshot
     public function toArray(): array
     {
         return [
-            'page1_pl'        => $this->page1Pl,
-            'page2_monthly'   => $this->page2Monthly,
+            'page1_pl' => $this->page1Pl,
+            'page2_monthly' => $this->page2Monthly,
             'page3_breakdown' => $this->page3Breakdown,
-            'page4_bs'        => $this->page4Bs,
+            'page4_bs' => $this->page4Bs,
         ];
     }
 
@@ -63,6 +63,7 @@ final readonly class BlueReturnSnapshot
         $page2 = $raw['page2_monthly'] ?? [];
         $page3 = $raw['page3_breakdown'] ?? [];
         $page4 = $raw['page4_bs'] ?? [];
+
         return new self(
             page1Pl: is_array($page1) ? $page1 : [],
             page2Monthly: is_array($page2) ? $page2 : [],
@@ -81,31 +82,31 @@ final readonly class BlueReturnSnapshot
     {
         return new self(
             page1Pl: [
-                'formType'    => $formType->value,
-                'revenue'     => [],
+                'formType' => $formType->value,
+                'revenue' => [],
                 'costOfSales' => [],
-                'expenses'    => [],
-                'netIncome'   => '0',
+                'expenses' => [],
+                'netIncome' => '0',
             ],
             page2Monthly: [
-                'months'  => [],
-                'totals'  => [
-                    'sales'    => '0',
+                'months' => [],
+                'totals' => [
+                    'sales' => '0',
                     'purchase' => '0',
-                    'salary'   => '0',
+                    'salary' => '0',
                 ],
             ],
             page3Breakdown: [
-                'depreciation'   => [],
-                'allowance'      => [],
-                'rent'           => [],
-                'interest'       => [],
-                'taxAccountant'  => [],
+                'depreciation' => [],
+                'allowance' => [],
+                'rent' => [],
+                'interest' => [],
+                'taxAccountant' => [],
             ],
             page4Bs: [
-                'assets'      => [],
+                'assets' => [],
                 'liabilities' => [],
-                'equity'      => [],
+                'equity' => [],
             ],
         );
     }

@@ -28,7 +28,7 @@ final class BudgetLineItemTest extends TestCase
     public function testCumulativeStopsAtRequestedMonth(): void
     {
         $amounts = ['10.0000', '20.0000', '30.0000', '40.0000', '50.0000', '60.0000',
-                    '70.0000', '80.0000', '90.0000', '100.0000', '110.0000', '120.0000'];
+            '70.0000', '80.0000', '90.0000', '100.0000', '110.0000', '120.0000'];
         $li = new BudgetLineItem(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             budgetId: '01HAAAAAAAAAAAAAAAAAAAAAB1',

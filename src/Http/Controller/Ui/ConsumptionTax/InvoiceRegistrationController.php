@@ -46,6 +46,7 @@ final readonly class InvoiceRegistrationController
         if ($entityId === null) {
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return $this->render($entityId, [], 200);
     }
 
@@ -61,15 +62,16 @@ final readonly class InvoiceRegistrationController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/consumption-tax/invoice-registrations');
         }
-        $id        = PlanningFormSupport::nullableStr($body, 'id');
-        $name      = PlanningFormSupport::str($body, 'counterparty_name');
+        $id = PlanningFormSupport::nullableStr($body, 'id');
+        $name = PlanningFormSupport::str($body, 'counterparty_name');
         $regNumber = PlanningFormSupport::nullableStr($body, 'registration_number');
-        $isReg     = PlanningFormSupport::bool($body['is_registered'] ?? null);
-        $from      = PlanningFormSupport::nullableStr($body, 'registered_from');
-        $until     = PlanningFormSupport::nullableStr($body, 'registered_until');
-        $notes     = PlanningFormSupport::nullableStr($body, 'notes');
+        $isReg = PlanningFormSupport::bool($body['is_registered'] ?? null);
+        $from = PlanningFormSupport::nullableStr($body, 'registered_from');
+        $until = PlanningFormSupport::nullableStr($body, 'registered_until');
+        $notes = PlanningFormSupport::nullableStr($body, 'notes');
 
         $errors = [];
         if ($name === '') {
@@ -89,13 +91,15 @@ final readonly class InvoiceRegistrationController
                     notes: $notes,
                 );
                 $this->flash->addSuccess('インボイス登録情報を保存しました。');
+
                 return HtmlResponse::redirect('/ui/consumption-tax/invoice-registrations');
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['保存に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['保存に失敗しました: '.$e->getMessage()];
             }
         }
+
         return $this->render($entityId, $errors, 422);
     }
 
@@ -107,34 +111,35 @@ final readonly class InvoiceRegistrationController
         $regs = $this->listRegs->execute($entityId);
         $items = array_map(
             static fn (InvoiceRegistration $r): array => [
-                'id'                 => $r->id,
-                'counterpartyName'   => $r->counterpartyName,
+                'id' => $r->id,
+                'counterpartyName' => $r->counterpartyName,
                 'registrationNumber' => $r->registrationNumber ?? '',
-                'isRegistered'       => $r->isRegistered,
-                'registeredFrom'     => $r->registeredFrom?->format('Y-m-d') ?? '',
-                'registeredUntil'    => $r->registeredUntil?->format('Y-m-d') ?? '',
-                'notes'              => $r->notes ?? '',
+                'isRegistered' => $r->isRegistered,
+                'registeredFrom' => $r->registeredFrom?->format('Y-m-d') ?? '',
+                'registeredUntil' => $r->registeredUntil?->format('Y-m-d') ?? '',
+                'notes' => $r->notes ?? '',
             ],
             $regs,
         );
         $data = [
-            'page_title'           => 'インボイス登録事業者',
-            'active_nav'           => 'consumption_tax',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => 'インボイス登録事業者',
+            'active_nav' => 'consumption_tax',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'items'                => $items,
-            'form_errors'          => $errors,
+            'flash_messages' => $this->flash->consume(),
+            'items' => $items,
+            'form_errors' => $errors,
         ];
+
         return HtmlResponse::of($status, $this->view->render('consumption_tax/invoice_registrations.html.tpl', $data));
     }
 }

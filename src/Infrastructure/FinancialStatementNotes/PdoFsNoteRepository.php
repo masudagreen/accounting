@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FinancialStatementNotes;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\FinancialStatementNotes\FinancialStatementNote;
 use Rucaro\Domain\FinancialStatementNotes\FsNoteCategory;
@@ -21,10 +19,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoFsNoteRepository implements FsNoteRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(FinancialStatementNote $note): void
     {
         $sql = <<<'SQL'
@@ -48,32 +47,35 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'         => UlidGenerator::decode($note->id),
-            ':entity'     => UlidGenerator::decode($note->entityId),
-            ':ft'         => UlidGenerator::decode($note->fiscalTermId),
-            ':tpl'        => $note->templateCode,
-            ':cat'        => $note->category->value,
-            ':label'      => $note->label,
-            ':body'       => $note->body,
-            ':so'         => $note->sortOrder,
-            ':active'     => $note->isActive ? 1 : 0,
+            ':id' => UlidGenerator::decode($note->id),
+            ':entity' => UlidGenerator::decode($note->entityId),
+            ':ft' => UlidGenerator::decode($note->fiscalTermId),
+            ':tpl' => $note->templateCode,
+            ':cat' => $note->category->value,
+            ':label' => $note->label,
+            ':body' => $note->body,
+            ':so' => $note->sortOrder,
+            ':active' => $note->isActive ? 1 : 0,
             ':created_at' => $note->createdAt->format('Y-m-d H:i:s.u'),
             ':updated_at' => $note->updatedAt->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function findById(string $id): ?FinancialStatementNote
     {
         $stmt = $this->pdo->prepare('SELECT * FROM fs_notes WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndTerm(
         string $entityId,
         string $fiscalTermId,
@@ -91,10 +93,12 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        return array_values(array_map([$this, 'hydrate'], $rows));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function countByTemplateCode(
         string $entityId,
         string $fiscalTermId,
@@ -109,13 +113,15 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
             ':t' => $templateCode,
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return 0;
         }
+
         return (int) ($row['c'] ?? 0);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare('DELETE FROM fs_notes WHERE id = :id');
@@ -130,6 +136,7 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
         $category = FsNoteCategory::tryFrom(
             is_string($row['category'] ?? null) ? (string) $row['category'] : 'other',
         ) ?? FsNoteCategory::Other;
+
         return new FinancialStatementNote(
             id: self::encodeId($row['id'] ?? ''),
             entityId: self::encodeId($row['entity_id'] ?? ''),
@@ -150,6 +157,7 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -159,23 +167,24 @@ final class PdoFsNoteRepository implements FsNoteRepositoryInterface
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

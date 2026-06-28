@@ -21,10 +21,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(SsManualAdjustment $adjustment): void
     {
         $sql = <<<'SQL'
@@ -45,18 +46,19 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'          => UlidGenerator::decode($adjustment->id),
-            ':entity'      => UlidGenerator::decode($adjustment->entityId),
-            ':ft'          => UlidGenerator::decode($adjustment->fiscalTermId),
-            ':section'     => $adjustment->sectionCode->value,
+            ':id' => UlidGenerator::decode($adjustment->id),
+            ':entity' => UlidGenerator::decode($adjustment->entityId),
+            ':ft' => UlidGenerator::decode($adjustment->fiscalTermId),
+            ':section' => $adjustment->sectionCode->value,
             ':change_type' => $adjustment->changeType->value,
-            ':amount'      => $adjustment->amount,
-            ':label'       => $adjustment->label,
-            ':sort_order'  => $adjustment->sortOrder,
-            ':notes'       => $adjustment->notes,
+            ':amount' => $adjustment->amount,
+            ':label' => $adjustment->label,
+            ':sort_order' => $adjustment->sortOrder,
+            ':notes' => $adjustment->notes,
         ]);
     }
 
+    #[\Override]
     public function findById(string $id): ?SsManualAdjustment
     {
         $stmt = $this->pdo->prepare(
@@ -64,13 +66,15 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
         );
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): array
     {
         $stmt = $this->pdo->prepare(
@@ -83,14 +87,16 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
             ':f' => UlidGenerator::decode($fiscalTermId),
         ]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         $out = [];
         foreach ($rows as $row) {
             $out[] = $this->hydrate($row);
         }
+
         return $out;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare(
@@ -112,7 +118,7 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
             : '';
 
         $section = SsSectionCode::tryFrom($sectionRaw) ?? SsSectionCode::RetainedEarnings;
-        $change  = SsChangeType::tryFrom($changeRaw) ?? SsChangeType::Other;
+        $change = SsChangeType::tryFrom($changeRaw) ?? SsChangeType::Other;
 
         return new SsManualAdjustment(
             id: self::encodeId($row['id'] ?? ''),
@@ -132,6 +138,7 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -141,6 +148,7 @@ final class PdoSsManualAdjustmentRepository implements SsManualAdjustmentReposit
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 }

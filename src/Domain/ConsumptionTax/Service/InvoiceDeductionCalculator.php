@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax\Service;
 
-use DateTimeImmutable;
 use Rucaro\Support\Decimal\Decimal;
 
 /**
@@ -22,14 +21,14 @@ final class InvoiceDeductionCalculator
 {
     private const FULL_DEDUCTION_START = '2023-10-01';
     private const HALF_DEDUCTION_START = '2026-10-01';
-    private const NO_DEDUCTION_START   = '2029-10-01';
+    private const NO_DEDUCTION_START = '2029-10-01';
 
     /** Returns the deductible ratio as a scale-2 percentage (e.g. "80.00"). */
-    public function deductibleRatio(DateTimeImmutable $bookedOn): string
+    public function deductibleRatio(\DateTimeImmutable $bookedOn): string
     {
-        $full = new DateTimeImmutable(self::FULL_DEDUCTION_START);
-        $half = new DateTimeImmutable(self::HALF_DEDUCTION_START);
-        $none = new DateTimeImmutable(self::NO_DEDUCTION_START);
+        $full = new \DateTimeImmutable(self::FULL_DEDUCTION_START);
+        $half = new \DateTimeImmutable(self::HALF_DEDUCTION_START);
+        $none = new \DateTimeImmutable(self::NO_DEDUCTION_START);
 
         if ($bookedOn < $full) {
             // Before invoice regime: still fully deductible.
@@ -41,6 +40,7 @@ final class InvoiceDeductionCalculator
         if ($bookedOn < $none) {
             return '50.00';
         }
+
         return '0.00';
     }
 
@@ -48,22 +48,25 @@ final class InvoiceDeductionCalculator
      * Calculates the deductible portion of a tax amount charged by a
      * non-registered counter-party.
      */
-    public function deductibleAmount(DateTimeImmutable $bookedOn, string $taxAmount): string
+    public function deductibleAmount(\DateTimeImmutable $bookedOn, string $taxAmount): string
     {
         $ratio = $this->deductibleRatio($bookedOn);
         if (function_exists('bcmul')) {
+            /** @psalm-suppress ArgumentTypeCoercion taxAmount / ratio are Decimal-shaped numeric strings */
             return bcdiv(bcmul($taxAmount, $ratio, 8), '100', 4);
         }
         $v = ((float) $taxAmount) * ((float) $ratio) / 100.0;
+
         return number_format($v, 4, '.', '');
     }
 
     /**
      * Disallowed portion = taxAmount − deductibleAmount.
      */
-    public function disallowedAmount(DateTimeImmutable $bookedOn, string $taxAmount): string
+    public function disallowedAmount(\DateTimeImmutable $bookedOn, string $taxAmount): string
     {
         $ded = $this->deductibleAmount($bookedOn, $taxAmount);
-        return Decimal::add($taxAmount, '-' . ltrim(Decimal::normalize($ded), '-'));
+
+        return Decimal::add($taxAmount, '-'.ltrim(Decimal::normalize($ded), '-'));
     }
 }

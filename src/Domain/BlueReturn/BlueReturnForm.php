@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\BlueReturn;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\InvariantViolationException;
 
 /**
@@ -32,22 +31,20 @@ final readonly class BlueReturnForm
         public BlueReturnFormType $formType,
         public BlueReturnStatus $status,
         public BlueReturnSnapshot $snapshot,
-        public ?DateTimeImmutable $finalizedAt,
+        public ?\DateTimeImmutable $finalizedAt,
         public string $createdBy,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt = null,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt = null,
     ) {
     }
 
-    public function finalize(DateTimeImmutable $now): self
+    public function finalize(\DateTimeImmutable $now): self
     {
         if ($this->status !== BlueReturnStatus::Draft) {
-            throw InvariantViolationException::for('blue_return.finalize.wrong_status', [
-                'formId' => $this->id,
-                'status' => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('blue_return.finalize.wrong_status', ['formId' => $this->id, 'status' => $this->status->value]);
         }
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -63,14 +60,12 @@ final readonly class BlueReturnForm
         );
     }
 
-    public function withSnapshot(BlueReturnSnapshot $snapshot, DateTimeImmutable $now): self
+    public function withSnapshot(BlueReturnSnapshot $snapshot, \DateTimeImmutable $now): self
     {
         if (!$this->status->isEditable()) {
-            throw InvariantViolationException::for('blue_return.not_editable', [
-                'formId' => $this->id,
-                'status' => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('blue_return.not_editable', ['formId' => $this->id, 'status' => $this->status->value]);
         }
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -86,14 +81,12 @@ final readonly class BlueReturnForm
         );
     }
 
-    public function withFormType(BlueReturnFormType $formType, DateTimeImmutable $now): self
+    public function withFormType(BlueReturnFormType $formType, \DateTimeImmutable $now): self
     {
         if (!$this->status->isEditable()) {
-            throw InvariantViolationException::for('blue_return.not_editable', [
-                'formId' => $this->id,
-                'status' => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('blue_return.not_editable', ['formId' => $this->id, 'status' => $this->status->value]);
         }
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,

@@ -35,6 +35,7 @@ final readonly class CalculateConsumptionTaxUseCase
             $period->periodTo,
         );
         $calc = $this->factory->forMethod($period->calculationMethod);
+
         return $calc->calculate($period, $txs);
     }
 }

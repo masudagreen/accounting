@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ledger;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\Ledger\QueryLedgerUseCase;
 use Rucaro\Application\Ledger\QueryLedgerUseCaseInput;
 use Rucaro\Domain\Ledger\LedgerGeneratorInterface;
@@ -39,7 +36,7 @@ final readonly class GetLedgerController
         private QueryLedgerUseCase $useCase,
         private LedgerGeneratorInterface $generator,
         private AuthenticateBearer $auth,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -68,10 +65,10 @@ final readonly class GetLedgerController
 
         $from = self::parseDate($request->queryString('from'))
             ?? $termStart
-            ?? new DateTimeImmutable('1970-01-01', new DateTimeZone('UTC'));
+            ?? new \DateTimeImmutable('1970-01-01', new \DateTimeZone('UTC'));
         $to = self::parseDate($request->queryString('to'))
             ?? $termEnd
-            ?? new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
         $format = strtolower($request->queryString('format') ?? 'json');
 
@@ -85,12 +82,13 @@ final readonly class GetLedgerController
 
         if ($format === 'pdf') {
             $pdf = $this->generator->render($output->ledger);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="ledger.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
@@ -99,7 +97,7 @@ final readonly class GetLedgerController
         return EnvelopeResponse::ok(LedgerJsonSerializer::toArray($output->ledger));
     }
 
-    private static function parseDate(?string $raw): ?DateTimeImmutable
+    private static function parseDate(?string $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -108,14 +106,14 @@ final readonly class GetLedgerController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
     /**
-     * @return array{0: ?DateTimeImmutable, 1: ?DateTimeImmutable}
+     * @return array{0: ?\DateTimeImmutable, 1: ?\DateTimeImmutable}
      */
     private function lookupFiscalTermBounds(string $fiscalTermId): array
     {
@@ -124,10 +122,11 @@ final readonly class GetLedgerController
         );
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
         /** @var array<string, string>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return [null, null];
         }
+
         return [
             self::parseDate((string) ($row['start_date'] ?? '')),
             self::parseDate((string) ($row['end_date'] ?? '')),

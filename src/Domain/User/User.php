@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\User;
 
-use DateTimeImmutable;
-
 /**
  * Application user aggregate.
  *
@@ -15,6 +13,9 @@ use DateTimeImmutable;
  */
 final readonly class User
 {
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_CLERK = 'clerk';
+
     public function __construct(
         public string $id,
         public string $loginId,
@@ -22,15 +23,21 @@ final readonly class User
         public string $email,
         public string $passwordHash,
         public bool $isActive,
-        public ?DateTimeImmutable $lastLoginAt,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt = null,
+        public ?\DateTimeImmutable $lastLoginAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt = null,
+        public string $role = self::ROLE_ADMIN,
     ) {
     }
 
     public function isDeleted(): bool
     {
         return $this->deletedAt !== null;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 }

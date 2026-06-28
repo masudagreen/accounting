@@ -44,6 +44,7 @@ final readonly class LoginController
         if ($request->method === 'POST') {
             return $this->handlePost($request);
         }
+
         return $this->handleGet();
     }
 
@@ -54,12 +55,13 @@ final readonly class LoginController
         }
         $csrfToken = $this->csrf->generateToken(self::CSRF_FORM_ID);
         $html = $this->view->render('login.html.tpl', [
-            'csrf_token'    => $csrfToken,
-            'csrf_field'    => self::CSRF_FORM_ID,
-            'flash_messages'=> $this->flash->consume(),
-            'form_email'    => '',
-            'form_errors'   => [],
+            'csrf_token' => $csrfToken,
+            'csrf_field' => self::CSRF_FORM_ID,
+            'flash_messages' => $this->flash->consume(),
+            'form_email' => '',
+            'form_errors' => [],
         ]);
+
         return HtmlResponse::ok($html);
     }
 
@@ -72,6 +74,7 @@ final readonly class LoginController
 
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, $submitted)) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度ログインしてください。');
+
             return HtmlResponse::redirect('/ui/login');
         }
 
@@ -93,11 +96,12 @@ final readonly class LoginController
         // plaintext is the only handle the use case returns, so we look up
         // the record to keep the token id available for logout/revoke.
         $this->session->setUser(
-            userId:        $output->userId,
-            plaintextToken:$output->token,
-            tokenId:       '', // Filled below if we can resolve; optional.
-            displayName:   $output->displayName,
-            email:         $output->email,
+            userId: $output->userId,
+            plaintextToken: $output->token,
+            tokenId: '', // Filled below if we can resolve; optional.
+            displayName: $output->displayName,
+            email: $output->email,
+            role: $output->role,
         );
 
         // Auto-select the user's first entity so the dashboard can render
@@ -113,7 +117,8 @@ final readonly class LoginController
             $this->session->setSelectedEntity($entities->items[0]->id);
         }
 
-        $this->flash->addSuccess('ログインしました。ようこそ ' . $output->displayName . ' さん。');
+        $this->flash->addSuccess('ログインしました。ようこそ '.$output->displayName.' さん。');
+
         return HtmlResponse::redirect('/ui/dashboard');
     }
 
@@ -124,12 +129,13 @@ final readonly class LoginController
     {
         $csrfToken = $this->csrf->generateToken(self::CSRF_FORM_ID);
         $html = $this->view->render('login.html.tpl', [
-            'csrf_token'    => $csrfToken,
-            'csrf_field'    => self::CSRF_FORM_ID,
-            'flash_messages'=> $this->flash->consume(),
-            'form_email'    => $email,
-            'form_errors'   => $errors,
+            'csrf_token' => $csrfToken,
+            'csrf_field' => self::CSRF_FORM_ID,
+            'flash_messages' => $this->flash->consume(),
+            'form_email' => $email,
+            'form_errors' => $errors,
         ]);
+
         return HtmlResponse::of(422, $html);
     }
 
@@ -147,6 +153,7 @@ final readonly class LoginController
                 $out[$k] = $v;
             }
         }
+
         return $out;
     }
 }

@@ -54,6 +54,7 @@ final readonly class CreateAccountTitleUseCase
             updatedAt: $now,
         );
         $this->repo->save($title);
+
         return $title;
     }
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\TrialBalance\TrialBalanceQueryInterface;
 use Rucaro\Domain\TrialBalance\TrialBalanceSnapshot;
 use Rucaro\Domain\TrialBalance\TrialBalanceSnapshotRepositoryInterface;
@@ -35,7 +33,7 @@ final readonly class RefreshTrialBalanceSnapshotUseCase
 
     public function execute(RefreshTrialBalanceSnapshotUseCaseInput $input): int
     {
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
 
         $live = $this->query->queryByPeriod(
             $input->entityId,
@@ -70,14 +68,14 @@ final readonly class RefreshTrialBalanceSnapshotUseCase
         return count($records);
     }
 
-    private function atUtcMidnight(DateTimeImmutable $d): DateTimeImmutable
+    private function atUtcMidnight(\DateTimeImmutable $d): \DateTimeImmutable
     {
         // Preserve the calendar date regardless of the caller's timezone —
         // we only care about "the month end" at day granularity, and the DB
         // column is DATE anyway.
-        return new DateTimeImmutable(
-            $d->format('Y-m-d') . 'T00:00:00',
-            new DateTimeZone('UTC'),
+        return new \DateTimeImmutable(
+            $d->format('Y-m-d').'T00:00:00',
+            new \DateTimeZone('UTC'),
         );
     }
 }

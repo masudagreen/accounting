@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Budget;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCase;
@@ -24,11 +23,13 @@ use Rucaro\Tests\Support\Fake\InMemoryBudgetRepository;
 #[CoversClass(BudgetListController::class)]
 final class BudgetListControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -59,27 +60,29 @@ final class BudgetListControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
         $pdo = self::inMemoryPdo();
+
         return new BudgetListController(
             listBudgets: new ListBudgetsUseCase(new InMemoryBudgetRepository()),
-            ctx:         new PlanningUiContext(
+            ctx: new PlanningUiContext(
                 new ListAccountTitlesUseCase(new StubAccountTitleRepository()),
                 $pdo,
             ),
-            session:     $session,
-            csrf:        new CsrfTokenManager($clock),
-            flash:       new FlashMessageBag(),
-            view:        new SmartyViewRenderer($templateDir, $compileDir),
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, fiscal_period INTEGER, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
@@ -87,6 +90,7 @@ final class BudgetListControllerTest extends TestCase
 /** @internal */
 final class StubAccountTitleRepository implements AccountTitleRepositoryInterface
 {
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -98,6 +102,7 @@ final class StubAccountTitleRepository implements AccountTitleRepositoryInterfac
         return [];
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -107,24 +112,29 @@ final class StubAccountTitleRepository implements AccountTitleRepositoryInterfac
         return 0;
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         return null;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return [];
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         return false;

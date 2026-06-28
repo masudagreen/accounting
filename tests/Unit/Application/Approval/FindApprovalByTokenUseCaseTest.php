@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Approval\FindApprovalByTokenUseCase;
@@ -49,7 +47,7 @@ final class FindApprovalByTokenUseCaseTest extends TestCase
     {
         [$useCase] = $this->wire(status: 'active');
         $this->expectException(TokenNotFoundException::class);
-        $useCase->execute('deadbeef' . str_repeat('0', 56));
+        $useCase->execute('deadbeef'.str_repeat('0', 56));
     }
 
     /**
@@ -57,14 +55,14 @@ final class FindApprovalByTokenUseCaseTest extends TestCase
      */
     private function wire(string $status): array
     {
-        $tz = new DateTimeZone('UTC');
+        $tz = new \DateTimeZone('UTC');
         $clock = new FrozenClock('2026-04-22T00:00:00.000Z');
         $plaintext = str_repeat('a', 64);
         $hash = BearerTokenGenerator::hash($plaintext);
-        $issued = new DateTimeImmutable('2026-04-20T00:00:00Z', $tz);
+        $issued = new \DateTimeImmutable('2026-04-20T00:00:00Z', $tz);
         $expires = $status === 'expired'
-            ? new DateTimeImmutable('2026-04-21T00:00:00Z', $tz)
-            : new DateTimeImmutable('2026-04-25T00:00:00Z', $tz);
+            ? new \DateTimeImmutable('2026-04-21T00:00:00Z', $tz)
+            : new \DateTimeImmutable('2026-04-25T00:00:00Z', $tz);
         $token = new ApprovalToken(
             id: '01HW7K9B2QV7C8Y4ZAPPR0000001',
             targetKind: ApprovalTargetKind::Journal,
@@ -92,6 +90,7 @@ final class FindApprovalByTokenUseCaseTest extends TestCase
         ));
 
         $useCase = new FindApprovalByTokenUseCase($repo, $resolver, $clock);
+
         return [$useCase, $plaintext];
     }
 }

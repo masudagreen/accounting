@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Budget;
 
-use InvalidArgumentException;
 use Rucaro\Domain\Budget\BudgetRepositoryInterface;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -25,21 +24,20 @@ final readonly class ApproveBudgetUseCase
     public function execute(string $budgetId, string $approverId): BudgetOutput
     {
         if (!UlidGenerator::isValid($budgetId)) {
-            throw new InvalidArgumentException('budgetId must be a ULID.');
+            throw new \InvalidArgumentException('budgetId must be a ULID.');
         }
         if (!UlidGenerator::isValid($approverId)) {
-            throw new InvalidArgumentException('approverId must be a ULID.');
+            throw new \InvalidArgumentException('approverId must be a ULID.');
         }
 
         $budget = $this->budgets->findById($budgetId);
         if ($budget === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('budget %s was not found.', $budgetId)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('budget %s was not found.', $budgetId)]]);
         }
 
         $approved = $budget->approve($approverId, $this->clock->getCurrentTime());
         $this->budgets->save($approved);
+
         return new BudgetOutput($approved);
     }
 }

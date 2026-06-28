@@ -20,11 +20,13 @@ use Rucaro\Tests\Support\Fake\InMemoryFixedAssetRepository;
 #[CoversClass(FixedAssetNewController::class)]
 final class FixedAssetNewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -57,18 +59,19 @@ final class FixedAssetNewControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
+
         return new FixedAssetNewController(
             createAsset: new CreateFixedAssetUseCase(
                 new InMemoryFixedAssetRepository(),
                 new UlidGenerator($clock),
                 $clock,
             ),
-            session:     $session,
-            csrf:        new CsrfTokenManager($clock),
-            flash:       new FlashMessageBag(),
-            view:        new SmartyViewRenderer($templateDir, $compileDir),
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
     }
 }

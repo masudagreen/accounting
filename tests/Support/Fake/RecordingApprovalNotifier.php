@@ -18,15 +18,16 @@ final class RecordingApprovalNotifier implements ApprovalNotifierInterface
     /** @var list<array{token: ApprovalToken, plaintext: string, target: ApprovalTargetInterface}> */
     public array $calls = [];
 
+    #[\Override]
     public function notifyIssued(
         ApprovalToken $token,
         string $tokenPlaintext,
         ApprovalTargetInterface $target,
     ): void {
         $this->calls[] = [
-            'token'     => $token,
+            'token' => $token,
             'plaintext' => $tokenPlaintext,
-            'target'    => $target,
+            'target' => $target,
         ];
     }
 }

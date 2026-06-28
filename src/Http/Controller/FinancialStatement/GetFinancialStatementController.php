@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\FinancialStatement;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCase;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
 use Rucaro\Domain\FinancialStatement\FinancialStatementGeneratorInterface;
@@ -40,7 +37,7 @@ final readonly class GetFinancialStatementController
         private GenerateFinancialStatementUseCase $useCase,
         private FinancialStatementGeneratorInterface $generator,
         private AuthenticateBearer $auth,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -63,7 +60,7 @@ final readonly class GetFinancialStatementController
         $kind = FinancialStatementKind::fromQueryString($request->queryString('kind'));
 
         $asOf = self::parseDate($request->queryString('asOf'))
-            ?? new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $from = self::parseDate($request->queryString('from'))
             ?? $this->lookupFiscalTermStart($fiscalTermId)
             ?? $asOf;
@@ -85,12 +82,13 @@ final readonly class GetFinancialStatementController
                 strtolower($kind->value),
                 $asOf->format('Ymd'),
             );
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
@@ -99,7 +97,7 @@ final readonly class GetFinancialStatementController
         return EnvelopeResponse::ok(JsonFinancialStatementSerializer::toArray($fs));
     }
 
-    private static function parseDate(?string $raw): ?DateTimeImmutable
+    private static function parseDate(?string $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -108,13 +106,13 @@ final readonly class GetFinancialStatementController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private function lookupFiscalTermStart(string $fiscalTermId): ?DateTimeImmutable
+    private function lookupFiscalTermStart(string $fiscalTermId): ?\DateTimeImmutable
     {
         $stmt = $this->pdo->prepare('SELECT start_date FROM fiscal_terms WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
@@ -124,7 +122,7 @@ final readonly class GetFinancialStatementController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

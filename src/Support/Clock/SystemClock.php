@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Clock;
 
-use DateTimeImmutable;
-use DateTimeZone;
-
 /**
  * Default {@see ClockInterface} implementation backed by the system clock.
  *
@@ -16,12 +13,13 @@ use DateTimeZone;
 final readonly class SystemClock implements ClockInterface
 {
     public function __construct(
-        private DateTimeZone $timezone = new DateTimeZone('Asia/Tokyo'),
+        private \DateTimeZone $timezone = new \DateTimeZone('Asia/Tokyo'),
     ) {
     }
 
-    public function getCurrentTime(): DateTimeImmutable
+    #[\Override]
+    public function getCurrentTime(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', $this->timezone);
+        return new \DateTimeImmutable('now', $this->timezone);
     }
 }

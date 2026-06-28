@@ -64,6 +64,7 @@ final readonly class CreateFsNoteController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(FsNoteJsonSerializer::toArray($out->note), null, 201);
     }
 
@@ -73,6 +74,7 @@ final readonly class CreateFsNoteController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 
@@ -82,6 +84,7 @@ final readonly class CreateFsNoteController
     private static function nullableString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 }

@@ -58,6 +58,7 @@ final readonly class UpdateAccountTitleUseCase
             updatedAt: $this->clock->getCurrentTime(),
         );
         $this->repo->save($updated);
+
         return $updated;
     }
 }

@@ -24,6 +24,7 @@ enum FinancialStatementKind: string
             return self::All;
         }
         $normalised = strtoupper($raw);
+
         return match ($normalised) {
             'BS', 'BALANCESHEET', 'BALANCE_SHEET' => self::BalanceSheet,
             'PL', 'PROFITANDLOSS', 'PROFIT_AND_LOSS' => self::ProfitAndLoss,

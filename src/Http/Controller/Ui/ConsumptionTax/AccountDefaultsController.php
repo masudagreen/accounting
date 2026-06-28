@@ -6,7 +6,6 @@ namespace Rucaro\Http\Controller\Ui\ConsumptionTax;
 
 use Rucaro\Application\ConsumptionTax\ListAccountTitleTaxDefaultsUseCase;
 use Rucaro\Application\ConsumptionTax\UpsertAccountTitleTaxDefaultsUseCase;
-use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefault;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCategoryCode;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Http\Controller\Ui\EntitySwitchController;
@@ -51,6 +50,7 @@ final readonly class AccountDefaultsController
         if ($entityId === null) {
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return $this->render($entityId, 200);
     }
 
@@ -66,6 +66,7 @@ final readonly class AccountDefaultsController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/consumption-tax/account-defaults');
         }
 
@@ -85,8 +86,8 @@ final readonly class AccountDefaultsController
                 }
                 $payload[] = [
                     'accountTitleId' => $aid,
-                    'categoryCode'   => $cat,
-                    'rateCode'       => $rate,
+                    'categoryCode' => $cat,
+                    'rateCode' => $rate,
                 ];
             }
         }
@@ -95,10 +96,11 @@ final readonly class AccountDefaultsController
             $this->upsert->execute($entityId, $payload);
             $this->flash->addSuccess('勘定科目 × 消費税区分の既定値を更新しました。');
         } catch (ValidationException $e) {
-            $this->flash->addError('保存に失敗しました: ' . self::firstError($e));
+            $this->flash->addError('保存に失敗しました: '.self::firstError($e));
         } catch (\Throwable $e) {
-            $this->flash->addError('保存に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('保存に失敗しました: '.$e->getMessage());
         }
+
         return HtmlResponse::redirect('/ui/consumption-tax/account-defaults');
     }
 
@@ -109,7 +111,7 @@ final readonly class AccountDefaultsController
         foreach ($defaults as $d) {
             $byAccount[$d->accountTitleId] = [
                 'category' => $d->defaultCategoryCode->value,
-                'rate'     => $d->defaultRateCode ?? '',
+                'rate' => $d->defaultRateCode ?? '',
             ];
         }
 
@@ -117,32 +119,33 @@ final readonly class AccountDefaultsController
         $items = [];
         foreach ($accounts as $a) {
             $items[] = [
-                'id'       => $a['id'],
-                'code'     => $a['code'],
-                'name'     => $a['name'],
+                'id' => $a['id'],
+                'code' => $a['code'],
+                'name' => $a['name'],
                 'category' => $byAccount[$a['id']]['category'] ?? '',
-                'rate'     => $byAccount[$a['id']]['rate'] ?? '',
+                'rate' => $byAccount[$a['id']]['rate'] ?? '',
             ];
         }
 
         $data = [
-            'page_title'           => '消費税区分の既定値',
-            'active_nav'           => 'consumption_tax',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '消費税区分の既定値',
+            'active_nav' => 'consumption_tax',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'items'                => $items,
-            'category_options'     => self::categoryOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'items' => $items,
+            'category_options' => self::categoryOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('consumption_tax/account_defaults.html.tpl', $data));
     }
 
@@ -155,6 +158,7 @@ final readonly class AccountDefaultsController
         foreach (ConsumptionTaxCategoryCode::cases() as $c) {
             $options[] = ['value' => $c->value, 'label' => $c->value];
         }
+
         return $options;
     }
 
@@ -165,6 +169,7 @@ final readonly class AccountDefaultsController
                 return $msgs[0];
             }
         }
+
         return $e->getMessage();
     }
 }

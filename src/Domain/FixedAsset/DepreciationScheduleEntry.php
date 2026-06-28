@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FixedAsset;
 
-use DateTimeImmutable;
-
 /**
  * A single line (period) of a {@see DepreciationSchedule} — one fiscal
  * term's projected depreciation for one fixed asset.
@@ -17,8 +15,8 @@ final readonly class DepreciationScheduleEntry
         public string $fixedAssetId,
         public string $fiscalTermId,
         public int $periodNumber,
-        public DateTimeImmutable $periodStartDate,
-        public DateTimeImmutable $periodEndDate,
+        public \DateTimeImmutable $periodStartDate,
+        public \DateTimeImmutable $periodEndDate,
         public int $monthsInService,
         public string $openingBookValue,
         public string $depreciationAmount,
@@ -26,11 +24,11 @@ final readonly class DepreciationScheduleEntry
         public string $closingBookValue,
         public bool $isPosted,
         public ?string $postedJournalEntryId,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 
-    public function markPosted(string $journalEntryId, DateTimeImmutable $at): self
+    public function markPosted(string $journalEntryId, \DateTimeImmutable $at): self
     {
         return new self(
             id: $this->id,

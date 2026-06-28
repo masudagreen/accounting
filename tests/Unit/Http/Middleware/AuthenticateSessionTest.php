@@ -16,11 +16,13 @@ use Rucaro\Tests\Unit\Application\Support\InMemoryApiTokenRepo;
 #[CoversClass(AuthenticateSession::class)]
 final class AuthenticateSessionTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];

@@ -52,22 +52,23 @@ final readonly class ConsumptionTaxPeriodShowController
         }
 
         $data = [
-            'page_title'           => '消費税申告期間詳細',
-            'active_nav'           => 'consumption_tax',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '消費税申告期間詳細',
+            'active_nav' => 'consumption_tax',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'period'               => self::periodToArray($period),
+            'flash_messages' => $this->flash->consume(),
+            'period' => self::periodToArray($period),
         ];
+
         return HtmlResponse::ok($this->view->render('consumption_tax/period_show.html.tpl', $data));
     }
 
@@ -77,16 +78,16 @@ final readonly class ConsumptionTaxPeriodShowController
     private static function periodToArray(ConsumptionTaxPeriod $p): array
     {
         return [
-            'id'              => $p->id,
-            'fiscalTermId'    => $p->fiscalTermId,
-            'periodFrom'      => $p->periodFrom->format('Y-m-d'),
-            'periodTo'        => $p->periodTo->format('Y-m-d'),
-            'method'          => $p->calculationMethod->value,
-            'methodLabel'     => $p->calculationMethod->label(),
+            'id' => $p->id,
+            'fiscalTermId' => $p->fiscalTermId,
+            'periodFrom' => $p->periodFrom->format('Y-m-d'),
+            'periodTo' => $p->periodTo->format('Y-m-d'),
+            'method' => $p->calculationMethod->value,
+            'methodLabel' => $p->calculationMethod->label(),
             'simplifiedLabel' => $p->simplifiedBusinessCategory?->label() ?? '',
-            'isInterim'       => $p->isInterim,
-            'status'          => $p->settlementStatus,
-            'settledAt'       => $p->settledAt?->format('Y-m-d H:i') ?? '',
+            'isInterim' => $p->isInterim,
+            'status' => $p->settlementStatus,
+            'settledAt' => $p->settledAt?->format('Y-m-d H:i') ?? '',
         ];
     }
 }

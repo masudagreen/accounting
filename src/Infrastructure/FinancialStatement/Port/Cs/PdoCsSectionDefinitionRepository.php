@@ -15,10 +15,11 @@ use Rucaro\Domain\FinancialStatement\Port\Cs\CsSectionDefinitionRepositoryInterf
 final class PdoCsSectionDefinitionRepository implements CsSectionDefinitionRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findAll(): array
     {
         $sql = 'SELECT code, parent_code, label, sort_order,
@@ -28,7 +29,7 @@ final class PdoCsSectionDefinitionRepository implements CsSectionDefinitionRepos
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -55,6 +56,7 @@ final class PdoCsSectionDefinitionRepository implements CsSectionDefinitionRepos
                 formula: $formula,
             );
         }
+
         return $out;
     }
 
@@ -69,6 +71,7 @@ final class PdoCsSectionDefinitionRepository implements CsSectionDefinitionRepos
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 }

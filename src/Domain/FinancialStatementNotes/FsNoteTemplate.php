@@ -24,24 +24,16 @@ final readonly class FsNoteTemplate
         public int $sortOrder,
     ) {
         if ($code === '' || strlen($code) > 32) {
-            throw ValidationException::withErrors([
-                'code' => ['code must be 1..32 characters.'],
-            ]);
+            throw ValidationException::withErrors(['code' => ['code must be 1..32 characters.']]);
         }
         if ($label === '' || mb_strlen($label) > 128) {
-            throw ValidationException::withErrors([
-                'label' => ['label must be 1..128 characters.'],
-            ]);
+            throw ValidationException::withErrors(['label' => ['label must be 1..128 characters.']]);
         }
         if ($defaultBody === '') {
-            throw ValidationException::withErrors([
-                'defaultBody' => ['defaultBody must not be empty.'],
-            ]);
+            throw ValidationException::withErrors(['defaultBody' => ['defaultBody must not be empty.']]);
         }
         if ($sortOrder < 0) {
-            throw ValidationException::withErrors([
-                'sortOrder' => ['sortOrder must be non-negative.'],
-            ]);
+            throw ValidationException::withErrors(['sortOrder' => ['sortOrder must be non-negative.']]);
         }
     }
 }

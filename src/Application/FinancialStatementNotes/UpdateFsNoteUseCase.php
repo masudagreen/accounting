@@ -25,9 +25,7 @@ final readonly class UpdateFsNoteUseCase
     {
         $existing = $this->notes->findById($input->id);
         if ($existing === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('note %s was not found.', $input->id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('note %s was not found.', $input->id)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -38,9 +36,7 @@ final readonly class UpdateFsNoteUseCase
                 ? FsNoteCategory::tryFrom($input->category)
                 : $existing->category;
             if ($category === null) {
-                throw ValidationException::withErrors([
-                    'category' => [sprintf('category "%s" is not a valid FsNoteCategory.', (string) $input->category)],
-                ]);
+                throw ValidationException::withErrors(['category' => [sprintf('category "%s" is not a valid FsNoteCategory.', (string) $input->category)]]);
             }
             $updated = $updated->withContent(
                 category: $category,
@@ -57,6 +53,7 @@ final readonly class UpdateFsNoteUseCase
         }
 
         $this->notes->save($updated);
+
         return new FsNoteOutput($updated);
     }
 }

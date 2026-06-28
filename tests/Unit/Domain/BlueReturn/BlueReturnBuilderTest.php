@@ -27,7 +27,7 @@ final class BlueReturnBuilderTest extends TestCase
             ],
             breakdown: [
                 'depreciation' => [['name' => '車両', 'periodDepreciation' => '120000']],
-                'rent'         => [['label' => '店舗', 'amount' => '1200000']],
+                'rent' => [['label' => '店舗', 'amount' => '1200000']],
             ],
             assetsByAccount: ['現金' => '400000.0000', '売掛金' => '800000.0000'],
             liabilitiesByAccount: ['買掛金' => '300000.0000'],

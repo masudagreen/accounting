@@ -38,20 +38,35 @@ final readonly class EntitySwitchController
         $submitted = $body['_csrf'] ?? '';
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, $submitted)) {
             $this->flash->addError('不正なリクエストを検出しました。もう一度お試しください。');
+
             return HtmlResponse::redirect($this->resolveReturn($request));
         }
 
         $entityId = $body['entity_id'] ?? '';
         $fiscalTermId = $body['fiscal_term_id'] ?? '';
 
+        // Detect a true entity change. When the operator switches to a
+        // different entity any previously-selected fiscal term belongs to
+        // the OLD entity and must not silently survive — downstream pages
+        // (notably the journal form's hidden fiscal_term_id) would
+        // otherwise round-trip a cross-entity id.
+        $previousEntityId = $this->session->getSelectedEntity();
+        $entityChanged = $entityId !== '' && $previousEntityId !== null && $previousEntityId !== $entityId;
+
         if ($entityId !== '') {
             $this->session->setSelectedEntity($entityId);
         }
         if ($fiscalTermId !== '') {
             $this->session->setSelectedFiscalTerm($fiscalTermId);
+        } elseif ($entityChanged) {
+            // Entity changed and no explicit term in this request → drop
+            // the stale term so the next page picks the new entity's
+            // default rather than reusing the old one.
+            $this->session->setSelectedFiscalTerm('');
         }
 
         $this->flash->addInfo('対象を切り替えました。');
+
         return HtmlResponse::redirect($this->resolveReturn($request));
     }
 
@@ -65,6 +80,7 @@ final readonly class EntitySwitchController
         if ($referer !== null && preg_match('#https?://[^/]+(/ui/[^\s]*)#', $referer, $m) === 1) {
             return $m[1];
         }
+
         return '/ui/dashboard';
     }
 
@@ -82,6 +98,7 @@ final readonly class EntitySwitchController
                 $out[$k] = $v;
             }
         }
+
         return $out;
     }
 }

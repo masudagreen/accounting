@@ -44,6 +44,7 @@ final readonly class CreateSubAccountTitleUseCase
             updatedAt: $now,
         );
         $this->repo->save($sub);
+
         return $sub;
     }
 }

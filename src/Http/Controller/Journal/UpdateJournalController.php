@@ -52,9 +52,7 @@ final readonly class UpdateJournalController
             $lines = [];
             foreach (array_values($linesRaw) as $idx => $line) {
                 if (!is_array($line)) {
-                    throw ValidationException::withErrors([
-                        sprintf('lines[%d]', $idx) => ['line must be a JSON object'],
-                    ]);
+                    throw ValidationException::withErrors([sprintf('lines[%d]', $idx) => ['line must be a JSON object']]);
                 }
                 $lines[] = new JournalLineInput(
                     side: self::requireString($line, 'side'),
@@ -104,10 +102,9 @@ final readonly class UpdateJournalController
     {
         $v = $body[$field] ?? null;
         if (!is_string($v) || $v === '') {
-            throw ValidationException::withErrors([
-                $field => [sprintf("'%s' is required and must be a non-empty string", $field)],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' is required and must be a non-empty string", $field)]]);
         }
+
         return $v;
     }
 }

@@ -23,9 +23,7 @@ final readonly class DeleteSsAdjustmentUseCase
     {
         $existing = $this->repo->findById($id);
         if ($existing === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('ss adjustment %s was not found.', $id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('ss adjustment %s was not found.', $id)]]);
         }
         $this->repo->delete($id);
     }

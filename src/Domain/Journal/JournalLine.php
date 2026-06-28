@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Journal;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Decimal\Decimal;
 
@@ -31,27 +30,19 @@ final readonly class JournalLine
         public string $taxAmount,
         public bool $isTaxReduced,
         public string $memo,
-        public DateTimeImmutable $bookedAt,
+        public \DateTimeImmutable $bookedAt,
     ) {
         if ($lineNo < 1) {
-            throw ValidationException::withErrors([
-                sprintf('lines[%d].lineNo', $lineNo) => ['lineNo must be >= 1'],
-            ]);
+            throw ValidationException::withErrors([sprintf('lines[%d].lineNo', $lineNo) => ['lineNo must be >= 1']]);
         }
         if ($side !== self::SIDE_DEBIT && $side !== self::SIDE_CREDIT) {
-            throw ValidationException::withErrors([
-                sprintf('lines[%d].side', $lineNo) => ["side must be 'debit' or 'credit'"],
-            ]);
+            throw ValidationException::withErrors([sprintf('lines[%d].side', $lineNo) => ["side must be 'debit' or 'credit'"]]);
         }
         if (!preg_match('/^-?\d{1,14}(\.\d{1,4})?$/', $amount)) {
-            throw ValidationException::withErrors([
-                sprintf('lines[%d].amount', $lineNo) => ['amount must match DECIMAL(18,4) format'],
-            ]);
+            throw ValidationException::withErrors([sprintf('lines[%d].amount', $lineNo) => ['amount must match DECIMAL(18,4) format']]);
         }
         if (Decimal::compare($amount, '0.0000') < 0) {
-            throw ValidationException::withErrors([
-                sprintf('lines[%d].amount', $lineNo) => ['amount must be >= 0'],
-            ]);
+            throw ValidationException::withErrors([sprintf('lines[%d].amount', $lineNo) => ['amount must be >= 0']]);
         }
     }
 

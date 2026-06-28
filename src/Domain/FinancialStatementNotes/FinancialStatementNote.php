@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FinancialStatementNotes;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 
 /**
@@ -30,28 +29,20 @@ final readonly class FinancialStatementNote
         public string $body,
         public int $sortOrder,
         public bool $isActive,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
         if ($label === '' || mb_strlen($label) > 128) {
-            throw ValidationException::withErrors([
-                'label' => ['label must be 1..128 characters.'],
-            ]);
+            throw ValidationException::withErrors(['label' => ['label must be 1..128 characters.']]);
         }
         if ($body === '') {
-            throw ValidationException::withErrors([
-                'body' => ['body must not be empty.'],
-            ]);
+            throw ValidationException::withErrors(['body' => ['body must not be empty.']]);
         }
         if ($templateCode !== null && ($templateCode === '' || strlen($templateCode) > 32)) {
-            throw ValidationException::withErrors([
-                'templateCode' => ['templateCode must be 1..32 characters when provided.'],
-            ]);
+            throw ValidationException::withErrors(['templateCode' => ['templateCode must be 1..32 characters when provided.']]);
         }
         if ($sortOrder < 0) {
-            throw ValidationException::withErrors([
-                'sortOrder' => ['sortOrder must be non-negative.'],
-            ]);
+            throw ValidationException::withErrors(['sortOrder' => ['sortOrder must be non-negative.']]);
         }
     }
 
@@ -63,7 +54,7 @@ final readonly class FinancialStatementNote
         FsNoteCategory $category,
         string $label,
         string $body,
-        DateTimeImmutable $now,
+        \DateTimeImmutable $now,
     ): self {
         return new self(
             id: $this->id,
@@ -80,7 +71,7 @@ final readonly class FinancialStatementNote
         );
     }
 
-    public function withSortOrder(int $sortOrder, DateTimeImmutable $now): self
+    public function withSortOrder(int $sortOrder, \DateTimeImmutable $now): self
     {
         return new self(
             id: $this->id,
@@ -97,7 +88,7 @@ final readonly class FinancialStatementNote
         );
     }
 
-    public function withActive(bool $isActive, DateTimeImmutable $now): self
+    public function withActive(bool $isActive, \DateTimeImmutable $now): self
     {
         return new self(
             id: $this->id,

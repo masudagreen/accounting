@@ -47,6 +47,7 @@ final readonly class ListBudgetController
         }
 
         $budgets = $this->useCase->execute($entityId, $fiscalTermId, $status);
+
         return EnvelopeResponse::list(
             BudgetJsonSerializer::toArrayList($budgets),
             ['total' => count($budgets)],

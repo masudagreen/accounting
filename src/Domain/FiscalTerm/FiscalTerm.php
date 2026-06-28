@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FiscalTerm;
 
-use DateTimeImmutable;
-
 /**
  * Accounting fiscal term (旧: baseTerm / 会計期).
  *
@@ -19,12 +17,12 @@ final readonly class FiscalTerm
         public string $id,
         public string $entityId,
         public int $fiscalPeriod,
-        public DateTimeImmutable $startDate,
-        public DateTimeImmutable $endDate,
+        public \DateTimeImmutable $startDate,
+        public \DateTimeImmutable $endDate,
         public bool $isClosed,
-        public ?DateTimeImmutable $closedAt,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $closedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 }

@@ -54,15 +54,16 @@ final readonly class SsAdjustmentEditController
             return HtmlResponse::notFound('純資産変動調整が見つかりません。');
         }
         $form = [
-            'id'           => $adj->id,
+            'id' => $adj->id,
             'fiscalTermId' => $adj->fiscalTermId,
-            'sectionCode'  => $adj->sectionCode->value,
-            'changeType'   => $adj->changeType->value,
-            'amount'       => $adj->amount,
-            'label'        => $adj->label,
-            'sortOrder'    => (string) $adj->sortOrder,
-            'notes'        => $adj->notes ?? '',
+            'sectionCode' => $adj->sectionCode->value,
+            'changeType' => $adj->changeType->value,
+            'amount' => $adj->amount,
+            'label' => $adj->label,
+            'sortOrder' => (string) $adj->sortOrder,
+            'notes' => $adj->notes ?? '',
         ];
+
         return $this->renderForm($form, [], 200);
     }
 
@@ -78,15 +79,16 @@ final readonly class SsAdjustmentEditController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/ss-adjustments/' . $id);
+
+            return HtmlResponse::redirect('/ui/ss-adjustments/'.$id);
         }
 
         $section = SsSectionCode::tryFrom(PlanningFormSupport::str($body, 'section_code'));
-        $change  = SsChangeType::tryFrom(PlanningFormSupport::str($body, 'change_type'));
-        $amount  = PlanningFormSupport::normalizeAmount(PlanningFormSupport::str($body, 'amount', '0'));
-        $label   = PlanningFormSupport::str($body, 'label');
-        $sort    = (int) PlanningFormSupport::str($body, 'sort_order', '0');
-        $notes   = PlanningFormSupport::nullableStr($body, 'notes');
+        $change = SsChangeType::tryFrom(PlanningFormSupport::str($body, 'change_type'));
+        $amount = PlanningFormSupport::normalizeAmount(PlanningFormSupport::str($body, 'amount', '0'));
+        $label = PlanningFormSupport::str($body, 'label');
+        $sort = (int) PlanningFormSupport::str($body, 'sort_order', '0');
+        $notes = PlanningFormSupport::nullableStr($body, 'notes');
 
         try {
             $this->update->execute(new UpdateSsAdjustmentInput(
@@ -100,11 +102,12 @@ final readonly class SsAdjustmentEditController
             ));
             $this->flash->addSuccess('純資産変動調整を更新しました。');
         } catch (ValidationException $e) {
-            $this->flash->addError('更新に失敗しました: ' . self::firstError($e));
+            $this->flash->addError('更新に失敗しました: '.self::firstError($e));
         } catch (\Throwable $e) {
-            $this->flash->addError('更新処理でエラーが発生しました: ' . $e->getMessage());
+            $this->flash->addError('更新処理でエラーが発生しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/ss-adjustments/' . $id);
+
+        return HtmlResponse::redirect('/ui/ss-adjustments/'.$id);
     }
 
     private function resolveEntity(): string|HtmlResponse
@@ -116,6 +119,7 @@ final readonly class SsAdjustmentEditController
         if ($eid === null) {
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return $eid;
     }
 
@@ -126,28 +130,29 @@ final readonly class SsAdjustmentEditController
     private function renderForm(array $form, array $errors, int $status): HtmlResponse
     {
         $data = [
-            'page_title'           => '純資産変動調整編集',
-            'active_nav'           => 'ss_adjustments',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => (string) $this->session->getSelectedEntity(),
+            'page_title' => '純資産変動調整編集',
+            'active_nav' => 'ss_adjustments',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => (string) $this->session->getSelectedEntity(),
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_mode'            => 'edit',
-            'form_action'          => '/ui/ss-adjustments/' . $form['id'],
-            'form'                 => $form,
-            'form_errors'          => $errors,
-            'fiscal_terms'         => [],
-            'section_options'      => SsAdjustmentNewController::sectionOptions(),
-            'change_options'       => SsAdjustmentNewController::changeOptions(),
+            'flash_messages' => $this->flash->consume(),
+            'form_mode' => 'edit',
+            'form_action' => '/ui/ss-adjustments/'.$form['id'],
+            'form' => $form,
+            'form_errors' => $errors,
+            'fiscal_terms' => [],
+            'section_options' => SsAdjustmentNewController::sectionOptions(),
+            'change_options' => SsAdjustmentNewController::changeOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('ss_adjustments/form.html.tpl', $data));
     }
 
@@ -158,6 +163,7 @@ final readonly class SsAdjustmentEditController
                 return $msgs[0];
             }
         }
+
         return $e->getMessage();
     }
 }

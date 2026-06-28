@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\BlueReturn;
 
-use InvalidArgumentException;
 use Rucaro\Domain\BlueReturn\BlueReturnRepositoryInterface;
 use Rucaro\Domain\BlueReturn\BlueReturnSnapshot;
 use Rucaro\Domain\Exception\ValidationException;
@@ -29,13 +28,11 @@ final readonly class UpdateBlueReturnUseCase
     public function execute(UpdateBlueReturnInput $input): BlueReturnOutput
     {
         if (!UlidGenerator::isValid($input->id)) {
-            throw new InvalidArgumentException('id must be a ULID.');
+            throw new \InvalidArgumentException('id must be a ULID.');
         }
         $form = $this->forms->findById($input->id);
         if ($form === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('blue return %s was not found.', $input->id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('blue return %s was not found.', $input->id)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -47,6 +44,7 @@ final readonly class UpdateBlueReturnUseCase
             $form = $form->withSnapshot($snapshot, $now);
         }
         $this->forms->save($form);
+
         return new BlueReturnOutput($form);
     }
 }

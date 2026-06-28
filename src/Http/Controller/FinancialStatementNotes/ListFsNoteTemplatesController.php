@@ -27,6 +27,7 @@ final readonly class ListFsNoteTemplatesController
             return ErrorResponse::unauthorized();
         }
         $templates = $this->useCase->execute();
+
         return EnvelopeResponse::list(
             FsNoteJsonSerializer::templateList($templates),
             ['total' => count($templates)],

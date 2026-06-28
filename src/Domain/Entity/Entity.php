@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Entity;
 
-use DateTimeImmutable;
-
 /**
  * Accounting entity (company or sole proprietor).
  *
@@ -22,9 +20,9 @@ final readonly class Entity
         public string $currencyCode,
         public string $fiscalStartMmDd,
         public bool $isActive,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt = null,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt = null,
         public bool $isCorporate = true,
     ) {
     }

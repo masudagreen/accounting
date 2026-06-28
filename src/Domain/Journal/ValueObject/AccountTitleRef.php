@@ -29,6 +29,7 @@ final readonly class AccountTitleRef extends AbstractValueObject
     /**
      * @return array{id: string, code: string}
      */
+    #[\Override]
     public function toPrimitive(): array
     {
         return ['id' => $this->id, 'code' => $this->code];

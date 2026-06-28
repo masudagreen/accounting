@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatement\Simplified;
 
-use DateTimeZone;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCase;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCaseInput;
@@ -41,7 +40,7 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
 
     public function execute(GenerateFinancialStatementUseCaseInput $input): FinancialStatement
     {
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $tb = $this->trialBalance->execute(new QueryTrialBalanceUseCaseInput(
             entityId: $input->entityId,
             fiscalTermId: $input->fiscalTermId,
@@ -91,12 +90,14 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
         foreach ($this->accounts->findAllByEntity($entityId) as $account) {
             $byId[$account->id] = $account;
         }
+
         return $byId;
     }
 
     /**
-     * @param list<TrialBalanceRow>       $rows
+     * @param list<TrialBalanceRow> $rows
      * @param array<string, AccountTitle> $accountIndex
+     *
      * @return list<TrialBalanceRow>
      */
     private function enrichRows(array $rows, array $accountIndex): array
@@ -123,6 +124,7 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
                 lineCount: $row->lineCount,
             );
         }
+
         return $out;
     }
 
@@ -140,11 +142,13 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
                 $expense = Decimal::add($expense, $row->balance);
             }
         }
+
         return self::sub($revenue, $expense);
     }
 
     /**
      * @param list<TrialBalanceRow> $rows
+     *
      * @return array<string, Section>
      */
     private function buildBalanceSheet(array $rows, string $netIncome): array
@@ -181,14 +185,15 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
         );
 
         return [
-            Section::CODE_ASSETS      => Section::fromLines(Section::CODE_ASSETS, '資産の部', $assetLines),
+            Section::CODE_ASSETS => Section::fromLines(Section::CODE_ASSETS, '資産の部', $assetLines),
             Section::CODE_LIABILITIES => Section::fromLines(Section::CODE_LIABILITIES, '負債の部', $liabilityLines),
-            Section::CODE_EQUITY      => Section::fromLines(Section::CODE_EQUITY, '純資産の部', $equityLines),
+            Section::CODE_EQUITY => Section::fromLines(Section::CODE_EQUITY, '純資産の部', $equityLines),
         ];
     }
 
     /**
      * @param list<TrialBalanceRow> $rows
+     *
      * @return array<string, Section>
      */
     private function buildProfitAndLoss(array $rows): array
@@ -214,13 +219,14 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
         }
 
         return [
-            Section::CODE_REVENUE  => Section::fromLines(Section::CODE_REVENUE, '収益', $revenueLines),
+            Section::CODE_REVENUE => Section::fromLines(Section::CODE_REVENUE, '収益', $revenueLines),
             Section::CODE_EXPENSES => Section::fromLines(Section::CODE_EXPENSES, '費用', $expenseLines),
         ];
     }
 
     /**
      * @param list<TrialBalanceRow> $rows
+     *
      * @return array<string, Section>
      */
     private function buildCashFlow(array $rows, string $netIncome): array
@@ -263,6 +269,7 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
     /**
      * @param array<string, Section> $bs
      * @param array<string, Section> $pl
+     *
      * @return array<string, string>
      */
     private function buildTotals(array $bs, array $pl, string $netIncome): array
@@ -285,16 +292,18 @@ final readonly class SimplifiedGenerateFinancialStatementUseCase
         if (isset($pl[Section::CODE_EXPENSES])) {
             $totals['total_expenses'] = $pl[Section::CODE_EXPENSES]->subtotal;
         }
+
         return $totals;
     }
 
     private static function sub(string $a, string $b): string
     {
         if (function_exists('bcsub')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion SimplifiedGenerateFinancialStatement only sees Decimal-normalised numeric strings */
             return bcsub($a, $b, Decimal::SCALE);
         }
-        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-' . $b);
+        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-'.$b);
+
         return Decimal::add($a, $negated);
     }
 }

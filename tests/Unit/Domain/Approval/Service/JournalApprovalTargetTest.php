@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Approval\Service;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Approval\ApprovalTargetKind;
@@ -56,14 +54,14 @@ final class JournalApprovalTargetTest extends TestCase
         $repo->save($journal);
         $target = new JournalApprovalTarget($journal, $repo);
 
-        $at = new DateTimeImmutable('2026-04-22T00:00:00Z', new DateTimeZone('UTC'));
+        $at = new \DateTimeImmutable('2026-04-22T00:00:00Z', new \DateTimeZone('UTC'));
         $target->applyApproval('01HW7K9B2QV7C8Y4ZUSER000099', $at);
 
         $persisted = $repo->findById($journal->id);
         self::assertNotNull($persisted);
         self::assertSame('approved', $persisted->status);
         self::assertSame('01HW7K9B2QV7C8Y4ZUSER000099', $persisted->approvedBy);
-        self::assertSame($at->format(DATE_ATOM), $persisted->approvedAt?->format(DATE_ATOM));
+        self::assertSame($at->format(\DATE_ATOM), $persisted->approvedAt?->format(\DATE_ATOM));
     }
 
     public function testApplyRejectionTransitionsStatusAndPersists(): void
@@ -73,7 +71,7 @@ final class JournalApprovalTargetTest extends TestCase
         $repo->save($journal);
         $target = new JournalApprovalTarget($journal, $repo);
 
-        $at = new DateTimeImmutable('2026-04-22T00:30:00Z', new DateTimeZone('UTC'));
+        $at = new \DateTimeImmutable('2026-04-22T00:30:00Z', new \DateTimeZone('UTC'));
         $target->applyRejection('01HW7K9B2QV7C8Y4ZUSER000099', $at, 'missing receipt');
 
         $persisted = $repo->findById($journal->id);
@@ -84,8 +82,8 @@ final class JournalApprovalTargetTest extends TestCase
 
     private function journal(string $summary = 'Test journal'): Journal
     {
-        $tz = new DateTimeZone('UTC');
-        $ts = new DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
+        $tz = new \DateTimeZone('UTC');
+        $ts = new \DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
         $lines = [
             new JournalLine(
                 id: '01HW7K9B2QV7C8Y4ZLINE0001AA',
@@ -119,7 +117,7 @@ final class JournalApprovalTargetTest extends TestCase
             id: '01HW7K9B2QV7C8Y4ZJRNLMAIN00',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21', $tz),
+            journalDate: new \DateTimeImmutable('2026-04-21', $tz),
             bookedAt: $ts,
             summary: $summary,
             totalAmount: '100.0000',

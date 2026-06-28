@@ -20,9 +20,7 @@ final readonly class ConsumptionTaxCategory
         public int $sortOrder = 0,
     ) {
         if (!in_array($side, ['sales', 'purchase', 'both'], true)) {
-            throw ValidationException::withErrors([
-                'side' => ['side must be sales / purchase / both.'],
-            ]);
+            throw ValidationException::withErrors(['side' => ['side must be sales / purchase / both.']]);
         }
     }
 }

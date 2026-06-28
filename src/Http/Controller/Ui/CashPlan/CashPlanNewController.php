@@ -51,6 +51,7 @@ final readonly class CashPlanNewController
         $entityId = $this->session->getSelectedEntity();
         $terms = $this->ctx->fiscalTermsForEntity($entityId);
         $default = PlanningUiContext::defaultFiscalTermId($terms, $this->clock->getCurrentTime());
+
         return $this->renderForm(
             entityId: $entityId,
             name: '',
@@ -78,13 +79,14 @@ final readonly class CashPlanNewController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/cash-plans/new');
         }
 
-        $name         = PlanningFormSupport::str($body, 'name');
-        $opening      = PlanningFormSupport::normalizeAmount(PlanningFormSupport::str($body, 'opening_balance', '0'));
-        $currency     = strtoupper(PlanningFormSupport::str($body, 'currency_code', 'JPY'));
-        $notes        = PlanningFormSupport::str($body, 'notes');
+        $name = PlanningFormSupport::str($body, 'name');
+        $opening = PlanningFormSupport::normalizeAmount(PlanningFormSupport::str($body, 'opening_balance', '0'));
+        $currency = strtoupper(PlanningFormSupport::str($body, 'currency_code', 'JPY'));
+        $notes = PlanningFormSupport::str($body, 'notes');
         $fiscalTermId = PlanningFormSupport::str($body, 'fiscal_term_id');
 
         $rows = PlanningFormSupport::extractMonthlyRows($body, 'entries');
@@ -93,10 +95,10 @@ final readonly class CashPlanNewController
         $sortOrder = 0;
         foreach ($rows as $row) {
             $formEntries[] = [
-                'label'    => $row['label'],
+                'label' => $row['label'],
                 'category' => $row['category'],
-                'monthly'  => $row['monthly'],
-                'memo'     => $row['memo'],
+                'monthly' => $row['monthly'],
+                'memo' => $row['memo'],
             ];
             if ($row['label'] !== '' && $row['category'] !== '') {
                 $entryInputs[] = new CashPlanEntryInput(
@@ -136,11 +138,12 @@ final readonly class CashPlanNewController
                     createdBy: $userId,
                 ));
                 $this->flash->addSuccess('資金繰り計画を作成しました。');
-                return HtmlResponse::redirect('/ui/cash-plans/' . $out->plan->id);
+
+                return HtmlResponse::redirect('/ui/cash-plans/'.$out->plan->id);
             } catch (ValidationException $e) {
                 $errors = array_merge($errors, $e->errors());
             } catch (\Throwable $e) {
-                $errors['_'] = ['登録に失敗しました: ' . $e->getMessage()];
+                $errors['_'] = ['登録に失敗しました: '.$e->getMessage()];
             }
         }
 
@@ -164,8 +167,10 @@ final readonly class CashPlanNewController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -185,31 +190,32 @@ final readonly class CashPlanNewController
         int $status,
     ): HtmlResponse {
         $data = [
-            'page_title'           => '新規資金繰り計画',
-            'active_nav'           => 'cash_plans',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'      => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'      => self::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => [],
-            'selected_entity_id'   => $entityId,
+            'page_title' => '新規資金繰り計画',
+            'active_nav' => 'cash_plans',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'       => $this->flash->consume(),
-            'form_action'          => '/ui/cash-plans/new',
-            'form_name'            => $name,
+            'flash_messages' => $this->flash->consume(),
+            'form_action' => '/ui/cash-plans/new',
+            'form_name' => $name,
             'form_opening_balance' => $openingBalance,
-            'form_currency'        => $currency,
-            'form_notes'           => $notes,
-            'form_fiscal_term_id'  => $fiscalTermId,
-            'form_entries'         => $entries,
-            'form_errors'          => $errors,
-            'fiscal_terms'         => $this->ctx->fiscalTermsForEntity($entityId),
-            'category_options'     => self::categoryOptions(),
+            'form_currency' => $currency,
+            'form_notes' => $notes,
+            'form_fiscal_term_id' => $fiscalTermId,
+            'form_entries' => $entries,
+            'form_errors' => $errors,
+            'fiscal_terms' => $this->ctx->fiscalTermsForEntity($entityId),
+            'category_options' => self::categoryOptions(),
         ];
+
         return HtmlResponse::of($status, $this->view->render('cash_plans/form.html.tpl', $data));
     }
 
@@ -220,11 +226,12 @@ final readonly class CashPlanNewController
     {
         /** @var list<string> $monthly */
         $monthly = array_fill(0, 12, '');
+
         return [
-            'label'    => '',
+            'label' => '',
             'category' => 'operating_in',
-            'monthly'  => $monthly,
-            'memo'     => '',
+            'monthly' => $monthly,
+            'memo' => '',
         ];
     }
 

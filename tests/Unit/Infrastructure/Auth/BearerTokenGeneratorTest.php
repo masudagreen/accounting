@@ -46,7 +46,7 @@ final class BearerTokenGeneratorTest extends TestCase
         $gen = new BearerTokenGenerator();
 
         $tokens = [];
-        for ($i = 0; $i < 16; $i++) {
+        for ($i = 0; $i < 16; ++$i) {
             $tokens[] = $gen->generate()['plaintext'];
         }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\CashPlan;
 
-use DateTimeImmutable;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCase;
 use Rucaro\Application\TrialBalance\QueryTrialBalanceUseCaseInput;
 use Rucaro\Domain\CashPlan\CashPlan;
@@ -39,8 +38,8 @@ final readonly class GenerateCashPlanFromBudgetUseCase
     public function execute(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $priorFrom,
-        DateTimeImmutable $priorTo,
+        \DateTimeImmutable $priorFrom,
+        \DateTimeImmutable $priorTo,
         string $name,
         string $openingBalance,
         string $currencyCode,
@@ -66,7 +65,7 @@ final readonly class GenerateCashPlanFromBudgetUseCase
                 continue;
             }
             $entries[] = $entry;
-            $order++;
+            ++$order;
         }
 
         $now = $this->clock->getCurrentTime();
@@ -89,6 +88,7 @@ final readonly class GenerateCashPlanFromBudgetUseCase
             deletedAt: null,
         );
         $this->plans->save($plan);
+
         return new CreateCashPlanOutput($plan);
     }
 
@@ -111,6 +111,7 @@ final readonly class GenerateCashPlanFromBudgetUseCase
         $perMonth = self::divideBy12($abs);
         /** @var list<string> $amounts */
         $amounts = array_fill(0, CashPlanEntry::MONTHS, $perMonth);
+
         return new CashPlanEntry(
             id: $this->ulids->generate(),
             cashPlanId: $planId,
@@ -125,10 +126,11 @@ final readonly class GenerateCashPlanFromBudgetUseCase
     private static function divideBy12(string $v): string
     {
         if (function_exists('bcdiv')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion budget annual value is a Decimal-shaped numeric string */
             return bcdiv($v, '12', Decimal::SCALE);
         }
         $f = (float) $v / 12.0;
+
         return number_format($f, Decimal::SCALE, '.', '');
     }
 }

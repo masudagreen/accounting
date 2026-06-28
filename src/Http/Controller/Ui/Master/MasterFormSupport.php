@@ -21,7 +21,8 @@ final class MasterFormSupport
     {
         $parsed = [];
         parse_str($request->rawBody, $parsed);
-        /** @var array<string, mixed> $parsed */
+
+        /* @var array<string, mixed> $parsed */
         return $parsed;
     }
 
@@ -34,6 +35,7 @@ final class MasterFormSupport
         if (is_string($v)) {
             return trim($v);
         }
+
         return $default;
     }
 
@@ -49,6 +51,7 @@ final class MasterFormSupport
         if (is_string($v) && preg_match('/^-?\d+$/', trim($v))) {
             return (int) trim($v);
         }
+
         return $default;
     }
 
@@ -71,11 +74,13 @@ final class MasterFormSupport
             if ($lc === '' || $lc === '0' || $lc === 'false' || $lc === 'no' || $lc === 'off') {
                 return false;
             }
+
             return true;
         }
         if (is_int($v)) {
             return $v !== 0;
         }
+
         return $default;
     }
 
@@ -85,6 +90,7 @@ final class MasterFormSupport
     public static function optionalStr(string $raw): ?string
     {
         $trim = trim($raw);
+
         return $trim === '' ? null : $trim;
     }
 }

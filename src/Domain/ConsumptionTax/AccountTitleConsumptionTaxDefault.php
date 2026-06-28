@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
-
 /**
  * Mapping between an account title and its default consumption-tax
  * category / rate for a given entity.
@@ -23,8 +21,8 @@ final readonly class AccountTitleConsumptionTaxDefault
         public string $accountTitleId,
         public ConsumptionTaxCategoryCode $defaultCategoryCode,
         public ?string $defaultRateCode,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 }

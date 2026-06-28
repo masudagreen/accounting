@@ -41,17 +41,20 @@ final readonly class SsAdjustmentDeleteController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(SsAdjustmentEditController::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/ss-adjustments/' . $id);
+
+            return HtmlResponse::redirect('/ui/ss-adjustments/'.$id);
         }
         try {
             $this->delete->execute($id);
             $this->flash->addSuccess('純資産変動調整を削除しました。');
+
             return HtmlResponse::redirect('/ui/ss-adjustments');
         } catch (ValidationException) {
             $this->flash->addError('対象の調整が見つかりません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/ss-adjustments/' . $id);
+
+        return HtmlResponse::redirect('/ui/ss-adjustments/'.$id);
     }
 }

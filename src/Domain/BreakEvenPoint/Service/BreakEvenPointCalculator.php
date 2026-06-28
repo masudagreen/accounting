@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\BreakEvenPoint\Service;
 
-use DateTimeImmutable;
 use Rucaro\Domain\BreakEvenPoint\AccountTitleCvpClassification;
 use Rucaro\Domain\BreakEvenPoint\BreakEvenPointAnalysis;
 use Rucaro\Domain\BreakEvenPoint\CvpCostType;
@@ -41,12 +40,12 @@ final class BreakEvenPointCalculator
     public function calculate(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $fromDate,
-        DateTimeImmutable $toDate,
+        \DateTimeImmutable $fromDate,
+        \DateTimeImmutable $toDate,
         string $currencyCode,
         TrialBalance $trialBalance,
         array $classifications,
-        DateTimeImmutable $generatedAt,
+        \DateTimeImmutable $generatedAt,
     ): BreakEvenPointAnalysis {
         /** @var array<string, AccountTitleCvpClassification> $byId */
         $byId = [];
@@ -66,10 +65,10 @@ final class BreakEvenPointCalculator
             if ($row->accountCategory === 'revenue') {
                 $sales = Decimal::add($sales, $abs);
                 $salesBreakdown[] = [
-                    'accountTitleId'   => $row->accountTitleId,
+                    'accountTitleId' => $row->accountTitleId,
                     'accountTitleCode' => $row->accountTitleCode,
                     'accountTitleName' => $row->accountTitleName,
-                    'amount'           => Decimal::normalize($abs),
+                    'amount' => Decimal::normalize($abs),
                 ];
                 continue;
             }
@@ -104,12 +103,16 @@ final class BreakEvenPointCalculator
         $contributionMargin = self::subtract($sales, $variable);
         $operatingProfit = self::subtract($contributionMargin, $fixed);
 
-        $cmRate = self::divideOrZero($contributionMargin, $sales);
-        $bepSales = self::divideOrZero($fixed, $cmRate);
-        $bepRatio = self::divideOrZero($bepSales, $sales);
+        // Rates (%) are rounded half-up at scale 4 so 0.98785714… reports
+        // as 0.9879 — that's what operators expect when reading "安全率".
+        // Cash amounts (bepSales) stay truncated at scale 4 to match the
+        // 円単位切り捨て convention shared with the trial-balance side.
+        $cmRate = self::divideRatio($contributionMargin, $sales);
+        $bepSales = self::divideAmount($fixed, $cmRate);
+        $bepRatio = self::divideRatio($bepSales, $sales);
         $safety = Decimal::compare($sales, '0.0000') === 0
             ? '0.0000'
-            : self::divideOrZero(self::subtract($sales, $bepSales), $sales);
+            : self::divideRatio(self::subtract($sales, $bepSales), $sales);
 
         return new BreakEvenPointAnalysis(
             entityId: $entityId,
@@ -152,51 +155,59 @@ final class BreakEvenPointCalculator
     private static function asBreakdownRow(TrialBalanceRow $row, CvpCostType $type, string $amount): array
     {
         return [
-            'accountTitleId'   => $row->accountTitleId,
+            'accountTitleId' => $row->accountTitleId,
             'accountTitleCode' => $row->accountTitleCode,
             'accountTitleName' => $row->accountTitleName,
-            'costType'         => $type->value,
-            'amount'           => Decimal::normalize($amount),
+            'costType' => $type->value,
+            'amount' => Decimal::normalize($amount),
         ];
     }
 
     private static function abs(string $v): string
     {
         $normalized = Decimal::normalize($v);
+
         return str_starts_with($normalized, '-') ? substr($normalized, 1) : $normalized;
     }
 
     private static function subtract(string $a, string $b): string
     {
         if (function_exists('bcsub')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion BEP calculator only feeds Decimal-normalised numeric strings */
             return bcsub($a, $b, Decimal::SCALE);
         }
         $negB = Decimal::compare($b, '0.0000') === 0
             ? '0.0000'
-            : (str_starts_with($b, '-') ? substr($b, 1) : '-' . $b);
+            : (str_starts_with($b, '-') ? substr($b, 1) : '-'.$b);
+
         return Decimal::add($a, $negB);
     }
 
     private static function multiply(string $a, string $b): string
     {
         if (function_exists('bcmul')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion BEP calculator only feeds Decimal-normalised numeric strings */
             return bcmul($a, $b, Decimal::SCALE);
         }
         $fa = (float) $a;
         $fb = (float) $b;
         $product = $fa * $fb;
+
         return number_format($product, Decimal::SCALE, '.', '');
     }
 
-    private static function divideOrZero(string $a, string $b): string
+    /**
+     * Amount-shaped division (円単位を 4 桁まで保持して切り捨て). Mirrors
+     * the historical {@see divideOrZero} behaviour — bcdiv at scale 4 is
+     * pure truncation, matching how the trial-balance side stores values.
+     */
+    private static function divideAmount(string $a, string $b): string
     {
         if (Decimal::compare($b, '0.0000') === 0) {
             return '0.0000';
         }
         if (function_exists('bcdiv')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion BEP calculator only feeds Decimal-normalised numeric strings */
             return bcdiv($a, $b, Decimal::SCALE);
         }
         $fa = (float) $a;
@@ -204,6 +215,84 @@ final class BreakEvenPointCalculator
         if ($fb === 0.0) {
             return '0.0000';
         }
+
         return number_format($fa / $fb, Decimal::SCALE, '.', '');
+    }
+
+    /**
+     * Ratio-shaped division: 4 桁 half-up rounding. Used for 寄与率 / BEP
+     * 比率 / 安全率 where operators read the value as a percentage and
+     * expect "0.98785714…" → 0.9879, not the bcdiv-trunc 0.9878.
+     */
+    private static function divideRatio(string $a, string $b): string
+    {
+        if (Decimal::compare($b, '0.0000') === 0) {
+            return '0.0000';
+        }
+        if (function_exists('bcdiv')) {
+            /** @psalm-suppress ArgumentTypeCoercion BEP calculator only feeds Decimal-normalised numeric strings */
+            $raw = bcdiv($a, $b, Decimal::SCALE + 1);
+
+            return self::roundHalfUp($raw, Decimal::SCALE);
+        }
+        $fa = (float) $a;
+        $fb = (float) $b;
+        if ($fb === 0.0) {
+            return '0.0000';
+        }
+
+        return number_format(round($fa / $fb, Decimal::SCALE), Decimal::SCALE, '.', '');
+    }
+
+    /**
+     * Round a decimal string to the given scale, half-up. Implemented
+     * digit-by-digit so we never round-trip through float and lose
+     * precision on long fractions (the very thing bcdiv was solving).
+     */
+    private static function roundHalfUp(string $value, int $scale): string
+    {
+        $negative = $value !== '' && $value[0] === '-';
+        if ($negative) {
+            $value = substr($value, 1);
+        }
+        [$int, $frac] = array_pad(explode('.', $value, 2), 2, '');
+        $frac = str_pad($frac, $scale + 1, '0');
+        $kept = substr($frac, 0, $scale);
+        $rounder = (int) $frac[$scale];
+        if ($rounder >= 5) {
+            $digits = str_split($kept);
+            $carry = 1;
+            for ($i = count($digits) - 1; $i >= 0 && $carry; --$i) {
+                $d = (int) $digits[$i] + $carry;
+                if ($d >= 10) {
+                    $digits[$i] = '0';
+                } else {
+                    $digits[$i] = (string) $d;
+                    $carry = 0;
+                }
+            }
+            $kept = implode('', $digits);
+            if ($carry === 1) {
+                $intDigits = str_split($int === '' ? '0' : $int);
+                for ($i = count($intDigits) - 1; $i >= 0 && $carry; --$i) {
+                    $d = (int) $intDigits[$i] + $carry;
+                    if ($d >= 10) {
+                        $intDigits[$i] = '0';
+                    } else {
+                        $intDigits[$i] = (string) $d;
+                        $carry = 0;
+                    }
+                }
+                if ($carry === 1) {
+                    array_unshift($intDigits, '1');
+                }
+                $int = implode('', $intDigits);
+            }
+        }
+        $out = ($int === '' ? '0' : $int).'.'.$kept;
+
+        return $negative && Decimal::compare($out, '0.'.str_repeat('0', $scale)) !== 0
+            ? '-'.$out
+            : $out;
     }
 }

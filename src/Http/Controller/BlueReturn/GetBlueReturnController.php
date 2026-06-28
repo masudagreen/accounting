@@ -40,16 +40,18 @@ final readonly class GetBlueReturnController
         $format = strtolower($request->queryString('format') ?? 'json');
         if ($format === 'pdf') {
             $pdf = $this->generator->render($form);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="blue-return.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(BlueReturnJsonSerializer::toArray($form));
     }
 }

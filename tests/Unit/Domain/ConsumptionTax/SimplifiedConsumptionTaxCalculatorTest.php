@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
@@ -25,7 +24,7 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
         // 売上税 100_000 → みなし仕入 90_000 → 納付 10_000
         $s = $calc->calculate($period, [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-08-01'),
+                bookedOn: new \DateTimeImmutable('2026-08-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -44,7 +43,7 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
         $calc = new SimplifiedConsumptionTaxCalculator();
         $s = $calc->calculate($period, [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-08-01'),
+                bookedOn: new \DateTimeImmutable('2026-08-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -64,7 +63,7 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
         // Service (5種) = 50%. Purchases should not move the needle.
         $s = $calc->calculate($period, [
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-08-01'),
+                bookedOn: new \DateTimeImmutable('2026-08-01'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -72,7 +71,7 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
                 taxAmount: '100000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-08-02'),
+                bookedOn: new \DateTimeImmutable('2026-08-02'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxablePurchase,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -86,13 +85,13 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
 
     public function testRejectsNonSimplifiedPeriod(): void
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $period = new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,
@@ -107,13 +106,14 @@ final class SimplifiedConsumptionTaxCalculatorTest extends TestCase
 
     private function simplifiedPeriod(SimplifiedBusinessCategory $sbc): ConsumptionTaxPeriod
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Simplified,
             simplifiedBusinessCategory: $sbc,
             isInterim: false,

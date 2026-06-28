@@ -31,8 +31,8 @@ final class ConnectionFactoryUnitTest extends TestCase
     public function testConfigFromArrayBuildsExpectedDsn(): void
     {
         $config = ConnectionFactory::configFromArray([
-            'host'     => 'db',
-            'port'     => 3306,
+            'host' => 'db',
+            'port' => 3306,
             'database' => 'rucaro',
             'username' => 'rucaro',
             'password' => 'rucaro',
@@ -47,13 +47,13 @@ final class ConnectionFactoryUnitTest extends TestCase
     public function testConfigFromArrayHonoursExplicitCharsetAndPort(): void
     {
         $config = ConnectionFactory::configFromArray([
-            'driver'    => 'mysql',
-            'host'      => '127.0.0.1',
-            'port'      => 13306,
-            'database'  => 'rucaro_test',
-            'username'  => 'root',
-            'password'  => 'root',
-            'charset'   => 'utf8mb4',
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'port' => 13306,
+            'database' => 'rucaro_test',
+            'username' => 'root',
+            'password' => 'root',
+            'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
         ]);
 
@@ -68,8 +68,8 @@ final class ConnectionFactoryUnitTest extends TestCase
     {
         // config/database.php may read port from env as a string.
         $config = ConnectionFactory::configFromArray([
-            'host'     => 'db',
-            'port'     => '3307',
+            'host' => 'db',
+            'port' => '3307',
             'database' => 'x',
             'username' => 'u',
             'password' => 'p',
@@ -97,7 +97,7 @@ final class ConnectionFactoryUnitTest extends TestCase
         $this->expectExceptionMessage('database');
 
         ConnectionFactory::configFromArray([
-            'host'     => 'db',
+            'host' => 'db',
             'username' => 'u',
             'password' => 'p',
         ]);
@@ -109,11 +109,11 @@ final class ConnectionFactoryUnitTest extends TestCase
         $this->expectExceptionMessage('options');
 
         ConnectionFactory::configFromArray([
-            'host'     => 'db',
+            'host' => 'db',
             'database' => 'x',
             'username' => 'u',
             'password' => 'p',
-            'options'  => 'not-an-array',
+            'options' => 'not-an-array',
         ]);
     }
 
@@ -123,25 +123,25 @@ final class ConnectionFactoryUnitTest extends TestCase
         $this->expectExceptionMessage('options keys');
 
         ConnectionFactory::configFromArray([
-            'host'     => 'db',
+            'host' => 'db',
             'database' => 'x',
             'username' => 'u',
             'password' => 'p',
-            'options'  => ['string-key' => 'value'],
+            'options' => ['string-key' => 'value'],
         ]);
     }
 
     public function testConfigFromArrayPropagatesOptions(): void
     {
         $config = ConnectionFactory::configFromArray([
-            'host'     => 'db',
+            'host' => 'db',
             'database' => 'x',
             'username' => 'u',
             'password' => 'p',
-            'options'  => [PDO::ATTR_TIMEOUT => 5],
+            'options' => [\PDO::ATTR_TIMEOUT => 5],
         ]);
 
-        self::assertSame(5, $config->options[PDO::ATTR_TIMEOUT]);
+        self::assertSame(5, $config->options[\PDO::ATTR_TIMEOUT]);
     }
 
     // ---------------------------------------------------------------
@@ -151,10 +151,10 @@ final class ConnectionFactoryUnitTest extends TestCase
     public function testConfigFromEnvBuildsExpectedDsn(): void
     {
         $config = ConnectionFactory::configFromEnv([
-            'DB_HOST'     => 'db',
-            'DB_PORT'     => '3306',
-            'DB_NAME'     => 'rucaro',
-            'DB_USER'     => 'rucaro',
+            'DB_HOST' => 'db',
+            'DB_PORT' => '3306',
+            'DB_NAME' => 'rucaro',
+            'DB_USER' => 'rucaro',
             'DB_PASSWORD' => 'rucaro',
         ]);
 
@@ -169,12 +169,12 @@ final class ConnectionFactoryUnitTest extends TestCase
     public function testConfigFromEnvPrefersDbPortInternalWhenBothSet(): void
     {
         $config = ConnectionFactory::configFromEnv([
-            'DB_HOST'          => 'db',
-            'DB_PORT'          => '3306',
+            'DB_HOST' => 'db',
+            'DB_PORT' => '3306',
             'DB_PORT_INTERNAL' => '13306',
-            'DB_NAME'          => 'rucaro',
-            'DB_USER'          => 'rucaro',
-            'DB_PASSWORD'      => 'rucaro',
+            'DB_NAME' => 'rucaro',
+            'DB_USER' => 'rucaro',
+            'DB_PASSWORD' => 'rucaro',
         ]);
 
         self::assertSame(13306, $config->port);
@@ -183,9 +183,9 @@ final class ConnectionFactoryUnitTest extends TestCase
     public function testConfigFromEnvAllowsEmptyPassword(): void
     {
         $config = ConnectionFactory::configFromEnv([
-            'DB_HOST'     => 'db',
-            'DB_NAME'     => 'x',
-            'DB_USER'     => 'root',
+            'DB_HOST' => 'db',
+            'DB_NAME' => 'x',
+            'DB_USER' => 'root',
             'DB_PASSWORD' => '',
         ]);
 
@@ -253,7 +253,7 @@ final class ConnectionFactoryUnitTest extends TestCase
             password: 'no_such_password',
             // 1 is almost never bound on CI runners.
             port: 1,
-            options: [PDO::ATTR_TIMEOUT => 1],
+            options: [\PDO::ATTR_TIMEOUT => 1],
         );
 
         $this->expectException(DatabaseConnectionException::class);

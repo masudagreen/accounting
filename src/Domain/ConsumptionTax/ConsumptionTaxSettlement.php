@@ -20,10 +20,10 @@ use Rucaro\Support\Decimal\Decimal;
 final readonly class ConsumptionTaxSettlement
 {
     /**
-     * @param array<string, string> $salesByRate       rate_code => amount (excl. tax)
-     * @param array<string, string> $outputTaxByRate   rate_code => tax amount
-     * @param array<string, string> $purchasesByRate   rate_code => amount (excl. tax)
-     * @param array<string, string> $inputTaxByRate    rate_code => tax amount
+     * @param array<string, string> $salesByRate rate_code => amount (excl. tax)
+     * @param array<string, string> $outputTaxByRate rate_code => tax amount
+     * @param array<string, string> $purchasesByRate rate_code => amount (excl. tax)
+     * @param array<string, string> $inputTaxByRate rate_code => tax amount
      */
     public function __construct(
         public ConsumptionTaxPeriod $period,
@@ -70,12 +70,13 @@ final readonly class ConsumptionTaxSettlement
         }
         foreach ($this->inputTaxByRate as $rateCode => $taxAmount) {
             $n = self::nationalPortion($rateCode, $taxAmount);
-            $national = Decimal::add($national, '-' . ltrim($n, '-'));
-            $local = Decimal::add($local, '-' . ltrim(self::subtract($taxAmount, $n), '-'));
+            $national = Decimal::add($national, '-'.ltrim($n, '-'));
+            $local = Decimal::add($local, '-'.ltrim(self::subtract($taxAmount, $n), '-'));
         }
+
         return [
             'national' => Decimal::normalize($national),
-            'local'    => Decimal::normalize($local),
+            'local' => Decimal::normalize($local),
         ];
     }
 
@@ -84,25 +85,27 @@ final readonly class ConsumptionTaxSettlement
         // Use the percentages set by the 消費税法施行令.
         return match ($rateCode) {
             'standard_10' => self::multiplyRatio($taxAmount, '78', '100'),
-            'reduced_8'   => self::multiplyRatio($taxAmount, '78', '100'),
-            'old_8'       => self::multiplyRatio($taxAmount, '63', '80'),
-            'old_5'       => self::multiplyRatio($taxAmount, '4',  '5'),
-            'old_3'       => $taxAmount,
-            default       => $taxAmount,
+            'reduced_8' => self::multiplyRatio($taxAmount, '78', '100'),
+            'old_8' => self::multiplyRatio($taxAmount, '63', '80'),
+            'old_5' => self::multiplyRatio($taxAmount, '4', '5'),
+            'old_3' => $taxAmount,
+            default => $taxAmount,
         };
     }
 
     private static function multiplyRatio(string $amount, string $num, string $den): string
     {
         if (function_exists('bcmul')) {
+            /** @psalm-suppress ArgumentTypeCoercion amount / num / den are Decimal-shaped numeric strings by call-site contract */
             return bcdiv(bcmul($amount, $num, 8), $den, 4);
         }
         $v = ((float) $amount) * ((float) $num) / ((float) $den);
+
         return number_format($v, 4, '.', '');
     }
 
     private static function subtract(string $a, string $b): string
     {
-        return Decimal::add($a, '-' . ltrim(Decimal::normalize($b), '-'));
+        return Decimal::add($a, '-'.ltrim(Decimal::normalize($b), '-'));
     }
 }

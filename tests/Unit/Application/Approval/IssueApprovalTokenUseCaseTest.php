@@ -123,6 +123,7 @@ final class IssueApprovalTokenUseCaseTest extends TestCase
             ulids: new UlidGenerator($clock),
             clock: $clock,
         );
+
         return [$useCase, $repo, $resolver, $notifier, $clock];
     }
 }

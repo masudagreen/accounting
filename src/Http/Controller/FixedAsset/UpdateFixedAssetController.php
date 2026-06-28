@@ -65,6 +65,7 @@ final readonly class UpdateFixedAssetController
         } catch (ValidationException $e) {
             return ErrorResponse::unprocessable($e->getMessage(), $e->errors());
         }
+
         return EnvelopeResponse::ok(FixedAssetJsonSerializer::toArray($asset));
     }
 }

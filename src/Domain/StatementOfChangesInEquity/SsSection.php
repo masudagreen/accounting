@@ -47,6 +47,7 @@ final readonly class SsSection
         foreach ($changes as $change) {
             $sum = Decimal::add($sum, $change->amount);
         }
+
         return new self(
             sectionCode: $code,
             label: $label ?? $code->label(),
@@ -63,6 +64,7 @@ final readonly class SsSection
     public function totalChange(): string
     {
         $negOpening = self::negate($this->openingBalance);
+
         return Decimal::normalize(Decimal::add($this->endingBalance, $negOpening));
     }
 
@@ -75,6 +77,7 @@ final readonly class SsSection
         if (str_starts_with($normalised, '-')) {
             return substr($normalised, 1);
         }
-        return '-' . $normalised;
+
+        return '-'.$normalised;
     }
 }

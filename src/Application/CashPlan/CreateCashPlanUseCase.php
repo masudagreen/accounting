@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\CashPlan;
 
-use InvalidArgumentException;
 use Rucaro\Domain\CashPlan\CashPlan;
 use Rucaro\Domain\CashPlan\CashPlanCategory;
 use Rucaro\Domain\CashPlan\CashPlanEntry;
@@ -31,13 +30,13 @@ final readonly class CreateCashPlanUseCase
     public function execute(CreateCashPlanInput $input): CreateCashPlanOutput
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->createdBy)) {
-            throw new InvalidArgumentException('createdBy must be a ULID.');
+            throw new \InvalidArgumentException('createdBy must be a ULID.');
         }
 
         $existing = $this->plans->findByEntityAndName(
@@ -46,9 +45,7 @@ final readonly class CreateCashPlanUseCase
             $input->name,
         );
         if ($existing !== null) {
-            throw ValidationException::withErrors([
-                'name' => [sprintf('a cash plan named "%s" already exists for this fiscal term.', $input->name)],
-            ]);
+            throw ValidationException::withErrors(['name' => [sprintf('a cash plan named "%s" already exists for this fiscal term.', $input->name)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -75,6 +72,7 @@ final readonly class CreateCashPlanUseCase
         );
 
         $this->plans->save($plan);
+
         return new CreateCashPlanOutput($plan);
     }
 
@@ -82,10 +80,9 @@ final readonly class CreateCashPlanUseCase
     {
         $category = CashPlanCategory::tryFrom($e->category);
         if ($category === null) {
-            throw ValidationException::withErrors([
-                "entries.$idx.category" => [sprintf('unknown cash plan category "%s".', $e->category)],
-            ]);
+            throw ValidationException::withErrors(["entries.$idx.category" => [sprintf('unknown cash plan category "%s".', $e->category)]]);
         }
+
         return new CashPlanEntry(
             id: $e->id ?? $this->ulids->generate(),
             cashPlanId: $planId,

@@ -38,6 +38,7 @@ final readonly class JournalDeleteController
     public function __construct(
         private DeleteJournalUseCase $deleteJournal,
         private JournalRepositoryInterface $journals,
+        private JournalUiContext $uiContext,
         private SessionStore $session,
         private CsrfTokenManager $csrf,
         private FlashMessageBag $flash,
@@ -55,31 +56,42 @@ final readonly class JournalDeleteController
         /** @var Journal $journal */
         $journal = $this->journals->findById($id);
 
+        // Resolve account ULIDs → bare names so the line preview shows
+        // 「現金」 instead of an opaque ULID.
+        $entityId = (string) $this->session->getSelectedEntity();
+        $accountTitles = $this->uiContext->accountTitlesForEntity($entityId);
+        $accountNameById = [];
+        foreach ($accountTitles as $a) {
+            $accountNameById[$a['id']] = $a['name'];
+        }
+
         $data = [
-            'page_title'         => '仕訳の削除確認',
-            'active_nav'         => 'journals',
-            'csrf_logout_token'  => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'  => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'  => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'  => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_form_token'    => $this->csrf->generateToken(self::CSRF_FORM_ID),
-            'csrf_form_field'    => self::CSRF_FORM_ID,
-            'display_name'       => $this->session->getDisplayName() ?? '',
-            'user_email'         => $this->session->getEmail() ?? '',
-            'entities'           => [],
+            'page_title' => '仕訳の削除確認',
+            'active_nav' => 'journals',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
+            'csrf_form_field' => self::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => $this->uiContext->entitiesForUser((string) $this->session->getUserId()),
             'selected_entity_id' => (string) $this->session->getSelectedEntity(),
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'     => $this->flash->consume(),
-            'journal'            => [
-                'id'          => $journal->id,
+            'flash_messages' => $this->flash->consume(),
+            'journal' => [
+                'id' => $journal->id,
                 'journalDate' => $journal->journalDate->format('Y-m-d'),
-                'summary'     => $journal->summary,
-                'status'      => $journal->status,
+                'summary' => $journal->summary,
+                'status' => $journal->status,
                 'totalAmount' => $journal->totalAmount,
-                'createdAt'   => $journal->createdAt->format('Y-m-d H:i'),
+                'createdAt' => $journal->createdAt->format('Y-m-d H:i'),
             ],
-            'lines'              => array_map(self::lineToArray(...), $journal->lines),
+            'lines' => array_map(self::lineToArray(...), $journal->lines),
+            'account_name_by_id' => $accountNameById,
         ];
+
         return HtmlResponse::ok($this->view->render('journals/delete-confirm.html.tpl', $data));
     }
 
@@ -94,15 +106,22 @@ final readonly class JournalDeleteController
         $submitted = JournalFormSupport::str($body, '_csrf');
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, $submitted)) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/journals/' . $id);
+
+            return HtmlResponse::redirect('/ui/journals/'.$id);
         }
 
         try {
-            $this->deleteJournal->execute($id, (string) $this->session->getUserId());
+            $this->deleteJournal->execute(
+                $id,
+                (string) $this->session->getUserId(),
+                $this->session->isAdmin(),
+            );
             $this->flash->addSuccess('仕訳を削除しました。');
+
             return HtmlResponse::redirect('/ui/journals');
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の仕訳が見つかりませんでした。');
+
             return HtmlResponse::redirect('/ui/journals');
         } catch (InvariantViolationException $e) {
             $ctx = $e->context();
@@ -110,12 +129,14 @@ final readonly class JournalDeleteController
             $this->flash->addError(
                 $invariant === 'journal.cannot_delete_non_draft'
                     ? 'ドラフト以外の仕訳は削除できません。'
-                    : '削除に失敗しました: ' . $e->getMessage(),
+                    : '削除に失敗しました: '.$e->getMessage(),
             );
-            return HtmlResponse::redirect('/ui/journals/' . $id);
+
+            return HtmlResponse::redirect('/ui/journals/'.$id);
         } catch (\Throwable $e) {
-            $this->flash->addError('削除中にエラーが発生しました: ' . $e->getMessage());
-            return HtmlResponse::redirect('/ui/journals/' . $id);
+            $this->flash->addError('削除中にエラーが発生しました: '.$e->getMessage());
+
+            return HtmlResponse::redirect('/ui/journals/'.$id);
         }
     }
 
@@ -127,6 +148,7 @@ final readonly class JournalDeleteController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
         if (!UlidGenerator::isValid($id)) {
@@ -136,6 +158,7 @@ final readonly class JournalDeleteController
         if ($journal === null || $journal->entityId !== $entityId) {
             return HtmlResponse::of(404, '<!doctype html><meta charset="utf-8"><title>404</title><h1>404</h1>');
         }
+
         return null;
     }
 
@@ -145,11 +168,11 @@ final readonly class JournalDeleteController
     private static function lineToArray(JournalLine $line): array
     {
         return [
-            'side'                 => $line->side,
-            'account_title_id'     => $line->accountTitleId,
+            'side' => $line->side,
+            'account_title_id' => $line->accountTitleId,
             'sub_account_title_id' => $line->subAccountTitleId,
-            'amount'               => $line->amount,
-            'memo'                 => $line->memo,
+            'amount' => $line->amount,
+            'memo' => $line->memo,
         ];
     }
 }

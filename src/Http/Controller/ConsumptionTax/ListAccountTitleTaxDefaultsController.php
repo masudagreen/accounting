@@ -32,6 +32,7 @@ final readonly class ListAccountTitleTaxDefaultsController
             return ErrorResponse::badRequest('entityId query parameter is required and must be a ULID.');
         }
         $defs = $this->useCase->execute($entityId);
+
         return EnvelopeResponse::list(
             ConsumptionTaxSettlementJsonSerializer::defaultsToArrayList($defs),
             ['total' => count($defs)],

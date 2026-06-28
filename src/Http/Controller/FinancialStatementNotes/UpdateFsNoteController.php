@@ -63,6 +63,7 @@ final readonly class UpdateFsNoteController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(FsNoteJsonSerializer::toArray($out->note));
     }
 
@@ -75,6 +76,7 @@ final readonly class UpdateFsNoteController
             return null;
         }
         $v = $json[$key];
+
         return is_string($v) ? $v : null;
     }
 }

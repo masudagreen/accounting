@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\FixedAsset\GenerateDepreciationScheduleInput;
 use Rucaro\Application\FixedAsset\GenerateDepreciationScheduleUseCase;
 use Rucaro\Http\Middleware\AuthenticateBearer;
@@ -30,7 +27,7 @@ final readonly class GenerateDepreciationController
     public function __construct(
         private GenerateDepreciationScheduleUseCase $useCase,
         private AuthenticateBearer $auth,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -65,40 +62,43 @@ final readonly class GenerateDepreciationController
             static fn ($e): array => FixedAssetJsonSerializer::scheduleEntryToArray($e),
             $out->entries,
         );
+
         return EnvelopeResponse::ok(['entries' => $data]);
     }
 
     private static function jsonString(ServerRequest $request, string $key): ?string
     {
         $v = is_array($request->json) ? ($request->json[$key] ?? null) : null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     /**
-     * @return array{0: ?DateTimeImmutable, 1: ?DateTimeImmutable}
+     * @return array{0: ?\DateTimeImmutable, 1: ?\DateTimeImmutable}
      */
     private function lookupFiscalTermBounds(string $fiscalTermId): array
     {
         $stmt = $this->pdo->prepare('SELECT start_date, end_date FROM fiscal_terms WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return [null, null];
         }
+
         return [
             self::parseDate((string) ($row['start_date'] ?? '')),
             self::parseDate((string) ($row['end_date'] ?? '')),
         ];
     }
 
-    private static function parseDate(string $raw): ?DateTimeImmutable
+    private static function parseDate(string $raw): ?\DateTimeImmutable
     {
         if ($raw === '' || !preg_match('/^\d{4}-\d{2}-\d{2}/', $raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

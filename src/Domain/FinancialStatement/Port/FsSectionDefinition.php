@@ -11,7 +11,7 @@ namespace Rucaro\Domain\FinancialStatement\Port;
  * standalone "売上高" line at the top of the PL).
  *
  * `formula` is a simple `+code` / `-code` list used by the
- * {@see \Rucaro\Domain\FinancialStatement\Port\Service\FinancialStatementBuilder}
+ * {@see Service\FinancialStatementBuilder}
  * when a section is a subtotal whose value is computed from siblings rather
  * than from child mappings (e.g. "売上総利益" = +operating_revenue - cost_of_sales).
  */
@@ -49,7 +49,7 @@ final readonly class FsSectionDefinition
         $sign = 1;
         $buffer = '';
         $length = strlen($this->formula);
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $ch = $this->formula[$i];
             if ($ch === '+' || $ch === '-') {
                 if ($buffer !== '') {
@@ -64,6 +64,7 @@ final readonly class FsSectionDefinition
         if ($buffer !== '') {
             $out[] = [$sign, $buffer];
         }
+
         return $out;
     }
 }

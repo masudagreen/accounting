@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Middleware;
 
-use DateTimeZone;
 use Rucaro\Domain\Auth\ApiTokenRepositoryInterface;
 use Rucaro\Infrastructure\Auth\BearerTokenGenerator;
 use Rucaro\Support\Clock\ClockInterface;
@@ -33,9 +32,9 @@ final class AuthenticateSession
     }
 
     /**
-     * @return string|null Authenticated user id as ULID, or null when the
+     * @return string|null authenticated user id as ULID, or null when the
      *                     session is anonymous or the stored token has
-     *                     become invalid.
+     *                     become invalid
      */
     public function authenticate(): ?string
     {
@@ -48,24 +47,29 @@ final class AuthenticateSession
         $record = $this->tokens->findByHash($hash);
         if ($record === null) {
             $this->session->forgetUser();
+
             return null;
         }
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         if (!$record->isActive($now)) {
             $this->session->forgetUser();
+
             return null;
         }
         if (!BearerTokenGenerator::hashEquals($record->tokenHash, $hash)) {
             $this->session->forgetUser();
+
             return null;
         }
         if ($record->userId !== $userId) {
             // The session claims to be user A but the token actually belongs
             // to user B. Treat the session as tampered and hard-reset.
             $this->session->forgetUser();
+
             return null;
         }
         $this->tokens->touchLastUsed($record->id, $now);
+
         return $record->userId;
     }
 }

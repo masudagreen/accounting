@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\StatementOfChangesInEquity;
 
-use InvalidArgumentException;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustment;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustmentRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -24,10 +23,10 @@ final readonly class CreateSsAdjustmentUseCase
     public function execute(CreateSsAdjustmentInput $input): SsAdjustmentOutput
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
 
         $adjustment = new SsManualAdjustment(
@@ -42,6 +41,7 @@ final readonly class CreateSsAdjustmentUseCase
             notes: $input->notes,
         );
         $this->repo->save($adjustment);
+
         return new SsAdjustmentOutput($adjustment);
     }
 }

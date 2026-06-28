@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatement;
 
-use DateTimeImmutable;
 use Rucaro\Domain\FinancialStatement\FinancialStatementKind;
 
 /**
@@ -20,8 +19,8 @@ final readonly class GenerateFinancialStatementUseCaseInput
         public string $entityId,
         public string $fiscalTermId,
         public FinancialStatementKind $kind,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $asOf,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $asOf,
         public string $currencyCode = 'JPY',
     ) {
     }

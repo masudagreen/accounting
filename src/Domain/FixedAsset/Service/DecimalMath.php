@@ -9,7 +9,7 @@ use Rucaro\Support\Decimal\Decimal;
 /**
  * Internal decimal arithmetic helpers used by the depreciation calculators.
  *
- * {@see \Rucaro\Support\Decimal\Decimal} intentionally only ships with
+ * {@see Decimal} intentionally only ships with
  * add/compare/normalize so the accounting use cases never multiply or
  * divide user-supplied decimals. For depreciation we do need a narrow
  * multiplication (rate * book value) and subtraction; these helpers wrap
@@ -22,10 +22,11 @@ final class DecimalMath
     public static function sub(string $a, string $b): string
     {
         if (function_exists('bcsub')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion DecimalMath callers always pass DECIMAL(18,4) numeric strings */
             return bcsub($a, $b, Decimal::SCALE);
         }
-        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-' . $b);
+        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-'.$b);
+
         return Decimal::add($a, $negated);
     }
 
@@ -37,16 +38,17 @@ final class DecimalMath
     public static function mulFloor(string $a, float $factor): string
     {
         if (function_exists('bcmul')) {
-            /** @var string $fs */
             $fs = rtrim(rtrim(sprintf('%.12F', $factor), '0'), '.');
             if ($fs === '' || $fs === '-') {
                 $fs = '0';
             }
-            /** @var string $product */
+            /** @psalm-suppress ArgumentTypeCoercion DecimalMath callers always pass DECIMAL(18,4) numeric strings */
             $product = bcmul($a, $fs, Decimal::SCALE + 4);
+
             return self::floorToScale($product);
         }
         $value = (float) $a * $factor;
+
         return self::floatToScale4Floor($value);
     }
 
@@ -59,11 +61,13 @@ final class DecimalMath
             throw new \InvalidArgumentException('Division by zero.');
         }
         if (function_exists('bcdiv')) {
-            /** @var string $quotient */
+            /** @psalm-suppress ArgumentTypeCoercion DecimalMath callers always pass DECIMAL(18,4) numeric strings */
             $quotient = bcdiv($a, (string) $divisor, Decimal::SCALE + 4);
+
             return self::floorToScale($quotient);
         }
-        $value = (float) $a / $divisor;
+        $value = (float) $a / (float) $divisor;
+
         return self::floatToScale4Floor($value);
     }
 
@@ -92,13 +96,14 @@ final class DecimalMath
         $abs = ltrim($v, '-');
         $dot = strpos($abs, '.');
         if ($dot === false) {
-            return ($negative ? '-' : '') . $abs . '.0000';
+            return ($negative ? '-' : '').$abs.'.0000';
         }
         $intPart = substr($abs, 0, $dot);
         $fracPart = substr($abs, $dot + 1);
         $fracPart = substr(str_pad($fracPart, 4, '0'), 0, 4);
-        $result = $intPart . '.' . $fracPart;
-        return $negative ? '-' . $result : $result;
+        $result = $intPart.'.'.$fracPart;
+
+        return $negative ? '-'.$result : $result;
     }
 
     private static function floatToScale4Floor(float $value): string
@@ -106,10 +111,11 @@ final class DecimalMath
         $negative = $value < 0;
         $abs = abs($value);
         // Scale by 10000 and floor.
-        $scaled = (int) floor($abs * 10000);
+        $scaled = (int) floor($abs * 10000.0);
         $intPart = (string) intdiv($scaled, 10000);
-        $frac = str_pad((string) ($scaled % 10000), 4, '0', STR_PAD_LEFT);
-        $formatted = $intPart . '.' . $frac;
-        return $negative ? '-' . $formatted : $formatted;
+        $frac = str_pad((string) ($scaled % 10000), 4, '0', \STR_PAD_LEFT);
+        $formatted = $intPart.'.'.$frac;
+
+        return $negative ? '-'.$formatted : $formatted;
     }
 }

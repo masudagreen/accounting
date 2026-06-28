@@ -34,6 +34,7 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
     ) {
     }
 
+    #[\Override]
     public function render(ConsumptionTaxSettlement $settlement): string
     {
         $html = $this->renderHtml($settlement);
@@ -55,6 +56,7 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -62,12 +64,13 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'report'          => $this->buildViewModel($settlement),
-            'title'           => '消費税申告書イメージ (Consumption Tax Settlement)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'report' => $this->buildViewModel($settlement),
+            'title' => '消費税申告書イメージ (Consumption Tax Settlement)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('settlement.html.tpl');
     }
 
@@ -80,54 +83,55 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         $purchaseRows = [];
         foreach (self::rateLabels() as $code => $label) {
             $salesAmount = $s->salesByRate[$code] ?? null;
-            $salesTax   = $s->outputTaxByRate[$code] ?? null;
+            $salesTax = $s->outputTaxByRate[$code] ?? null;
             if ($salesAmount !== null || $salesTax !== null) {
                 $salesRows[] = [
                     'rateCode' => $code,
-                    'label'    => $label,
-                    'base'     => self::fmt($salesAmount ?? '0'),
-                    'tax'      => self::fmt($salesTax ?? '0'),
+                    'label' => $label,
+                    'base' => self::fmt($salesAmount ?? '0'),
+                    'tax' => self::fmt($salesTax ?? '0'),
                 ];
             }
             $pAmount = $s->purchasesByRate[$code] ?? null;
-            $pTax   = $s->inputTaxByRate[$code] ?? null;
+            $pTax = $s->inputTaxByRate[$code] ?? null;
             if ($pAmount !== null || $pTax !== null) {
                 $purchaseRows[] = [
                     'rateCode' => $code,
-                    'label'    => $label,
-                    'base'     => self::fmt($pAmount ?? '0'),
-                    'tax'      => self::fmt($pTax ?? '0'),
+                    'label' => $label,
+                    'base' => self::fmt($pAmount ?? '0'),
+                    'tax' => self::fmt($pTax ?? '0'),
                 ];
             }
         }
         $split = $s->taxSplitNationalLocal();
+
         return [
             'period' => [
-                'id'          => $s->period->id,
-                'entityId'    => $s->period->entityId,
-                'fiscalTerm'  => $s->period->fiscalTermId,
-                'from'        => $s->period->periodFrom->format('Y-m-d'),
-                'to'          => $s->period->periodTo->format('Y-m-d'),
-                'method'      => $s->method->label(),
-                'isInterim'   => $s->period->isInterim,
-                'status'      => $s->period->settlementStatus,
+                'id' => $s->period->id,
+                'entityId' => $s->period->entityId,
+                'fiscalTerm' => $s->period->fiscalTermId,
+                'from' => $s->period->periodFrom->format('Y-m-d'),
+                'to' => $s->period->periodTo->format('Y-m-d'),
+                'method' => $s->method->label(),
+                'isInterim' => $s->period->isInterim,
+                'status' => $s->period->settlementStatus,
                 'simplifiedBusinessCategory' => $s->period->simplifiedBusinessCategory?->label(),
             ],
-            'salesRows'         => $salesRows,
-            'purchaseRows'      => $purchaseRows,
-            'totalSales'        => self::fmt($s->totalSales),
-            'taxableSales'      => self::fmt($s->taxableSales),
-            'nonTaxableSales'   => self::fmt($s->nonTaxableSales),
-            'exemptSales'       => self::fmt($s->exemptSales),
-            'untaxedSales'      => self::fmt($s->untaxedSales),
+            'salesRows' => $salesRows,
+            'purchaseRows' => $purchaseRows,
+            'totalSales' => self::fmt($s->totalSales),
+            'taxableSales' => self::fmt($s->taxableSales),
+            'nonTaxableSales' => self::fmt($s->nonTaxableSales),
+            'exemptSales' => self::fmt($s->exemptSales),
+            'untaxedSales' => self::fmt($s->untaxedSales),
             'taxableSalesRatio' => self::fmtRatio($s->taxableSalesRatio),
-            'outputTax'         => self::fmt($s->outputTax),
+            'outputTax' => self::fmt($s->outputTax),
             'deductibleInputTax' => self::fmt($s->deductibleInputTax),
             'adjustmentForNonRegistered' => self::fmt($s->adjustmentForNonRegistered),
-            'netTaxPayable'     => self::fmtSigned($s->netTaxPayable),
-            'taxSplitNational'  => self::fmtSigned($split['national']),
-            'taxSplitLocal'     => self::fmtSigned($split['local']),
-            'generatedAt'       => (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
+            'netTaxPayable' => self::fmtSigned($s->netTaxPayable),
+            'taxSplitNational' => self::fmtSigned($split['national']),
+            'taxSplitLocal' => self::fmtSigned($split['local']),
+            'generatedAt' => (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -138,12 +142,12 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
     {
         return [
             'standard_10' => '標準 10%',
-            'reduced_8'   => '軽減 8%',
-            'old_8'       => '旧税率 8%',
-            'old_5'       => '旧税率 5%',
-            'old_3'       => '旧税率 3%',
-            'exempt'      => '免税',
-            'untaxed'     => '不課税',
+            'reduced_8' => '軽減 8%',
+            'old_8' => '旧税率 8%',
+            'old_5' => '旧税率 5%',
+            'old_3' => '旧税率 3%',
+            'exempt' => '免税',
+            'untaxed' => '不課税',
         ];
     }
 
@@ -152,6 +156,7 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         if ($amount === '' || !is_numeric($amount)) {
             return '0';
         }
+
         return number_format((float) $amount, 0, '.', ',');
     }
 
@@ -162,7 +167,8 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         }
         $num = (float) $amount;
         $abs = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $abs . ')' : $abs;
+
+        return $num < 0 ? '('.$abs.')' : $abs;
     }
 
     private static function fmtRatio(string $ratio): string
@@ -170,7 +176,8 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         if ($ratio === '' || !is_numeric($ratio)) {
             return '0.00%';
         }
-        return number_format(((float) $ratio) * 100, 2, '.', '') . '%';
+
+        return number_format(((float) $ratio) * 100.0, 2, '.', '').'%';
     }
 
     private function buildSmarty(): Smarty
@@ -179,17 +186,19 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -215,7 +224,7 @@ final class DompdfConsumptionTaxReportGenerator implements ConsumptionTaxReportG
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

@@ -42,7 +42,7 @@ final readonly class UpdateSsAdjustmentController
 
         $section = null;
         if (array_key_exists('sectionCode', $json)) {
-            $raw = is_string($json['sectionCode']) ? (string) $json['sectionCode'] : '';
+            $raw = is_string($json['sectionCode']) ? $json['sectionCode'] : '';
             $section = SsSectionCode::tryFrom($raw);
             if ($section === null) {
                 return ErrorResponse::badRequest('sectionCode must be one of the SS section codes.');
@@ -50,7 +50,7 @@ final readonly class UpdateSsAdjustmentController
         }
         $changeType = null;
         if (array_key_exists('changeTypeCode', $json)) {
-            $raw = is_string($json['changeTypeCode']) ? (string) $json['changeTypeCode'] : '';
+            $raw = is_string($json['changeTypeCode']) ? $json['changeTypeCode'] : '';
             $changeType = SsChangeType::tryFrom($raw);
             if ($changeType === null) {
                 return ErrorResponse::badRequest('changeTypeCode must be one of the SS change types.');
@@ -76,10 +76,10 @@ final readonly class UpdateSsAdjustmentController
         }
 
         $label = array_key_exists('label', $json) && is_string($json['label'])
-            ? (string) $json['label']
+            ? $json['label']
             : null;
         $notes = array_key_exists('notes', $json) && is_string($json['notes'])
-            ? (string) $json['notes']
+            ? $json['notes']
             : null;
 
         try {
@@ -98,6 +98,7 @@ final readonly class UpdateSsAdjustmentController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             StatementOfChangesInEquityJsonSerializer::adjustmentToArray($out->adjustment),
         );

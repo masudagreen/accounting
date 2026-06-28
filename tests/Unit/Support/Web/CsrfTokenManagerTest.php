@@ -13,6 +13,7 @@ use Rucaro\Tests\Unit\Application\Support\FixedClock;
 #[CoversClass(CsrfTokenManager::class)]
 final class CsrfTokenManagerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         // Ensure $_SESSION is a clean slate per test; the production code uses
@@ -20,6 +21,7 @@ final class CsrfTokenManagerTest extends TestCase
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -33,6 +35,7 @@ final class CsrfTokenManagerTest extends TestCase
         $token = $mgr->generateToken('ui_login');
 
         self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $token);
+        /** @psalm-suppress InvalidScalarArgument psalm flags $_SESSION as possibly-undefined; setUp() guarantees it is initialised */
         self::assertArrayHasKey(SessionStore::KEY_CSRF_TOKENS, $_SESSION);
     }
 

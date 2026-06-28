@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\TrialBalance;
 
-use DateTimeImmutable;
-
 /**
  * Port for querying a TrialBalance read model directly from the Journal
  * tables.
@@ -24,8 +22,8 @@ interface TrialBalanceQueryInterface
     public function queryByPeriod(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): TrialBalance;
 
     /**
@@ -35,5 +33,5 @@ interface TrialBalanceQueryInterface
     public function latestSnapshotDate(
         string $entityId,
         string $fiscalTermId,
-    ): ?DateTimeImmutable;
+    ): ?\DateTimeImmutable;
 }

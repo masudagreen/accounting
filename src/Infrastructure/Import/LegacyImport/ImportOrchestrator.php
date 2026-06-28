@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Auth\PasswordHasher;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
-use RuntimeException;
 
 /**
  * Top-level driver that composes the individual importers in the right
@@ -28,6 +26,7 @@ final class ImportOrchestrator
     public const STAGE_JOURNALS = 'journals';
     public const STAGE_FIXED_ASSETS = 'fixed-assets';
     public const STAGE_FS_MAPPINGS = 'fs-mappings';
+    public const STAGE_OPENING_BALANCES = 'opening-balances';
 
     public const DEFAULT_ORDER = [
         self::STAGE_USERS,
@@ -38,11 +37,13 @@ final class ImportOrchestrator
         self::STAGE_JOURNALS,
         self::STAGE_FIXED_ASSETS,
         self::STAGE_FS_MAPPINGS,
+        // B-3c: derived from journals; must run after them.
+        self::STAGE_OPENING_BALANCES,
     ];
 
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly UlidGenerator $ulids,
         private readonly PasswordHasher $hasher,
@@ -53,6 +54,7 @@ final class ImportOrchestrator
 
     /**
      * @param list<string> $stages
+     *
      * @return list<ImportReport>
      */
     public function run(array $stages): array
@@ -62,6 +64,7 @@ final class ImportOrchestrator
         foreach ($stages as $stage) {
             $reports[] = $this->runStage($stage);
         }
+
         return $reports;
     }
 
@@ -84,21 +87,18 @@ final class ImportOrchestrator
             if ($this->target->inTransaction()) {
                 $this->target->commit();
             }
+
             return $report;
         } catch (\Throwable $e) {
             if ($this->target->inTransaction()) {
                 $this->target->rollBack();
             }
-            throw new RuntimeException(
-                sprintf('stage "%s" failed: %s', $stage, $e->getMessage()),
-                0,
-                $e,
-            );
+            throw new \RuntimeException(sprintf('stage "%s" failed: %s', $stage, $e->getMessage()), 0, $e);
         }
     }
 
     /**
-     * @return LegacyUserImporter|LegacyEntityImporter|LegacyFiscalTermImporter|LegacyAccountTitleImporter|LegacySubAccountTitleImporter|LegacyJournalImporter|LegacyFixedAssetImporter|LegacyFsMappingImporter
+     * @return LegacyUserImporter|LegacyEntityImporter|LegacyFiscalTermImporter|LegacyAccountTitleImporter|LegacySubAccountTitleImporter|LegacyJournalImporter|LegacyFixedAssetImporter|LegacyFsMappingImporter|LegacyOpeningBalanceImporter
      */
     private function buildImporter(string $stage): object
     {
@@ -154,7 +154,14 @@ final class ImportOrchestrator
                 $this->ulids,
                 $this->dryRun,
             ),
-            default => throw new RuntimeException(sprintf('Unknown stage: %s', $stage)),
+            self::STAGE_OPENING_BALANCES => new LegacyOpeningBalanceImporter(
+                $this->source,
+                $this->target,
+                $this->idMap,
+                $this->ulids,
+                $this->dryRun,
+            ),
+            default => throw new \RuntimeException(sprintf('Unknown stage: %s', $stage)),
         };
     }
 }

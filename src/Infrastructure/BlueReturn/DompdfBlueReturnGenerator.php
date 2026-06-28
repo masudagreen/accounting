@@ -28,6 +28,7 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
     ) {
     }
 
+    #[\Override]
     public function render(BlueReturnForm $form): string
     {
         $html = $this->renderHtml($form);
@@ -49,6 +50,7 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -56,12 +58,13 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'form'            => $this->buildViewModel($form),
-            'title'           => '青色申告決算書 (Blue Return)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'form' => $this->buildViewModel($form),
+            'title' => '青色申告決算書 (Blue Return)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('layout.html.tpl');
     }
 
@@ -71,18 +74,19 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
     private function buildViewModel(BlueReturnForm $form): array
     {
         $snap = $form->snapshot;
+
         return [
-            'id'             => $form->id,
-            'entityId'       => $form->entityId,
-            'fiscalTermId'   => $form->fiscalTermId,
-            'formType'       => $form->formType->value,
-            'status'         => $form->status->value,
-            'finalizedAt'    => $form->finalizedAt?->format('Y-m-d H:i:s'),
-            'generatedAt'    => $form->updatedAt->format('Y-m-d H:i:s'),
-            'page1'          => $snap->page1Pl,
-            'page2'          => $snap->page2Monthly,
-            'page3'          => $snap->page3Breakdown,
-            'page4'          => $snap->page4Bs,
+            'id' => $form->id,
+            'entityId' => $form->entityId,
+            'fiscalTermId' => $form->fiscalTermId,
+            'formType' => $form->formType->value,
+            'status' => $form->status->value,
+            'finalizedAt' => $form->finalizedAt?->format('Y-m-d H:i:s'),
+            'generatedAt' => $form->updatedAt->format('Y-m-d H:i:s'),
+            'page1' => $snap->page1Pl,
+            'page2' => $snap->page2Monthly,
+            'page3' => $snap->page3Breakdown,
+            'page4' => $snap->page4Bs,
         ];
     }
 
@@ -92,17 +96,19 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -128,7 +134,7 @@ final class DompdfBlueReturnGenerator implements BlueReturnPdfGeneratorInterface
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

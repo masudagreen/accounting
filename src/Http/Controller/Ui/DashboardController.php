@@ -10,9 +10,11 @@ use Rucaro\Application\Journal\ListJournalsUseCase;
 use Rucaro\Application\Journal\ListJournalsUseCaseInput;
 use Rucaro\Domain\Entity\Entity;
 use Rucaro\Domain\Journal\Journal;
+use Rucaro\Http\Controller\Ui\Journal\JournalUiContext;
 use Rucaro\Http\Response\HtmlResponse;
 use Rucaro\Http\ServerRequest;
 use Rucaro\Support\Web\CsrfTokenManager;
+use Rucaro\Support\Web\FiscalTermLookup;
 use Rucaro\Support\Web\FlashMessageBag;
 use Rucaro\Support\Web\SessionStore;
 use Rucaro\Support\Web\SmartyViewRenderer;
@@ -32,6 +34,7 @@ final readonly class DashboardController
     public function __construct(
         private ListEntitiesUseCase $listEntities,
         private ListJournalsUseCase $listJournals,
+        private FiscalTermLookup $fiscalTerms,
         private SessionStore $session,
         private CsrfTokenManager $csrf,
         private FlashMessageBag $flash,
@@ -71,11 +74,12 @@ final readonly class DashboardController
                 ));
                 $recentJournals = array_map(
                     static fn (Journal $j): array => [
-                        'id'          => $j->id,
+                        'id' => $j->id,
                         'journalDate' => $j->journalDate->format('Y-m-d'),
-                        'summary'     => $j->summary,
-                        'totalAmount' => $j->totalAmount,
-                        'status'      => $j->status,
+                        'summary' => $j->summary,
+                        // F-1: integer + thousands separator (no .0000 tail).
+                        'totalAmount' => JournalUiContext::formatAmount($j->totalAmount),
+                        'status' => $j->status,
                     ],
                     $journalsOut->items,
                 );
@@ -84,18 +88,27 @@ final readonly class DashboardController
             }
         }
 
+        // F-1: feed the navbar's fiscal-term <select> with the currently
+        // selected entity's terms. Falls back to [] when no entity is set,
+        // which the navbar template detects and degrades gracefully.
+        $navFiscalTerms = $selectedEntityId !== null
+            ? $this->fiscalTerms->listForEntity($selectedEntityId)
+            : [];
+
         $data = [
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'entities'             => array_map(self::entityToArray(...), $entitiesOut->items),
-            'selected_entity_id'   => $selectedEntityId ?? '',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => array_map(self::entityToArray(...), $entitiesOut->items),
+            'selected_entity_id' => $selectedEntityId ?? '',
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'recent_journals'      => $recentJournals,
-            'flash_messages'       => $this->flash->consume(),
+            'selected_fiscal_term_id' => $this->session->getSelectedFiscalTerm() ?? '',
+            'nav_fiscal_terms' => $navFiscalTerms,
+            'recent_journals' => $recentJournals,
+            'flash_messages' => $this->flash->consume(),
         ];
 
         return HtmlResponse::ok($this->view->render('dashboard.html.tpl', $data));

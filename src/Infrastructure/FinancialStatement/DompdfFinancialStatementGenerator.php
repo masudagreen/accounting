@@ -42,6 +42,7 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
     ) {
     }
 
+    #[\Override]
     public function render(FinancialStatement $statement): string
     {
         $html = $this->renderHtml($statement);
@@ -64,6 +65,7 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -75,30 +77,31 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'fs'              => $this->buildViewModel($statement),
-            'title'           => $this->resolveTitle($statement->kind),
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'fs' => $this->buildViewModel($statement),
+            'title' => $this->resolveTitle($statement->kind),
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
-            'hasBs'           => $statement->hasBalanceSheet(),
-            'hasPl'           => $statement->hasProfitAndLoss(),
-            'hasCs'           => $statement->hasCashFlow(),
-            'bsOrder'         => self::bsOrder(),
-            'plOrder'         => self::plOrder(),
-            'csOrder'         => self::csOrder(),
-            'hasJgaap'        => self::hasJgaapSections($statement),
-            'hasJgaapCs'      => self::hasJgaapCsSections($statement),
+            'fontDir' => $this->fontDir,
+            'hasBs' => $statement->hasBalanceSheet(),
+            'hasPl' => $statement->hasProfitAndLoss(),
+            'hasCs' => $statement->hasCashFlow(),
+            'bsOrder' => self::bsOrder(),
+            'plOrder' => self::plOrder(),
+            'csOrder' => self::csOrder(),
+            'hasJgaap' => self::hasJgaapSections($statement),
+            'hasJgaapCs' => self::hasJgaapCsSections($statement),
         ]);
+
         return (string) $smarty->fetch($this->resolveTemplateName($statement->kind));
     }
 
     private function resolveTitle(FinancialStatementKind $kind): string
     {
         return match ($kind) {
-            FinancialStatementKind::BalanceSheet  => '貸借対照表 (Balance Sheet)',
+            FinancialStatementKind::BalanceSheet => '貸借対照表 (Balance Sheet)',
             FinancialStatementKind::ProfitAndLoss => '損益計算書 (Profit & Loss)',
-            FinancialStatementKind::CashFlow      => 'キャッシュフロー計算書 (Cash Flow)',
-            FinancialStatementKind::All           => '決算書（BS / PL / CS）',
+            FinancialStatementKind::CashFlow => 'キャッシュフロー計算書 (Cash Flow)',
+            FinancialStatementKind::All => '決算書（BS / PL / CS）',
         };
     }
 
@@ -108,26 +111,28 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
     private function buildViewModel(FinancialStatement $statement): array
     {
         $currency = $statement->currencyCode;
+
         return [
-            'entityId'     => $statement->entityId,
+            'entityId' => $statement->entityId,
             'fiscalTermId' => $statement->fiscalTermId,
-            'kind'         => $statement->kind->value,
-            'fromDate'     => $statement->fromDate->format('Y-m-d'),
-            'toDate'       => $statement->toDate->format('Y-m-d'),
+            'kind' => $statement->kind->value,
+            'fromDate' => $statement->fromDate->format('Y-m-d'),
+            'toDate' => $statement->toDate->format('Y-m-d'),
             'currencyCode' => $currency,
-            'bs'           => self::sectionMap($statement->bs, $currency),
-            'pl'           => self::sectionMap($statement->pl, $currency),
-            'cs'           => self::sectionMap($statement->cs, $currency),
-            'totals'       => self::formatTotals($statement->totals, $currency),
-            'generatedAt'  => $statement->generatedAt->format('Y-m-d H:i:s'),
-            'hasBs'        => $statement->hasBalanceSheet(),
-            'hasPl'        => $statement->hasProfitAndLoss(),
-            'hasCs'        => $statement->hasCashFlow(),
+            'bs' => self::sectionMap($statement->bs, $currency),
+            'pl' => self::sectionMap($statement->pl, $currency),
+            'cs' => self::sectionMap($statement->cs, $currency),
+            'totals' => self::formatTotals($statement->totals, $currency),
+            'generatedAt' => $statement->generatedAt->format('Y-m-d H:i:s'),
+            'hasBs' => $statement->hasBalanceSheet(),
+            'hasPl' => $statement->hasProfitAndLoss(),
+            'hasCs' => $statement->hasCashFlow(),
         ];
     }
 
     /**
      * @param array<string, Section> $sections
+     *
      * @return array<string, array<string, mixed>>
      */
     private static function sectionMap(array $sections, string $currency): array
@@ -135,21 +140,22 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
         $out = [];
         foreach ($sections as $code => $section) {
             $out[$code] = [
-                'code'     => $section->code,
-                'label'    => $section->label,
+                'code' => $section->code,
+                'label' => $section->label,
                 'subtotal' => self::formatAmount($section->subtotal, $currency),
-                'lines'    => array_map(
+                'lines' => array_map(
                     static fn ($line) => [
-                        'label'      => $line->label,
-                        'code'       => $line->accountTitleCode,
-                        'amount'     => self::formatAmount($line->amount, $currency),
-                        'depth'      => $line->depth,
+                        'label' => $line->label,
+                        'code' => $line->accountTitleCode,
+                        'amount' => self::formatAmount($line->amount, $currency),
+                        'depth' => $line->depth,
                         'isSubtotal' => $line->isSubtotal,
                     ],
                     $section->lines,
                 ),
             ];
         }
+
         return $out;
     }
 
@@ -160,11 +166,9 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
      * - 他通貨は小数第 2 位まで（例: "1,234.56"）
      * - 負数は括弧表記（例: "(12,345)"）
      */
-    private static function formatAmount(mixed $amount, string $currency): string
+    private static function formatAmount(string $amount, string $currency): string
     {
-        $raw = is_object($amount) && method_exists($amount, '__toString')
-            ? (string) $amount
-            : (string) $amount;
+        $raw = $amount;
         if ($raw === '' || !is_numeric($raw)) {
             return '0';
         }
@@ -173,11 +177,13 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
         $isNegative = $num < 0;
         $abs = abs($num);
         $formatted = number_format($abs, $decimals, '.', ',');
-        return $isNegative ? '(' . $formatted . ')' : $formatted;
+
+        return $isNegative ? '('.$formatted.')' : $formatted;
     }
 
     /**
      * @param array<string, mixed> $totals
+     *
      * @return array<string, string>
      */
     private static function formatTotals(array $totals, string $currency): array
@@ -186,16 +192,17 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
         foreach ($totals as $key => $value) {
             $out[$key] = self::formatAmount($value, $currency);
         }
+
         return $out;
     }
 
     private function resolveTemplateName(FinancialStatementKind $kind): string
     {
         return match ($kind) {
-            FinancialStatementKind::BalanceSheet  => 'bs.html.tpl',
+            FinancialStatementKind::BalanceSheet => 'bs.html.tpl',
             FinancialStatementKind::ProfitAndLoss => 'pl.html.tpl',
-            FinancialStatementKind::CashFlow      => 'cs.html.tpl',
-            FinancialStatementKind::All           => 'all.html.tpl',
+            FinancialStatementKind::CashFlow => 'cs.html.tpl',
+            FinancialStatementKind::All => 'all.html.tpl',
         };
     }
 
@@ -205,12 +212,13 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             // Warn once per process; do not throw — CI containers don't
             // ship with the font and PDF smoke tests only need the %PDF
@@ -219,6 +227,7 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -246,7 +255,7 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string
@@ -272,7 +281,7 @@ final class DompdfFinancialStatementGenerator implements FinancialStatementGener
             'equityGroups' => [
                 ['code' => 'shareholders_equity',     'label' => '株主資本'],
                 ['code' => 'valuation_adjustments',   'label' => '評価・換算差額等'],
-                ['code' => 'stock_acquisition_rights','label' => '新株予約権'],
+                ['code' => 'stock_acquisition_rights', 'label' => '新株予約権'],
             ],
         ];
     }

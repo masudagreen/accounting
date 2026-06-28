@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui;
 
-use DateTimeZone;
 use Rucaro\Domain\Auth\ApiTokenRepositoryInterface;
 use Rucaro\Http\Response\HtmlResponse;
 use Rucaro\Http\ServerRequest;
@@ -43,6 +42,7 @@ final readonly class LogoutController
         $submitted = $this->extractCsrf($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, $submitted)) {
             $this->flash->addError('ログアウトに失敗しました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
@@ -51,12 +51,13 @@ final readonly class LogoutController
             $hash = BearerTokenGenerator::hash($plaintext);
             $record = $this->tokens->findByHash($hash);
             if ($record !== null) {
-                $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+                $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
                 $this->tokens->revoke($record->id, $now);
             }
         }
 
         $this->session->destroy();
+
         return HtmlResponse::redirect('/ui/login');
     }
 
@@ -65,6 +66,7 @@ final readonly class LogoutController
         $parsed = [];
         parse_str($request->rawBody, $parsed);
         $v = $parsed['_csrf'] ?? '';
+
         return is_string($v) ? $v : '';
     }
 }

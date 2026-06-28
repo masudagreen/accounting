@@ -25,10 +25,7 @@ final readonly class FiscalPeriod extends AbstractValueObject
     ) {
         Assert::notEmpty($fiscalTermId, 'fiscalTermId');
         if ($endDate->isBefore($startDate)) {
-            throw InvariantViolationException::for('fiscal_period.end_before_start', [
-                'startDate' => $startDate->toPrimitive(),
-                'endDate'   => $endDate->toPrimitive(),
-            ]);
+            throw InvariantViolationException::for('fiscal_period.end_before_start', ['startDate' => $startDate->toPrimitive(), 'endDate' => $endDate->toPrimitive()]);
         }
     }
 
@@ -40,12 +37,13 @@ final readonly class FiscalPeriod extends AbstractValueObject
     /**
      * @return array{fiscalTermId: string, startDate: string, endDate: string}
      */
+    #[\Override]
     public function toPrimitive(): array
     {
         return [
             'fiscalTermId' => $this->fiscalTermId,
-            'startDate'    => $this->startDate->toPrimitive(),
-            'endDate'      => $this->endDate->toPrimitive(),
+            'startDate' => $this->startDate->toPrimitive(),
+            'endDate' => $this->endDate->toPrimitive(),
         ];
     }
 }

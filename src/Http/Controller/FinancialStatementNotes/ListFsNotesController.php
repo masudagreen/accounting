@@ -38,6 +38,7 @@ final readonly class ListFsNotesController
         $onlyActive = $request->queryBool('onlyActive') ?? false;
 
         $notes = $this->useCase->execute($entityId, $fiscalTermId, $onlyActive);
+
         return EnvelopeResponse::list(
             FsNoteJsonSerializer::toArrayList($notes),
             ['total' => count($notes)],

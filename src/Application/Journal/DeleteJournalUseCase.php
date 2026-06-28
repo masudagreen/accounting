@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use DateTimeZone;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Domain\Exception\InvariantViolationException;
 use Rucaro\Domain\Journal\JournalRepositoryInterface;
@@ -25,18 +24,20 @@ final readonly class DeleteJournalUseCase
     ) {
     }
 
-    public function execute(string $journalId, string $deletedBy): void
+    /**
+     * @param bool $bypassMutabilityCheck admin escape hatch — caller is
+     *                                    responsible for the role check
+     */
+    public function execute(string $journalId, string $deletedBy, bool $bypassMutabilityCheck = false): void
     {
         $existing = $this->journals->findById($journalId);
         if ($existing === null) {
             throw new EntityNotFoundException(sprintf('Journal %s not found.', $journalId));
         }
-        if (!$existing->statusEnum()->isMutable()) {
-            throw InvariantViolationException::for('journal.cannot_delete_non_draft', [
-                'status' => $existing->status,
-            ]);
+        if (!$bypassMutabilityCheck && !$existing->statusEnum()->isMutable()) {
+            throw InvariantViolationException::for('journal.cannot_delete_non_draft', ['status' => $existing->status]);
         }
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $this->journals->delete($existing->id, $now, $deletedBy);
     }
 }

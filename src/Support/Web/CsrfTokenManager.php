@@ -36,10 +36,11 @@ final class CsrfTokenManager
         $bag = $this->bag();
         $token = bin2hex(random_bytes(32));
         $bag[$formId] = [
-            'token'     => $token,
+            'token' => $token,
             'issued_at' => $this->clock->getCurrentTime()->getTimestamp(),
         ];
         $_SESSION[SessionStore::KEY_CSRF_TOKENS] = $bag;
+
         return $token;
     }
 
@@ -62,6 +63,7 @@ final class CsrfTokenManager
         if ($now - $issuedAt > self::TTL_SECONDS) {
             unset($bag[$formId]);
             $_SESSION[SessionStore::KEY_CSRF_TOKENS] = $bag;
+
             return false;
         }
         if (!hash_equals($stored, $submitted)) {
@@ -70,6 +72,7 @@ final class CsrfTokenManager
         // One-shot semantics for state-changing POSTs.
         unset($bag[$formId]);
         $_SESSION[SessionStore::KEY_CSRF_TOKENS] = $bag;
+
         return true;
     }
 
@@ -94,6 +97,7 @@ final class CsrfTokenManager
                 $typed[$k] = ['token' => $t, 'issued_at' => $i];
             }
         }
+
         return $typed;
     }
 }

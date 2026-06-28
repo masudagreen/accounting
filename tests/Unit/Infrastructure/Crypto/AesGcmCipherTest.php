@@ -22,6 +22,7 @@ final class AesGcmCipherTest extends TestCase
 
     private AesGcmCipher $cipher;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->cipher = new AesGcmCipher(self::MASTER_KEY_B64);
@@ -30,7 +31,7 @@ final class AesGcmCipherTest extends TestCase
     public function testEncryptDecryptRoundTripPreservesPlaintext(): void
     {
         $plaintext = 'hello world';
-        $aad       = 'accountingFile/strPassword/42';
+        $aad = 'accountingFile/strPassword/42';
 
         $token = $this->cipher->encrypt($plaintext, $aad);
 
@@ -57,7 +58,7 @@ final class AesGcmCipherTest extends TestCase
     public function testEncryptingSamePlaintextTwiceYieldsDifferentCiphertexts(): void
     {
         $plaintext = 'same-input';
-        $aad       = 'accountingFile/strPassword/1';
+        $aad = 'accountingFile/strPassword/1';
 
         $a = $this->cipher->encrypt($plaintext, $aad);
         $b = $this->cipher->encrypt($plaintext, $aad);
@@ -79,7 +80,7 @@ final class AesGcmCipherTest extends TestCase
 
     public function testDecryptFailsWhenTagIsTampered(): void
     {
-        $aad   = 'accountingLogBanksAccount/blobDetail/7';
+        $aad = 'accountingLogBanksAccount/blobDetail/7';
         $token = $this->cipher->encrypt('confidential', $aad);
 
         $tampered = self::flipLastBase64Byte($token);
@@ -92,9 +93,9 @@ final class AesGcmCipherTest extends TestCase
 
     public function testDecryptFailsOnUnknownSchemaVersion(): void
     {
-        $token   = $this->cipher->encrypt('payload', 'ctx');
+        $token = $this->cipher->encrypt('payload', 'ctx');
         // Replace the "v2" segment with "v9".
-        $swapped = 'v9' . substr($token, 2);
+        $swapped = 'v9'.substr($token, 2);
 
         $this->expectException(CryptoException::class);
         $this->expectExceptionMessage('Unsupported cipher token format');
@@ -104,7 +105,7 @@ final class AesGcmCipherTest extends TestCase
 
     public function testDecryptFailsOnUnknownKeyVersion(): void
     {
-        $token   = $this->cipher->encrypt('payload', 'ctx');
+        $token = $this->cipher->encrypt('payload', 'ctx');
         $swapped = preg_replace('/^v2:k1:/', 'v2:k9:', $token, 1);
         self::assertIsString($swapped);
 
@@ -167,12 +168,12 @@ final class AesGcmCipherTest extends TestCase
      */
     public static function plaintextVariantsProvider(): iterable
     {
-        yield 'empty'          => [''];
-        yield 'short ascii'    => ['p'];
-        yield 'japanese utf8'  => ['日本語パスワード'];
-        yield 'json blob'      => ['{"user":"山田","pin":"1234","notes":"テスト"}'];
-        yield 'binary bytes'   => ["\x00\x01\x02\xFF\xFEtrailing\x00"];
-        yield 'long'           => [str_repeat('A', 4096)];
+        yield 'empty' => [''];
+        yield 'short ascii' => ['p'];
+        yield 'japanese utf8' => ['日本語パスワード'];
+        yield 'json blob' => ['{"user":"山田","pin":"1234","notes":"テスト"}'];
+        yield 'binary bytes' => ["\x00\x01\x02\xFF\xFEtrailing\x00"];
+        yield 'long' => [str_repeat('A', 4096)];
     }
 
     #[DataProvider('plaintextVariantsProvider')]
@@ -180,7 +181,7 @@ final class AesGcmCipherTest extends TestCase
     {
         $aad = 'accountingBlueSheetJpn/blobData/999';
 
-        $token  = $this->cipher->encrypt($plaintext, $aad);
+        $token = $this->cipher->encrypt($plaintext, $aad);
         $result = $this->cipher->decrypt($token, $aad);
 
         self::assertSame($plaintext, $result);
@@ -193,11 +194,11 @@ final class AesGcmCipherTest extends TestCase
      */
     private static function flipLastBase64Byte(string $token): string
     {
-        $parts = explode(':', $token, 3);
+        $parts = array_pad(explode(':', $token, 3), 3, '');
         self::assertCount(3, $parts);
 
         $payload = $parts[2];
-        $pad     = strlen($payload) % 4;
+        $pad = strlen($payload) % 4;
         if ($pad !== 0) {
             $payload .= str_repeat('=', 4 - $pad);
         }
@@ -205,7 +206,7 @@ final class AesGcmCipherTest extends TestCase
         self::assertIsString($decoded);
 
         // Flip the low bit of the final byte (inside the 16-byte tag).
-        $lastByte              = ord($decoded[strlen($decoded) - 1]);
+        $lastByte = ord($decoded[strlen($decoded) - 1]);
         $decoded[strlen($decoded) - 1] = chr($lastByte ^ 0x01);
 
         $parts[2] = rtrim(strtr(base64_encode($decoded), '+/', '-_'), '=');

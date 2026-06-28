@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FinancialStatement\Multi\FiscalTermMetadata;
 use Rucaro\Application\FinancialStatement\Multi\FiscalTermMetadataRepositoryInterface;
 
@@ -19,15 +17,16 @@ final class InMemoryFiscalTermMetadataRepository implements FiscalTermMetadataRe
 
     public function seed(string $id, int $period, string $from, string $to): void
     {
-        $tz = new DateTimeZone('UTC');
+        $tz = new \DateTimeZone('UTC');
         $this->byId[$id] = new FiscalTermMetadata(
             id: $id,
-            label: '第 ' . $period . ' 期',
-            startDate: new DateTimeImmutable($from, $tz),
-            endDate: new DateTimeImmutable($to, $tz),
+            label: '第 '.$period.' 期',
+            startDate: new \DateTimeImmutable($from, $tz),
+            endDate: new \DateTimeImmutable($to, $tz),
         );
     }
 
+    #[\Override]
     public function findByIds(array $ids): array
     {
         $out = [];
@@ -36,6 +35,7 @@ final class InMemoryFiscalTermMetadataRepository implements FiscalTermMetadataRe
                 $out[] = $this->byId[$id];
             }
         }
+
         return $out;
     }
 }

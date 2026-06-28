@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\BreakEvenPoint;
 
-use InvalidArgumentException;
-
 /**
  * CVP cost type for one account title.
  *
@@ -29,7 +27,7 @@ enum CvpCostType: string
             'variable' => self::Variable,
             'fixed' => self::Fixed,
             'semi_variable', 'semivariable' => self::SemiVariable,
-            default => throw new InvalidArgumentException(sprintf('Unknown CvpCostType: %s', $v)),
+            default => throw new \InvalidArgumentException(sprintf('Unknown CvpCostType: %s', $v)),
         };
     }
 }

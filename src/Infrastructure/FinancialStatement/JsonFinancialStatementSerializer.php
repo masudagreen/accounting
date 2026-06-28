@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FinancialStatement;
 
-use DateTimeZone;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
 use Rucaro\Domain\FinancialStatement\FinancialStatementLine;
 use Rucaro\Domain\FinancialStatement\Port\FsSectionCode;
@@ -37,18 +36,18 @@ final class JsonFinancialStatementSerializer
     public static function toArray(FinancialStatement $fs): array
     {
         return [
-            'entityId'     => $fs->entityId,
+            'entityId' => $fs->entityId,
             'fiscalTermId' => $fs->fiscalTermId,
-            'kind'         => $fs->kind->value,
-            'fromDate'     => $fs->fromDate->format('Y-m-d'),
-            'asOf'         => $fs->toDate->format('Y-m-d'),
+            'kind' => $fs->kind->value,
+            'fromDate' => $fs->fromDate->format('Y-m-d'),
+            'asOf' => $fs->toDate->format('Y-m-d'),
             'currencyCode' => $fs->currencyCode,
-            'bs'           => $fs->bs === [] ? null : self::serializeBs($fs),
-            'pl'           => $fs->pl === [] ? null : self::serializePl($fs),
-            'cs'           => $fs->cs === [] ? null : self::serializeCs($fs),
-            'totals'       => $fs->totals,
-            'generatedAt'  => $fs->generatedAt
-                ->setTimezone(new DateTimeZone('UTC'))
+            'bs' => $fs->bs === [] ? null : self::serializeBs($fs),
+            'pl' => $fs->pl === [] ? null : self::serializePl($fs),
+            'cs' => $fs->cs === [] ? null : self::serializeCs($fs),
+            'totals' => $fs->totals,
+            'generatedAt' => $fs->generatedAt
+                ->setTimezone(new \DateTimeZone('UTC'))
                 ->format('Y-m-d\TH:i:s.u\Z'),
         ];
     }
@@ -59,11 +58,11 @@ final class JsonFinancialStatementSerializer
     private static function serializeBs(FinancialStatement $fs): array
     {
         return [
-            'sections'    => self::orderedSections($fs->bs),
+            'sections' => self::orderedSections($fs->bs),
             // Legacy flat keys: preserved so the simplified path keeps its
             // existing contract and API clients that only read the three
             // top-level rollups keep working unchanged.
-            'assets'      => self::section(
+            'assets' => self::section(
                 $fs->bs[FsSectionCode::BS_ASSET]
                     ?? $fs->bs[Section::CODE_ASSETS]
                     ?? null,
@@ -73,12 +72,10 @@ final class JsonFinancialStatementSerializer
                     ?? $fs->bs[Section::CODE_LIABILITIES]
                     ?? null,
             ),
-            'equity'      => self::section(
-                $fs->bs[FsSectionCode::BS_EQUITY]
-                    ?? $fs->bs[Section::CODE_EQUITY]
-                    ?? null,
+            'equity' => self::section(
+                $fs->bs[FsSectionCode::BS_EQUITY] ?? null,
             ),
-            'totals'      => self::bsTotals($fs),
+            'totals' => self::bsTotals($fs),
         ];
     }
 
@@ -88,13 +85,13 @@ final class JsonFinancialStatementSerializer
     private static function serializePl(FinancialStatement $fs): array
     {
         return [
-            'sections'  => self::orderedSections($fs->pl),
-            'revenue'   => self::section(
+            'sections' => self::orderedSections($fs->pl),
+            'revenue' => self::section(
                 $fs->pl[FsSectionCode::PL_OPERATING_REVENUE]
                     ?? $fs->pl[Section::CODE_REVENUE]
                     ?? null,
             ),
-            'expenses'  => self::section($fs->pl[Section::CODE_EXPENSES] ?? null),
+            'expenses' => self::section($fs->pl[Section::CODE_EXPENSES] ?? null),
             'netIncome' => $fs->totals['net_income'] ?? '0.0000',
         ];
     }
@@ -105,7 +102,7 @@ final class JsonFinancialStatementSerializer
     private static function serializeCs(FinancialStatement $fs): array
     {
         return [
-            'sections'  => self::orderedSections($fs->cs),
+            'sections' => self::orderedSections($fs->cs),
             'operating' => self::section($fs->cs[Section::CODE_OPERATING_CF] ?? null),
             'investing' => self::section($fs->cs[Section::CODE_INVESTING_CF] ?? null),
             'financing' => self::section($fs->cs[Section::CODE_FINANCING_CF] ?? null),
@@ -118,6 +115,7 @@ final class JsonFinancialStatementSerializer
      * ascending. Clients reassemble the tree via the `parentCode` field.
      *
      * @param array<string, Section> $sections
+     *
      * @return list<array<string, mixed>>
      */
     private static function orderedSections(array $sections): array
@@ -127,25 +125,27 @@ final class JsonFinancialStatementSerializer
             if ($a->sortOrder !== $b->sortOrder) {
                 return $a->sortOrder <=> $b->sortOrder;
             }
+
             return strcmp($a->code, $b->code);
         });
+
         return array_map(
             static fn (Section $s): array => [
-                'code'       => $s->code,
+                'code' => $s->code,
                 'parentCode' => $s->parentCode,
-                'label'      => $s->label,
-                'sortOrder'  => $s->sortOrder,
+                'label' => $s->label,
+                'sortOrder' => $s->sortOrder,
                 'isSubtotal' => $s->isSubtotal,
-                'isTotal'    => $s->isTotal,
-                'subtotal'   => $s->subtotal,
-                'lines'      => array_map(
+                'isTotal' => $s->isTotal,
+                'subtotal' => $s->subtotal,
+                'lines' => array_map(
                     static fn (FinancialStatementLine $line): array => [
                         'accountTitleId' => $line->accountTitleId,
-                        'accountCode'    => $line->accountTitleCode,
-                        'label'          => $line->label,
-                        'amount'         => $line->amount,
-                        'depth'          => $line->depth,
-                        'isSubtotal'     => $line->isSubtotal,
+                        'accountCode' => $line->accountTitleCode,
+                        'label' => $line->label,
+                        'amount' => $line->amount,
+                        'depth' => $line->depth,
+                        'isSubtotal' => $line->isSubtotal,
                     ],
                     $s->lines,
                 ),
@@ -169,12 +169,12 @@ final class JsonFinancialStatementSerializer
             ?? '0.0000';
         $equityTotal = $fs->bs[FsSectionCode::BS_EQUITY_TOTAL]->subtotal
             ?? $fs->bs[FsSectionCode::BS_EQUITY]->subtotal
-            ?? $fs->bs[Section::CODE_EQUITY]->subtotal
             ?? '0.0000';
+
         return [
-            'assets'      => $assetTotal,
+            'assets' => $assetTotal,
             'liabilities' => $liabilityTotal,
-            'equity'      => $equityTotal,
+            'equity' => $equityTotal,
         ];
     }
 
@@ -185,21 +185,22 @@ final class JsonFinancialStatementSerializer
     {
         if ($section === null) {
             return [
-                'title'    => '',
-                'lines'    => [],
+                'title' => '',
+                'lines' => [],
                 'subtotal' => '0.0000',
             ];
         }
+
         return [
-            'title'    => $section->label,
-            'lines'    => array_map(
+            'title' => $section->label,
+            'lines' => array_map(
                 static fn (FinancialStatementLine $line): array => [
                     'accountTitleId' => $line->accountTitleId,
-                    'accountCode'    => $line->accountTitleCode,
-                    'label'          => $line->label,
-                    'amount'         => $line->amount,
-                    'depth'          => $line->depth,
-                    'isSubtotal'     => $line->isSubtotal,
+                    'accountCode' => $line->accountTitleCode,
+                    'label' => $line->label,
+                    'amount' => $line->amount,
+                    'depth' => $line->depth,
+                    'isSubtotal' => $line->isSubtotal,
                 ],
                 $section->lines,
             ),

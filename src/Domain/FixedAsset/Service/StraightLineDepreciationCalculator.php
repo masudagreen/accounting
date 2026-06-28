@@ -17,6 +17,7 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class StraightLineDepreciationCalculator implements DepreciationCalculatorInterface
 {
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         if ($request->usefulLifeYears <= 0) {
@@ -25,6 +26,7 @@ final class StraightLineDepreciationCalculator implements DepreciationCalculator
             if (Decimal::compare($dep, '0.0000') < 0) {
                 $dep = '0.0000';
             }
+
             return self::finalize($request, $dep);
         }
 
@@ -62,6 +64,7 @@ final class StraightLineDepreciationCalculator implements DepreciationCalculator
         if (Decimal::compare($request->residualValue, '0.0000') === 0) {
             return '1.0000';
         }
+
         return $request->residualValue;
     }
 
@@ -71,6 +74,7 @@ final class StraightLineDepreciationCalculator implements DepreciationCalculator
     ): DepreciationCalculationResult {
         $accum = Decimal::add($request->openingAccumulatedDepreciation, $dep);
         $closing = DecimalMath::sub($request->openingBookValue, $dep);
+
         return new DepreciationCalculationResult(
             depreciationAmount: Decimal::normalize($dep),
             accumulatedDepreciation: Decimal::normalize($accum),

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\TrialBalance\TrialBalance;
 use Rucaro\Domain\TrialBalance\TrialBalanceQueryInterface;
 use Rucaro\Domain\TrialBalance\TrialBalanceRow;
@@ -20,15 +18,15 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class InMemoryTrialBalanceQuery implements TrialBalanceQueryInterface
 {
-    /** @var list<array{entityId:string, fiscalTermId:string, date:DateTimeImmutable, accountId:string, accountCode:string, accountName:string, category:string, normalSide:string, side:string, amount:string}> */
+    /** @var list<array{entityId:string, fiscalTermId:string, date:\DateTimeImmutable, accountId:string, accountCode:string, accountName:string, category:string, normalSide:string, side:string, amount:string}> */
     private array $lines = [];
 
-    private ?DateTimeImmutable $latestSnapshot = null;
+    private ?\DateTimeImmutable $latestSnapshot = null;
 
     public function addLine(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $date,
+        \DateTimeImmutable $date,
         string $accountId,
         string $accountCode,
         string $accountName,
@@ -38,29 +36,30 @@ final class InMemoryTrialBalanceQuery implements TrialBalanceQueryInterface
         string $amount,
     ): void {
         $this->lines[] = [
-            'entityId'     => $entityId,
+            'entityId' => $entityId,
             'fiscalTermId' => $fiscalTermId,
-            'date'         => $date,
-            'accountId'    => $accountId,
-            'accountCode'  => $accountCode,
-            'accountName'  => $accountName,
-            'category'     => $category,
-            'normalSide'   => $normalSide,
-            'side'         => $side,
-            'amount'       => $amount,
+            'date' => $date,
+            'accountId' => $accountId,
+            'accountCode' => $accountCode,
+            'accountName' => $accountName,
+            'category' => $category,
+            'normalSide' => $normalSide,
+            'side' => $side,
+            'amount' => $amount,
         ];
     }
 
-    public function setLatestSnapshot(?DateTimeImmutable $date): void
+    public function setLatestSnapshot(?\DateTimeImmutable $date): void
     {
         $this->latestSnapshot = $date;
     }
 
+    #[\Override]
     public function queryByPeriod(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): TrialBalance {
         /** @var array<string, array{code:string, name:string, category:string, normalSide:string, debit:string, credit:string, count:int}> $bucket */
         $bucket = [];
@@ -74,13 +73,13 @@ final class InMemoryTrialBalanceQuery implements TrialBalanceQueryInterface
             $id = $line['accountId'];
             if (!isset($bucket[$id])) {
                 $bucket[$id] = [
-                    'code'       => $line['accountCode'],
-                    'name'       => $line['accountName'],
-                    'category'   => $line['category'],
+                    'code' => $line['accountCode'],
+                    'name' => $line['accountName'],
+                    'category' => $line['category'],
                     'normalSide' => $line['normalSide'],
-                    'debit'      => '0.0000',
-                    'credit'     => '0.0000',
-                    'count'      => 0,
+                    'debit' => '0.0000',
+                    'credit' => '0.0000',
+                    'count' => 0,
                 ];
             }
             if ($line['side'] === 'debit') {
@@ -88,7 +87,7 @@ final class InMemoryTrialBalanceQuery implements TrialBalanceQueryInterface
             } else {
                 $bucket[$id]['credit'] = Decimal::add($bucket[$id]['credit'], $line['amount']);
             }
-            $bucket[$id]['count']++;
+            ++$bucket[$id]['count'];
         }
         $rows = [];
         foreach ($bucket as $id => $b) {
@@ -115,11 +114,12 @@ final class InMemoryTrialBalanceQuery implements TrialBalanceQueryInterface
             toDate: $to,
             currencyCode: 'JPY',
             rows: $rows,
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 
-    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?DateTimeImmutable
+    #[\Override]
+    public function latestSnapshotDate(string $entityId, string $fiscalTermId): ?\DateTimeImmutable
     {
         return $this->latestSnapshot;
     }

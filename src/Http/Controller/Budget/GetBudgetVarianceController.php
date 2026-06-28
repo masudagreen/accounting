@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Budget;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Application\Budget\AnalyzeBudgetVarianceInput;
 use Rucaro\Application\Budget\AnalyzeBudgetVarianceUseCase;
 use Rucaro\Application\Budget\GetBudgetUseCase;
@@ -36,7 +33,7 @@ final readonly class GetBudgetVarianceController
         private AnalyzeBudgetVarianceUseCase $analyze,
         private BudgetVariancePdfGeneratorInterface $generator,
         private AuthenticateBearer $auth,
-        private PDO $pdo,
+        private \PDO $pdo,
     ) {
     }
 
@@ -56,7 +53,7 @@ final readonly class GetBudgetVarianceController
         }
 
         $asOf = self::parseDate($request->queryString('asOf'))
-            ?? new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $from = self::parseDate($request->queryString('from'))
             ?? $this->lookupFiscalTermStart($budget->fiscalTermId)
             ?? $asOf;
@@ -76,20 +73,22 @@ final readonly class GetBudgetVarianceController
         $format = strtolower($request->queryString('format') ?? 'json');
         if ($format === 'pdf') {
             $pdf = $this->generator->render($analysis);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="budget-variance.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(BudgetVarianceJsonSerializer::toArray($analysis));
     }
 
-    private static function parseDate(?string $raw): ?DateTimeImmutable
+    private static function parseDate(?string $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '') {
             return null;
@@ -98,13 +97,13 @@ final readonly class GetBudgetVarianceController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private function lookupFiscalTermStart(string $fiscalTermId): ?DateTimeImmutable
+    private function lookupFiscalTermStart(string $fiscalTermId): ?\DateTimeImmutable
     {
         $stmt = $this->pdo->prepare('SELECT start_date FROM fiscal_terms WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($fiscalTermId)]);
@@ -114,7 +113,7 @@ final readonly class GetBudgetVarianceController
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

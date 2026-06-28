@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\BreakEvenPoint;
 
-use DateTimeImmutable;
 use Rucaro\Support\Decimal\Decimal;
 
 /**
@@ -27,8 +26,8 @@ final readonly class BreakEvenPointAnalysis
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public string $currencyCode,
         public string $sales,
         public string $variableCosts,
@@ -42,7 +41,7 @@ final readonly class BreakEvenPointAnalysis
         public array $salesBreakdown,
         public array $variableBreakdown,
         public array $fixedBreakdown,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 

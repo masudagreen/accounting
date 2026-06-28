@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
-
 /**
  * Input envelope for {@see GenerateStatementOfChangesInEquityUseCase}.
  *
@@ -24,8 +22,8 @@ final readonly class GenerateStatementOfChangesInEquityInput
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public string $currencyCode = 'JPY',
         public array $openingBalances = [],
         public ?string $netIncome = null,

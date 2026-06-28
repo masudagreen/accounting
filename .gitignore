@@ -69,3 +69,10 @@ back/tpl/templates_c/*
 /coverage/
 /build/
 /tmp/
+
+# Playwright eval screenshots (root)
+/f4*.png
+/tb.png
+
+# Psalm cache (alt path)
+/.psalm.cache/

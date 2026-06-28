@@ -31,59 +31,38 @@ final class Assert
     public static function notEmpty(string $value, string $field): void
     {
         if (trim($value) === '') {
-            throw ValidationException::withErrors([
-                $field => [sprintf("'%s' must not be empty.", $field)],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' must not be empty.", $field)]]);
         }
     }
 
     public static function minLength(string $value, int $min, string $field): void
     {
         if (mb_strlen($value) < $min) {
-            throw ValidationException::withErrors([
-                $field => [sprintf(
-                    "'%s' must be at least %d characters long.",
-                    $field,
-                    $min,
-                )],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' must be at least %d characters long.", $field, $min)]]);
         }
     }
 
     public static function maxLength(string $value, int $max, string $field): void
     {
         if (mb_strlen($value) > $max) {
-            throw ValidationException::withErrors([
-                $field => [sprintf(
-                    "'%s' must be at most %d characters long.",
-                    $field,
-                    $max,
-                )],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' must be at most %d characters long.", $field, $max)]]);
         }
     }
 
     public static function regex(string $value, string $pattern, string $field): void
     {
+        if ($pattern === '') {
+            throw new \InvalidArgumentException('Assert::regex requires a non-empty pattern.');
+        }
         if (preg_match($pattern, $value) !== 1) {
-            throw ValidationException::withErrors([
-                $field => [sprintf(
-                    "'%s' does not match the required pattern.",
-                    $field,
-                )],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' does not match the required pattern.", $field)]]);
         }
     }
 
     public static function email(string $value, string $field): void
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            throw ValidationException::withErrors([
-                $field => [sprintf(
-                    "'%s' is not a valid email address.",
-                    $field,
-                )],
-            ]);
+        if (filter_var($value, \FILTER_VALIDATE_EMAIL) === false) {
+            throw ValidationException::withErrors([$field => [sprintf("'%s' is not a valid email address.", $field)]]);
         }
     }
 
@@ -94,14 +73,7 @@ final class Assert
         string $field,
     ): void {
         if ($value < $min || $value > $max) {
-            throw ValidationException::withErrors([
-                $field => [sprintf(
-                    "'%s' must be between %s and %s.",
-                    $field,
-                    (string) $min,
-                    (string) $max,
-                )],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' must be between %s and %s.", $field, (string) $min, (string) $max)]]);
         }
     }
 }

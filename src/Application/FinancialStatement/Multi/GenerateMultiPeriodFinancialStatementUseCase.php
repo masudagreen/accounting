@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
 use Rucaro\Application\FinancialStatement\GenerateFinancialStatementUseCaseInput;
 use Rucaro\Domain\FinancialStatement\Multi\MultiPeriodEntry;
 use Rucaro\Domain\FinancialStatement\Multi\MultiPeriodFinancialStatement;
@@ -55,16 +52,13 @@ final readonly class GenerateMultiPeriodFinancialStatementUseCase
 
         $metas = $this->fiscalTerms->findByIds($ids);
         if (count($metas) !== count($ids)) {
-            throw new InvalidArgumentException(
-                'One or more fiscal term ids could not be resolved for the given entity.',
-            );
+            throw new \InvalidArgumentException('One or more fiscal term ids could not be resolved for the given entity.');
         }
 
         // Sort ascending by start date — latest period rendered rightmost.
         usort(
             $metas,
-            static fn (FiscalTermMetadata $a, FiscalTermMetadata $b): int
-                => $a->startDate <=> $b->startDate,
+            static fn (FiscalTermMetadata $a, FiscalTermMetadata $b): int => $a->startDate <=> $b->startDate,
         );
 
         $entries = [];
@@ -87,7 +81,7 @@ final readonly class GenerateMultiPeriodFinancialStatementUseCase
             );
         }
 
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
 
         return new MultiPeriodFinancialStatement(
             entityId: $input->entityId,
@@ -99,27 +93,25 @@ final readonly class GenerateMultiPeriodFinancialStatementUseCase
 
     /**
      * @param list<string> $ids
+     *
      * @return list<string>
      */
     private static function validateIds(array $ids): array
     {
         if ($ids === []) {
-            throw new InvalidArgumentException('fiscalTermIds must contain at least one id.');
+            throw new \InvalidArgumentException('fiscalTermIds must contain at least one id.');
         }
         if (count($ids) > GenerateMultiPeriodFinancialStatementInput::MAX_PERIODS) {
-            throw new InvalidArgumentException(sprintf(
-                'fiscalTermIds must not exceed %d entries (got %d).',
-                GenerateMultiPeriodFinancialStatementInput::MAX_PERIODS,
-                count($ids),
-            ));
+            throw new \InvalidArgumentException(sprintf('fiscalTermIds must not exceed %d entries (got %d).', GenerateMultiPeriodFinancialStatementInput::MAX_PERIODS, count($ids)));
         }
         $seen = [];
         foreach ($ids as $id) {
             if (isset($seen[$id])) {
-                throw new InvalidArgumentException('fiscalTermIds must be distinct.');
+                throw new \InvalidArgumentException('fiscalTermIds must be distinct.');
             }
             $seen[$id] = true;
         }
+
         return $ids;
     }
 }

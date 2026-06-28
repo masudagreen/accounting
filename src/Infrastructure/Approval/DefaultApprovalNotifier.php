@@ -41,6 +41,7 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
     ) {
     }
 
+    #[\Override]
     public function notifyIssued(
         ApprovalToken $token,
         string $tokenPlaintext,
@@ -51,17 +52,17 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
 
         $context = [
             'target' => [
-                'kind'    => $target->kind()->value,
-                'id'      => $target->id(),
+                'kind' => $target->kind()->value,
+                'id' => $target->id(),
                 'summary' => $target->summary(),
                 'details' => $target->details(),
             ],
             'approveUrl' => $approveUrl,
-            'rejectUrl'  => $rejectUrl,
-            'expiresAt'  => $token->expiresAt->format('Y-m-d H:i:s T'),
-            'issuerId'   => $token->issuedByUserId,
-            'appUrl'     => $this->appUrl,
-            'recipient'  => $token->recipient,
+            'rejectUrl' => $rejectUrl,
+            'expiresAt' => $token->expiresAt->format('Y-m-d H:i:s T'),
+            'issuerId' => $token->issuedByUserId,
+            'appUrl' => $this->appUrl,
+            'recipient' => $token->recipient,
         ];
 
         switch (true) {
@@ -82,8 +83,8 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
                     body: $this->renderMessagingBody($context),
                     metadata: [
                         'approve_url' => $approveUrl,
-                        'reject_url'  => $rejectUrl,
-                        'expires_at'  => $token->expiresAt->format(DATE_ATOM),
+                        'reject_url' => $rejectUrl,
+                        'expires_at' => $token->expiresAt->format(\DATE_ATOM),
                     ],
                 ));
                 break;
@@ -96,6 +97,7 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
 
     /**
      * @param array<string, mixed> $context
+     *
      * @return array{subject:string,text:string,html:string}
      */
     private function renderMail(array $context): array
@@ -106,10 +108,11 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
 
         $smarty = $this->buildSmarty();
         $smarty->assign($context);
+
         return [
             'subject' => trim((string) $smarty->fetch($this->resolveTemplate($subjectTpl, 'subject.ja.tpl'))),
-            'text'    => (string) $smarty->fetch($this->resolveTemplate($textTpl, 'body.text.ja.tpl')),
-            'html'    => (string) $smarty->fetch($this->resolveTemplate($htmlTpl, 'body.html.ja.tpl')),
+            'text' => (string) $smarty->fetch($this->resolveTemplate($textTpl, 'body.text.ja.tpl')),
+            'html' => (string) $smarty->fetch($this->resolveTemplate($htmlTpl, 'body.html.ja.tpl')),
         ];
     }
 
@@ -139,21 +142,24 @@ final class DefaultApprovalNotifier implements ApprovalNotifierInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function resolveTemplate(string $preferred, string $fallback): string
     {
-        $preferredPath = $this->templateDir . DIRECTORY_SEPARATOR . $preferred;
+        $preferredPath = $this->templateDir.\DIRECTORY_SEPARATOR.$preferred;
         if (is_file($preferredPath)) {
             return $preferred;
         }
+
         return $fallback;
     }
 
     private function expandUrl(string $template, string $tokenPlaintext): string
     {
         $expanded = str_replace('{token}', $tokenPlaintext, $template);
+
         return str_replace('${APP_URL}', $this->appUrl, $expanded);
     }
 }

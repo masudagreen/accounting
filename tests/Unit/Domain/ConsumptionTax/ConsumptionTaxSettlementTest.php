@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
@@ -69,13 +68,14 @@ final class ConsumptionTaxSettlementTest extends TestCase
 
     private function period(): ConsumptionTaxPeriod
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,

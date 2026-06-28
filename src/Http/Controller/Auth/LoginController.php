@@ -46,15 +46,15 @@ final readonly class LoginController
         }
 
         return EnvelopeResponse::ok(data: [
-            'token'       => $output->token,
+            'token' => $output->token,
             'tokenPrefix' => $output->tokenPrefix,
-            'issuedAt'    => $output->issuedAt->format('Y-m-d\TH:i:s.u\Z'),
-            'expiresAt'   => $output->expiresAt->format('Y-m-d\TH:i:s.u\Z'),
-            'user'        => [
-                'id'          => $output->userId,
-                'loginId'     => $output->loginId,
+            'issuedAt' => $output->issuedAt->format('Y-m-d\TH:i:s.u\Z'),
+            'expiresAt' => $output->expiresAt->format('Y-m-d\TH:i:s.u\Z'),
+            'user' => [
+                'id' => $output->userId,
+                'loginId' => $output->loginId,
                 'displayName' => $output->displayName,
-                'email'       => $output->email,
+                'email' => $output->email,
             ],
         ]);
     }

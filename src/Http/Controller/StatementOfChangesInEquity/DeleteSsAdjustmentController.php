@@ -36,6 +36,7 @@ final readonly class DeleteSsAdjustmentController
         } catch (ValidationException $e) {
             return ErrorResponse::notFound($e->getMessage());
         }
+
         return EnvelopeResponse::ok(['id' => $id, 'deleted' => true]);
     }
 }

@@ -25,19 +25,18 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
 {
     private const DEEMED_RATIO = '80';
 
+    #[\Override]
     public function calculate(ConsumptionTaxPeriod $period, array $transactions): ConsumptionTaxSettlement
     {
         if ($period->calculationMethod !== ConsumptionTaxCalculationMethod::TwoPercent) {
-            throw ValidationException::withErrors([
-                'calculationMethod' => ['period calculationMethod must be two_percent.'],
-            ]);
+            throw ValidationException::withErrors(['calculationMethod' => ['period calculationMethod must be two_percent.']]);
         }
 
-        $taxableSales    = '0.0000';
+        $taxableSales = '0.0000';
         $nonTaxableSales = '0.0000';
-        $exemptSales     = '0.0000';
-        $untaxedSales    = '0.0000';
-        $outputTaxTotal  = '0.0000';
+        $exemptSales = '0.0000';
+        $untaxedSales = '0.0000';
+        $outputTaxTotal = '0.0000';
 
         /** @var array<string, string> $salesByRate */
         $salesByRate = [];
@@ -53,7 +52,7 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
             }
             $rateCode = PrincipleConsumptionTaxCalculator::rateCodeOf($t->ratePercent, $t->isReduced);
             match ($t->categoryCode) {
-                ConsumptionTaxCategoryCode::TaxableSales => (function () use (
+                ConsumptionTaxCategoryCode::TaxableSales => (static function () use (
                     &$taxableSales, &$outputTaxTotal, &$salesByRate, &$outputTaxByRate, $t, $rateCode
                 ): void {
                     $taxableSales = Decimal::add($taxableSales, $t->amountExcludingTax);
@@ -62,14 +61,14 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
                     $outputTaxByRate[$rateCode] = Decimal::add($outputTaxByRate[$rateCode] ?? '0.0000', $t->taxAmount);
                 })(),
                 ConsumptionTaxCategoryCode::NonTaxableSales => $nonTaxableSales = Decimal::add($nonTaxableSales, $t->amountExcludingTax),
-                ConsumptionTaxCategoryCode::ExemptSales     => $exemptSales     = Decimal::add($exemptSales,     $t->amountExcludingTax),
-                ConsumptionTaxCategoryCode::UntaxedSales    => $untaxedSales    = Decimal::add($untaxedSales,    $t->amountExcludingTax),
-                default                                      => null,
+                ConsumptionTaxCategoryCode::ExemptSales => $exemptSales = Decimal::add($exemptSales, $t->amountExcludingTax),
+                ConsumptionTaxCategoryCode::UntaxedSales => $untaxedSales = Decimal::add($untaxedSales, $t->amountExcludingTax),
+                default => null,
             };
         }
 
         $deemedInput = self::multiplyPercent($outputTaxTotal, self::DEEMED_RATIO);
-        $netPayable = Decimal::add($outputTaxTotal, '-' . ltrim(Decimal::normalize($deemedInput), '-'));
+        $netPayable = Decimal::add($outputTaxTotal, '-'.ltrim(Decimal::normalize($deemedInput), '-'));
 
         $totalSales = Decimal::add(Decimal::add($taxableSales, $nonTaxableSales), $exemptSales);
         $taxableSalesRatio = self::ratio(Decimal::add($taxableSales, $exemptSales), $totalSales);
@@ -97,9 +96,11 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
     private static function multiplyPercent(string $amount, string $percent): string
     {
         if (function_exists('bcmul')) {
+            /** @psalm-suppress ArgumentTypeCoercion amount / percent are Decimal-shaped numeric strings */
             return bcdiv(bcmul($amount, $percent, 8), '100', 4);
         }
         $v = ((float) $amount) * ((float) $percent) / 100.0;
+
         return number_format($v, 4, '.', '');
     }
 
@@ -109,14 +110,17 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
             return '0.0000';
         }
         if (function_exists('bcdiv')) {
+            /** @psalm-suppress ArgumentTypeCoercion num / den are Decimal-shaped numeric strings */
             return bcdiv($num, $den, 4);
         }
         $v = ((float) $num) / ((float) $den);
+
         return number_format($v, 4, '.', '');
     }
 
     /**
      * @param array<string, string> $map
+     *
      * @return array<string, string>
      */
     private static function normalizeMap(array $map): array
@@ -125,6 +129,7 @@ final class TwoPercentConsumptionTaxCalculator implements ConsumptionTaxCalculat
         foreach ($map as $k => $v) {
             $out[$k] = Decimal::normalize($v);
         }
+
         return $out;
     }
 }

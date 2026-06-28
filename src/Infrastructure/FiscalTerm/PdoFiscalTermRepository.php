@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FiscalTerm;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\FiscalTerm\FiscalTerm;
 use Rucaro\Domain\FiscalTerm\FiscalTermRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -14,10 +11,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function listByEntity(string $entityId): array
     {
         $sql = 'SELECT id, entity_id, fiscal_period, start_date, end_date,
@@ -28,10 +26,12 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function findById(string $id): ?FiscalTerm
     {
         $sql = 'SELECT id, entity_id, fiscal_period, start_date, end_date,
@@ -42,10 +42,12 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
+    #[\Override]
     public function save(FiscalTerm $term): void
     {
         $sql = 'INSERT INTO fiscal_terms
@@ -63,24 +65,26 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
                     updated_at = VALUES(updated_at)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'         => UlidGenerator::decode($term->id),
-            ':entity'     => UlidGenerator::decode($term->entityId),
-            ':period'     => $term->fiscalPeriod,
-            ':start'      => $term->startDate->format('Y-m-d'),
-            ':end'        => $term->endDate->format('Y-m-d'),
-            ':is_closed'  => $term->isClosed ? 1 : 0,
-            ':closed_at'  => $term->closedAt?->format('Y-m-d H:i:s.u'),
+            ':id' => UlidGenerator::decode($term->id),
+            ':entity' => UlidGenerator::decode($term->entityId),
+            ':period' => $term->fiscalPeriod,
+            ':start' => $term->startDate->format('Y-m-d'),
+            ':end' => $term->endDate->format('Y-m-d'),
+            ':is_closed' => $term->isClosed ? 1 : 0,
+            ':closed_at' => $term->closedAt?->format('Y-m-d H:i:s.u'),
             ':created_at' => $term->createdAt->format('Y-m-d H:i:s.u'),
             ':updated_at' => $term->updatedAt->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare('DELETE FROM fiscal_terms WHERE id = :id');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
     }
 
+    #[\Override]
     public function existsByPeriod(string $entityId, int $fiscalPeriod, ?string $excludeId = null): bool
     {
         $sql = 'SELECT 1 FROM fiscal_terms
@@ -96,6 +100,7 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
         $sql .= ' LIMIT 1';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
+
         return $stmt->fetchColumn() !== false;
     }
 
@@ -108,12 +113,12 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
             id: self::stringifyId($row['id'] ?? ''),
             entityId: self::stringifyId($row['entity_id'] ?? ''),
             fiscalPeriod: (int) ($row['fiscal_period'] ?? 0),
-            startDate: self::parseDate($row['start_date'] ?? null) ?? new DateTimeImmutable('1970-01-01', new DateTimeZone('UTC')),
-            endDate: self::parseDate($row['end_date'] ?? null) ?? new DateTimeImmutable('1970-12-31', new DateTimeZone('UTC')),
+            startDate: self::parseDate($row['start_date'] ?? null) ?? new \DateTimeImmutable('1970-01-01', new \DateTimeZone('UTC')),
+            endDate: self::parseDate($row['end_date'] ?? null) ?? new \DateTimeImmutable('1970-12-31', new \DateTimeZone('UTC')),
             isClosed: self::toBool($row['is_closed'] ?? false),
             closedAt: self::parseTimestamp($row['closed_at'] ?? null),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
         );
     }
 
@@ -122,6 +127,7 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -136,22 +142,23 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function parseDate(mixed $raw): ?DateTimeImmutable
+    private static function parseDate(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
@@ -160,7 +167,7 @@ final class PdoFiscalTermRepository implements FiscalTermRepositoryInterface
             return null;
         }
         try {
-            return new DateTimeImmutable(substr($raw, 0, 10), new DateTimeZone('UTC'));
+            return new \DateTimeImmutable(substr($raw, 0, 10), new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

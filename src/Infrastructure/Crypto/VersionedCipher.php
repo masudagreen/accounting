@@ -31,11 +31,13 @@ final readonly class VersionedCipher implements CipherInterface
     ) {
     }
 
+    #[\Override]
     public function encrypt(string $plaintext, string $aad = ''): string
     {
         return $this->aesGcmCipher->encrypt($plaintext, $aad);
     }
 
+    #[\Override]
     public function decrypt(string $ciphertext, string $aad = ''): string
     {
         if (str_starts_with($ciphertext, self::V2_PREFIX)) {
@@ -43,9 +45,7 @@ final readonly class VersionedCipher implements CipherInterface
         }
 
         if ($this->legacyDecryptor === null) {
-            throw new CryptoException(
-                'Legacy ciphertext received but no LegacyBlowfishDecryptor is configured.',
-            );
+            throw new CryptoException('Legacy ciphertext received but no LegacyBlowfishDecryptor is configured.');
         }
 
         return $this->legacyDecryptor->decrypt($ciphertext, $aad);

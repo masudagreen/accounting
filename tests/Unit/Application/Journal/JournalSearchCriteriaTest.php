@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\JournalSearchCriteria;
@@ -30,13 +29,13 @@ final class JournalSearchCriteriaTest extends TestCase
 
     public function testRejectsUnknownSortColumn(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new JournalSearchCriteria(entityId: 'E1', sortBy: 'drop_table_users');
     }
 
     public function testRejectsUnknownSortOrder(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new JournalSearchCriteria(entityId: 'E1', sortOrder: 'random');
     }
 

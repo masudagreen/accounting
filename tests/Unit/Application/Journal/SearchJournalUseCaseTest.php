@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\JournalSearchCriteria;
@@ -57,7 +56,7 @@ final class SearchJournalUseCaseTest extends TestCase
         $repo = new InMemoryJournalRepository();
         $repo->save($this->journal('J1', 'ENT1', '2026-04-01'));
         $repo->save(
-            $this->journal('J2', 'ENT1', '2026-04-02')->approve(new DateTimeImmutable('2026-04-03T00:00:00Z'), 'U1'),
+            $this->journal('J2', 'ENT1', '2026-04-02')->approve(new \DateTimeImmutable('2026-04-03T00:00:00Z'), 'U1'),
         );
 
         $out = (new SearchJournalUseCase($repo))->execute(
@@ -85,7 +84,7 @@ final class SearchJournalUseCaseTest extends TestCase
     public function testPaginationSplitsResults(): void
     {
         $repo = new InMemoryJournalRepository();
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; ++$i) {
             $repo->save($this->journal(sprintf('J%d', $i), 'ENT1', '2026-04-01'));
         }
         $out = (new SearchJournalUseCase($repo))->execute(
@@ -105,7 +104,7 @@ final class SearchJournalUseCaseTest extends TestCase
     ): Journal {
         $lines = [
             new JournalLine(
-                id: $id . '_D',
+                id: $id.'_D',
                 lineNo: 1,
                 side: 'debit',
                 accountTitleId: $debitAccount,
@@ -115,10 +114,10 @@ final class SearchJournalUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable($date . 'T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable($date.'T12:00:00Z'),
             ),
             new JournalLine(
-                id: $id . '_C',
+                id: $id.'_C',
                 lineNo: 2,
                 side: 'credit',
                 accountTitleId: $creditAccount,
@@ -128,15 +127,16 @@ final class SearchJournalUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable($date . 'T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable($date.'T12:00:00Z'),
             ),
         ];
+
         return new Journal(
             id: $id,
             entityId: $entityId,
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable($date),
-            bookedAt: new DateTimeImmutable($date . 'T12:00:00Z'),
+            journalDate: new \DateTimeImmutable($date),
+            bookedAt: new \DateTimeImmutable($date.'T12:00:00Z'),
             summary: $id,
             totalAmount: '100.0000',
             currencyCode: 'JPY',
@@ -146,8 +146,8 @@ final class SearchJournalUseCaseTest extends TestCase
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: null,
             approvedAt: null,
-            createdAt: new DateTimeImmutable($date . 'T12:00:00Z'),
-            updatedAt: new DateTimeImmutable($date . 'T12:00:00Z'),
+            createdAt: new \DateTimeImmutable($date.'T12:00:00Z'),
+            updatedAt: new \DateTimeImmutable($date.'T12:00:00Z'),
             deletedAt: null,
             lines: $lines,
         );

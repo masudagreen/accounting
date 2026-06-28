@@ -14,6 +14,11 @@ final readonly class UpdateJournalUseCaseInput
         public string $updatedBy,
         public array $lines,
         public ?string $summary = null,
+        /**
+         * Admin escape hatch: when true, edit even non-draft journals
+         * (posted etc.). Caller is responsible for the role check.
+         */
+        public bool $bypassMutabilityCheck = false,
     ) {
     }
 }

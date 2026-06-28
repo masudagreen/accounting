@@ -29,9 +29,7 @@ final readonly class UpdateBudgetUseCase
     {
         $existing = $this->budgets->findById($input->id);
         if ($existing === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('budget %s was not found.', $input->id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('budget %s was not found.', $input->id)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -49,14 +47,10 @@ final readonly class UpdateBudgetUseCase
             $rebuilt = [];
             foreach ($input->lineItems as $idx => $li) {
                 if (!UlidGenerator::isValid($li->accountTitleId)) {
-                    throw ValidationException::withErrors([
-                        "lineItems.$idx.accountTitleId" => ['accountTitleId must be a ULID.'],
-                    ]);
+                    throw ValidationException::withErrors(["lineItems.$idx.accountTitleId" => ['accountTitleId must be a ULID.']]);
                 }
                 if ($li->subAccountTitleId !== null && !UlidGenerator::isValid($li->subAccountTitleId)) {
-                    throw ValidationException::withErrors([
-                        "lineItems.$idx.subAccountTitleId" => ['subAccountTitleId must be a ULID when provided.'],
-                    ]);
+                    throw ValidationException::withErrors(["lineItems.$idx.subAccountTitleId" => ['subAccountTitleId must be a ULID when provided.']]);
                 }
                 $rebuilt[] = new BudgetLineItem(
                     id: $li->id ?? $this->ulids->generate(),
@@ -72,6 +66,7 @@ final readonly class UpdateBudgetUseCase
         }
 
         $this->budgets->save($budget);
+
         return new BudgetOutput($budget);
     }
 }

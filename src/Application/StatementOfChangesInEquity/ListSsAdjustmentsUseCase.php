@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\StatementOfChangesInEquity;
 
-use InvalidArgumentException;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustment;
 use Rucaro\Domain\StatementOfChangesInEquity\SsManualAdjustmentRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -26,11 +25,12 @@ final readonly class ListSsAdjustmentsUseCase
     public function execute(string $entityId, string $fiscalTermId): array
     {
         if (!UlidGenerator::isValid($entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
+
         return $this->repo->findByEntityAndFiscalTerm($entityId, $fiscalTermId);
     }
 }

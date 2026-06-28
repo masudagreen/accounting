@@ -21,7 +21,7 @@ interface SsManualAdjustmentRepositoryInterface
     public function findById(string $id): ?SsManualAdjustment;
 
     /**
-     * @return list<SsManualAdjustment> ordered by `sort_order ASC, id ASC`.
+     * @return list<SsManualAdjustment> ordered by `sort_order ASC, id ASC`
      */
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): array;
 

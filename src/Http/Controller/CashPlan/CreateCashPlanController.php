@@ -63,11 +63,11 @@ final readonly class CreateCashPlanController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(CashPlanJsonSerializer::toArray($out->plan), null, 201);
     }
 
     /**
-     * @param mixed $raw
      * @return list<CashPlanEntryInput>
      */
     private static function parseEntries(mixed $raw): array
@@ -91,11 +91,11 @@ final readonly class CreateCashPlanController
                 id: self::nullableString($entry, 'id'),
             );
         }
+
         return $out;
     }
 
     /**
-     * @param mixed $raw
      * @return list<string>
      */
     private static function parseAmounts(mixed $raw): array
@@ -103,15 +103,16 @@ final readonly class CreateCashPlanController
         $out = [];
         if (is_array($raw)) {
             // Accept either list form or associative `month_1..month_12`.
-            for ($m = 1; $m <= CashPlanEntry::MONTHS; $m++) {
-                $v = $raw[$m - 1] ?? $raw['month_' . $m] ?? '0.0000';
+            for ($m = 1; $m <= CashPlanEntry::MONTHS; ++$m) {
+                $v = $raw[$m - 1] ?? $raw['month_'.$m] ?? '0.0000';
                 $out[] = is_string($v) ? $v : (string) $v;
             }
         } else {
-            for ($m = 1; $m <= CashPlanEntry::MONTHS; $m++) {
+            for ($m = 1; $m <= CashPlanEntry::MONTHS; ++$m) {
                 $out[] = '0.0000';
             }
         }
+
         return $out;
     }
 
@@ -121,6 +122,7 @@ final readonly class CreateCashPlanController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 
@@ -130,6 +132,7 @@ final readonly class CreateCashPlanController
     private static function nullableString(array $json, string $key): ?string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 }

@@ -34,6 +34,7 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
     ) {
     }
 
+    #[\Override]
     public function render(array $notes, string $entityId, string $fiscalTermId): string
     {
         $html = $this->renderHtml($notes, $entityId, $fiscalTermId);
@@ -55,6 +56,7 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -65,15 +67,16 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'title'           => '注記表',
-            'entityId'        => $entityId,
-            'fiscalTermId'    => $fiscalTermId,
-            'sections'        => $this->buildSections($notes),
-            'generatedAt'     => (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'title' => '注記表',
+            'entityId' => $entityId,
+            'fiscalTermId' => $fiscalTermId,
+            'sections' => $this->buildSections($notes),
+            'generatedAt' => (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('notes.html.tpl');
     }
 
@@ -82,6 +85,7 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
      * shape the payload the Smarty template expects.
      *
      * @param list<FinancialStatementNote> $notes
+     *
      * @return list<array<string, mixed>>
      */
     private function buildSections(array $notes): array
@@ -105,28 +109,28 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
             }
             usort(
                 $bucket,
-                static fn (FinancialStatementNote $a, FinancialStatementNote $b): int =>
-                    $a->sortOrder <=> $b->sortOrder ?: strcmp($a->label, $b->label),
+                static fn (FinancialStatementNote $a, FinancialStatementNote $b): int => $a->sortOrder <=> $b->sortOrder ?: strcmp($a->label, $b->label),
             );
             $items = [];
             foreach ($bucket as $n) {
                 $items[] = [
-                    'label'        => $n->label,
-                    'body'         => $n->body,
+                    'label' => $n->label,
+                    'body' => $n->body,
                     'templateCode' => $n->templateCode,
                 ];
             }
             $sections[] = [
-                'category'      => $cat->value,
+                'category' => $cat->value,
                 'categoryLabel' => $cat->jaLabel(),
-                'displayOrder'  => $cat->displayOrder(),
-                'items'         => $items,
+                'displayOrder' => $cat->displayOrder(),
+                'items' => $items,
             ];
         }
         usort(
             $sections,
             static fn (array $a, array $b): int => $a['displayOrder'] <=> $b['displayOrder'],
         );
+
         return $sections;
     }
 
@@ -136,17 +140,19 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -172,7 +178,7 @@ final class DompdfFsNotesGenerator implements FsNotesPdfGeneratorInterface
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

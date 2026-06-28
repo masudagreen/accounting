@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\CreateJournalUseCase;
@@ -28,22 +26,32 @@ final class CreateJournalUseCaseTest extends TestCase
     {
         $repo = new class implements JournalRepositoryInterface {
             public ?Journal $saved = null;
+
+            #[\Override]
             public function save(Journal $journal): void
             {
                 $this->saved = $journal;
             }
+
+            #[\Override]
             public function findById(string $id): ?Journal
             {
                 return null;
             }
+
+            #[\Override]
             public function findByCriteria(JournalSearchCriteria $criteria): JournalSearchResult
             {
                 return new JournalSearchResult([], 0, $criteria->page, $criteria->pageSize);
             }
-            public function delete(string $id, DateTimeImmutable $at, string $deletedBy): void
+
+            #[\Override]
+            public function delete(string $id, \DateTimeImmutable $at, string $deletedBy): void
             {
                 throw new EntityNotFoundException('not used');
             }
+
+            #[\Override]
             public function searchByEntity(
                 string $entityId,
                 int $page,
@@ -58,6 +66,8 @@ final class CreateJournalUseCaseTest extends TestCase
             ): array {
                 return [];
             }
+
+            #[\Override]
             public function countByEntity(
                 string $entityId,
                 ?string $fiscalTermId = null,
@@ -119,7 +129,7 @@ final class CreateJournalUseCaseTest extends TestCase
         return new CreateJournalUseCaseInput(
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
             summary: 'Test',
             source: 'manual',
             sourceReceiptId: null,
@@ -132,11 +142,13 @@ final class CreateJournalUseCaseTest extends TestCase
     private function makeUseCase(JournalRepositoryInterface $repo): CreateJournalUseCase
     {
         $clock = new class implements ClockInterface {
-            public function getCurrentTime(): DateTimeImmutable
+            #[\Override]
+            public function getCurrentTime(): \DateTimeImmutable
             {
-                return new DateTimeImmutable('2026-04-21T12:00:00.000Z', new DateTimeZone('UTC'));
+                return new \DateTimeImmutable('2026-04-21T12:00:00.000Z', new \DateTimeZone('UTC'));
             }
         };
+
         return new CreateJournalUseCase(
             journals: $repo,
             ulids: new UlidGenerator($clock),

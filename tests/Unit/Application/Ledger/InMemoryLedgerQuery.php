@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Ledger;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\Ledger\Ledger;
 use Rucaro\Domain\Ledger\LedgerBook;
 use Rucaro\Domain\Ledger\LedgerEntry;
@@ -23,7 +21,7 @@ use Rucaro\Domain\Ledger\LedgerQueryInterface;
 final class InMemoryLedgerQuery implements LedgerQueryInterface
 {
     /** @var list<array{
-     *     entityId:string, fiscalTermId:string, date:DateTimeImmutable,
+     *     entityId:string, fiscalTermId:string, date:\DateTimeImmutable,
      *     entryId:string, lineId:string, lineNo:int, side:string, amount:string,
      *     accountId:string, accountCode:string, accountName:string, normalSide:string,
      *     summary:string, memo:string,
@@ -42,7 +40,7 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
     public function addLine(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $date,
+        \DateTimeImmutable $date,
         string $entryId,
         string $lineId,
         int $lineNo,
@@ -54,29 +52,30 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
     ): void {
         $acc = $this->accounts[$accountId] ?? ['code' => '', 'name' => '', 'normalSide' => 'debit'];
         $this->lines[] = [
-            'entityId'     => $entityId,
+            'entityId' => $entityId,
             'fiscalTermId' => $fiscalTermId,
-            'date'         => $date,
-            'entryId'      => $entryId,
-            'lineId'       => $lineId,
-            'lineNo'       => $lineNo,
-            'side'         => $side,
-            'amount'       => $amount,
-            'accountId'    => $accountId,
-            'accountCode'  => $acc['code'],
-            'accountName'  => $acc['name'],
-            'normalSide'   => $acc['normalSide'],
-            'summary'      => $summary,
-            'memo'         => $memo,
+            'date' => $date,
+            'entryId' => $entryId,
+            'lineId' => $lineId,
+            'lineNo' => $lineNo,
+            'side' => $side,
+            'amount' => $amount,
+            'accountId' => $accountId,
+            'accountCode' => $acc['code'],
+            'accountName' => $acc['name'],
+            'normalSide' => $acc['normalSide'],
+            'summary' => $summary,
+            'memo' => $memo,
         ];
     }
 
+    #[\Override]
     public function query(
         string $entityId,
         string $fiscalTermId,
         ?string $accountTitleId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        \DateTimeImmutable $from,
+        \DateTimeImmutable $to,
     ): Ledger {
         $filtered = array_filter(
             $this->lines,
@@ -95,7 +94,7 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
         /** @var array<string, list<array{
          *     journalEntryId: string,
          *     journalEntryLineId: string,
-         *     entryDate: DateTimeImmutable,
+         *     entryDate: \DateTimeImmutable,
          *     summary: string,
          *     memo: string,
          *     counterAccountCode: string,
@@ -125,15 +124,15 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
             }
             $entriesByAccount[$line['accountId']] ??= [];
             $entriesByAccount[$line['accountId']][] = [
-                'journalEntryId'     => $line['entryId'],
+                'journalEntryId' => $line['entryId'],
                 'journalEntryLineId' => $line['lineId'],
-                'entryDate'          => $line['date'],
-                'summary'            => $line['summary'],
-                'memo'               => $line['memo'],
+                'entryDate' => $line['date'],
+                'summary' => $line['summary'],
+                'memo' => $line['memo'],
                 'counterAccountCode' => $counterCode,
                 'counterAccountName' => $counterName,
-                'debitAmount'        => $line['side'] === 'debit' ? $line['amount'] : '0',
-                'creditAmount'       => $line['side'] === 'credit' ? $line['amount'] : '0',
+                'debitAmount' => $line['side'] === 'debit' ? $line['amount'] : '0',
+                'creditAmount' => $line['side'] === 'credit' ? $line['amount'] : '0',
             ];
         }
 
@@ -142,8 +141,7 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
         // sort by account code
         usort(
             $candidateIds,
-            fn (string $a, string $b): int
-                => strcmp($this->accounts[$a]['code'] ?? '', $this->accounts[$b]['code'] ?? ''),
+            fn (string $a, string $b): int => strcmp($this->accounts[$a]['code'] ?? '', $this->accounts[$b]['code'] ?? ''),
         );
         foreach ($candidateIds as $id) {
             $meta = $this->accounts[$id] ?? null;
@@ -163,6 +161,7 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
                     if ($cmp !== 0) {
                         return $cmp;
                     }
+
                     return strcmp($x['journalEntryLineId'], $y['journalEntryLineId']);
                 },
             );
@@ -183,7 +182,7 @@ final class InMemoryLedgerQuery implements LedgerQueryInterface
             toDate: $to,
             currencyCode: 'JPY',
             books: $books,
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 }

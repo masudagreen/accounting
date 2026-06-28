@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Application\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Approval\ApprovalChannel;
@@ -33,8 +29,9 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
     private string $dbname = '';
     private string $username = '';
     private string $password = '';
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
 
+    #[\Override]
     protected function setUp(): void
     {
         $user = getenv('RUCARO_TEST_DB_USER');
@@ -42,18 +39,18 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
             $this->markTestSkipped('RUCARO_TEST_DB_USER is not set; skipping DB integration test.');
         }
         $this->username = (string) $user;
-        $this->host     = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
-        $portEnv        = getenv('RUCARO_TEST_DB_PORT');
-        $this->port     = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
-        $this->dbname   = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
-        $pwEnv          = getenv('RUCARO_TEST_DB_PASSWORD');
+        $this->host = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
+        $portEnv = getenv('RUCARO_TEST_DB_PORT');
+        $this->port = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
+        $this->dbname = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
+        $pwEnv = getenv('RUCARO_TEST_DB_PASSWORD');
         $this->password = $pwEnv === false ? '' : (string) $pwEnv;
 
-        $root = new PDO(
+        $root = new \PDO(
             sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
             $this->username,
             $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
         );
         $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
         $root->exec(sprintf(
@@ -65,20 +62,21 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
         $this->migrate($this->pdo);
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->dbname === '' || $this->username === '') {
             return;
         }
         try {
-            $root = new PDO(
+            $root = new \PDO(
                 sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
                 $this->username,
                 $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
             );
             $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
-        } catch (PDOException) {
+        } catch (\PDOException) {
             // best-effort cleanup
         }
     }
@@ -128,7 +126,7 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
         $responded = $token->respond(
             ApprovalDecision::Rejected,
             'missing receipt',
-            new DateTimeImmutable('2026-04-22T01:00:00Z', new DateTimeZone('UTC')),
+            new \DateTimeImmutable('2026-04-22T01:00:00Z', new \DateTimeZone('UTC')),
         );
         $repo->save($responded);
 
@@ -158,7 +156,7 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
         )->respond(
             ApprovalDecision::Approved,
             'ok',
-            new DateTimeImmutable('2026-04-19T01:00:00Z', new DateTimeZone('UTC')),
+            new \DateTimeImmutable('2026-04-19T01:00:00Z', new \DateTimeZone('UTC')),
         );
         $repo->save($responded);
         // still active
@@ -169,13 +167,14 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
             expiresIso: '2026-04-30T00:00:00Z',
         ));
 
-        $now = new DateTimeImmutable('2026-04-22T00:00:00Z', new DateTimeZone('UTC'));
+        $now = new \DateTimeImmutable('2026-04-22T00:00:00Z', new \DateTimeZone('UTC'));
         self::assertSame(1, $repo->expirePastDue($now));
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         self::assertNotNull($this->pdo);
+
         return $this->pdo;
     }
 
@@ -190,7 +189,7 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
         );
     }
 
-    private function migrate(PDO $pdo): void
+    private function migrate(\PDO $pdo): void
     {
         $pdo->exec(<<<'SQL'
             CREATE TABLE approval_tokens (
@@ -225,9 +224,10 @@ final class PdoApprovalTokenRepositoryTest extends TestCase
         string $issuedIso = '2026-04-21T00:00:00Z',
         string $expiresIso = '2026-04-24T00:00:00Z',
     ): ApprovalToken {
-        $tz = new DateTimeZone('UTC');
-        $issued = new DateTimeImmutable($issuedIso, $tz);
-        $expires = new DateTimeImmutable($expiresIso, $tz);
+        $tz = new \DateTimeZone('UTC');
+        $issued = new \DateTimeImmutable($issuedIso, $tz);
+        $expires = new \DateTimeImmutable($expiresIso, $tz);
+
         return new ApprovalToken(
             id: $id,
             targetKind: ApprovalTargetKind::Journal,

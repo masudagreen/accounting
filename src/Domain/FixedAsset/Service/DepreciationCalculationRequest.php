@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FixedAsset\Service;
 
-use DateTimeImmutable;
-
 /**
  * Immutable input for one period's depreciation computation.
  *
@@ -20,9 +18,9 @@ final readonly class DepreciationCalculationRequest
         public string $acquisitionCost,
         public string $residualValue,
         public int $usefulLifeYears,
-        public DateTimeImmutable $serviceStartDate,
-        public DateTimeImmutable $periodStartDate,
-        public DateTimeImmutable $periodEndDate,
+        public \DateTimeImmutable $serviceStartDate,
+        public \DateTimeImmutable $periodStartDate,
+        public \DateTimeImmutable $periodEndDate,
         public int $periodNumber,
         public int $monthsInService,
         public int $fiscalTermMonths,

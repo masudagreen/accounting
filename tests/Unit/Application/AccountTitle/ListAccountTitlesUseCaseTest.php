@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\AccountTitle;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCase;
@@ -65,8 +64,8 @@ final class ListAccountTitlesUseCaseTest extends TestCase
             parentId: null,
             sortOrder: 0,
             isActive: true,
-            createdAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
         );
     }
 }

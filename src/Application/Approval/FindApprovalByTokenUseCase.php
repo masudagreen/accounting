@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateTimeZone;
 use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 use Rucaro\Domain\Approval\ApprovalToken;
-use Rucaro\Domain\Approval\ApprovalTargetInterface;
 use Rucaro\Domain\Approval\ApprovalTokenRepositoryInterface;
 use Rucaro\Domain\Approval\Exception\TokenNotFoundException;
 use Rucaro\Infrastructure\Auth\BearerTokenGenerator;
@@ -37,7 +35,7 @@ final readonly class FindApprovalByTokenUseCase
             throw TokenNotFoundException::forPlaintext();
         }
         $target = $this->targets->resolve($token->targetKind, $token->targetId);
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $status = self::computeStatus($token, $now);
 
         return new FindApprovalByTokenUseCaseOutput(
@@ -55,6 +53,7 @@ final readonly class FindApprovalByTokenUseCase
         if ($token->isExpired($now)) {
             return 'expired';
         }
+
         return 'active';
     }
 }

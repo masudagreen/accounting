@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\AccountTitle;
 
-use DateTimeZone;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCase;
 use Rucaro\Application\AccountTitle\ListAccountTitlesUseCaseInput;
 use Rucaro\Domain\AccountTitle\AccountTitle;
@@ -47,22 +46,22 @@ final readonly class ListAccountTitleController
         ));
 
         $items = array_map(static fn (AccountTitle $a): array => [
-            'id'          => $a->id,
-            'entityId'    => $a->entityId,
-            'code'        => $a->code,
-            'name'        => $a->name,
-            'category'    => $a->category,
-            'normalSide'  => $a->normalSide,
-            'parentId'    => $a->parentId,
-            'sortOrder'   => $a->sortOrder,
-            'isActive'    => $a->isActive,
-            'createdAt'   => $a->createdAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
-            'updatedAt'   => $a->updatedAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'id' => $a->id,
+            'entityId' => $a->entityId,
+            'code' => $a->code,
+            'name' => $a->name,
+            'category' => $a->category,
+            'normalSide' => $a->normalSide,
+            'parentId' => $a->parentId,
+            'sortOrder' => $a->sortOrder,
+            'isActive' => $a->isActive,
+            'createdAt' => $a->createdAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'updatedAt' => $a->updatedAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
         ], $output->items);
 
         return EnvelopeResponse::list($items, [
-            'total'    => $output->total,
-            'page'     => $output->page,
+            'total' => $output->total,
+            'page' => $output->page,
             'pageSize' => $output->pageSize,
         ]);
     }

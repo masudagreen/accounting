@@ -12,6 +12,7 @@ interface AccountTitleRepositoryInterface
     /**
      * @param int<1, max> $page
      * @param int<1, max> $pageSize
+     *
      * @return list<AccountTitle>
      */
     public function listByEntity(

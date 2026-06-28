@@ -18,10 +18,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoAccountTitleCsMappingRepository implements AccountTitleCsMappingRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $sql = 'SELECT m.account_title_id, m.cs_section_code, m.flow_category,
@@ -35,7 +36,7 @@ final class PdoAccountTitleCsMappingRepository implements AccountTitleCsMappingR
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -74,6 +75,7 @@ final class PdoAccountTitleCsMappingRepository implements AccountTitleCsMappingR
                 displayLabel: $displayLabel,
             );
         }
+
         return $out;
     }
 }

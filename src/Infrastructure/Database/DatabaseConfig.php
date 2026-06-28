@@ -36,10 +36,10 @@ final readonly class DatabaseConfig
     public static function defaultPdoOptions(): array
     {
         return [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_STRINGIFY_FETCHES => false,
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_EMULATE_PREPARES => false,
+            \PDO::ATTR_STRINGIFY_FETCHES => false,
         ];
     }
 
@@ -67,9 +67,7 @@ final readonly class DatabaseConfig
             throw DatabaseConnectionException::invalidConfig('username must not be empty');
         }
         if ($this->port < 1 || $this->port > 65535) {
-            throw DatabaseConnectionException::invalidConfig(
-                sprintf('port out of range (1..65535): %d', $this->port),
-            );
+            throw DatabaseConnectionException::invalidConfig(sprintf('port out of range (1..65535): %d', $this->port));
         }
         if ($this->charset === '') {
             throw DatabaseConnectionException::invalidConfig('charset must not be empty');

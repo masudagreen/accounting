@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Ledger;
 
-use DateTimeImmutable;
-
 /**
  * Input for {@see QueryLedgerUseCase}.
  *
@@ -19,8 +17,8 @@ final readonly class QueryLedgerUseCaseInput
         public string $entityId,
         public string $fiscalTermId,
         public ?string $accountTitleId = null,
-        public ?DateTimeImmutable $fromDate = null,
-        public ?DateTimeImmutable $toDate = null,
+        public ?\DateTimeImmutable $fromDate = null,
+        public ?\DateTimeImmutable $toDate = null,
         public string $currencyCode = 'JPY',
     ) {
     }

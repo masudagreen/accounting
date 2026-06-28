@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
-use RuntimeException;
 
 /**
  * Import legacy journals into new `journal_entries` + `journal_entry_lines`.
@@ -32,8 +30,8 @@ use RuntimeException;
 final class LegacyJournalImporter
 {
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly UlidGenerator $ulids,
         private readonly bool $dryRun,
@@ -57,7 +55,7 @@ final class LegacyJournalImporter
                     flagRateConsumptionTaxReduced
                FROM accountingLogCalcJpn
               WHERE idLog = :log AND idEntity = :ent AND numFiscalPeriod = :fp
-              ORDER BY flagDebit DESC, id'
+              ORDER BY flagDebit DESC, id',
         );
 
         $insertHeader = $this->target->prepare(
@@ -68,7 +66,7 @@ final class LegacyJournalImporter
              VALUES
                  (:id, :ent, :ft, :d, :b,
                   :sum, :total, :cur,
-                  :status, :src, :cb, :ca, :ua)'
+                  :status, :src, :cb, :ca, :ua)',
         );
 
         $insertLine = $this->target->prepare(
@@ -79,7 +77,7 @@ final class LegacyJournalImporter
              VALUES
                  (:id, :entry, :ln, :side, :at,
                   :amt, :taxr, :taxa, :red,
-                  :memo, :b)'
+                  :memo, :b)',
         );
 
         $rows = $this->source->query(
@@ -87,7 +85,7 @@ final class LegacyJournalImporter
                     stampUpdate, stampBook, strTitle, numValue, flagRemove
                FROM accountingLog
               WHERE (flagRemove = 0 OR flagRemove IS NULL)
-              ORDER BY id'
+              ORDER BY id',
         );
         if ($rows === false) {
             return ImportReport::empty('journals', ['source query failed']);
@@ -153,9 +151,9 @@ final class LegacyJournalImporter
                 continue;
             }
 
-            $insertHeader->bindValue(':id', $entryBin, PDO::PARAM_LOB);
-            $insertHeader->bindValue(':ent', $entityBin, PDO::PARAM_LOB);
-            $insertHeader->bindValue(':ft', $ftBin, PDO::PARAM_LOB);
+            $insertHeader->bindValue(':id', $entryBin, \PDO::PARAM_LOB);
+            $insertHeader->bindValue(':ent', $entityBin, \PDO::PARAM_LOB);
+            $insertHeader->bindValue(':ft', $ftBin, \PDO::PARAM_LOB);
             $insertHeader->bindValue(':d', $journalDate);
             $insertHeader->bindValue(':b', $bookedAt);
             $insertHeader->bindValue(':sum', (string) ($r['strTitle'] ?? ''));
@@ -163,7 +161,7 @@ final class LegacyJournalImporter
             $insertHeader->bindValue(':cur', 'JPY');
             $insertHeader->bindValue(':status', 'posted');
             $insertHeader->bindValue(':src', 'manual');
-            $insertHeader->bindValue(':cb', $createdByBin, PDO::PARAM_LOB);
+            $insertHeader->bindValue(':cb', $createdByBin, \PDO::PARAM_LOB);
             $insertHeader->bindValue(':ca', $createdAt);
             $insertHeader->bindValue(':ua', $updatedAt);
             $insertHeader->execute();
@@ -189,15 +187,15 @@ final class LegacyJournalImporter
                 $isReduced = ((int) ($cr['flagRateConsumptionTaxReduced'] ?? 0)) === 1;
 
                 $lineId = $this->ulids->binary();
-                $insertLine->bindValue(':id', $lineId, PDO::PARAM_LOB);
-                $insertLine->bindValue(':entry', $entryBin, PDO::PARAM_LOB);
-                $insertLine->bindValue(':ln', $lineNo, PDO::PARAM_INT);
+                $insertLine->bindValue(':id', $lineId, \PDO::PARAM_LOB);
+                $insertLine->bindValue(':entry', $entryBin, \PDO::PARAM_LOB);
+                $insertLine->bindValue(':ln', $lineNo, \PDO::PARAM_INT);
                 $insertLine->bindValue(':side', $side);
-                $insertLine->bindValue(':at', $atBin, PDO::PARAM_LOB);
+                $insertLine->bindValue(':at', $atBin, \PDO::PARAM_LOB);
                 $insertLine->bindValue(':amt', $amount);
                 $insertLine->bindValue(':taxr', $taxRate === 0 ? '0.00' : sprintf('%.2f', $taxRate));
                 $insertLine->bindValue(':taxa', $taxAmount);
-                $insertLine->bindValue(':red', $isReduced, PDO::PARAM_BOOL);
+                $insertLine->bindValue(':red', $isReduced, \PDO::PARAM_BOOL);
                 $insertLine->bindValue(':memo', '');
                 $insertLine->bindValue(':b', $bookedAt);
                 $insertLine->execute();
@@ -222,7 +220,8 @@ final class LegacyJournalImporter
             ':fp' => $period,
         ]);
         /** @var list<array<string,mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return $rows;
     }
 
@@ -230,13 +229,14 @@ final class LegacyJournalImporter
     {
         $stmt = $this->source->query('SELECT id FROM baseAccount ORDER BY id LIMIT 1');
         if ($stmt === false) {
-            throw new RuntimeException('LegacyJournalImporter: cannot read baseAccount');
+            throw new \RuntimeException('LegacyJournalImporter: cannot read baseAccount');
         }
         /** @var array<string,mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
-            throw new RuntimeException('LegacyJournalImporter: no user in baseAccount');
+            throw new \RuntimeException('LegacyJournalImporter: no user in baseAccount');
         }
+
         return $this->idMap->require(IdMapping::TABLE_USERS, (int) $row['id']);
     }
 }

@@ -36,6 +36,7 @@ final readonly class DeleteBlueReturnController
         } catch (InvariantViolationException $e) {
             return ErrorResponse::of(409, 'INVARIANT_VIOLATION', $e->getMessage());
         }
+
         return EnvelopeResponse::ok(['id' => $id]);
     }
 }

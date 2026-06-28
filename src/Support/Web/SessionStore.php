@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Web;
 
+use Rucaro\Domain\User\User;
+
 /**
  * Thin wrapper around `$_SESSION` that gives the Web UI a typed API for the
  * few values we actually need to persist between requests.
@@ -22,14 +24,15 @@ namespace Rucaro\Support\Web;
  */
 final class SessionStore
 {
-    public const KEY_USER_ID        = 'rucaro_user_id';
-    public const KEY_TOKEN          = 'rucaro_api_token_plaintext';
-    public const KEY_TOKEN_ID       = 'rucaro_api_token_id';
-    public const KEY_DISPLAY_NAME   = 'rucaro_display_name';
-    public const KEY_EMAIL          = 'rucaro_email';
-    public const KEY_SELECTED_ENTITY    = 'rucaro_selected_entity_id';
-    public const KEY_SELECTED_FISCAL    = 'rucaro_selected_fiscal_term_id';
-    public const KEY_CSRF_TOKENS    = 'rucaro_csrf_tokens';
+    public const KEY_USER_ID = 'rucaro_user_id';
+    public const KEY_TOKEN = 'rucaro_api_token_plaintext';
+    public const KEY_TOKEN_ID = 'rucaro_api_token_id';
+    public const KEY_DISPLAY_NAME = 'rucaro_display_name';
+    public const KEY_EMAIL = 'rucaro_email';
+    public const KEY_ROLE = 'rucaro_role';
+    public const KEY_SELECTED_ENTITY = 'rucaro_selected_entity_id';
+    public const KEY_SELECTED_FISCAL = 'rucaro_selected_fiscal_term_id';
+    public const KEY_CSRF_TOKENS = 'rucaro_csrf_tokens';
     public const KEY_FLASH_MESSAGES = 'rucaro_flash_messages';
 
     /**
@@ -38,7 +41,7 @@ final class SessionStore
      */
     public function start(): void
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
+        if (session_status() === \PHP_SESSION_ACTIVE) {
             return;
         }
         if (headers_sent()) {
@@ -53,42 +56,67 @@ final class SessionStore
         string $tokenId,
         string $displayName,
         string $email,
+        string $role = User::ROLE_ADMIN,
     ): void {
-        $_SESSION[self::KEY_USER_ID]      = $userId;
-        $_SESSION[self::KEY_TOKEN]        = $plaintextToken;
-        $_SESSION[self::KEY_TOKEN_ID]     = $tokenId;
+        $_SESSION[self::KEY_USER_ID] = $userId;
+        $_SESSION[self::KEY_TOKEN] = $plaintextToken;
+        $_SESSION[self::KEY_TOKEN_ID] = $tokenId;
         $_SESSION[self::KEY_DISPLAY_NAME] = $displayName;
-        $_SESSION[self::KEY_EMAIL]        = $email;
+        $_SESSION[self::KEY_EMAIL] = $email;
+        $_SESSION[self::KEY_ROLE] = $role;
     }
 
     public function getUserId(): ?string
     {
         $v = $_SESSION[self::KEY_USER_ID] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     public function getTokenPlaintext(): ?string
     {
         $v = $_SESSION[self::KEY_TOKEN] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     public function getTokenId(): ?string
     {
         $v = $_SESSION[self::KEY_TOKEN_ID] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     public function getDisplayName(): ?string
     {
         $v = $_SESSION[self::KEY_DISPLAY_NAME] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
     public function getEmail(): ?string
     {
         $v = $_SESSION[self::KEY_EMAIL] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
+    }
+
+    /**
+     * Returns the role assigned to the logged-in user. Defaults to 'admin'
+     * when nothing is in session — single-operator deployments never set
+     * the column, and 'admin' is the historical default. Use {@see isAdmin}
+     * for the more common boolean check.
+     */
+    public function getRole(): string
+    {
+        $v = $_SESSION[self::KEY_ROLE] ?? null;
+
+        return is_string($v) && $v !== '' ? $v : User::ROLE_ADMIN;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->getRole() === User::ROLE_ADMIN;
     }
 
     public function isAuthenticated(): bool
@@ -104,6 +132,7 @@ final class SessionStore
     public function getSelectedEntity(): ?string
     {
         $v = $_SESSION[self::KEY_SELECTED_ENTITY] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
@@ -115,6 +144,7 @@ final class SessionStore
     public function getSelectedFiscalTerm(): ?string
     {
         $v = $_SESSION[self::KEY_SELECTED_FISCAL] ?? null;
+
         return is_string($v) && $v !== '' ? $v : null;
     }
 
@@ -130,6 +160,7 @@ final class SessionStore
             $_SESSION[self::KEY_TOKEN_ID],
             $_SESSION[self::KEY_DISPLAY_NAME],
             $_SESSION[self::KEY_EMAIL],
+            $_SESSION[self::KEY_ROLE],
             $_SESSION[self::KEY_SELECTED_ENTITY],
             $_SESSION[self::KEY_SELECTED_FISCAL],
         );
@@ -142,18 +173,19 @@ final class SessionStore
     public function destroy(): void
     {
         $_SESSION = [];
-        if (session_status() === PHP_SESSION_ACTIVE) {
+        if (session_status() === \PHP_SESSION_ACTIVE) {
             if (ini_get('session.use_cookies')) {
                 $params = session_get_cookie_params();
-                if (!headers_sent()) {
+                $name = session_name();
+                if ($name !== false && !headers_sent()) {
                     setcookie(
-                        session_name(),
+                        $name,
                         '',
                         [
-                            'expires'  => time() - 42000,
-                            'path'     => $params['path'],
-                            'domain'   => $params['domain'],
-                            'secure'   => $params['secure'],
+                            'expires' => time() - 42000,
+                            'path' => $params['path'],
+                            'domain' => $params['domain'],
+                            'secure' => $params['secure'],
                             'httponly' => $params['httponly'],
                             'samesite' => $params['samesite'],
                         ],

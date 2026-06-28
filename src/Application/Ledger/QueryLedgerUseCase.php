@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Ledger;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\Ledger\Ledger;
 use Rucaro\Domain\Ledger\LedgerBook;
 use Rucaro\Domain\Ledger\LedgerQueryInterface;
@@ -42,10 +40,7 @@ final readonly class QueryLedgerUseCase
     public function execute(QueryLedgerUseCaseInput $input): QueryLedgerUseCaseOutput
     {
         if ($input->fromDate === null || $input->toDate === null) {
-            throw new \InvalidArgumentException(
-                'QueryLedgerUseCase requires explicit fromDate and toDate; '
-                . 'the HTTP controller resolves fiscal term bounds before calling the use case.',
-            );
+            throw new \InvalidArgumentException('QueryLedgerUseCase requires explicit fromDate and toDate; the HTTP controller resolves fiscal term bounds before calling the use case.');
         }
 
         $projection = $this->query->query(
@@ -71,22 +66,22 @@ final readonly class QueryLedgerUseCase
                 openingBalance: $opening,
                 rawEntries: array_map(
                     static fn ($e): array => [
-                        'journalEntryId'     => $e->journalEntryId,
+                        'journalEntryId' => $e->journalEntryId,
                         'journalEntryLineId' => $e->journalEntryLineId,
-                        'entryDate'          => $e->entryDate,
-                        'summary'            => $e->summary,
-                        'memo'               => $e->memo,
+                        'entryDate' => $e->entryDate,
+                        'summary' => $e->summary,
+                        'memo' => $e->memo,
                         'counterAccountCode' => $e->counterAccountCode,
                         'counterAccountName' => $e->counterAccountName,
-                        'debitAmount'        => $e->debitAmount,
-                        'creditAmount'       => $e->creditAmount,
+                        'debitAmount' => $e->debitAmount,
+                        'creditAmount' => $e->creditAmount,
                     ],
                     $raw->entries,
                 ),
             );
         }
 
-        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $generatedAt = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
 
         return new QueryLedgerUseCaseOutput(
             new Ledger(

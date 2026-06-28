@@ -19,6 +19,7 @@ final class ViewModelBuilder
 {
     /**
      * @param array<string, Section> $sections
+     *
      * @return array<string, array{code: string, label: string, subtotal: string, lines: list<array{label: string, code: ?string, amount: string, depth: int, isSubtotal: bool}>}>
      */
     public static function sectionMap(array $sections): array
@@ -26,12 +27,13 @@ final class ViewModelBuilder
         $out = [];
         foreach ($sections as $code => $section) {
             $out[$code] = [
-                'code'     => $section->code,
-                'label'    => $section->label,
+                'code' => $section->code,
+                'label' => $section->label,
                 'subtotal' => self::formatAmount($section->subtotal),
-                'lines'    => array_map(self::lineToArray(...), $section->lines),
+                'lines' => array_map(self::lineToArray(...), $section->lines),
             ];
         }
+
         return $out;
     }
 
@@ -41,16 +43,17 @@ final class ViewModelBuilder
     public static function lineToArray(FinancialStatementLine $line): array
     {
         return [
-            'label'      => $line->label,
-            'code'       => $line->accountTitleCode,
-            'amount'     => self::formatAmount($line->amount),
-            'depth'      => $line->depth,
+            'label' => $line->label,
+            'code' => $line->accountTitleCode,
+            'amount' => self::formatAmount($line->amount),
+            'depth' => $line->depth,
             'isSubtotal' => $line->isSubtotal,
         ];
     }
 
     /**
      * @param array<string, string> $totals
+     *
      * @return array<string, string>
      */
     public static function formatTotals(array $totals): array
@@ -59,6 +62,7 @@ final class ViewModelBuilder
         foreach ($totals as $k => $v) {
             $out[$k] = self::formatAmount($v);
         }
+
         return $out;
     }
 
@@ -147,7 +151,7 @@ final class ViewModelBuilder
             'equityGroups' => [
                 ['code' => 'shareholders_equity',     'label' => '株主資本'],
                 ['code' => 'valuation_adjustments',   'label' => '評価・換算差額等'],
-                ['code' => 'stock_acquisition_rights','label' => '新株予約権'],
+                ['code' => 'stock_acquisition_rights', 'label' => '新株予約権'],
             ],
         ];
     }
@@ -167,6 +171,7 @@ final class ViewModelBuilder
             return '0';
         }
         $formatted = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $formatted . ')' : $formatted;
+
+        return $num < 0 ? '('.$formatted.')' : $formatted;
     }
 }

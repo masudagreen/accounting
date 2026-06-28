@@ -11,11 +11,13 @@ use Rucaro\Support\Web\FlashMessageBag;
 #[CoversClass(FlashMessageBag::class)]
 final class FlashMessageBagTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];

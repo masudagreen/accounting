@@ -48,7 +48,7 @@ final readonly class CreateConsumptionTaxPeriodController
                 periodToIso: is_string($json['periodTo'] ?? null) ? (string) $json['periodTo'] : '',
                 method: is_string($json['method'] ?? null) ? (string) $json['method'] : 'principle',
                 simplifiedBusinessCategory: isset($json['simplifiedBusinessCategory']) && is_int($json['simplifiedBusinessCategory'])
-                    ? (int) $json['simplifiedBusinessCategory']
+                    ? $json['simplifiedBusinessCategory']
                     : null,
                 isInterim: (bool) ($json['isInterim'] ?? false),
             );
@@ -59,6 +59,7 @@ final readonly class CreateConsumptionTaxPeriodController
         } catch (\Exception $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             ConsumptionTaxSettlementJsonSerializer::periodToArray($period),
             null,

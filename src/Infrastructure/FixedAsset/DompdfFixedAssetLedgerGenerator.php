@@ -30,6 +30,7 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
     ) {
     }
 
+    #[\Override]
     public function render(GetFixedAssetLedgerOutput $ledger): string
     {
         $html = $this->renderHtml($ledger);
@@ -50,6 +51,7 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -57,12 +59,13 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'ledger'          => $this->buildViewModel($ledger),
-            'title'           => '固定資産台帳 (Fixed Asset Ledger)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'ledger' => $this->buildViewModel($ledger),
+            'title' => '固定資産台帳 (Fixed Asset Ledger)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('asset_ledger.html.tpl');
     }
 
@@ -72,12 +75,12 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
     private function buildViewModel(GetFixedAssetLedgerOutput $ledger): array
     {
         return [
-            'entityId'     => $ledger->entityId,
+            'entityId' => $ledger->entityId,
             'fiscalTermId' => $ledger->fiscalTermId,
-            'generatedAt'  => $ledger->generatedAt->format('Y-m-d H:i:s'),
-            'books'        => array_map(
+            'generatedAt' => $ledger->generatedAt->format('Y-m-d H:i:s'),
+            'books' => array_map(
                 fn (array $book): array => [
-                    'asset'    => $this->assetView($book['asset']),
+                    'asset' => $this->assetView($book['asset']),
                     'schedule' => array_map(
                         fn (DepreciationScheduleEntry $e): array => $this->entryView($e),
                         $book['schedule'],
@@ -94,17 +97,17 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
     private function assetView(FixedAsset $a): array
     {
         return [
-            'id'               => $a->id,
-            'assetCode'        => $a->assetCode,
-            'assetName'        => $a->assetName,
-            'categoryCode'     => $a->categoryCode,
-            'acquisitionDate'  => $a->acquisitionDate->format('Y-m-d'),
+            'id' => $a->id,
+            'assetCode' => $a->assetCode,
+            'assetName' => $a->assetName,
+            'categoryCode' => $a->categoryCode,
+            'acquisitionDate' => $a->acquisitionDate->format('Y-m-d'),
             'serviceStartDate' => $a->serviceStartDate->format('Y-m-d'),
-            'disposalDate'     => $a->disposalDate?->format('Y-m-d'),
-            'acquisitionCost'  => self::fmt($a->acquisitionCost),
-            'residualValue'    => self::fmt($a->residualValue),
-            'usefulLifeYears'  => $a->usefulLifeYears,
-            'method'           => $a->method->value,
+            'disposalDate' => $a->disposalDate?->format('Y-m-d'),
+            'acquisitionCost' => self::fmt($a->acquisitionCost),
+            'residualValue' => self::fmt($a->residualValue),
+            'usefulLifeYears' => $a->usefulLifeYears,
+            'method' => $a->method->value,
         ];
     }
 
@@ -114,15 +117,15 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
     private function entryView(DepreciationScheduleEntry $e): array
     {
         return [
-            'periodNumber'             => $e->periodNumber,
-            'periodStartDate'          => $e->periodStartDate->format('Y-m-d'),
-            'periodEndDate'            => $e->periodEndDate->format('Y-m-d'),
-            'monthsInService'          => $e->monthsInService,
-            'openingBookValue'         => self::fmt($e->openingBookValue),
-            'depreciationAmount'       => self::fmt($e->depreciationAmount),
-            'accumulatedDepreciation'  => self::fmt($e->accumulatedDepreciation),
-            'closingBookValue'         => self::fmt($e->closingBookValue),
-            'isPosted'                 => $e->isPosted,
+            'periodNumber' => $e->periodNumber,
+            'periodStartDate' => $e->periodStartDate->format('Y-m-d'),
+            'periodEndDate' => $e->periodEndDate->format('Y-m-d'),
+            'monthsInService' => $e->monthsInService,
+            'openingBookValue' => self::fmt($e->openingBookValue),
+            'depreciationAmount' => self::fmt($e->depreciationAmount),
+            'accumulatedDepreciation' => self::fmt($e->accumulatedDepreciation),
+            'closingBookValue' => self::fmt($e->closingBookValue),
+            'isPosted' => $e->isPosted,
         ];
     }
 
@@ -135,7 +138,8 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
         $negative = $num < 0;
         $abs = abs($num);
         $formatted = number_format($abs, 0, '.', ',');
-        return $negative ? '(' . $formatted . ')' : $formatted;
+
+        return $negative ? '('.$formatted.')' : $formatted;
     }
 
     private function buildSmarty(): Smarty
@@ -144,17 +148,19 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -180,7 +186,7 @@ final class DompdfFixedAssetLedgerGenerator implements FixedAssetLedgerGenerator
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

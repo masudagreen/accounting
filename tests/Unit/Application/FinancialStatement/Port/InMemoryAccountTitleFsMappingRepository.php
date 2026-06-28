@@ -36,6 +36,7 @@ final class InMemoryAccountTitleFsMappingRepository implements AccountTitleFsMap
         );
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return $this->byEntity[$entityId] ?? [];

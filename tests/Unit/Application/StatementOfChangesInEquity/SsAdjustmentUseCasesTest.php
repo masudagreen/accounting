@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\StatementOfChangesInEquity;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\StatementOfChangesInEquity\CreateSsAdjustmentInput;
@@ -33,6 +32,7 @@ final class SsAdjustmentUseCasesTest extends TestCase
     private DeleteSsAdjustmentUseCase $delete;
     private ListSsAdjustmentsUseCase $list;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->repo = new InMemorySsManualAdjustmentRepository();
@@ -40,7 +40,7 @@ final class SsAdjustmentUseCasesTest extends TestCase
         $this->create = new CreateSsAdjustmentUseCase($this->repo, $this->ulids);
         $this->update = new UpdateSsAdjustmentUseCase($this->repo);
         $this->delete = new DeleteSsAdjustmentUseCase($this->repo);
-        $this->list   = new ListSsAdjustmentsUseCase($this->repo);
+        $this->list = new ListSsAdjustmentsUseCase($this->repo);
     }
 
     public function testCreatePersistsAndReturnsAdjustment(): void
@@ -52,7 +52,7 @@ final class SsAdjustmentUseCasesTest extends TestCase
 
     public function testCreateRejectsNonUlidEntity(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->create->execute(new CreateSsAdjustmentInput(
             entityId: 'not-a-ulid',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',

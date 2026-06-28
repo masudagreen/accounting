@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Budget;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Budget\Budget;
@@ -30,7 +29,7 @@ final class BudgetTest extends TestCase
     public function testApproveMovesDraftToApproved(): void
     {
         $budget = $this->draftBudget([]);
-        $now = new DateTimeImmutable('2026-05-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-05-01T00:00:00Z');
         $approver = '01HAAAAAAAAAAAAAAAAAAAAAAP';
 
         $approved = $budget->approve($approver, $now);
@@ -44,22 +43,22 @@ final class BudgetTest extends TestCase
     {
         $budget = $this->draftBudget([])->approve(
             '01HAAAAAAAAAAAAAAAAAAAAAAP',
-            new DateTimeImmutable('2026-05-01T00:00:00Z'),
+            new \DateTimeImmutable('2026-05-01T00:00:00Z'),
         );
         $this->expectException(InvariantViolationException::class);
-        $budget->approve('01HAAAAAAAAAAAAAAAAAAAAAAQ', new DateTimeImmutable('2026-05-02T00:00:00Z'));
+        $budget->approve('01HAAAAAAAAAAAAAAAAAAAAAAQ', new \DateTimeImmutable('2026-05-02T00:00:00Z'));
     }
 
     public function testLockRequiresApprovedState(): void
     {
         $draft = $this->draftBudget([]);
         $this->expectException(InvariantViolationException::class);
-        $draft->lock(new DateTimeImmutable('2026-05-01T00:00:00Z'));
+        $draft->lock(new \DateTimeImmutable('2026-05-01T00:00:00Z'));
     }
 
     public function testLockPromotesApprovedToLocked(): void
     {
-        $now = new DateTimeImmutable('2026-05-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-05-01T00:00:00Z');
         $budget = $this->draftBudget([])->approve('01HAAAAAAAAAAAAAAAAAAAAAAP', $now);
         $locked = $budget->lock($now->modify('+1 day'));
         self::assertSame(BudgetStatus::Locked, $locked->status);
@@ -69,15 +68,15 @@ final class BudgetTest extends TestCase
     {
         $budget = $this->draftBudget([])->approve(
             '01HAAAAAAAAAAAAAAAAAAAAAAP',
-            new DateTimeImmutable('2026-05-01T00:00:00Z'),
+            new \DateTimeImmutable('2026-05-01T00:00:00Z'),
         );
         $this->expectException(InvariantViolationException::class);
-        $budget->withHeader('renamed', null, new DateTimeImmutable('2026-05-02T00:00:00Z'));
+        $budget->withHeader('renamed', null, new \DateTimeImmutable('2026-05-02T00:00:00Z'));
     }
 
     public function testWithLineItemsRejectedOnceLocked(): void
     {
-        $now = new DateTimeImmutable('2026-05-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-05-01T00:00:00Z');
         $budget = $this->draftBudget([])
             ->approve('01HAAAAAAAAAAAAAAAAAAAAAAP', $now)
             ->lock($now->modify('+1 day'));
@@ -93,7 +92,7 @@ final class BudgetTest extends TestCase
 
     public function testDraftRejectsApprovedMetadata(): void
     {
-        $now = new DateTimeImmutable('2026-05-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-05-01T00:00:00Z');
         $this->expectException(ValidationException::class);
         new Budget(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
@@ -116,7 +115,8 @@ final class BudgetTest extends TestCase
      */
     private function draftBudget(array $items, string $name = 'Plan 2026'): Budget
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new Budget(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',

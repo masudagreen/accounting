@@ -17,6 +17,7 @@ use Rucaro\Http\Controller\Ui\LogoutController;
 use Rucaro\Http\Response\HtmlResponse;
 use Rucaro\Http\ServerRequest;
 use Rucaro\Support\Web\CsrfTokenManager;
+use Rucaro\Support\Web\FiscalTermLookup;
 use Rucaro\Support\Web\FlashMessageBag;
 use Rucaro\Support\Web\PeriodQueryHelper;
 use Rucaro\Support\Web\SessionStore;
@@ -45,6 +46,7 @@ final readonly class LedgerViewController
         private ListAccountTitlesUseCase $listAccountTitles,
         private LedgerGeneratorInterface $pdfGenerator,
         private PeriodQueryHelper $period,
+        private FiscalTermLookup $fiscalTerms,
         private SessionStore $session,
         private CsrfTokenManager $csrf,
         private FlashMessageBag $flash,
@@ -57,6 +59,7 @@ final readonly class LedgerViewController
         $entityId = $this->session->getSelectedEntity();
         if ($entityId === null) {
             $this->flash->addError('会計単位 (entity) が未選択です。上部ナビから選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
@@ -64,10 +67,11 @@ final readonly class LedgerViewController
             ?? $this->period->findLatestFiscalTermId($entityId);
         if ($fiscalTermId === null) {
             $this->flash->addError('会計期 (fiscal_term) が登録されていません。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
 
-        $year  = PeriodQueryHelper::parseYear($request->queryString('year'));
+        $year = PeriodQueryHelper::parseYear($request->queryString('year'));
         $month = PeriodQueryHelper::parseMonth($request->queryString('month'));
         [$from, $to, $termStart, $termEnd] = $this->period->resolve($fiscalTermId, $year, $month);
 
@@ -96,40 +100,45 @@ final readonly class LedgerViewController
         $format = strtolower($request->queryString('format') ?? 'html');
         if ($format === 'pdf') {
             $pdf = $this->pdfGenerator->render($ledger);
+
             return new HtmlResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="ledger.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
 
         $data = [
-            'page_title'           => '総勘定元帳',
-            'active_nav'           => 'ledger',
-            'csrf_logout_token'    => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'    => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'    => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'    => EntitySwitchController::CSRF_FORM_ID,
-            'display_name'         => $this->session->getDisplayName() ?? '',
-            'user_email'           => $this->session->getEmail() ?? '',
-            'selected_entity_id'   => $entityId,
+            'page_title' => '総勘定元帳',
+            'active_nav' => 'ledger',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'selected_entity_id' => $entityId,
             'selected_fiscal_term' => $fiscalTermId,
-            'entities'             => [],
-            'account_titles'       => array_map(self::accountTitleToArray(...), $accountTitles),
+            'selected_fiscal_term_id' => $fiscalTermId,
+            'entities' => [],
+            // F-1: feed the navbar's fiscal-term <select>.
+            'nav_fiscal_terms' => $this->fiscalTerms->listForEntity($entityId),
+            'account_titles' => array_map(self::accountTitleToArray(...), $accountTitles),
             'selected_account_title_id' => $accountTitleId ?? '',
-            'year'                 => $year !== null ? (string) $year : '',
-            'month'                => $month !== null ? (string) $month : '',
-            'from_date'            => $from->format('Y-m-d'),
-            'to_date'              => $to->format('Y-m-d'),
-            'term_start'           => $termStart?->format('Y-m-d') ?? '',
-            'term_end'             => $termEnd?->format('Y-m-d') ?? '',
-            'books'                => array_map(self::bookToArray(...), $ledger->books),
-            'flash_messages'       => $this->flash->consume(),
+            'year' => $year !== null ? (string) $year : '',
+            'month' => $month !== null ? (string) $month : '',
+            'from_date' => $from->format('Y-m-d'),
+            'to_date' => $to->format('Y-m-d'),
+            'term_start' => $termStart?->format('Y-m-d') ?? '',
+            'term_end' => $termEnd?->format('Y-m-d') ?? '',
+            'books' => array_map(self::bookToArray(...), $ledger->books),
+            'flash_messages' => $this->flash->consume(),
         ];
+
         return HtmlResponse::ok($this->view->render('ledger/view.html.tpl', $data));
     }
 
@@ -156,14 +165,14 @@ final readonly class LedgerViewController
     private static function bookToArray(LedgerBook $b): array
     {
         return [
-            'accountTitleId'   => $b->accountTitleId,
+            'accountTitleId' => $b->accountTitleId,
             'accountTitleCode' => $b->accountTitleCode,
             'accountTitleName' => $b->accountTitleName,
-            'openingBalance'   => self::formatAmount($b->openingBalance),
-            'debitTotal'       => self::formatAmount($b->debitTotal),
-            'creditTotal'      => self::formatAmount($b->creditTotal),
-            'closingBalance'   => self::formatAmount($b->closingBalance),
-            'entries'          => array_map(self::entryToArray(...), $b->entries),
+            'openingBalance' => self::formatAmount($b->openingBalance),
+            'debitTotal' => self::formatAmount($b->debitTotal),
+            'creditTotal' => self::formatAmount($b->creditTotal),
+            'closingBalance' => self::formatAmount($b->closingBalance),
+            'entries' => array_map(self::entryToArray(...), $b->entries),
         ];
     }
 
@@ -173,14 +182,15 @@ final readonly class LedgerViewController
     private static function entryToArray(LedgerEntry $e): array
     {
         return [
-            'entryDate'          => $e->entryDate->format('Y-m-d'),
+            'journalEntryId' => $e->journalEntryId,
+            'entryDate' => $e->entryDate->format('Y-m-d'),
             'counterAccountCode' => $e->counterAccountCode,
             'counterAccountName' => $e->counterAccountName,
-            'summary'            => $e->summary,
-            'memo'               => $e->memo,
-            'debitAmount'        => self::formatAmount($e->debitAmount),
-            'creditAmount'       => self::formatAmount($e->creditAmount),
-            'runningBalance'     => self::formatAmount($e->runningBalance),
+            'summary' => $e->summary,
+            'memo' => $e->memo,
+            'debitAmount' => self::formatAmount($e->debitAmount),
+            'creditAmount' => self::formatAmount($e->creditAmount),
+            'runningBalance' => self::formatAmount($e->runningBalance),
         ];
     }
 
@@ -198,6 +208,7 @@ final readonly class LedgerViewController
             return '0';
         }
         $formatted = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $formatted . ')' : $formatted;
+
+        return $num < 0 ? '('.$formatted.')' : $formatted;
     }
 }

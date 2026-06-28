@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatementNotes\ListFsNotesUseCase;
@@ -25,11 +24,13 @@ final class NotesListViewControllerTest extends TestCase
 {
     private const VALID_ULID = '01HW7K9B2QV7C8Y4ZFISCAL0001';
 
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -88,8 +89,8 @@ final class NotesListViewControllerTest extends TestCase
     ): NotesListViewController {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new NotesListViewController(
             listNotes: new ListFsNotesUseCase(new StubFsNoteRepo()),
@@ -102,26 +103,30 @@ final class NotesListViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
 
 final class StubFsNoteRepo implements FsNoteRepositoryInterface
 {
+    #[\Override]
     public function save(FinancialStatementNote $note): void
     {
     }
 
+    #[\Override]
     public function findById(string $id): ?FinancialStatementNote
     {
         return null;
     }
 
+    #[\Override]
     public function findByEntityAndTerm(
         string $entityId,
         string $fiscalTermId,
@@ -130,6 +135,7 @@ final class StubFsNoteRepo implements FsNoteRepositoryInterface
         return [];
     }
 
+    #[\Override]
     public function countByTemplateCode(
         string $entityId,
         string $fiscalTermId,
@@ -138,6 +144,7 @@ final class StubFsNoteRepo implements FsNoteRepositoryInterface
         return 0;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
     }
@@ -149,9 +156,11 @@ final class StubFsNotesGenerator implements FsNotesPdfGeneratorInterface
     {
     }
 
+    #[\Override]
     public function render(array $notes, string $entityId, string $fiscalTermId): string
     {
         unset($notes, $entityId, $fiscalTermId);
+
         return $this->emitStub ? "%PDF-STUB\nfake notes pdf\n%%EOF" : '';
     }
 }

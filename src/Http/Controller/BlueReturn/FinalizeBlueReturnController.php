@@ -42,6 +42,7 @@ final readonly class FinalizeBlueReturnController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(BlueReturnJsonSerializer::toArray($out->form));
     }
 }

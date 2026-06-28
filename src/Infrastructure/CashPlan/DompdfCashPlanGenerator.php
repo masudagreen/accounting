@@ -32,6 +32,7 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
     ) {
     }
 
+    #[\Override]
     public function render(CashPlan $plan): string
     {
         $html = $this->renderHtml($plan);
@@ -53,6 +54,7 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
@@ -60,12 +62,13 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'plan'            => $this->buildViewModel($plan),
-            'title'           => '資金繰り表 (Cash Plan)',
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'plan' => $this->buildViewModel($plan),
+            'title' => '資金繰り表 (Cash Plan)',
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
+            'fontDir' => $this->fontDir,
         ]);
+
         return (string) $smarty->fetch('plan.html.tpl');
     }
 
@@ -83,12 +86,12 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
             }
             $entries[] = [
                 'category' => $e->category->value,
-                'group'    => $e->category->group(),
+                'group' => $e->category->group(),
                 'isInflow' => $e->category->isInflow(),
-                'label'    => $e->label,
-                'cells'    => $cells,
-                'total'    => self::fmt($e->total()),
-                'memo'     => $e->memo,
+                'label' => $e->label,
+                'cells' => $cells,
+                'total' => self::fmt($e->total()),
+                'memo' => $e->memo,
             ];
         }
 
@@ -98,19 +101,20 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
             $deltas[] = self::fmtSigned($plan->monthlyDelta($m));
             $closings[] = self::fmtSigned($plan->closingBalance($m));
         }
+
         return [
-            'id'             => $plan->id,
-            'entityId'       => $plan->entityId,
-            'fiscalTermId'   => $plan->fiscalTermId,
-            'name'           => $plan->name,
+            'id' => $plan->id,
+            'entityId' => $plan->entityId,
+            'fiscalTermId' => $plan->fiscalTermId,
+            'name' => $plan->name,
             'openingBalance' => self::fmtSigned($plan->openingBalance),
-            'currencyCode'   => $plan->currencyCode,
-            'notes'          => $plan->notes,
-            'months'         => $months,
-            'entries'        => $entries,
-            'monthlyDeltas'  => $deltas,
+            'currencyCode' => $plan->currencyCode,
+            'notes' => $plan->notes,
+            'months' => $months,
+            'entries' => $entries,
+            'monthlyDeltas' => $deltas,
             'closingBalances' => $closings,
-            'generatedAt'    => $plan->updatedAt->format('Y-m-d H:i:s'),
+            'generatedAt' => $plan->updatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -120,6 +124,7 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
         if ($amount === '' || !is_numeric($amount)) {
             return '0';
         }
+
         return number_format((float) $amount, 0, '.', ',');
     }
 
@@ -131,7 +136,8 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
         }
         $num = (float) $amount;
         $abs = number_format(abs($num), 0, '.', ',');
-        return $num < 0 ? '(' . $abs . ')' : $abs;
+
+        return $num < 0 ? '('.$abs.')' : $abs;
     }
 
     private function buildSmarty(): Smarty
@@ -140,17 +146,19 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -176,7 +184,7 @@ final class DompdfCashPlanGenerator implements CashPlanPdfGeneratorInterface
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

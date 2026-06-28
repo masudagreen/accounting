@@ -11,14 +11,14 @@ namespace Rucaro\Domain\User;
 interface UserRepositoryInterface
 {
     /**
-     * @return User|null Null when no user with this email exists or the user
-     *                   is soft-deleted.
+     * @return User|null null when no user with this email exists or the user
+     *                   is soft-deleted
      */
     public function findByEmail(string $email): ?User;
 
     /**
-     * @return User|null Null when no user with this id exists or the user
-     *                   is soft-deleted.
+     * @return User|null null when no user with this id exists or the user
+     *                   is soft-deleted
      */
     public function findById(string $id): ?User;
 

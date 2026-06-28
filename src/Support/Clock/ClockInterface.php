@@ -21,5 +21,5 @@ interface ClockInterface
      * Implementations MUST return a {@see DateTimeImmutable} so callers can
      * rely on it not mutating between reads.
      */
-    public function getCurrentTime(): DateTimeImmutable;
+    public function getCurrentTime(): \DateTimeImmutable;
 }

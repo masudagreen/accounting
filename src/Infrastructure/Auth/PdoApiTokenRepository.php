@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Auth;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\Auth\ApiToken;
 use Rucaro\Domain\Auth\ApiTokenRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -14,10 +11,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function save(ApiToken $token): void
     {
         $stmt = $this->pdo->prepare(
@@ -44,6 +42,7 @@ final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
         ]);
     }
 
+    #[\Override]
     public function findByHash(string $tokenHash): ?ApiToken
     {
         $stmt = $this->pdo->prepare(
@@ -55,11 +54,13 @@ final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
         );
         $stmt->execute([':h' => $tokenHash]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
-    public function touchLastUsed(string $id, DateTimeImmutable $at): void
+    #[\Override]
+    public function touchLastUsed(string $id, \DateTimeImmutable $at): void
     {
         $stmt = $this->pdo->prepare('UPDATE api_tokens SET last_used_at = :at WHERE id = :id');
         $stmt->execute([
@@ -68,7 +69,8 @@ final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
         ]);
     }
 
-    public function revoke(string $id, DateTimeImmutable $at): void
+    #[\Override]
+    public function revoke(string $id, \DateTimeImmutable $at): void
     {
         $stmt = $this->pdo->prepare('UPDATE api_tokens SET revoked_at = :at WHERE id = :id');
         $stmt->execute([
@@ -88,12 +90,12 @@ final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
             tokenHash: (string) ($row['token_hash'] ?? ''),
             tokenPrefix: (string) ($row['token_prefix'] ?? ''),
             scopes: (string) ($row['scopes'] ?? ''),
-            issuedAt: self::parseTimestamp($row['issued_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            expiresAt: self::parseTimestamp($row['expires_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            issuedAt: self::parseTimestamp($row['issued_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            expiresAt: self::parseTimestamp($row['expires_at'] ?? null) ?? new \DateTimeImmutable('@0'),
             revokedAt: self::parseTimestamp($row['revoked_at'] ?? null),
             lastUsedAt: self::parseTimestamp($row['last_used_at'] ?? null),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
         );
     }
 
@@ -102,23 +104,24 @@ final class PdoApiTokenRepository implements ApiTokenRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function fmtTs(DateTimeImmutable $t): string
+    private static function fmtTs(\DateTimeImmutable $t): string
     {
-        return $t->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
+        return $t->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
     }
 }

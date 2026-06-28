@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
 use Rucaro\Support\Decimal\Decimal;
 
 /**
@@ -26,11 +25,11 @@ final readonly class StatementOfChangesInEquity
     public function __construct(
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public string $currencyCode,
         public array $sections,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
     }
 
@@ -43,17 +42,18 @@ final readonly class StatementOfChangesInEquity
     public function totals(): array
     {
         $opening = '0.0000';
-        $ending  = '0.0000';
-        $delta   = '0.0000';
+        $ending = '0.0000';
+        $delta = '0.0000';
         foreach ($this->sections as $section) {
             $opening = Decimal::add($opening, $section->openingBalance);
-            $ending  = Decimal::add($ending, $section->endingBalance);
-            $delta   = Decimal::add($delta, $section->totalChange());
+            $ending = Decimal::add($ending, $section->endingBalance);
+            $delta = Decimal::add($delta, $section->totalChange());
         }
+
         return [
-            'opening'     => Decimal::normalize($opening),
+            'opening' => Decimal::normalize($opening),
             'totalChange' => Decimal::normalize($delta),
-            'ending'      => Decimal::normalize($ending),
+            'ending' => Decimal::normalize($ending),
         ];
     }
 
@@ -68,6 +68,7 @@ final readonly class StatementOfChangesInEquity
                 return $section;
             }
         }
+
         return null;
     }
 
@@ -85,6 +86,7 @@ final readonly class StatementOfChangesInEquity
                 $seen[$change->changeType->value] = $change->changeType;
             }
         }
+
         return array_values($seen);
     }
 }

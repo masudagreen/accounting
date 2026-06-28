@@ -19,7 +19,7 @@ final class EntityValidator
         if ($nameTrim === '') {
             $errors['name'][] = '屋号 / 会社名を入力してください。';
         } elseif (mb_strlen($nameTrim) > self::NAME_MAX_LENGTH) {
-            $errors['name'][] = '名称は ' . self::NAME_MAX_LENGTH . ' 文字以内で入力してください。';
+            $errors['name'][] = '名称は '.self::NAME_MAX_LENGTH.' 文字以内で入力してください。';
         }
         if (!preg_match('/^[A-Z]{3}$/', $nationCode)) {
             $errors['nation_code'][] = '国コードは ISO 3166-1 alpha-3 形式 (例: JPN) で入力してください。';
@@ -36,6 +36,7 @@ final class EntityValidator
                 $errors['fiscal_start_mmdd'][] = '会計年度開始の月日が不正です。';
             }
         }
+
         return $errors;
     }
 }

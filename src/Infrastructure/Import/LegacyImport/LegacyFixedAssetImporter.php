@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
-
 /**
  * Import legacy `accountingLogFixedAssetsJpn` rows into `fixed_assets`.
  *
@@ -23,8 +21,8 @@ final class LegacyFixedAssetImporter
     private const DEFAULT_CATEGORY_CODE = 'tangible_asset_other';
 
     public function __construct(
-        private readonly PDO $source,
-        private readonly PDO $target,
+        private readonly \PDO $source,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly bool $dryRun,
     ) {
@@ -44,7 +42,7 @@ final class LegacyFixedAssetImporter
                     numUsefulLife, stampBuy, stampStart, numValue,
                     stampRegister, stampUpdate
                FROM accountingLogFixedAssetsJpn
-              ORDER BY id'
+              ORDER BY id',
         );
         if ($rows === false) {
             return ImportReport::empty('fixed_assets', ['source query failed']);
@@ -54,7 +52,7 @@ final class LegacyFixedAssetImporter
         $createdByBin = null;
         if ($createdByStmt !== false) {
             /** @var array<string,mixed>|false $ub */
-            $ub = $createdByStmt->fetch(PDO::FETCH_ASSOC);
+            $ub = $createdByStmt->fetch(\PDO::FETCH_ASSOC);
             if ($ub !== false) {
                 $createdByBin = $this->idMap->lookup(IdMapping::TABLE_USERS, (int) $ub['id']);
             }
@@ -70,7 +68,7 @@ final class LegacyFixedAssetImporter
                  (:id, :ent, :code, :name, :cat,
                   :adate, :sdate,
                   :cost, :res, :life,
-                  :m, 1, :cb)'
+                  :m, 1, :cb)',
         );
 
         $seq = 1;
@@ -107,8 +105,8 @@ final class LegacyFixedAssetImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $binaryUlid, PDO::PARAM_LOB);
-            $insert->bindValue(':ent', $entityBin, PDO::PARAM_LOB);
+            $insert->bindValue(':id', $binaryUlid, \PDO::PARAM_LOB);
+            $insert->bindValue(':ent', $entityBin, \PDO::PARAM_LOB);
             $insert->bindValue(':code', $assetCode);
             $insert->bindValue(':name', $name);
             $insert->bindValue(':cat', self::DEFAULT_CATEGORY_CODE);
@@ -116,9 +114,9 @@ final class LegacyFixedAssetImporter
             $insert->bindValue(':sdate', LegacyValueConverter::stampToDate($srvStamp));
             $insert->bindValue(':cost', (string) (int) ($r['numValue'] ?? 0));
             $insert->bindValue(':res', '0');
-            $insert->bindValue(':life', $life, PDO::PARAM_INT);
+            $insert->bindValue(':life', $life, \PDO::PARAM_INT);
             $insert->bindValue(':m', $method);
-            $insert->bindValue(':cb', $createdByBin, PDO::PARAM_LOB);
+            $insert->bindValue(':cb', $createdByBin, \PDO::PARAM_LOB);
             $insert->execute();
             ++$inserted;
             ++$seq;
@@ -130,6 +128,7 @@ final class LegacyFixedAssetImporter
     private function mapMethod(string $legacy): string
     {
         $m = strtolower(trim($legacy));
+
         return match ($m) {
             'straightline', 'straight', 'teigaku' => 'straight_line',
             'declining', 'teiritsu' => 'declining_balance',

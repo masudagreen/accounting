@@ -70,6 +70,7 @@ final readonly class CreateBlueReturnController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(BlueReturnJsonSerializer::toArray($out->form), null, 201);
     }
 
@@ -79,6 +80,7 @@ final readonly class CreateBlueReturnController
     private static function stringOr(array $json, string $key, string $default): string
     {
         $v = $json[$key] ?? null;
+
         return is_string($v) && $v !== '' ? $v : $default;
     }
 }

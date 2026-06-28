@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\E2E;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -42,10 +40,10 @@ final class BudgetReportSmokeTest extends TestCase
 {
     private const ENTITY_ID = '01HAAAAAAAAAAAAAAAAAAAAAA1';
     private const FISCAL_ID = '01HAAAAAAAAAAAAAAAAAAAAAA2';
-    private const USER_ID   = '01HAAAAAAAAAAAAAAAAAAAAAA3';
-    private const SALES_ID  = '01HAAAAAAAAAAAAAAAAAAAAAC0';
-    private const COGS_ID   = '01HAAAAAAAAAAAAAAAAAAAAAC1';
-    private const SGA_ID    = '01HAAAAAAAAAAAAAAAAAAAAAC2';
+    private const USER_ID = '01HAAAAAAAAAAAAAAAAAAAAAA3';
+    private const SALES_ID = '01HAAAAAAAAAAAAAAAAAAAAAC0';
+    private const COGS_ID = '01HAAAAAAAAAAAAAAAAAAAAAC1';
+    private const SGA_ID = '01HAAAAAAAAAAAAAAAAAAAAAC2';
 
     public function testBudgetAndVariancePdfRoundTrip(): void
     {
@@ -93,9 +91,9 @@ final class BudgetReportSmokeTest extends TestCase
 
         // 3. Feed six months of realistic actuals (slightly over on仕入, under on売上).
         $query = new InMemoryTrialBalanceQuery();
-        $this->pushLine($query, self::SALES_ID, '4000', '売上',   'revenue', 'credit', 'credit', '8500000.0000');
-        $this->pushLine($query, self::COGS_ID,  '5000', '仕入',   'expense', 'debit',  'debit',  '1900000.0000');
-        $this->pushLine($query, self::SGA_ID,   '5500', '販管費', 'expense', 'debit',  'debit',  '310000.0000');
+        $this->pushLine($query, self::SALES_ID, '4000', '売上', 'revenue', 'credit', 'credit', '8500000.0000');
+        $this->pushLine($query, self::COGS_ID, '5000', '仕入', 'expense', 'debit', 'debit', '1900000.0000');
+        $this->pushLine($query, self::SGA_ID, '5500', '販管費', 'expense', 'debit', 'debit', '310000.0000');
 
         $analyzeUc = new AnalyzeBudgetVarianceUseCase(
             budgets: $repo,
@@ -108,16 +106,16 @@ final class BudgetReportSmokeTest extends TestCase
         );
         $analysis = $analyzeUc->execute(new AnalyzeBudgetVarianceInput(
             budgetId: $approved->id,
-            fiscalTermStartDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            asOf: new DateTimeImmutable('2026-09-30', new DateTimeZone('UTC')),
+            fiscalTermStartDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            asOf: new \DateTimeImmutable('2026-09-30', new \DateTimeZone('UTC')),
         ));
         self::assertNotEmpty($analysis->rows);
 
         // 4. Render PDFs.
         $repoRoot = dirname(__DIR__, 2);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'budget';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'smarty_budget_e2e';
-        $fontDir     = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'fonts';
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'budget';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'smarty_budget_e2e';
+        $fontDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'fonts';
         if (!is_dir($compileDir)) {
             @mkdir($compileDir, 0775, true);
         }
@@ -139,11 +137,11 @@ final class BudgetReportSmokeTest extends TestCase
         self::assertStringStartsWith('%PDF-', $budgetPdf);
         self::assertStringStartsWith('%PDF-', $variancePdf);
 
-        $outDir = (string) (getenv('RUCARO_E2E_PDF_OUT') ?: '');
+        $outDir = getenv('RUCARO_E2E_PDF_OUT') ?: '';
         if ($outDir !== '' && is_dir($outDir)) {
-            $base = rtrim($outDir, DIRECTORY_SEPARATOR . '/');
-            file_put_contents($base . DIRECTORY_SEPARATOR . 'budget.pdf', $budgetPdf);
-            file_put_contents($base . DIRECTORY_SEPARATOR . 'budget-variance.pdf', $variancePdf);
+            $base = rtrim($outDir, \DIRECTORY_SEPARATOR.'/');
+            file_put_contents($base.\DIRECTORY_SEPARATOR.'budget.pdf', $budgetPdf);
+            file_put_contents($base.\DIRECTORY_SEPARATOR.'budget-variance.pdf', $variancePdf);
         }
     }
 
@@ -160,7 +158,7 @@ final class BudgetReportSmokeTest extends TestCase
         $query->addLine(
             entityId: self::ENTITY_ID,
             fiscalTermId: self::FISCAL_ID,
-            date: new DateTimeImmutable('2026-09-15T00:00:00Z'),
+            date: new \DateTimeImmutable('2026-09-15T00:00:00Z'),
             accountId: $accountId,
             accountCode: $code,
             accountName: $name,

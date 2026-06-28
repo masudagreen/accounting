@@ -21,18 +21,16 @@ final class JournalBalancer
 {
     /**
      * @param list<JournalLine> $lines
+     *
      * @return string DECIMAL(18,4) total (debit == credit) as a canonical string
      */
     public function balance(array $lines): string
     {
         if (count($lines) < 2) {
-            throw InvariantViolationException::for('journal.min_lines', [
-                'expected' => 2,
-                'actual'   => count($lines),
-            ]);
+            throw InvariantViolationException::for('journal.min_lines', ['expected' => 2, 'actual' => count($lines)]);
         }
 
-        $debit  = '0.0000';
+        $debit = '0.0000';
         $credit = '0.0000';
         foreach ($lines as $line) {
             if ($line->isDebit()) {
@@ -43,22 +41,13 @@ final class JournalBalancer
         }
 
         if (Decimal::compare($debit, '0.0000') === 0) {
-            throw InvariantViolationException::for('journal.must_have_debit', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_have_debit', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
         if (Decimal::compare($credit, '0.0000') === 0) {
-            throw InvariantViolationException::for('journal.must_have_credit', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_have_credit', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
         if (Decimal::compare($debit, $credit) !== 0) {
-            throw InvariantViolationException::for('journal.must_balance', [
-                'debit_total'  => $debit,
-                'credit_total' => $credit,
-            ]);
+            throw InvariantViolationException::for('journal.must_balance', ['debit_total' => $debit, 'credit_total' => $credit]);
         }
 
         return Decimal::normalize($debit);

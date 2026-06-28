@@ -21,6 +21,7 @@ interface FsNoteTemplateRepositoryInterface
 
     /**
      * @param list<string> $codes
+     *
      * @return list<FsNoteTemplate>
      */
     public function findByCodes(array $codes): array;

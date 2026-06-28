@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatement;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\AccountTitle\AccountTitle;
 use Rucaro\Domain\AccountTitle\AccountTitleRepositoryInterface;
 
@@ -36,13 +34,14 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
             parentId: null,
             sortOrder: 0,
             isActive: true,
-            createdAt: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            updatedAt: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
+            createdAt: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            updatedAt: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
         );
         $this->byEntity[$entityId] ??= [];
         $this->byEntity[$entityId][] = $account;
     }
 
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -54,6 +53,7 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
         return $this->byEntity[$entityId] ?? [];
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -63,6 +63,7 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
         return count($this->byEntity[$entityId] ?? []);
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         foreach ($this->byEntity as $accounts) {
@@ -72,26 +73,37 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
                 }
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return $this->byEntity[$entityId] ?? [];
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
-        $this->byEntity[$title->entityId] ??= [];
-        foreach ($this->byEntity[$title->entityId] as $i => $a) {
+        $existing = $this->byEntity[$title->entityId] ?? [];
+        $replaced = false;
+        $next = [];
+        foreach ($existing as $a) {
             if ($a->id === $title->id) {
-                $this->byEntity[$title->entityId][$i] = $title;
-                return;
+                $next[] = $title;
+                $replaced = true;
+            } else {
+                $next[] = $a;
             }
         }
-        $this->byEntity[$title->entityId][] = $title;
+        if (!$replaced) {
+            $next[] = $title;
+        }
+        $this->byEntity[$title->entityId] = $next;
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
         unset($deletedAt);
@@ -100,12 +112,14 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
                 if ($a->id === $id) {
                     unset($this->byEntity[$entityId][$i]);
                     $this->byEntity[$entityId] = array_values($this->byEntity[$entityId]);
+
                     return;
                 }
             }
         }
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         foreach ($this->byEntity[$entityId] ?? [] as $a) {
@@ -115,8 +129,10 @@ final class InMemoryAccountTitleRepository implements AccountTitleRepositoryInte
             if ($excludeId !== null && $a->id === $excludeId) {
                 continue;
             }
+
             return true;
         }
+
         return false;
     }
 }

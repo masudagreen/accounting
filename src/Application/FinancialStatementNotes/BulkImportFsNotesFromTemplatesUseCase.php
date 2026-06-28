@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatementNotes;
 
-use InvalidArgumentException;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Domain\FinancialStatementNotes\FinancialStatementNote;
 use Rucaro\Domain\FinancialStatementNotes\FsNoteRepositoryInterface;
@@ -32,27 +31,23 @@ final readonly class BulkImportFsNotesFromTemplatesUseCase
     }
 
     /**
-     * @return list<FinancialStatementNote> The notes that were actually inserted (skipped ones are not returned).
+     * @return list<FinancialStatementNote> the notes that were actually inserted (skipped ones are not returned)
      */
     public function execute(BulkImportFsNotesFromTemplatesInput $input): array
     {
         if (!UlidGenerator::isValid($input->entityId)) {
-            throw new InvalidArgumentException('entityId must be a ULID.');
+            throw new \InvalidArgumentException('entityId must be a ULID.');
         }
         if (!UlidGenerator::isValid($input->fiscalTermId)) {
-            throw new InvalidArgumentException('fiscalTermId must be a ULID.');
+            throw new \InvalidArgumentException('fiscalTermId must be a ULID.');
         }
         if ($input->templateCodes === []) {
-            throw ValidationException::withErrors([
-                'templateCodes' => ['templateCodes must not be empty.'],
-            ]);
+            throw ValidationException::withErrors(['templateCodes' => ['templateCodes must not be empty.']]);
         }
 
         $templates = $this->templates->findByCodes($input->templateCodes);
         if ($templates === []) {
-            throw ValidationException::withErrors([
-                'templateCodes' => ['no known templates matched the requested codes.'],
-            ]);
+            throw ValidationException::withErrors(['templateCodes' => ['no known templates matched the requested codes.']]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -82,6 +77,7 @@ final readonly class BulkImportFsNotesFromTemplatesUseCase
             $this->notes->save($note);
             $inserted[] = $note;
         }
+
         return $inserted;
     }
 }

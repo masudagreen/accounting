@@ -25,6 +25,7 @@ final readonly class GetMyProfileUseCase
         if ($user === null) {
             throw EntityNotFoundException::for('User', $userId);
         }
+
         return $user;
     }
 }

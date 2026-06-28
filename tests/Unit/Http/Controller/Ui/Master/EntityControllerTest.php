@@ -23,11 +23,13 @@ use Rucaro\Tests\Unit\Application\Support\InMemoryEntityRepo;
 #[CoversClass(EntityController::class)]
 final class EntityControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -74,19 +76,19 @@ final class EntityControllerTest extends TestCase
         $ulids = new UlidGenerator($clock);
         $repo = new InMemoryEntityRepo();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new EntityController(
-            listUseCase:   new ListEntitiesUseCase($repo),
+            listUseCase: new ListEntitiesUseCase($repo),
             createUseCase: new CreateEntityUseCase($repo, $ulids, $clock),
             updateUseCase: new UpdateEntityUseCase($repo, $clock),
             deleteUseCase: new DeleteEntityUseCase($repo, $clock),
-            repo:          $repo,
-            session:       $session,
-            csrf:          new CsrfTokenManager($clock),
-            flash:         new FlashMessageBag(),
-            view:          new SmartyViewRenderer($templateDir, $compileDir),
+            repo: $repo,
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
     }
 }

@@ -20,7 +20,7 @@ final class MasterFormSupportTest extends TestCase
             headers: [],
             query: [],
             json: null,
-            rawBody: 'code=A101&name=' . rawurlencode('現金') . '&category=asset',
+            rawBody: 'code=A101&name='.rawurlencode('現金').'&category=asset',
         );
         $bag = MasterFormSupport::parseForm($req);
         self::assertSame('A101', $bag['code']);

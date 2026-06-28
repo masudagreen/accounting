@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Middleware;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Auth\ApiToken;
@@ -52,7 +51,7 @@ final class AuthenticateBearerTest extends TestCase
 
         self::assertSame(
             '01HW7K9B2QV7C8Y4ZUSER000001',
-            $auth->authenticate('Bearer ' . $plaintext),
+            $auth->authenticate('Bearer '.$plaintext),
         );
     }
 
@@ -88,7 +87,7 @@ final class AuthenticateBearerTest extends TestCase
 
         $auth = new AuthenticateBearer($repo, $clock);
 
-        self::assertNull($auth->authenticate('Bearer ' . $plaintext));
+        self::assertNull($auth->authenticate('Bearer '.$plaintext));
     }
 
     public function testAuthenticateRejectsRevokedToken(): void
@@ -114,6 +113,6 @@ final class AuthenticateBearerTest extends TestCase
 
         $auth = new AuthenticateBearer($repo, $clock);
 
-        self::assertNull($auth->authenticate('Bearer ' . $plaintext));
+        self::assertNull($auth->authenticate('Bearer '.$plaintext));
     }
 }

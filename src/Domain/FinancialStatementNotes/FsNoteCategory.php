@@ -13,13 +13,13 @@ namespace Rucaro\Domain\FinancialStatementNotes;
  */
 enum FsNoteCategory: string
 {
-    case AccountingPolicy     = 'accounting_policy';
-    case BalanceSheetNotes    = 'balance_sheet_notes';
-    case PlNotes              = 'pl_notes';
-    case SsNotes              = 'ss_notes';
-    case RelatedParty         = 'related_party';
-    case ContingentLiability  = 'contingent_liability';
-    case Other                = 'other';
+    case AccountingPolicy = 'accounting_policy';
+    case BalanceSheetNotes = 'balance_sheet_notes';
+    case PlNotes = 'pl_notes';
+    case SsNotes = 'ss_notes';
+    case RelatedParty = 'related_party';
+    case ContingentLiability = 'contingent_liability';
+    case Other = 'other';
 
     /**
      * Human-readable Japanese label for PDF / UI rendering.
@@ -27,13 +27,13 @@ enum FsNoteCategory: string
     public function jaLabel(): string
     {
         return match ($this) {
-            self::AccountingPolicy    => '重要な会計方針',
-            self::BalanceSheetNotes   => '貸借対照表に関する注記',
-            self::PlNotes             => '損益計算書に関する注記',
-            self::SsNotes             => '株主資本等変動計算書に関する注記',
-            self::RelatedParty        => '関連当事者との取引に関する注記',
+            self::AccountingPolicy => '重要な会計方針',
+            self::BalanceSheetNotes => '貸借対照表に関する注記',
+            self::PlNotes => '損益計算書に関する注記',
+            self::SsNotes => '株主資本等変動計算書に関する注記',
+            self::RelatedParty => '関連当事者との取引に関する注記',
             self::ContingentLiability => '偶発債務に関する注記',
-            self::Other               => 'その他の注記',
+            self::Other => 'その他の注記',
         };
     }
 
@@ -44,13 +44,13 @@ enum FsNoteCategory: string
     public function displayOrder(): int
     {
         return match ($this) {
-            self::AccountingPolicy    => 10,
-            self::BalanceSheetNotes   => 20,
-            self::PlNotes             => 30,
-            self::SsNotes             => 40,
-            self::RelatedParty        => 50,
+            self::AccountingPolicy => 10,
+            self::BalanceSheetNotes => 20,
+            self::PlNotes => 30,
+            self::SsNotes => 40,
+            self::RelatedParty => 50,
             self::ContingentLiability => 60,
-            self::Other               => 90,
+            self::Other => 90,
         };
     }
 }

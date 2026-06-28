@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Ui\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\FixedAsset\GenerateDepreciationScheduleInput;
 use Rucaro\Application\FixedAsset\GenerateDepreciationScheduleUseCase;
 use Rucaro\Http\Controller\Ui\Planning\PlanningFormSupport;
@@ -51,26 +49,29 @@ final readonly class FixedAssetDepreciateController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
 
         $fiscalTermId = PlanningFormSupport::str($body, 'fiscal_term_id');
-        $fiscalTerms  = $this->ctx->fiscalTermsForEntity($entityId);
+        $fiscalTerms = $this->ctx->fiscalTermsForEntity($entityId);
         if ($fiscalTermId === '') {
             $fiscalTermId = PlanningUiContext::defaultFiscalTermId($fiscalTerms, $this->clock->getCurrentTime()) ?? '';
         }
         if ($fiscalTermId === '') {
             $this->flash->addError('会計期間が登録されていません。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
         $term = $this->ctx->findFiscalTerm($fiscalTermId);
         if ($term === null || $term['startDate'] === '' || $term['endDate'] === '') {
             $this->flash->addError('会計期間の日付が未設定です。');
-            return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+            return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
         }
         try {
-            $start = new DateTimeImmutable($term['startDate'], new DateTimeZone('UTC'));
-            $end   = new DateTimeImmutable($term['endDate'], new DateTimeZone('UTC'));
+            $start = new \DateTimeImmutable($term['startDate'], new \DateTimeZone('UTC'));
+            $end = new \DateTimeImmutable($term['endDate'], new \DateTimeZone('UTC'));
             $this->generate->execute(new GenerateDepreciationScheduleInput(
                 entityId: $entityId,
                 fiscalTermId: $fiscalTermId,
@@ -80,8 +81,9 @@ final readonly class FixedAssetDepreciateController
             ));
             $this->flash->addSuccess('減価償却スケジュールを生成しました。');
         } catch (\Throwable $e) {
-            $this->flash->addError('償却スケジュール生成に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('償却スケジュール生成に失敗しました: '.$e->getMessage());
         }
-        return HtmlResponse::redirect('/ui/fixed-assets/' . $id);
+
+        return HtmlResponse::redirect('/ui/fixed-assets/'.$id);
     }
 }

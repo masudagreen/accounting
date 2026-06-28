@@ -82,7 +82,7 @@ final readonly class PostApprovalController
         }
 
         return EnvelopeResponse::ok(data: [
-            'token'  => ApprovalSerializer::token($output->token, 'responded'),
+            'token' => ApprovalSerializer::token($output->token, 'responded'),
             'target' => ApprovalSerializer::target($output->target),
         ]);
     }

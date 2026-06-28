@@ -12,6 +12,7 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class ThreeYearEqualDepreciationCalculator implements DepreciationCalculatorInterface
 {
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         $yearly = DecimalMath::divFloor($request->acquisitionCost, 3);
@@ -25,6 +26,7 @@ final class ThreeYearEqualDepreciationCalculator implements DepreciationCalculat
         if (Decimal::compare($dep, $request->openingBookValue) > 0) {
             $dep = $request->openingBookValue;
         }
+
         return StraightLineDepreciationCalculator::finalize($request, $dep);
     }
 }

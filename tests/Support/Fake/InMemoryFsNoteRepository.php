@@ -15,16 +15,19 @@ final class InMemoryFsNoteRepository implements FsNoteRepositoryInterface
     /** @var array<string, FinancialStatementNote> */
     private array $byId = [];
 
+    #[\Override]
     public function save(FinancialStatementNote $note): void
     {
         $this->byId[$note->id] = $note;
     }
 
+    #[\Override]
     public function findById(string $id): ?FinancialStatementNote
     {
         return $this->byId[$id] ?? null;
     }
 
+    #[\Override]
     public function findByEntityAndTerm(
         string $entityId,
         string $fiscalTermId,
@@ -42,12 +45,13 @@ final class InMemoryFsNoteRepository implements FsNoteRepositoryInterface
         }
         usort(
             $out,
-            static fn (FinancialStatementNote $a, FinancialStatementNote $b): int =>
-                $a->sortOrder <=> $b->sortOrder ?: strcmp($a->id, $b->id),
+            static fn (FinancialStatementNote $a, FinancialStatementNote $b): int => $a->sortOrder <=> $b->sortOrder ?: strcmp($a->id, $b->id),
         );
-        return array_values($out);
+
+        return $out;
     }
 
+    #[\Override]
     public function countByTemplateCode(
         string $entityId,
         string $fiscalTermId,
@@ -58,12 +62,14 @@ final class InMemoryFsNoteRepository implements FsNoteRepositoryInterface
             if ($note->entityId === $entityId
                 && $note->fiscalTermId === $fiscalTermId
                 && $note->templateCode === $templateCode) {
-                $n++;
+                ++$n;
             }
         }
+
         return $n;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         unset($this->byId[$id]);

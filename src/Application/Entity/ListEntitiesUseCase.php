@@ -32,6 +32,7 @@ final readonly class ListEntitiesUseCase
             $input->search,
             $input->isActive,
         );
+
         return new ListEntitiesUseCaseOutput(
             items: $items,
             total: $total,

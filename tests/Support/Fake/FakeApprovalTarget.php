@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Approval\ApprovalTargetInterface;
 use Rucaro\Domain\Approval\ApprovalTargetKind;
 
@@ -16,9 +15,9 @@ use Rucaro\Domain\Approval\ApprovalTargetKind;
 final class FakeApprovalTarget implements ApprovalTargetInterface
 {
     public ?string $approvedBy = null;
-    public ?DateTimeImmutable $approvedAt = null;
+    public ?\DateTimeImmutable $approvedAt = null;
     public ?string $rejectedBy = null;
-    public ?DateTimeImmutable $rejectedAt = null;
+    public ?\DateTimeImmutable $rejectedAt = null;
     public ?string $rejectReason = null;
 
     public function __construct(
@@ -28,33 +27,39 @@ final class FakeApprovalTarget implements ApprovalTargetInterface
     ) {
     }
 
+    #[\Override]
     public function kind(): ApprovalTargetKind
     {
         return $this->kind;
     }
 
+    #[\Override]
     public function id(): string
     {
         return $this->id;
     }
 
+    #[\Override]
     public function summary(): string
     {
         return $this->summary;
     }
 
+    #[\Override]
     public function details(): array
     {
         return ['id' => $this->id, 'summary' => $this->summary];
     }
 
-    public function applyApproval(string $actorUserId, DateTimeImmutable $at): void
+    #[\Override]
+    public function applyApproval(string $actorUserId, \DateTimeImmutable $at): void
     {
         $this->approvedBy = $actorUserId;
         $this->approvedAt = $at;
     }
 
-    public function applyRejection(string $actorUserId, DateTimeImmutable $at, string $reason): void
+    #[\Override]
+    public function applyRejection(string $actorUserId, \DateTimeImmutable $at, string $reason): void
     {
         $this->rejectedBy = $actorUserId;
         $this->rejectedAt = $at;

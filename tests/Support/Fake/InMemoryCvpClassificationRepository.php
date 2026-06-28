@@ -12,6 +12,7 @@ final class InMemoryCvpClassificationRepository implements AccountTitleCvpClassi
     /** @var array<string, AccountTitleCvpClassification> */
     private array $byKey = [];
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $out = [];
@@ -20,19 +21,23 @@ final class InMemoryCvpClassificationRepository implements AccountTitleCvpClassi
                 $out[] = $c;
             }
         }
-        return array_values($out);
+
+        return $out;
     }
 
+    #[\Override]
     public function findByAccountTitle(string $entityId, string $accountTitleId): ?AccountTitleCvpClassification
     {
         return $this->byKey[self::key($entityId, $accountTitleId)] ?? null;
     }
 
+    #[\Override]
     public function save(AccountTitleCvpClassification $classification): void
     {
         $this->byKey[self::key($classification->entityId, $classification->accountTitleId)] = $classification;
     }
 
+    #[\Override]
     public function saveMany(array $classifications): void
     {
         foreach ($classifications as $c) {
@@ -40,6 +45,7 @@ final class InMemoryCvpClassificationRepository implements AccountTitleCvpClassi
         }
     }
 
+    #[\Override]
     public function delete(string $entityId, string $accountTitleId): void
     {
         unset($this->byKey[self::key($entityId, $accountTitleId)]);
@@ -47,6 +53,6 @@ final class InMemoryCvpClassificationRepository implements AccountTitleCvpClassi
 
     private static function key(string $entityId, string $accountTitleId): string
     {
-        return $entityId . '|' . $accountTitleId;
+        return $entityId.'|'.$accountTitleId;
     }
 }

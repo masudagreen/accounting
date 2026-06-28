@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Journal;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Exception\InvariantViolationException;
@@ -21,7 +20,7 @@ final class JournalLifecycleTest extends TestCase
     public function testApproveFromDraft(): void
     {
         $j = $this->draft();
-        $at = new DateTimeImmutable('2026-04-21T13:00:00Z');
+        $at = new \DateTimeImmutable('2026-04-21T13:00:00Z');
         $approved = $j->approve($at, '01HW7K9B2QV7C8Y4ZUSER000002');
 
         self::assertSame(JournalStatus::Approved, $approved->statusEnum());
@@ -32,22 +31,22 @@ final class JournalLifecycleTest extends TestCase
     public function testApproveFromPostedRaises(): void
     {
         $posted = $this->draft()
-            ->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
-            ->post(new DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
+            ->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
+            ->post(new \DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
 
         $this->expectException(InvariantViolationException::class);
         $this->expectExceptionMessageMatches('/cannot_approve_from_status/');
-        $posted->approve(new DateTimeImmutable('2026-04-21T13:00:00Z'), 'U2');
+        $posted->approve(new \DateTimeImmutable('2026-04-21T13:00:00Z'), 'U2');
     }
 
     public function testPostFromApproved(): void
     {
         $approved = $this->draft()->approve(
-            new DateTimeImmutable('2026-04-21T13:00:00Z'),
+            new \DateTimeImmutable('2026-04-21T13:00:00Z'),
             '01HW7K9B2QV7C8Y4ZUSER000002',
         );
         $posted = $approved->post(
-            new DateTimeImmutable('2026-04-21T13:30:00Z'),
+            new \DateTimeImmutable('2026-04-21T13:30:00Z'),
             '01HW7K9B2QV7C8Y4ZUSER000002',
         );
         self::assertSame(JournalStatus::Posted, $posted->statusEnum());
@@ -57,7 +56,7 @@ final class JournalLifecycleTest extends TestCase
     {
         $this->expectException(InvariantViolationException::class);
         $this->expectExceptionMessageMatches('/cannot_post_from_status/');
-        $this->draft()->post(new DateTimeImmutable('2026-04-21T13:00:00Z'), 'U1');
+        $this->draft()->post(new \DateTimeImmutable('2026-04-21T13:00:00Z'), 'U1');
     }
 
     public function testReverseRequiresPosted(): void
@@ -65,33 +64,33 @@ final class JournalLifecycleTest extends TestCase
         $draft = $this->draft();
         $this->expectException(InvariantViolationException::class);
         $this->expectExceptionMessageMatches('/cannot_reverse_from_status/');
-        $draft->reverse(new DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', 'bad');
+        $draft->reverse(new \DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', 'bad');
     }
 
     public function testReverseRequiresReason(): void
     {
         $posted = $this->draft()
-            ->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
-            ->post(new DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
+            ->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
+            ->post(new \DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
 
         $this->expectException(ValidationException::class);
-        $posted->reverse(new DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', '   ');
+        $posted->reverse(new \DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', '   ');
     }
 
     public function testReverseFlipsStatus(): void
     {
         $posted = $this->draft()
-            ->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
-            ->post(new DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
+            ->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1')
+            ->post(new \DateTimeImmutable('2026-04-21T12:20:00Z'), 'U1');
 
-        $reversed = $posted->reverse(new DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', 'typo');
+        $reversed = $posted->reverse(new \DateTimeImmutable('2026-04-22T09:00:00Z'), 'U1', 'typo');
         self::assertSame(JournalStatus::Reversed, $reversed->statusEnum());
         self::assertStringContainsString('[REVERSED:typo]', $reversed->summary);
     }
 
     public function testVoidOnlyFromDraft(): void
     {
-        $voided = $this->draft()->void(new DateTimeImmutable('2026-04-21T12:30:00Z'), 'U1', 'mistaken');
+        $voided = $this->draft()->void(new \DateTimeImmutable('2026-04-21T12:30:00Z'), 'U1', 'mistaken');
         self::assertSame(JournalStatus::Voided, $voided->statusEnum());
         self::assertNotNull($voided->deletedAt);
         self::assertStringContainsString('[VOIDED:mistaken]', $voided->summary);
@@ -99,10 +98,10 @@ final class JournalLifecycleTest extends TestCase
 
     public function testVoidFromApprovedRaises(): void
     {
-        $approved = $this->draft()->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
+        $approved = $this->draft()->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
         $this->expectException(InvariantViolationException::class);
         $this->expectExceptionMessageMatches('/cannot_void_from_status/');
-        $approved->void(new DateTimeImmutable('2026-04-21T12:30:00Z'), 'U1', 'oops');
+        $approved->void(new \DateTimeImmutable('2026-04-21T12:30:00Z'), 'U1', 'oops');
     }
 
     public function testWithLinesRecomputesTotal(): void
@@ -118,7 +117,7 @@ final class JournalLifecycleTest extends TestCase
 
     public function testWithLinesRejectedAfterApproval(): void
     {
-        $approved = $this->draft()->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
+        $approved = $this->draft()->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
         $this->expectException(InvariantViolationException::class);
         $this->expectExceptionMessageMatches('/immutable_after_draft/');
         $approved->withLines([
@@ -168,16 +167,16 @@ final class JournalLifecycleTest extends TestCase
     public function testSoftDeleteMarksDeletedAt(): void
     {
         $draft = $this->draft();
-        $at = new DateTimeImmutable('2026-04-21T15:00:00Z');
+        $at = new \DateTimeImmutable('2026-04-21T15:00:00Z');
         $deleted = $draft->softDelete($at);
         self::assertEquals($at, $deleted->deletedAt);
     }
 
     public function testSoftDeleteAfterApprovalRaises(): void
     {
-        $approved = $this->draft()->approve(new DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
+        $approved = $this->draft()->approve(new \DateTimeImmutable('2026-04-21T12:10:00Z'), 'U1');
         $this->expectException(InvariantViolationException::class);
-        $approved->softDelete(new DateTimeImmutable('2026-04-21T15:00:00Z'));
+        $approved->softDelete(new \DateTimeImmutable('2026-04-21T15:00:00Z'));
     }
 
     private function draft(): Journal
@@ -186,12 +185,13 @@ final class JournalLifecycleTest extends TestCase
             $this->line(1, 'debit', '1000.0000'),
             $this->line(2, 'credit', '1000.0000'),
         ];
+
         return new Journal(
             id: '01HW7K9B2QV7C8Y4ZJRNL000001',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             summary: 'Test',
             totalAmount: '1000.0000',
             currencyCode: 'JPY',
@@ -201,8 +201,8 @@ final class JournalLifecycleTest extends TestCase
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: null,
             approvedAt: null,
-            createdAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             deletedAt: null,
             lines: $lines,
         );
@@ -221,7 +221,7 @@ final class JournalLifecycleTest extends TestCase
             taxAmount: '0.0000',
             isTaxReduced: false,
             memo: '',
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
         );
     }
 }

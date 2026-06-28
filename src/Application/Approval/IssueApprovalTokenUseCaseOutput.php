@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Approval\ApprovalChannel;
 
 /**
@@ -21,7 +20,7 @@ final readonly class IssueApprovalTokenUseCaseOutput
         public string $tokenPrefix,
         public ApprovalChannel $channel,
         public string $recipient,
-        public DateTimeImmutable $expiresAt,
+        public \DateTimeImmutable $expiresAt,
     ) {
     }
 }

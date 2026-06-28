@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Infrastructure\ConsumptionTax;
 
-use DateTimeImmutable;
 use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefault;
@@ -30,40 +28,41 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 #[CoversClass(PdoConsumptionTaxPeriodRepository::class)]
 final class PdoConsumptionTaxRepositoryTest extends TestCase
 {
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
     private string $dbName = '';
     private UlidGenerator $ulids;
     private string $entityId = '';
     private string $fiscalTermId = '';
     private string $accountTitleId = '';
 
+    #[\Override]
     protected function setUp(): void
     {
-        $dsn  = getenv('RUCARO_TEST_DB_DSN');
+        $dsn = getenv('RUCARO_TEST_DB_DSN');
         $user = getenv('RUCARO_TEST_DB_USER');
         $pass = getenv('RUCARO_TEST_DB_PASS');
         $name = getenv('RUCARO_TEST_DB_NAME') ?: 'rucaro_test';
         if ($dsn === false || $user === false) {
             $this->markTestSkipped('RUCARO_TEST_DB_* env vars are not set; skipping DB integration test.');
         }
-        $root = new PDO($dsn, $user, $pass === false ? '' : $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        $root = new \PDO($dsn, $user, $pass === false ? '' : $pass, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ]);
         $root->exec("DROP DATABASE IF EXISTS `$name`");
         $root->exec("CREATE DATABASE `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $this->dbName = $name;
-        $this->pdo = new PDO(
-            $dsn . ';dbname=' . $name,
+        $this->pdo = new \PDO(
+            $dsn.';dbname='.$name,
             $user,
             $pass === false ? '' : $pass,
             [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false,
             ],
         );
         $this->pdo->exec('SET NAMES utf8mb4');
         $this->pdo->exec("SET time_zone = '+00:00'");
-        $migrationsDir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'migrate';
+        $migrationsDir = dirname(__DIR__, 4).\DIRECTORY_SEPARATOR.'scripts'.\DIRECTORY_SEPARATOR.'migrate';
         $runner = new MigrationRunner($this->pdo, $migrationsDir);
         $runner->up();
         // The project-wide MigrationRunner picks the alphabetically-last
@@ -75,6 +74,7 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
         $this->seedFixtures();
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->pdo !== null && $this->dbName !== '') {
@@ -98,7 +98,7 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
     public function testFindEffectiveOnWindowsToCurrentRates(): void
     {
         $repo = new PdoConsumptionTaxRateRepository($this->requirePdo());
-        $active = $repo->findEffectiveOn(new DateTimeImmutable('2026-05-15'));
+        $active = $repo->findEffectiveOn(new \DateTimeImmutable('2026-05-15'));
         $codes = array_map(static fn ($r) => $r->code, $active);
         self::assertContains('standard_10', $codes);
         self::assertContains('reduced_8', $codes);
@@ -118,7 +118,7 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
     public function testAccountTitleTaxDefaultRoundTrip(): void
     {
         $repo = new PdoAccountTitleConsumptionTaxDefaultRepository($this->requirePdo());
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $row = new AccountTitleConsumptionTaxDefault(
             id: $this->ulids->generate(),
             entityId: $this->entityId,
@@ -138,14 +138,14 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
     public function testInvoiceRegistrationRoundTrip(): void
     {
         $repo = new PdoInvoiceRegistrationRepository($this->requirePdo());
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $reg = new InvoiceRegistration(
             id: $this->ulids->generate(),
             entityId: $this->entityId,
             counterpartyName: 'ACME商事',
             registrationNumber: 'T1234567890123',
             isRegistered: true,
-            registeredFrom: new DateTimeImmutable('2023-10-01'),
+            registeredFrom: new \DateTimeImmutable('2023-10-01'),
             registeredUntil: null,
             notes: 'seed',
             createdAt: $now,
@@ -160,13 +160,13 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
     public function testPeriodRoundTrip(): void
     {
         $repo = new PdoConsumptionTaxPeriodRepository($this->requirePdo());
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $period = new ConsumptionTaxPeriod(
             id: $this->ulids->generate(),
             entityId: $this->entityId,
             fiscalTermId: $this->fiscalTermId,
-            periodFrom: new DateTimeImmutable('2026-04-01'),
-            periodTo: new DateTimeImmutable('2027-03-31'),
+            periodFrom: new \DateTimeImmutable('2026-04-01'),
+            periodTo: new \DateTimeImmutable('2027-03-31'),
             calculationMethod: ConsumptionTaxCalculationMethod::Simplified,
             simplifiedBusinessCategory: SimplifiedBusinessCategory::Wholesale,
             isInterim: false,
@@ -185,11 +185,12 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
         self::assertCount(1, $all);
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         if ($this->pdo === null) {
             $this->fail('PDO not initialised.');
         }
+
         return $this->pdo;
     }
 
@@ -204,39 +205,39 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
         $pdo->prepare('INSERT INTO users (id, email, display_name, password_hash, is_active, created_at) VALUES (:id, :e, :d, :p, 1, NOW(6))')
             ->execute([
                 ':id' => UlidGenerator::decode($userId),
-                ':e'  => 'tester@example.com',
-                ':d'  => 'Tester',
-                ':p'  => 'x',
+                ':e' => 'tester@example.com',
+                ':d' => 'Tester',
+                ':p' => 'x',
             ]);
         $pdo->prepare(
             'INSERT INTO entities (id, owner_user_id, name, nation_code, currency_code, fiscal_start_mmdd, is_active, created_at)'
-            . ' VALUES (:id, :owner, :n, \'JPN\', \'JPY\', \'0401\', 1, NOW(6))',
+            .' VALUES (:id, :owner, :n, \'JPN\', \'JPY\', \'0401\', 1, NOW(6))',
         )->execute([
-            ':id'    => UlidGenerator::decode($this->entityId),
+            ':id' => UlidGenerator::decode($this->entityId),
             ':owner' => UlidGenerator::decode($userId),
-            ':n'     => 'Test Entity',
+            ':n' => 'Test Entity',
         ]);
         $pdo->prepare(
             'INSERT INTO fiscal_terms (id, entity_id, fiscal_period, start_date, end_date, is_closed, created_at)'
-            . ' VALUES (:id, :e, 1, \'2026-04-01\', \'2027-03-31\', 0, NOW(6))',
+            .' VALUES (:id, :e, 1, \'2026-04-01\', \'2027-03-31\', 0, NOW(6))',
         )->execute([
             ':id' => UlidGenerator::decode($this->fiscalTermId),
-            ':e'  => UlidGenerator::decode($this->entityId),
+            ':e' => UlidGenerator::decode($this->entityId),
         ]);
         $pdo->prepare(
             'INSERT INTO account_titles (id, entity_id, code, name, category, normal_side, parent_id, sort_order, is_active, created_at)'
-            . ' VALUES (:id, :e, :c, :n, \'revenue\', \'credit\', NULL, 100, 1, NOW(6))',
+            .' VALUES (:id, :e, :c, :n, \'revenue\', \'credit\', NULL, 100, 1, NOW(6))',
         )->execute([
             ':id' => UlidGenerator::decode($this->accountTitleId),
-            ':e'  => UlidGenerator::decode($this->entityId),
-            ':c'  => '4000',
-            ':n'  => '売上高',
+            ':e' => UlidGenerator::decode($this->entityId),
+            ':c' => '4000',
+            ':n' => '売上高',
         ]);
     }
 
-    private function applyFile(PDO $pdo, string $dir, string $name): void
+    private function applyFile(\PDO $pdo, string $dir, string $name): void
     {
-        $path = $dir . DIRECTORY_SEPARATOR . $name;
+        $path = $dir.\DIRECTORY_SEPARATOR.$name;
         if (!is_file($path)) {
             return;
         }
@@ -252,7 +253,7 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
                 }
                 try {
                     $pdo->exec($stmt);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                     if (!str_contains($e->getMessage(), 'already exists')
                         && !str_contains($e->getMessage(), 'Duplicate entry')
                     ) {
@@ -260,7 +261,7 @@ final class PdoConsumptionTaxRepositoryTest extends TestCase
                     }
                 }
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             if (!str_contains($e->getMessage(), 'already exists')) {
                 throw $e;
             }

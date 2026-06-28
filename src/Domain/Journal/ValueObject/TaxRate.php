@@ -19,24 +19,20 @@ use Rucaro\Support\Validation\AbstractValueObject;
 final readonly class TaxRate extends AbstractValueObject
 {
     public const STANDARD_10 = '10.00';
-    public const REDUCED_8   = '8.00';
-    public const EXEMPT_0    = '0.00';
+    public const REDUCED_8 = '8.00';
+    public const EXEMPT_0 = '0.00';
 
     public string $percent;
 
     public function __construct(string $percent, public bool $isReduced = false)
     {
         if (preg_match('/^\d{1,3}(\.\d{1,2})?$/', $percent) !== 1) {
-            throw ValidationException::withErrors([
-                'taxRatePercent' => ['taxRatePercent must match DECIMAL(5,2) format.'],
-            ]);
+            throw ValidationException::withErrors(['taxRatePercent' => ['taxRatePercent must match DECIMAL(5,2) format.']]);
         }
         // Normalize to 2-scale canonical form (e.g. "10" -> "10.00").
         $this->percent = self::normalize2($percent);
         if (Decimal::compare($this->percent, '0.00') < 0 || Decimal::compare($this->percent, '100.00') > 0) {
-            throw ValidationException::withErrors([
-                'taxRatePercent' => ['taxRatePercent must be between 0 and 100.'],
-            ]);
+            throw ValidationException::withErrors(['taxRatePercent' => ['taxRatePercent must be between 0 and 100.']]);
         }
     }
 
@@ -60,9 +56,10 @@ final readonly class TaxRate extends AbstractValueObject
         return $this->percent;
     }
 
+    #[\Override]
     public function toPrimitive(): string
     {
-        return ($this->isReduced ? 'R' : 'S') . ':' . $this->percent;
+        return ($this->isReduced ? 'R' : 'S').':'.$this->percent;
     }
 
     private static function normalize2(string $v): string
@@ -70,11 +67,12 @@ final readonly class TaxRate extends AbstractValueObject
         // Decimal::normalize works in scale 4; rewrite to scale 2 for tax rates.
         $dot = strpos($v, '.');
         if ($dot === false) {
-            return $v . '.00';
+            return $v.'.00';
         }
         $int = substr($v, 0, $dot);
         $frac = substr($v, $dot + 1);
-        $frac = substr($frac . '00', 0, 2);
-        return $int . '.' . $frac;
+        $frac = substr($frac.'00', 0, 2);
+
+        return $int.'.'.$frac;
     }
 }

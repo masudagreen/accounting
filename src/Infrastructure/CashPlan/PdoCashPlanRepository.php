@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\CashPlan;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\CashPlan\CashPlan;
 use Rucaro\Domain\CashPlan\CashPlanCategory;
@@ -21,10 +19,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoCashPlanRepository implements CashPlanRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(CashPlan $plan): void
     {
         $this->pdo->beginTransaction();
@@ -45,18 +44,21 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
         }
     }
 
+    #[\Override]
     public function findById(string $id): ?CashPlan
     {
         $stmt = $this->pdo->prepare('SELECT * FROM cash_plans WHERE id = :id AND deleted_at IS NULL LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndName(string $entityId, string $fiscalTermId, string $name): ?CashPlan
     {
         $stmt = $this->pdo->prepare(
@@ -68,13 +70,15 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
             ':n' => $name,
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntity(string $entityId, ?string $fiscalTermId = null, bool $includeDeleted = false): array
     {
         $sql = 'SELECT * FROM cash_plans WHERE entity_id = :e';
@@ -90,10 +94,12 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        return array_values(array_map([$this, 'hydrate'], $rows));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+        return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $stmt = $this->pdo->prepare('UPDATE cash_plans SET deleted_at = CURRENT_TIMESTAMP(6) WHERE id = :id AND deleted_at IS NULL');
@@ -120,13 +126,13 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'         => UlidGenerator::decode($plan->id),
-            ':entity'     => UlidGenerator::decode($plan->entityId),
-            ':ft'         => UlidGenerator::decode($plan->fiscalTermId),
-            ':name'       => $plan->name,
-            ':opening'    => $plan->openingBalance,
-            ':cur'        => $plan->currencyCode,
-            ':notes'      => $plan->notes,
+            ':id' => UlidGenerator::decode($plan->id),
+            ':entity' => UlidGenerator::decode($plan->entityId),
+            ':ft' => UlidGenerator::decode($plan->fiscalTermId),
+            ':name' => $plan->name,
+            ':opening' => $plan->openingBalance,
+            ':cur' => $plan->currencyCode,
+            ':notes' => $plan->notes,
             ':created_by' => UlidGenerator::decode($plan->createdBy),
             ':created_at' => $plan->createdAt->format('Y-m-d H:i:s.u'),
             ':updated_at' => $plan->updatedAt->format('Y-m-d H:i:s.u'),
@@ -149,15 +155,15 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
             SQL;
         $stmt = $this->pdo->prepare($sql);
         $params = [
-            ':id'    => UlidGenerator::decode($entry->id),
-            ':plan'  => UlidGenerator::decode($planId),
-            ':cat'   => $entry->category->value,
+            ':id' => UlidGenerator::decode($entry->id),
+            ':plan' => UlidGenerator::decode($planId),
+            ':cat' => $entry->category->value,
             ':label' => $entry->label,
-            ':so'    => $entry->sortOrder,
-            ':memo'  => $entry->memo,
+            ':so' => $entry->sortOrder,
+            ':memo' => $entry->memo,
         ];
-        for ($i = 1; $i <= CashPlanEntry::MONTHS; $i++) {
-            $params[':m' . $i] = $entry->monthlyAmounts[$i - 1];
+        for ($i = 1; $i <= CashPlanEntry::MONTHS; ++$i) {
+            $params[':m'.$i] = $entry->monthlyAmounts[$i - 1];
         }
         $stmt->execute($params);
     }
@@ -200,7 +206,7 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
         );
         $stmt->execute([':p' => UlidGenerator::decode($planId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
         $out = [];
         foreach ($rows as $r) {
@@ -208,8 +214,8 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
             $category = CashPlanCategory::tryFrom($categoryRaw) ?? CashPlanCategory::OperatingIn;
             /** @var list<string> $amounts */
             $amounts = [];
-            for ($i = 1; $i <= CashPlanEntry::MONTHS; $i++) {
-                $amounts[] = (string) ($r['month_' . $i] ?? '0.0000');
+            for ($i = 1; $i <= CashPlanEntry::MONTHS; ++$i) {
+                $amounts[] = (string) ($r['month_'.$i] ?? '0.0000');
             }
             $out[] = new CashPlanEntry(
                 id: self::encodeId($r['id'] ?? ''),
@@ -221,6 +227,7 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
                 memo: self::nullableString($r['memo'] ?? null),
             );
         }
+
         return $out;
     }
 
@@ -229,6 +236,7 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -238,23 +246,24 @@ final class PdoCashPlanRepository implements CashPlanRepositoryInterface
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function now(): DateTimeImmutable
+    private static function now(): \DateTimeImmutable
     {
-        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 }

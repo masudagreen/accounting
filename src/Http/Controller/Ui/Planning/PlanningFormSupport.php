@@ -21,7 +21,8 @@ final class PlanningFormSupport
     {
         $parsed = [];
         parse_str($request->rawBody, $parsed);
-        /** @var array<string, mixed> $parsed */
+
+        /* @var array<string, mixed> $parsed */
         return $parsed;
     }
 
@@ -34,6 +35,7 @@ final class PlanningFormSupport
         if (is_string($v)) {
             return trim($v);
         }
+
         return $default;
     }
 
@@ -47,21 +49,27 @@ final class PlanningFormSupport
             return null;
         }
         $trimmed = trim($v);
+
         return $trimmed === '' ? null : $trimmed;
     }
 
-    public static function bool(mixed $value): bool
+    /**
+     * @param string|true|null $value
+     */
+    public static function bool(string|bool|null $value): bool
     {
         if (is_bool($value)) {
             return $value;
         }
         if (is_string($value)) {
             $lc = strtolower(trim($value));
+
             return $lc === '1' || $lc === 'true' || $lc === 'on' || $lc === 'yes';
         }
         if (is_int($value)) {
             return $value !== 0;
         }
+
         return false;
     }
 
@@ -80,11 +88,12 @@ final class PlanningFormSupport
             return $cleaned;
         }
         if (!str_contains($cleaned, '.')) {
-            return $cleaned . '.0000';
+            return $cleaned.'.0000';
         }
-        [$int, $frac] = explode('.', $cleaned, 2);
+        [$int, $frac] = array_pad(explode('.', $cleaned, 2), 2, '');
         $frac = substr(str_pad($frac, 4, '0'), 0, 4);
-        return $int . '.' . $frac;
+
+        return $int.'.'.$frac;
     }
 
     /**
@@ -92,6 +101,7 @@ final class PlanningFormSupport
      *
      * @param array<string, mixed> $bag
      * @param list<string> $columns
+     *
      * @return list<array<string, string>>
      */
     public static function extractRows(array $bag, string $groupKey, array $columns): array
@@ -118,6 +128,7 @@ final class PlanningFormSupport
                 $out[] = $mapped;
             }
         }
+
         return $out;
     }
 
@@ -125,6 +136,7 @@ final class PlanningFormSupport
      * Build a 12-month amount array from `monthly[N]` indexed form inputs.
      *
      * @param array<string, mixed> $bag
+     *
      * @return list<string>
      */
     public static function extractMonthly(array $bag, string $groupKey): array
@@ -132,10 +144,11 @@ final class PlanningFormSupport
         $raw = $bag[$groupKey] ?? null;
         /** @var list<string> $out */
         $out = [];
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $v = is_array($raw) ? ($raw[$i] ?? null) : null;
             $out[] = self::normalizeAmount(is_string($v) ? $v : '');
         }
+
         return $out;
     }
 
@@ -143,6 +156,7 @@ final class PlanningFormSupport
      * Pull a list of nested rows where each has 12 monthly amounts.
      *
      * @param array<string, mixed> $bag
+     *
      * @return list<array{label: string, category: string, monthly: list<string>, memo: string}>
      */
     public static function extractMonthlyRows(array $bag, string $groupKey): array
@@ -156,14 +170,14 @@ final class PlanningFormSupport
             if (!is_array($row)) {
                 continue;
             }
-            $label    = self::str($row, 'label');
+            $label = self::str($row, 'label');
             $category = self::str($row, 'category');
-            $memo     = self::str($row, 'memo');
+            $memo = self::str($row, 'memo');
             $monthlyRaw = $row['monthly'] ?? null;
             /** @var list<string> $monthly */
             $monthly = [];
             $hasAmount = false;
-            for ($i = 0; $i < 12; $i++) {
+            for ($i = 0; $i < 12; ++$i) {
                 $v = is_array($monthlyRaw) ? ($monthlyRaw[$i] ?? null) : null;
                 $m = self::normalizeAmount(is_string($v) ? $v : '');
                 $monthly[] = $m;
@@ -175,12 +189,13 @@ final class PlanningFormSupport
                 continue;
             }
             $out[] = [
-                'label'    => $label,
+                'label' => $label,
                 'category' => $category,
-                'monthly'  => $monthly,
-                'memo'     => $memo,
+                'monthly' => $monthly,
+                'memo' => $memo,
             ];
         }
+
         return $out;
     }
 }

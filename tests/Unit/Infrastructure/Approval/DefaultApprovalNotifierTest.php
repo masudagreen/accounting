@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\Approval;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Approval\Port\MessagingChannelInterface;
@@ -26,6 +24,8 @@ final class DefaultApprovalNotifierTest extends TestCase
         $messaging = new class implements MessagingChannelInterface {
             /** @var list<MessagingMessage> */
             public array $sent = [];
+
+            #[\Override]
             public function send(MessagingMessage $message): void
             {
                 $this->sent[] = $message;
@@ -59,6 +59,8 @@ final class DefaultApprovalNotifierTest extends TestCase
         $messaging = new class implements MessagingChannelInterface {
             /** @var list<MessagingMessage> */
             public array $sent = [];
+
+            #[\Override]
             public function send(MessagingMessage $message): void
             {
                 $this->sent[] = $message;
@@ -89,6 +91,8 @@ final class DefaultApprovalNotifierTest extends TestCase
         $messaging = new class implements MessagingChannelInterface {
             /** @var list<MessagingMessage> */
             public array $sent = [];
+
+            #[\Override]
             public function send(MessagingMessage $message): void
             {
                 $this->sent[] = $message;
@@ -111,11 +115,12 @@ final class DefaultApprovalNotifierTest extends TestCase
     private function notifier(InMemoryMailSender $mail, MessagingChannelInterface $messaging): DefaultApprovalNotifier
     {
         $repoRoot = dirname(__DIR__, 4);
-        $templateDir = $repoRoot . '/storage/templates/mail/approval';
-        $compileDir = $repoRoot . '/storage/cache/smarty_compile';
+        $templateDir = $repoRoot.'/storage/templates/mail/approval';
+        $compileDir = $repoRoot.'/storage/cache/smarty_compile';
         if (!is_dir($compileDir)) {
             @mkdir($compileDir, 0775, true);
         }
+
         return new DefaultApprovalNotifier(
             mail: $mail,
             messaging: $messaging,
@@ -129,9 +134,10 @@ final class DefaultApprovalNotifierTest extends TestCase
 
     private function token(ApprovalChannel $channel): ApprovalToken
     {
-        $tz = new DateTimeZone('UTC');
-        $issued = new DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
-        $expires = new DateTimeImmutable('2026-04-24T12:00:00Z', $tz);
+        $tz = new \DateTimeZone('UTC');
+        $issued = new \DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
+        $expires = new \DateTimeImmutable('2026-04-24T12:00:00Z', $tz);
+
         return new ApprovalToken(
             id: '01HW7K9B2QV7C8Y4ZAPPR0000001',
             targetKind: ApprovalTargetKind::Journal,
@@ -158,11 +164,12 @@ final class DefaultApprovalNotifierTest extends TestCase
 
     private static function tokenFromUrl(string $url): string
     {
-        $q = parse_url($url, PHP_URL_QUERY);
+        $q = parse_url($url, \PHP_URL_QUERY);
         if (!is_string($q) || $q === '') {
             return '';
         }
         parse_str($q, $parts);
+
         return is_string($parts['token'] ?? null) ? (string) $parts['token'] : '';
     }
 }

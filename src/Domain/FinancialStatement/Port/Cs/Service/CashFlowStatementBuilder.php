@@ -58,10 +58,11 @@ final class CashFlowStatementBuilder
      * signature small and lets callers add/remove optional inputs without a
      * cascading constructor explosion.
      *
-     * @param list<TrialBalanceRow>      $periodRows
-     * @param list<TrialBalanceRow>      $priorRows
+     * @param list<TrialBalanceRow> $periodRows
+     * @param list<TrialBalanceRow> $priorRows
      * @param list<AccountTitleCsMapping> $mappings
-     * @param list<CsSectionDefinition>   $definitions
+     * @param list<CsSectionDefinition> $definitions
+     *
      * @return array<string, Section>
      */
     public function build(
@@ -103,6 +104,7 @@ final class CashFlowStatementBuilder
 
     /**
      * @param list<TrialBalanceRow> $rows
+     *
      * @return array<string, TrialBalanceRow>
      */
     private static function indexRows(array $rows): array
@@ -111,11 +113,13 @@ final class CashFlowStatementBuilder
         foreach ($rows as $row) {
             $out[$row->accountTitleId] = $row;
         }
+
         return $out;
     }
 
     /**
      * @param list<CsSectionDefinition> $definitions
+     *
      * @return array<string, CsSectionDefinition>
      */
     private static function indexDefinitions(array $definitions): array
@@ -124,11 +128,13 @@ final class CashFlowStatementBuilder
         foreach ($definitions as $d) {
             $out[$d->code] = $d;
         }
+
         return $out;
     }
 
     /**
      * @param array<string, CsSectionDefinition> $defsByCode
+     *
      * @return array<string, array{lines: list<FinancialStatementLine>, subtotal: string}>
      */
     private static function initAccumulator(array $defsByCode): array
@@ -137,6 +143,7 @@ final class CashFlowStatementBuilder
         foreach (array_keys($defsByCode) as $code) {
             $acc[$code] = ['lines' => [], 'subtotal' => '0.0000'];
         }
+
         return $acc;
     }
 
@@ -145,8 +152,8 @@ final class CashFlowStatementBuilder
      * flip, working-label derivation.
      *
      * @param array<string, array{lines: list<FinancialStatementLine>, subtotal: string}> $acc
-     * @param array<string, TrialBalanceRow>        $rowsByAccount
-     * @param list<AccountTitleCsMapping>           $mappings
+     * @param array<string, TrialBalanceRow> $rowsByAccount
+     * @param list<AccountTitleCsMapping> $mappings
      */
     private static function foldMappings(array &$acc, array $rowsByAccount, array $mappings): void
     {
@@ -158,6 +165,7 @@ final class CashFlowStatementBuilder
             if ($a->sortOrder !== $b->sortOrder) {
                 return $a->sortOrder <=> $b->sortOrder;
             }
+
             return $a->accountTitleId <=> $b->accountTitleId;
         });
 
@@ -205,6 +213,7 @@ final class CashFlowStatementBuilder
         if ($m->sign === -1) {
             $value = self::negate($value);
         }
+
         return $value;
     }
 
@@ -229,8 +238,10 @@ final class CashFlowStatementBuilder
             depth: 2,
             isSubtotal: false,
         );
-        $acc[$code]['lines'][] = $line;
-        $acc[$code]['subtotal'] = Decimal::add($acc[$code]['subtotal'], $amount);
+        $bucket = $acc[$code];
+        $bucket['lines'][] = $line;
+        $bucket['subtotal'] = Decimal::add($bucket['subtotal'], $amount);
+        $acc[$code] = $bucket;
     }
 
     /**
@@ -287,12 +298,13 @@ final class CashFlowStatementBuilder
         $d = 0;
         $cursor = $code;
         while (isset($defsByCode[$cursor]) && $defsByCode[$cursor]->parentCode !== null) {
-            $d++;
+            ++$d;
             $cursor = $defsByCode[$cursor]->parentCode;
             if ($d > 32) {
                 break;
             }
         }
+
         return $d;
     }
 
@@ -307,8 +319,7 @@ final class CashFlowStatementBuilder
         $ordered = $defsByCode;
         uasort(
             $ordered,
-            static fn (CsSectionDefinition $a, CsSectionDefinition $b): int
-                => $a->sortOrder <=> $b->sortOrder,
+            static fn (CsSectionDefinition $a, CsSectionDefinition $b): int => $a->sortOrder <=> $b->sortOrder,
         );
 
         foreach ($ordered as $code => $def) {
@@ -330,6 +341,7 @@ final class CashFlowStatementBuilder
     /**
      * @param array<string, array{lines: list<FinancialStatementLine>, subtotal: string}> $acc
      * @param array<string, CsSectionDefinition> $defsByCode
+     *
      * @return array<string, Section>
      */
     private static function materialise(array $acc, array $defsByCode): array
@@ -348,6 +360,7 @@ final class CashFlowStatementBuilder
                 isTotal: $def->isTotal,
             );
         }
+
         return $sections;
     }
 
@@ -360,6 +373,7 @@ final class CashFlowStatementBuilder
         if (str_starts_with($normalised, '-')) {
             return substr($normalised, 1);
         }
-        return '-' . $normalised;
+
+        return '-'.$normalised;
     }
 }

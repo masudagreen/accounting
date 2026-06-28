@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Infrastructure\Database;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Database\DatabaseConfig;
@@ -38,10 +37,10 @@ final class DatabaseConfigTest extends TestCase
     {
         $options = DatabaseConfig::defaultPdoOptions();
 
-        self::assertSame(PDO::ERRMODE_EXCEPTION, $options[PDO::ATTR_ERRMODE]);
-        self::assertSame(PDO::FETCH_ASSOC, $options[PDO::ATTR_DEFAULT_FETCH_MODE]);
-        self::assertFalse($options[PDO::ATTR_EMULATE_PREPARES]);
-        self::assertFalse($options[PDO::ATTR_STRINGIFY_FETCHES]);
+        self::assertSame(\PDO::ERRMODE_EXCEPTION, $options[\PDO::ATTR_ERRMODE]);
+        self::assertSame(\PDO::FETCH_ASSOC, $options[\PDO::ATTR_DEFAULT_FETCH_MODE]);
+        self::assertFalse($options[\PDO::ATTR_EMULATE_PREPARES]);
+        self::assertFalse($options[\PDO::ATTR_STRINGIFY_FETCHES]);
     }
 
     public function testEffectiveOptionsMergesDefaultsWithOverrides(): void
@@ -52,20 +51,20 @@ final class DatabaseConfigTest extends TestCase
             username: 'u',
             password: 'p',
             options: [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
-                PDO::ATTR_PERSISTENT => true,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING,
+                \PDO::ATTR_PERSISTENT => true,
             ],
         );
 
         $effective = $config->effectiveOptions();
 
         // Override wins for ERRMODE.
-        self::assertSame(PDO::ERRMODE_WARNING, $effective[PDO::ATTR_ERRMODE]);
+        self::assertSame(\PDO::ERRMODE_WARNING, $effective[\PDO::ATTR_ERRMODE]);
         // Added key survives.
-        self::assertTrue($effective[PDO::ATTR_PERSISTENT]);
+        self::assertTrue($effective[\PDO::ATTR_PERSISTENT]);
         // Defaults that were not overridden still present.
-        self::assertSame(PDO::FETCH_ASSOC, $effective[PDO::ATTR_DEFAULT_FETCH_MODE]);
-        self::assertFalse($effective[PDO::ATTR_EMULATE_PREPARES]);
+        self::assertSame(\PDO::FETCH_ASSOC, $effective[\PDO::ATTR_DEFAULT_FETCH_MODE]);
+        self::assertFalse($effective[\PDO::ATTR_EMULATE_PREPARES]);
     }
 
     public function testToDsnFormatIsStable(): void
@@ -106,15 +105,15 @@ final class DatabaseConfigTest extends TestCase
             dbname: 'x',
             username: 'u',
             password: 'p',
-            options: [PDO::ATTR_PERSISTENT => false],
+            options: [\PDO::ATTR_PERSISTENT => false],
         );
 
-        $copy = $config->withOptions([PDO::ATTR_TIMEOUT => 5]);
+        $copy = $config->withOptions([\PDO::ATTR_TIMEOUT => 5]);
 
         self::assertNotSame($config, $copy);
-        self::assertArrayNotHasKey(PDO::ATTR_TIMEOUT, $config->options);
-        self::assertSame(5, $copy->options[PDO::ATTR_TIMEOUT]);
-        self::assertFalse($copy->options[PDO::ATTR_PERSISTENT]);
+        self::assertArrayNotHasKey(\PDO::ATTR_TIMEOUT, $config->options);
+        self::assertSame(5, $copy->options[\PDO::ATTR_TIMEOUT]);
+        self::assertFalse($copy->options[\PDO::ATTR_PERSISTENT]);
     }
 
     public function testEmptyHostRejected(): void

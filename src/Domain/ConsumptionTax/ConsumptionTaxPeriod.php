@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 
 /**
@@ -24,44 +23,36 @@ final readonly class ConsumptionTaxPeriod
         public string $id,
         public string $entityId,
         public string $fiscalTermId,
-        public DateTimeImmutable $periodFrom,
-        public DateTimeImmutable $periodTo,
+        public \DateTimeImmutable $periodFrom,
+        public \DateTimeImmutable $periodTo,
         public ConsumptionTaxCalculationMethod $calculationMethod,
         public ?SimplifiedBusinessCategory $simplifiedBusinessCategory,
         public bool $isInterim,
         public string $settlementStatus,
-        public ?DateTimeImmutable $settledAt,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $settledAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
         if ($periodTo < $periodFrom) {
-            throw ValidationException::withErrors([
-                'periodTo' => ['periodTo must be on or after periodFrom.'],
-            ]);
+            throw ValidationException::withErrors(['periodTo' => ['periodTo must be on or after periodFrom.']]);
         }
         if ($calculationMethod === ConsumptionTaxCalculationMethod::Simplified && $simplifiedBusinessCategory === null) {
-            throw ValidationException::withErrors([
-                'simplifiedBusinessCategory' => ['simplifiedBusinessCategory is required when method = simplified.'],
-            ]);
+            throw ValidationException::withErrors(['simplifiedBusinessCategory' => ['simplifiedBusinessCategory is required when method = simplified.']]);
         }
         if ($calculationMethod !== ConsumptionTaxCalculationMethod::Simplified && $simplifiedBusinessCategory !== null) {
-            throw ValidationException::withErrors([
-                'simplifiedBusinessCategory' => ['simplifiedBusinessCategory must be null unless method = simplified.'],
-            ]);
+            throw ValidationException::withErrors(['simplifiedBusinessCategory' => ['simplifiedBusinessCategory must be null unless method = simplified.']]);
         }
         if (!in_array($settlementStatus, ['pending', 'calculated', 'filed', 'paid'], true)) {
-            throw ValidationException::withErrors([
-                'settlementStatus' => ['settlementStatus must be pending/calculated/filed/paid.'],
-            ]);
+            throw ValidationException::withErrors(['settlementStatus' => ['settlementStatus must be pending/calculated/filed/paid.']]);
         }
     }
 
-    public function contains(DateTimeImmutable $at): bool
+    public function contains(\DateTimeImmutable $at): bool
     {
         return $at >= $this->periodFrom && $at <= $this->periodTo;
     }
 
-    public function withStatus(string $status, ?DateTimeImmutable $settledAt, DateTimeImmutable $now): self
+    public function withStatus(string $status, ?\DateTimeImmutable $settledAt, \DateTimeImmutable $now): self
     {
         return new self(
             id: $this->id,

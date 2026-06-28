@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Infrastructure\Database;
 
-use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Infrastructure\Database\ConnectionFactory;
@@ -36,6 +34,7 @@ final class ConnectionFactoryIntegrationTest extends TestCase
     private string $username = '';
     private string $password = '';
 
+    #[\Override]
     protected function setUp(): void
     {
         $user = getenv('RUCARO_TEST_DB_USER');
@@ -44,18 +43,18 @@ final class ConnectionFactoryIntegrationTest extends TestCase
         }
 
         $this->username = (string) $user;
-        $this->host     = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
-        $portEnv        = getenv('RUCARO_TEST_DB_PORT');
-        $this->port     = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
-        $this->dbname   = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
-        $pwEnv          = getenv('RUCARO_TEST_DB_PASSWORD');
+        $this->host = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
+        $portEnv = getenv('RUCARO_TEST_DB_PORT');
+        $this->port = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
+        $this->dbname = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
+        $pwEnv = getenv('RUCARO_TEST_DB_PASSWORD');
         $this->password = $pwEnv === false ? '' : (string) $pwEnv;
 
-        $root = new PDO(
+        $root = new \PDO(
             sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
             $this->username,
             $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
         );
         $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
         $root->exec(sprintf(
@@ -64,20 +63,21 @@ final class ConnectionFactoryIntegrationTest extends TestCase
         ));
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->dbname === '' || $this->username === '') {
             return;
         }
         try {
-            $root = new PDO(
+            $root = new \PDO(
                 sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
                 $this->username,
                 $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
             );
             $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
-        } catch (PDOException) {
+        } catch (\PDOException) {
             // best-effort cleanup
         }
     }
@@ -88,7 +88,7 @@ final class ConnectionFactoryIntegrationTest extends TestCase
 
         $stmt = $pdo->query('SELECT 1 AS one');
         self::assertNotFalse($stmt);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         self::assertIsArray($row);
         self::assertArrayHasKey('one', $row);
@@ -113,15 +113,15 @@ final class ConnectionFactoryIntegrationTest extends TestCase
     {
         $pdo = ConnectionFactory::createFromConfig($this->config());
 
-        $this->expectException(PDOException::class);
+        $this->expectException(\PDOException::class);
         $pdo->query('SELECT FROM');
     }
 
     public function testCreateFromArraySucceeds(): void
     {
         $pdo = ConnectionFactory::createFromArray([
-            'host'     => $this->host,
-            'port'     => $this->port,
+            'host' => $this->host,
+            'port' => $this->port,
             'database' => $this->dbname,
             'username' => $this->username,
             'password' => $this->password,
@@ -135,10 +135,10 @@ final class ConnectionFactoryIntegrationTest extends TestCase
     public function testCreateFromEnvSucceeds(): void
     {
         $pdo = ConnectionFactory::createFromEnv([
-            'DB_HOST'     => $this->host,
-            'DB_PORT'     => (string) $this->port,
-            'DB_NAME'     => $this->dbname,
-            'DB_USER'     => $this->username,
+            'DB_HOST' => $this->host,
+            'DB_PORT' => (string) $this->port,
+            'DB_NAME' => $this->dbname,
+            'DB_USER' => $this->username,
             'DB_PASSWORD' => $this->password,
         ]);
 
@@ -152,11 +152,11 @@ final class ConnectionFactoryIntegrationTest extends TestCase
         $pdo = ConnectionFactory::createFromConfig($this->config());
         $pdo->exec(
             'CREATE TABLE t_utf8 ('
-            . ' id INT NOT NULL PRIMARY KEY,'
-            . ' value VARCHAR(64) NOT NULL'
-            . ') ENGINE=InnoDB'
-            . ' DEFAULT CHARACTER SET utf8mb4'
-            . ' COLLATE utf8mb4_unicode_ci'
+            .' id INT NOT NULL PRIMARY KEY,'
+            .' value VARCHAR(64) NOT NULL'
+            .') ENGINE=InnoDB'
+            .' DEFAULT CHARACTER SET utf8mb4'
+            .' COLLATE utf8mb4_unicode_ci',
         );
 
         $input = '日本語テスト 🐙🦀';
@@ -173,7 +173,7 @@ final class ConnectionFactoryIntegrationTest extends TestCase
         $bad = new DatabaseConfig(
             host: $this->host,
             dbname: $this->dbname,
-            username: 'no_such_user_' . bin2hex(random_bytes(3)),
+            username: 'no_such_user_'.bin2hex(random_bytes(3)),
             password: 'no_such_password',
             port: $this->port,
         );

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\TrialBalance;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\TrialBalance\RefreshTrialBalanceSnapshotUseCase;
@@ -33,8 +32,8 @@ final class RefreshTrialBalanceSnapshotUseCaseTest extends TestCase
         $count = $useCase->execute(new RefreshTrialBalanceSnapshotUseCaseInput(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            monthStartDate: new DateTimeImmutable('2026-04-01'),
-            monthEndDate: new DateTimeImmutable('2026-04-30'),
+            monthStartDate: new \DateTimeImmutable('2026-04-01'),
+            monthEndDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         self::assertSame(2, $count);
@@ -58,8 +57,8 @@ final class RefreshTrialBalanceSnapshotUseCaseTest extends TestCase
         $input = new RefreshTrialBalanceSnapshotUseCaseInput(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            monthStartDate: new DateTimeImmutable('2026-04-01'),
-            monthEndDate: new DateTimeImmutable('2026-04-30'),
+            monthStartDate: new \DateTimeImmutable('2026-04-01'),
+            monthEndDate: new \DateTimeImmutable('2026-04-30'),
         );
         $useCase->execute($input);
         $useCase->execute($input);
@@ -93,8 +92,8 @@ final class RefreshTrialBalanceSnapshotUseCaseTest extends TestCase
         $useCase->execute(new RefreshTrialBalanceSnapshotUseCaseInput(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            monthStartDate: new DateTimeImmutable('2026-04-01'),
-            monthEndDate: new DateTimeImmutable('2026-04-30'),
+            monthStartDate: new \DateTimeImmutable('2026-04-01'),
+            monthEndDate: new \DateTimeImmutable('2026-04-30'),
         ));
 
         foreach ($repo->saved as $s) {
@@ -114,7 +113,7 @@ final class RefreshTrialBalanceSnapshotUseCaseTest extends TestCase
 
     private function seedApril(InMemoryTrialBalanceQuery $q): void
     {
-        $q->addLine('ENT', 'TRM', new DateTimeImmutable('2026-04-10'), 'ACC_CASH',  '101', '現金', 'asset',   'debit',  'debit',  '5000.0000');
-        $q->addLine('ENT', 'TRM', new DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '5000.0000');
+        $q->addLine('ENT', 'TRM', new \DateTimeImmutable('2026-04-10'), 'ACC_CASH', '101', '現金', 'asset', 'debit', 'debit', '5000.0000');
+        $q->addLine('ENT', 'TRM', new \DateTimeImmutable('2026-04-10'), 'ACC_SALES', '401', '売上', 'revenue', 'credit', 'credit', '5000.0000');
     }
 }

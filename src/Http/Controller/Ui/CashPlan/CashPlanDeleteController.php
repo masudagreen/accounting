@@ -40,15 +40,18 @@ final readonly class CashPlanDeleteController
         $body = PlanningFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(CashPlanShowController::CSRF_FORM_ID, PlanningFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/cash-plans/' . $id);
+
+            return HtmlResponse::redirect('/ui/cash-plans/'.$id);
         }
         try {
             $this->delete->execute($id);
             $this->flash->addSuccess('資金繰り計画を削除しました。');
+
             return HtmlResponse::redirect('/ui/cash-plans');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
-            return HtmlResponse::redirect('/ui/cash-plans/' . $id);
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
+
+            return HtmlResponse::redirect('/ui/cash-plans/'.$id);
         }
     }
 }

@@ -35,6 +35,7 @@ final readonly class GetFixedAssetController
         if ($asset === null) {
             return ErrorResponse::notFound('Fixed asset not found.');
         }
+
         return EnvelopeResponse::ok(FixedAssetJsonSerializer::toArray($asset));
     }
 }

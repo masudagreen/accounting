@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Approval;
 
-use DateTimeZone;
 use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 use Rucaro\Domain\Approval\ApprovalDecision;
-use Rucaro\Domain\Approval\ApprovalToken;
 use Rucaro\Domain\Approval\ApprovalTokenRepositoryInterface;
 use Rucaro\Domain\Approval\Exception\AlreadyRespondedException;
 use Rucaro\Domain\Approval\Exception\TokenExpiredException;
@@ -50,7 +48,7 @@ final readonly class RespondToApprovalUseCase
             $decision = $token->decision ?? ApprovalDecision::Approved;
             throw AlreadyRespondedException::at($respondedAt, $decision);
         }
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         if ($token->isExpired($now)) {
             throw TokenExpiredException::at($token->expiresAt);
         }

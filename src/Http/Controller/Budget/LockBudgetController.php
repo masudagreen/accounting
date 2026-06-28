@@ -42,6 +42,7 @@ final readonly class LockBudgetController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(BudgetJsonSerializer::toArray($out->budget));
     }
 }

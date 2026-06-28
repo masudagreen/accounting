@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\JournalLineInput;
@@ -67,7 +66,7 @@ final class UpdateJournalUseCaseTest extends TestCase
     public function testApprovedJournalCannotBeUpdated(): void
     {
         $repo = new InMemoryJournalRepository();
-        $existing = $this->draft()->approve(new DateTimeImmutable('2026-04-21T13:00:00Z'), 'U1');
+        $existing = $this->draft()->approve(new \DateTimeImmutable('2026-04-21T13:00:00Z'), 'U1');
         $repo->save($existing);
 
         $clock = new FrozenClock();
@@ -98,7 +97,7 @@ final class UpdateJournalUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             ),
             new JournalLine(
                 id: '01HW7K9B2QV7C8Y4ZLINE00002',
@@ -111,15 +110,16 @@ final class UpdateJournalUseCaseTest extends TestCase
                 taxAmount: '0.0000',
                 isTaxReduced: false,
                 memo: '',
-                bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+                bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             ),
         ];
+
         return new Journal(
             id: '01HW7K9B2QV7C8Y4ZJRNL000001',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21'),
-            bookedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            journalDate: new \DateTimeImmutable('2026-04-21'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             summary: 'Initial',
             totalAmount: '1000.0000',
             currencyCode: 'JPY',
@@ -129,8 +129,8 @@ final class UpdateJournalUseCaseTest extends TestCase
             createdBy: '01HW7K9B2QV7C8Y4ZUSER000001',
             approvedBy: null,
             approvedAt: null,
-            createdAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-21T12:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-21T12:00:00Z'),
             deletedAt: null,
             lines: $lines,
         );

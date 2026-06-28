@@ -23,11 +23,13 @@ use Rucaro\Tests\Unit\Application\Support\InMemoryAccountTitleRepo;
 #[CoversClass(AccountTitleController::class)]
 final class AccountTitleControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -85,6 +87,7 @@ final class AccountTitleControllerTest extends TestCase
         $session = new SessionStore();
         $session->setUser('01HW7K9B2QV7C8Y4ZUSER000001', 'token', 'tkid', 'Alice', 'a@example.com');
         $session->setSelectedEntity('01HW7K9B2QV7C8Y4ZENTITY0001');
+
         return $session;
     }
 
@@ -94,19 +97,19 @@ final class AccountTitleControllerTest extends TestCase
         $ulids = new UlidGenerator($clock);
         $repo = new InMemoryAccountTitleRepo();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new AccountTitleController(
-            listUseCase:   new ListAccountTitlesUseCase($repo),
+            listUseCase: new ListAccountTitlesUseCase($repo),
             createUseCase: new CreateAccountTitleUseCase($repo, $ulids, $clock),
             updateUseCase: new UpdateAccountTitleUseCase($repo, $clock),
             deleteUseCase: new DeleteAccountTitleUseCase($repo, $clock),
-            repo:          $repo,
-            session:       $session,
-            csrf:          new CsrfTokenManager($clock),
-            flash:         new FlashMessageBag(),
-            view:          new SmartyViewRenderer($templateDir, $compileDir),
+            repo: $repo,
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
     }
 }

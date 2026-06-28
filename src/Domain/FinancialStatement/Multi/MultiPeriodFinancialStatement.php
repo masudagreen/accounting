@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use InvalidArgumentException;
 use Rucaro\Domain\FinancialStatement\FinancialStatementKind;
 
 /**
@@ -24,23 +22,21 @@ use Rucaro\Domain\FinancialStatement\FinancialStatementKind;
 final readonly class MultiPeriodFinancialStatement
 {
     /**
-     * @param list<MultiPeriodEntry> $periods Ordered ascending by `fromDate`.
+     * @param list<MultiPeriodEntry> $periods ordered ascending by `fromDate`
      */
     public function __construct(
         public string $entityId,
         public FinancialStatementKind $kind,
         public array $periods,
-        public DateTimeImmutable $generatedAt,
+        public \DateTimeImmutable $generatedAt,
     ) {
         if ($periods === []) {
-            throw new InvalidArgumentException('MultiPeriodFinancialStatement requires at least one period.');
+            throw new \InvalidArgumentException('MultiPeriodFinancialStatement requires at least one period.');
         }
         $previous = null;
         foreach ($periods as $entry) {
             if ($previous !== null && $entry->fromDate < $previous->fromDate) {
-                throw new InvalidArgumentException(
-                    'MultiPeriodFinancialStatement periods must be ordered ascending by fromDate.',
-                );
+                throw new \InvalidArgumentException('MultiPeriodFinancialStatement periods must be ordered ascending by fromDate.');
             }
             $previous = $entry;
         }
@@ -56,9 +52,12 @@ final readonly class MultiPeriodFinancialStatement
      */
     public function latestPeriod(): MultiPeriodEntry
     {
-        /** @var MultiPeriodEntry $last */
-        $last = $this->periods[count($this->periods) - 1];
-        return $last;
+        $n = count($this->periods);
+        if ($n === 0) {
+            throw new \LogicException('MultiPeriodFinancialStatement guarantees at least one period.');
+        }
+
+        return $this->periods[$n - 1];
     }
 
     /**
@@ -73,6 +72,7 @@ final readonly class MultiPeriodFinancialStatement
         }
         /** @var MultiPeriodEntry $prev */
         $prev = $this->periods[$n - 2];
+
         return $prev;
     }
 }

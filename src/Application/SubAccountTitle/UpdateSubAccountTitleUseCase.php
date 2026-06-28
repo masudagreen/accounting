@@ -43,6 +43,7 @@ final readonly class UpdateSubAccountTitleUseCase
             updatedAt: $this->clock->getCurrentTime(),
         );
         $this->repo->save($updated);
+
         return $updated;
     }
 }

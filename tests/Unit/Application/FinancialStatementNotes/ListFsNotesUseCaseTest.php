@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FinancialStatementNotes;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FinancialStatementNotes\GetFsNoteUseCase;
@@ -67,14 +66,15 @@ final class ListFsNotesUseCaseTest extends TestCase
 
     private static function makeNote(string $id, int $sortOrder, bool $active): FinancialStatementNote
     {
-        $now = new DateTimeImmutable('2026-04-21T12:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-21T12:00:00Z');
+
         return new FinancialStatementNote(
             id: $id,
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAE1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAE2',
             templateCode: null,
             category: FsNoteCategory::Other,
-            label: 'label ' . $id,
+            label: 'label '.$id,
             body: 'body',
             sortOrder: $sortOrder,
             isActive: $active,

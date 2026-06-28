@@ -32,6 +32,7 @@ final readonly class ListInvoiceRegistrationsController
             return ErrorResponse::badRequest('entityId query parameter is required and must be a ULID.');
         }
         $regs = $this->useCase->execute($entityId);
+
         return EnvelopeResponse::list(
             ConsumptionTaxSettlementJsonSerializer::invoiceRegistrationsToArrayList($regs),
             ['total' => count($regs)],

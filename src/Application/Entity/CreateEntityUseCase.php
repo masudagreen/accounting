@@ -45,6 +45,7 @@ final readonly class CreateEntityUseCase
             isCorporate: $input->isCorporate,
         );
         $this->repo->save($entity);
+
         return $entity;
     }
 }

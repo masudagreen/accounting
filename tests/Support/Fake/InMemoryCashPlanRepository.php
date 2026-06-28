@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Support\Fake;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Domain\CashPlan\CashPlan;
 use Rucaro\Domain\CashPlan\CashPlanRepositoryInterface;
 
@@ -14,20 +12,24 @@ final class InMemoryCashPlanRepository implements CashPlanRepositoryInterface
     /** @var array<string, CashPlan> */
     private array $byId = [];
 
+    #[\Override]
     public function save(CashPlan $plan): void
     {
         $this->byId[$plan->id] = $plan;
     }
 
+    #[\Override]
     public function findById(string $id): ?CashPlan
     {
         $plan = $this->byId[$id] ?? null;
         if ($plan !== null && $plan->deletedAt !== null) {
             return null;
         }
+
         return $plan;
     }
 
+    #[\Override]
     public function findByEntityAndName(string $entityId, string $fiscalTermId, string $name): ?CashPlan
     {
         foreach ($this->byId as $p) {
@@ -38,9 +40,11 @@ final class InMemoryCashPlanRepository implements CashPlanRepositoryInterface
                 return $p;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findByEntity(string $entityId, ?string $fiscalTermId = null, bool $includeDeleted = false): array
     {
         $out = [];
@@ -56,16 +60,18 @@ final class InMemoryCashPlanRepository implements CashPlanRepositoryInterface
             }
             $out[] = $p;
         }
-        return array_values($out);
+
+        return $out;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         $existing = $this->byId[$id] ?? null;
         if ($existing === null || $existing->deletedAt !== null) {
             return;
         }
-        $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $this->byId[$id] = new CashPlan(
             id: $existing->id,
             entityId: $existing->entityId,

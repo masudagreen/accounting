@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\ConsumptionTax;
 
-use DateTimeImmutable;
 use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefault;
 use Rucaro\Domain\ConsumptionTax\AccountTitleConsumptionTaxDefaultRepositoryInterface;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCategoryCode;
@@ -29,6 +28,7 @@ final readonly class UpsertAccountTitleTaxDefaultsUseCase
 
     /**
      * @param list<array{accountTitleId: string, categoryCode: string, rateCode?: ?string}> $rows
+     *
      * @return list<AccountTitleConsumptionTaxDefault>
      */
     public function execute(string $entityId, array $rows): array
@@ -37,21 +37,15 @@ final readonly class UpsertAccountTitleTaxDefaultsUseCase
         /** @var list<AccountTitleConsumptionTaxDefault> $models */
         $models = [];
         foreach ($rows as $i => $row) {
-            if (!isset($row['accountTitleId']) || !is_string($row['accountTitleId'])) {
-                throw ValidationException::withErrors([
-                    sprintf('rows[%d].accountTitleId', $i) => ['accountTitleId is required.'],
-                ]);
+            if ($row['accountTitleId'] === '') {
+                throw ValidationException::withErrors([sprintf('rows[%d].accountTitleId', $i) => ['accountTitleId is required.']]);
             }
-            if (!isset($row['categoryCode']) || !is_string($row['categoryCode'])) {
-                throw ValidationException::withErrors([
-                    sprintf('rows[%d].categoryCode', $i) => ['categoryCode is required.'],
-                ]);
+            if ($row['categoryCode'] === '') {
+                throw ValidationException::withErrors([sprintf('rows[%d].categoryCode', $i) => ['categoryCode is required.']]);
             }
             $category = ConsumptionTaxCategoryCode::tryFrom($row['categoryCode']);
             if ($category === null) {
-                throw ValidationException::withErrors([
-                    sprintf('rows[%d].categoryCode', $i) => ['categoryCode must be a known code.'],
-                ]);
+                throw ValidationException::withErrors([sprintf('rows[%d].categoryCode', $i) => ['categoryCode must be a known code.']]);
             }
             $rateCode = null;
             if (array_key_exists('rateCode', $row) && $row['rateCode'] !== null) {
@@ -71,10 +65,11 @@ final readonly class UpsertAccountTitleTaxDefaultsUseCase
             );
         }
         $this->defaults->saveAll($models);
+
         return $models;
     }
 
-    private static function asUtc(DateTimeImmutable $d): DateTimeImmutable
+    private static function asUtc(\DateTimeImmutable $d): \DateTimeImmutable
     {
         return $d;
     }

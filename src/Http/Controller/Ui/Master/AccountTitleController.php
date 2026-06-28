@@ -73,14 +73,14 @@ final readonly class AccountTitleController
         ));
         $rows = array_map(
             static fn (AccountTitle $a): array => [
-                'id'         => $a->id,
-                'code'       => $a->code,
-                'name'       => $a->name,
-                'category'   => $a->category,
+                'id' => $a->id,
+                'code' => $a->code,
+                'name' => $a->name,
+                'category' => $a->category,
                 'normalSide' => $a->normalSide,
-                'parentId'   => $a->parentId,
-                'sortOrder'  => $a->sortOrder,
-                'isActive'   => $a->isActive,
+                'parentId' => $a->parentId,
+                'sortOrder' => $a->sortOrder,
+                'isActive' => $a->isActive,
             ],
             $out->items,
         );
@@ -96,9 +96,9 @@ final readonly class AccountTitleController
         return HtmlResponse::ok($this->view->render('masters/account-titles/list.html.tpl', array_merge(
             $this->commonViewData('勘定科目マスタ'),
             [
-                'rows'    => $rows,
+                'rows' => $rows,
                 'grouped' => $grouped,
-                'total'   => $out->total,
+                'total' => $out->total,
             ],
         )));
     }
@@ -110,6 +110,7 @@ final readonly class AccountTitleController
         if ($guard instanceof HtmlResponse) {
             return $guard;
         }
+
         return $this->renderForm(
             mode: 'new',
             formAction: '/ui/masters/account-titles/new',
@@ -131,6 +132,7 @@ final readonly class AccountTitleController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles/new');
         }
         $values = self::valuesFromBody($body);
@@ -146,6 +148,7 @@ final readonly class AccountTitleController
                 isActive: $values['is_active'] === '1',
             ));
             $this->flash->addSuccess('勘定科目を登録しました。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         } catch (ValidationException $e) {
             return $this->renderForm(
@@ -160,7 +163,7 @@ final readonly class AccountTitleController
                 mode: 'new',
                 formAction: '/ui/masters/account-titles/new',
                 values: $values,
-                errors: ['_' => ['登録に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['登録に失敗しました: '.$e->getMessage()]],
                 status: 500,
             );
         }
@@ -176,11 +179,13 @@ final readonly class AccountTitleController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の勘定科目が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         }
+
         return $this->renderForm(
             mode: 'edit',
-            formAction: '/ui/masters/account-titles/' . $existing->id,
+            formAction: '/ui/masters/account-titles/'.$existing->id,
             values: self::valuesFromEntity($existing),
             errors: [],
             status: 200,
@@ -196,7 +201,8 @@ final readonly class AccountTitleController
         $body = MasterFormSupport::parseForm($request);
         if (!$this->csrf->validateToken(self::CSRF_FORM_ID, MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
-            return HtmlResponse::redirect('/ui/masters/account-titles/' . $id);
+
+            return HtmlResponse::redirect('/ui/masters/account-titles/'.$id);
         }
         $values = self::valuesFromBody($body);
         try {
@@ -211,14 +217,16 @@ final readonly class AccountTitleController
                 isActive: $values['is_active'] === '1',
             ));
             $this->flash->addSuccess('勘定科目を更新しました。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の勘定科目が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         } catch (ValidationException $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/account-titles/' . $id,
+                formAction: '/ui/masters/account-titles/'.$id,
                 values: $values,
                 errors: $e->errors(),
                 status: 422,
@@ -227,9 +235,9 @@ final readonly class AccountTitleController
         } catch (\Throwable $e) {
             return $this->renderForm(
                 mode: 'edit',
-                formAction: '/ui/masters/account-titles/' . $id,
+                formAction: '/ui/masters/account-titles/'.$id,
                 values: $values,
-                errors: ['_' => ['更新に失敗しました: ' . $e->getMessage()]],
+                errors: ['_' => ['更新に失敗しました: '.$e->getMessage()]],
                 status: 500,
                 editingId: $id,
             );
@@ -246,20 +254,22 @@ final readonly class AccountTitleController
         $existing = $this->repo->findById($id);
         if ($existing === null) {
             $this->flash->addError('対象の勘定科目が見つかりません。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         }
         $data = array_merge(
             $this->commonViewData('勘定科目の削除確認'),
             [
-                'target'          => [
-                    'id'       => $existing->id,
-                    'code'     => $existing->code,
-                    'name'     => $existing->name,
+                'target' => [
+                    'id' => $existing->id,
+                    'code' => $existing->code,
+                    'name' => $existing->name,
                     'category' => $existing->category,
                 ],
-                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
+                'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
             ],
         );
+
         return HtmlResponse::ok($this->view->render('masters/account-titles/delete-confirm.html.tpl', $data));
     }
 
@@ -270,8 +280,9 @@ final readonly class AccountTitleController
             return $guard;
         }
         $body = MasterFormSupport::parseForm($request);
-        if (!$this->csrf->validateToken(self::CSRF_FORM_ID . '_delete', MasterFormSupport::str($body, '_csrf'))) {
+        if (!$this->csrf->validateToken(self::CSRF_FORM_ID.'_delete', MasterFormSupport::str($body, '_csrf'))) {
             $this->flash->addError('セッションの有効期限が切れました。もう一度お試しください。');
+
             return HtmlResponse::redirect('/ui/masters/account-titles');
         }
         try {
@@ -280,8 +291,9 @@ final readonly class AccountTitleController
         } catch (EntityNotFoundException) {
             $this->flash->addError('対象の勘定科目が見つかりません。');
         } catch (\Throwable $e) {
-            $this->flash->addError('削除に失敗しました: ' . $e->getMessage());
+            $this->flash->addError('削除に失敗しました: '.$e->getMessage());
         }
+
         return HtmlResponse::redirect('/ui/masters/account-titles');
     }
 
@@ -292,8 +304,10 @@ final readonly class AccountTitleController
         }
         if ($this->session->getSelectedEntity() === null) {
             $this->flash->addWarning('先に事業者（entity）を選択してください。');
+
             return HtmlResponse::redirect('/ui/dashboard');
         }
+
         return null;
     }
 
@@ -303,29 +317,29 @@ final readonly class AccountTitleController
     private function commonViewData(string $title): array
     {
         return [
-            'page_title'         => $title,
-            'active_nav'         => 'masters',
-            'active_master'      => 'account_titles',
-            'csrf_logout_token'  => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
-            'csrf_entity_token'  => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
-            'csrf_logout_field'  => LogoutController::CSRF_FORM_ID,
-            'csrf_entity_field'  => EntitySwitchController::CSRF_FORM_ID,
-            'csrf_delete_token'  => $this->csrf->generateToken(self::CSRF_FORM_ID . '_delete'),
-            'display_name'       => $this->session->getDisplayName() ?? '',
-            'user_email'         => $this->session->getEmail() ?? '',
-            'entities'           => [],
+            'page_title' => $title,
+            'active_nav' => 'masters',
+            'active_master' => 'account_titles',
+            'csrf_logout_token' => $this->csrf->generateToken(LogoutController::CSRF_FORM_ID),
+            'csrf_entity_token' => $this->csrf->generateToken(EntitySwitchController::CSRF_FORM_ID),
+            'csrf_logout_field' => LogoutController::CSRF_FORM_ID,
+            'csrf_entity_field' => EntitySwitchController::CSRF_FORM_ID,
+            'csrf_delete_token' => $this->csrf->generateToken(self::CSRF_FORM_ID.'_delete'),
+            'display_name' => $this->session->getDisplayName() ?? '',
+            'user_email' => $this->session->getEmail() ?? '',
+            'entities' => [],
             'selected_entity_id' => $this->session->getSelectedEntity() ?? '',
             'selected_fiscal_term' => $this->session->getSelectedFiscalTerm() ?? '',
-            'flash_messages'     => $this->flash->consume(),
-            'categories'         => AccountTitle::CATEGORIES,
-            'category_labels'    => [
-                'asset'     => '資産',
+            'flash_messages' => $this->flash->consume(),
+            'categories' => AccountTitle::CATEGORIES,
+            'category_labels' => [
+                'asset' => '資産',
                 'liability' => '負債',
-                'equity'    => '純資産',
-                'revenue'   => '収益',
-                'expense'   => '費用',
+                'equity' => '純資産',
+                'revenue' => '収益',
+                'expense' => '費用',
             ],
-            'normal_sides'       => AccountTitle::NORMAL_SIDES,
+            'normal_sides' => AccountTitle::NORMAL_SIDES,
             'normal_side_labels' => ['debit' => '借方', 'credit' => '貸方'],
         ];
     }
@@ -351,7 +365,7 @@ final readonly class AccountTitleController
                 continue;
             }
             $parentOptions[] = [
-                'id'   => $t->id,
+                'id' => $t->id,
                 'code' => $t->code,
                 'name' => $t->name,
             ];
@@ -359,16 +373,17 @@ final readonly class AccountTitleController
         $data = array_merge(
             $this->commonViewData($mode === 'new' ? '勘定科目の新規追加' : '勘定科目の編集'),
             [
-                'form_mode'       => $mode,
-                'form_action'     => $formAction,
-                'form_values'     => $values,
-                'form_errors'     => $errors,
-                'parent_options'  => $parentOptions,
+                'form_mode' => $mode,
+                'form_action' => $formAction,
+                'form_values' => $values,
+                'form_errors' => $errors,
+                'parent_options' => $parentOptions,
                 'csrf_form_token' => $this->csrf->generateToken(self::CSRF_FORM_ID),
                 'csrf_form_field' => self::CSRF_FORM_ID,
-                'editing_id'      => $editingId,
+                'editing_id' => $editingId,
             ],
         );
+
         return HtmlResponse::of($status, $this->view->render('masters/account-titles/form.html.tpl', $data));
     }
 
@@ -378,30 +393,31 @@ final readonly class AccountTitleController
     private static function blankValues(): array
     {
         return [
-            'code'        => '',
-            'name'        => '',
-            'category'    => 'asset',
+            'code' => '',
+            'name' => '',
+            'category' => 'asset',
             'normal_side' => 'debit',
-            'parent_id'   => '',
-            'sort_order'  => '0',
-            'is_active'   => '1',
+            'parent_id' => '',
+            'sort_order' => '0',
+            'is_active' => '1',
         ];
     }
 
     /**
      * @param array<string, mixed> $body
+     *
      * @return array<string, string>
      */
     private static function valuesFromBody(array $body): array
     {
         return [
-            'code'        => MasterFormSupport::str($body, 'code'),
-            'name'        => MasterFormSupport::str($body, 'name'),
-            'category'    => MasterFormSupport::str($body, 'category', 'asset'),
+            'code' => MasterFormSupport::str($body, 'code'),
+            'name' => MasterFormSupport::str($body, 'name'),
+            'category' => MasterFormSupport::str($body, 'category', 'asset'),
             'normal_side' => MasterFormSupport::str($body, 'normal_side', 'debit'),
-            'parent_id'   => MasterFormSupport::str($body, 'parent_id'),
-            'sort_order'  => (string) MasterFormSupport::int($body, 'sort_order', 0),
-            'is_active'   => MasterFormSupport::bool($body, 'is_active') ? '1' : '0',
+            'parent_id' => MasterFormSupport::str($body, 'parent_id'),
+            'sort_order' => (string) MasterFormSupport::int($body, 'sort_order', 0),
+            'is_active' => MasterFormSupport::bool($body, 'is_active') ? '1' : '0',
         ];
     }
 
@@ -411,13 +427,13 @@ final readonly class AccountTitleController
     private static function valuesFromEntity(AccountTitle $a): array
     {
         return [
-            'code'        => $a->code,
-            'name'        => $a->name,
-            'category'    => $a->category,
+            'code' => $a->code,
+            'name' => $a->name,
+            'category' => $a->category,
             'normal_side' => $a->normalSide,
-            'parent_id'   => $a->parentId ?? '',
-            'sort_order'  => (string) $a->sortOrder,
-            'is_active'   => $a->isActive ? '1' : '0',
+            'parent_id' => $a->parentId ?? '',
+            'sort_order' => (string) $a->sortOrder,
+            'is_active' => $a->isActive ? '1' : '0',
         ];
     }
 }

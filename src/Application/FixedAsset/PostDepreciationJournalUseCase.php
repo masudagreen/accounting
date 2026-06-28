@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FixedAsset;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Domain\FixedAsset\DepreciationScheduleRepositoryInterface;
 use Rucaro\Domain\FixedAsset\FixedAssetRepositoryInterface;
@@ -48,11 +47,11 @@ final readonly class PostDepreciationJournalUseCase
         foreach ($entries as $entry) {
             if ($entry->isPosted) {
                 $postings[] = [
-                    'fixedAssetId'       => $entry->fixedAssetId,
-                    'scheduleEntryId'    => $entry->id,
-                    'journalEntryId'     => (string) $entry->postedJournalEntryId,
+                    'fixedAssetId' => $entry->fixedAssetId,
+                    'scheduleEntryId' => $entry->id,
+                    'journalEntryId' => (string) $entry->postedJournalEntryId,
                     'depreciationAmount' => $entry->depreciationAmount,
-                    'skipped'            => true,
+                    'skipped' => true,
                 ];
                 continue;
             }
@@ -66,9 +65,7 @@ final readonly class PostDepreciationJournalUseCase
             }
             if ($asset->depreciationExpenseAccountTitleId === null
                 || $asset->accumulatedDepreciationAccountTitleId === null) {
-                throw ValidationException::withErrors([
-                    'asset.' . $asset->assetCode => ['depreciation expense / accumulated depreciation accounts must be set to post.'],
-                ]);
+                throw ValidationException::withErrors(['asset.'.$asset->assetCode => ['depreciation expense / accumulated depreciation accounts must be set to post.']]);
             }
 
             $now = $this->clock->getCurrentTime();
@@ -85,7 +82,7 @@ final readonly class PostDepreciationJournalUseCase
                     taxRatePercent: '0.00',
                     taxAmount: '0.0000',
                     isTaxReduced: false,
-                    memo: '減価償却費 ' . $asset->assetCode,
+                    memo: '減価償却費 '.$asset->assetCode,
                     bookedAt: $now,
                 ),
                 new JournalLine(
@@ -98,7 +95,7 @@ final readonly class PostDepreciationJournalUseCase
                     taxRatePercent: '0.00',
                     taxAmount: '0.0000',
                     isTaxReduced: false,
-                    memo: '減価償却累計額 ' . $asset->assetCode,
+                    memo: '減価償却累計額 '.$asset->assetCode,
                     bookedAt: $now,
                 ),
             ];
@@ -129,13 +126,14 @@ final readonly class PostDepreciationJournalUseCase
             $this->schedules->save($postedEntry);
 
             $postings[] = [
-                'fixedAssetId'       => $asset->id,
-                'scheduleEntryId'    => $entry->id,
-                'journalEntryId'     => $journalId,
+                'fixedAssetId' => $asset->id,
+                'scheduleEntryId' => $entry->id,
+                'journalEntryId' => $journalId,
                 'depreciationAmount' => $amount,
-                'skipped'            => false,
+                'skipped' => false,
             ];
         }
+
         return new PostDepreciationJournalOutput($postings);
     }
 }

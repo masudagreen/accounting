@@ -31,6 +31,7 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
     ) {
     }
 
+    #[\Override]
     public function render(MultiPeriodFinancialStatement $statement): string
     {
         $html = $this->renderHtml($statement);
@@ -52,22 +53,25 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
         $dompdf->render();
         /** @var string $pdf */
         $pdf = $dompdf->output() ?? '';
+
         return $pdf;
     }
 
+    #[\Override]
     public function renderHtml(MultiPeriodFinancialStatement $statement): string
     {
         $smarty = $this->buildSmarty();
         $smarty->assign([
-            'multi'           => $this->buildViewModel($statement),
-            'title'           => $this->resolveTitle($statement->kind),
-            'defaultFont'     => $this->resolveDefaultFont(),
+            'multi' => $this->buildViewModel($statement),
+            'title' => $this->resolveTitle($statement->kind),
+            'defaultFont' => $this->resolveDefaultFont(),
             'hasJapaneseFont' => $this->hasJapaneseFont(),
-            'fontDir'         => $this->fontDir,
-            'hasBs'           => $statement->kind->includesBalanceSheet(),
-            'hasPl'           => $statement->kind->includesProfitAndLoss(),
-            'hasCs'           => $statement->kind->includesCashFlow(),
+            'fontDir' => $this->fontDir,
+            'hasBs' => $statement->kind->includesBalanceSheet(),
+            'hasPl' => $statement->kind->includesProfitAndLoss(),
+            'hasCs' => $statement->kind->includesCashFlow(),
         ]);
+
         return (string) $smarty->fetch($this->resolveTemplateName($statement->kind));
     }
 
@@ -80,26 +84,27 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
         foreach ($multi->periods as $entry) {
             $columns[] = [
                 'fiscalTermId' => $entry->fiscalTermId,
-                'label'        => $entry->fiscalTermLabel,
-                'fromDate'     => $entry->fromDate->format('Y-m-d'),
-                'toDate'       => $entry->toDate->format('Y-m-d'),
+                'label' => $entry->fiscalTermLabel,
+                'fromDate' => $entry->fromDate->format('Y-m-d'),
+                'toDate' => $entry->toDate->format('Y-m-d'),
             ];
         }
 
         return [
-            'entityId'    => $multi->entityId,
-            'kind'        => $multi->kind->value,
-            'columns'     => $columns,
-            'showVariance'=> $multi->periodCount() >= 2,
-            'bsRows'      => $this->formatRows(MultiPeriodRowBuilder::buildBs($multi)),
-            'plRows'      => $this->formatRows(MultiPeriodRowBuilder::buildPl($multi)),
-            'csRows'      => $this->formatRows(MultiPeriodRowBuilder::buildCs($multi)),
+            'entityId' => $multi->entityId,
+            'kind' => $multi->kind->value,
+            'columns' => $columns,
+            'showVariance' => $multi->periodCount() >= 2,
+            'bsRows' => $this->formatRows(MultiPeriodRowBuilder::buildBs($multi)),
+            'plRows' => $this->formatRows(MultiPeriodRowBuilder::buildPl($multi)),
+            'csRows' => $this->formatRows(MultiPeriodRowBuilder::buildCs($multi)),
             'generatedAt' => $multi->generatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
     /**
      * @param list<MultiPeriodSectionRow> $rows
+     *
      * @return list<array<string, mixed>>
      */
     private function formatRows(array $rows): array
@@ -111,17 +116,18 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
                 $formattedAmounts[$termId] = self::formatAmount($amount);
             }
             $out[] = [
-                'sectionCode'     => $row->sectionCode,
-                'label'           => $row->label,
-                'amounts'         => $formattedAmounts,
-                'variance'        => $row->variance === null ? null : self::formatAmount($row->variance),
+                'sectionCode' => $row->sectionCode,
+                'label' => $row->label,
+                'amounts' => $formattedAmounts,
+                'variance' => $row->variance === null ? null : self::formatAmount($row->variance),
                 'variancePercent' => $row->variancePercent === null
                     ? null
                     : self::formatPercent($row->variancePercent),
-                'isSubtotal'      => $row->isSubtotal,
-                'isTotal'         => $row->isTotal,
+                'isSubtotal' => $row->isSubtotal,
+                'isTotal' => $row->isTotal,
             ];
         }
+
         return $out;
     }
 
@@ -134,7 +140,8 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
         $isNegative = $num < 0;
         $abs = abs($num);
         $formatted = number_format($abs, 0, '.', ',');
-        return $isNegative ? '(' . $formatted . ')' : $formatted;
+
+        return $isNegative ? '('.$formatted.')' : $formatted;
     }
 
     private static function formatPercent(string $raw): string
@@ -143,26 +150,27 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
             return '-';
         }
         $num = (float) $raw;
-        return number_format($num, 2, '.', ',') . '%';
+
+        return number_format($num, 2, '.', ',').'%';
     }
 
     private function resolveTitle(FinancialStatementKind $kind): string
     {
         return match ($kind) {
-            FinancialStatementKind::BalanceSheet  => '複数期比較 貸借対照表 (Multi-Period BS)',
+            FinancialStatementKind::BalanceSheet => '複数期比較 貸借対照表 (Multi-Period BS)',
             FinancialStatementKind::ProfitAndLoss => '複数期比較 損益計算書 (Multi-Period PL)',
-            FinancialStatementKind::CashFlow      => '複数期比較 キャッシュフロー計算書 (Multi-Period CS)',
-            FinancialStatementKind::All           => '複数期比較 決算書 (BS / PL / CS)',
+            FinancialStatementKind::CashFlow => '複数期比較 キャッシュフロー計算書 (Multi-Period CS)',
+            FinancialStatementKind::All => '複数期比較 決算書 (BS / PL / CS)',
         };
     }
 
     private function resolveTemplateName(FinancialStatementKind $kind): string
     {
         return match ($kind) {
-            FinancialStatementKind::BalanceSheet  => 'bs.html.tpl',
+            FinancialStatementKind::BalanceSheet => 'bs.html.tpl',
             FinancialStatementKind::ProfitAndLoss => 'pl.html.tpl',
-            FinancialStatementKind::CashFlow      => 'cs.html.tpl',
-            FinancialStatementKind::All           => 'all.html.tpl',
+            FinancialStatementKind::CashFlow => 'cs.html.tpl',
+            FinancialStatementKind::All => 'all.html.tpl',
         };
     }
 
@@ -172,17 +180,19 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
         $smarty->setTemplateDir($this->templateDir);
         $smarty->setCompileDir($this->compileDir);
         $smarty->escape_html = true;
+
         return $smarty;
     }
 
     private function registerJapaneseFont(Dompdf $dompdf): void
     {
-        $ttf = $this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf';
+        $ttf = $this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf';
         if (!is_file($ttf)) {
             $this->logger->warning(
                 'IPAex Gothic font not installed at {path}; Japanese glyphs will render as tofu.',
                 ['path' => $ttf],
             );
+
             return;
         }
         try {
@@ -208,7 +218,7 @@ final class DompdfMultiPeriodFinancialStatementGenerator implements MultiPeriodF
 
     private function hasJapaneseFont(): bool
     {
-        return is_file($this->fontDir . DIRECTORY_SEPARATOR . 'ipaexg.ttf');
+        return is_file($this->fontDir.\DIRECTORY_SEPARATOR.'ipaexg.ttf');
     }
 
     private function resolveDefaultFont(): string

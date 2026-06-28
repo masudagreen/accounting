@@ -10,6 +10,7 @@ namespace Rucaro\Domain\FixedAsset\Service;
  */
 final class NoDepreciationCalculator implements DepreciationCalculatorInterface
 {
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         return StraightLineDepreciationCalculator::finalize($request, '0.0000');

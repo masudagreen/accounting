@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\FixedAsset;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\FixedAsset\DepreciationMethod;
 use Rucaro\Domain\FixedAsset\FixedAsset;
@@ -21,10 +19,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
  */
 final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
 {
-    public function __construct(private readonly PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
     }
 
+    #[\Override]
     public function save(FixedAsset $asset): void
     {
         $sql = <<<'SQL'
@@ -65,24 +64,24 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'         => UlidGenerator::decode($asset->id),
-            ':entity'     => UlidGenerator::decode($asset->entityId),
-            ':code'       => $asset->assetCode,
-            ':name'       => $asset->assetName,
-            ':category'   => $asset->categoryCode,
-            ':asset_at'   => $asset->assetAccountTitleId !== null ? UlidGenerator::decode($asset->assetAccountTitleId) : null,
-            ':accum_at'   => $asset->accumulatedDepreciationAccountTitleId !== null ? UlidGenerator::decode($asset->accumulatedDepreciationAccountTitleId) : null,
+            ':id' => UlidGenerator::decode($asset->id),
+            ':entity' => UlidGenerator::decode($asset->entityId),
+            ':code' => $asset->assetCode,
+            ':name' => $asset->assetName,
+            ':category' => $asset->categoryCode,
+            ':asset_at' => $asset->assetAccountTitleId !== null ? UlidGenerator::decode($asset->assetAccountTitleId) : null,
+            ':accum_at' => $asset->accumulatedDepreciationAccountTitleId !== null ? UlidGenerator::decode($asset->accumulatedDepreciationAccountTitleId) : null,
             ':expense_at' => $asset->depreciationExpenseAccountTitleId !== null ? UlidGenerator::decode($asset->depreciationExpenseAccountTitleId) : null,
-            ':acq_date'   => $asset->acquisitionDate->format('Y-m-d'),
-            ':svc_date'   => $asset->serviceStartDate->format('Y-m-d'),
+            ':acq_date' => $asset->acquisitionDate->format('Y-m-d'),
+            ':svc_date' => $asset->serviceStartDate->format('Y-m-d'),
             ':disposal_date' => $asset->disposalDate?->format('Y-m-d'),
-            ':cost'       => $asset->acquisitionCost,
-            ':residual'   => $asset->residualValue,
-            ':ul'         => $asset->usefulLifeYears,
-            ':method'     => $asset->method->value,
-            ':qty'        => $asset->quantity,
-            ':dept'       => $asset->departmentCode,
-            ':note'       => $asset->note,
+            ':cost' => $asset->acquisitionCost,
+            ':residual' => $asset->residualValue,
+            ':ul' => $asset->usefulLifeYears,
+            ':method' => $asset->method->value,
+            ':qty' => $asset->quantity,
+            ':dept' => $asset->departmentCode,
+            ':note' => $asset->note,
             ':created_by' => UlidGenerator::decode($asset->createdBy),
             ':created_at' => $asset->createdAt->format('Y-m-d H:i:s.u'),
             ':updated_at' => $asset->updatedAt->format('Y-m-d H:i:s.u'),
@@ -90,18 +89,21 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
         ]);
     }
 
+    #[\Override]
     public function findById(string $id): ?FixedAsset
     {
         $stmt = $this->pdo->prepare('SELECT * FROM fixed_assets WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntityAndCode(string $entityId, string $assetCode): ?FixedAsset
     {
         $stmt = $this->pdo->prepare(
@@ -112,13 +114,15 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
             ':c' => $assetCode,
         ]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
+
         return $this->hydrate($row);
     }
 
+    #[\Override]
     public function findByEntity(string $entityId, bool $includeDisposed = false): array
     {
         $sql = 'SELECT * FROM fixed_assets WHERE entity_id = :e AND deleted_at IS NULL';
@@ -129,7 +133,8 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':e' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_map([$this, 'hydrate'], $rows);
     }
 
@@ -158,8 +163,8 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
             departmentCode: self::nullableString($row['department_code'] ?? null),
             note: self::nullableString($row['note'] ?? null),
             createdBy: self::encodeId($row['created_by'] ?? ''),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('now', new DateTimeZone('UTC')),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('now', new DateTimeZone('UTC')),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
             deletedAt: self::parseTimestamp($row['deleted_at'] ?? null),
         );
     }
@@ -169,6 +174,7 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -180,6 +186,7 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
         if (!is_string($raw) || $raw === '') {
             return null;
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -189,37 +196,38 @@ final class PdoFixedAssetRepository implements FixedAssetRepositoryInterface
             return null;
         }
         $s = (string) $raw;
+
         return $s === '' ? null : $s;
     }
 
-    private static function parseDate(string $raw): DateTimeImmutable
+    private static function parseDate(string $raw): \DateTimeImmutable
     {
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
-            return new DateTimeImmutable('1970-01-01', new DateTimeZone('UTC'));
+            return new \DateTimeImmutable('1970-01-01', new \DateTimeZone('UTC'));
         }
     }
 
-    private static function parseDateOrNull(mixed $raw): ?DateTimeImmutable
+    private static function parseDateOrNull(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

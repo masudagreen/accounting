@@ -34,10 +34,11 @@ final class PdoOpeningBalanceRepository implements OpeningBalanceRepositoryInter
         SQL;
 
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function findOpeningBalance(
         string $entityId,
         string $fiscalTermId,
@@ -45,8 +46,8 @@ final class PdoOpeningBalanceRepository implements OpeningBalanceRepositoryInter
     ): string {
         $stmt = $this->pdo->prepare(self::SQL);
         $stmt->execute([
-            ':entity'  => UlidGenerator::decode($entityId),
-            ':term'    => UlidGenerator::decode($fiscalTermId),
+            ':entity' => UlidGenerator::decode($entityId),
+            ':term' => UlidGenerator::decode($fiscalTermId),
             ':account' => UlidGenerator::decode($accountTitleId),
         ]);
         /** @var string|false $raw */
@@ -54,6 +55,7 @@ final class PdoOpeningBalanceRepository implements OpeningBalanceRepositoryInter
         if ($raw === false || !is_string($raw) || $raw === '') {
             return Decimal::normalize('0');
         }
+
         return Decimal::normalize($raw);
     }
 }

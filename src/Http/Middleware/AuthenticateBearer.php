@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Middleware;
 
-use DateTimeZone;
 use Rucaro\Domain\Auth\ApiTokenRepositoryInterface;
 use Rucaro\Infrastructure\Auth\BearerTokenGenerator;
 use Rucaro\Support\Clock\ClockInterface;
@@ -29,7 +28,7 @@ final class AuthenticateBearer
     }
 
     /**
-     * @return string|null Authenticated user id as ULID, or null on failure.
+     * @return string|null authenticated user id as ULID, or null on failure
      */
     public function authenticate(?string $authorizationHeader): ?string
     {
@@ -42,7 +41,7 @@ final class AuthenticateBearer
         if ($record === null) {
             return null;
         }
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         if (!$record->isActive($now)) {
             return null;
         }
@@ -51,6 +50,7 @@ final class AuthenticateBearer
             return null;
         }
         $this->tokens->touchLastUsed($record->id, $now);
+
         return $record->userId;
     }
 
@@ -65,6 +65,7 @@ final class AuthenticateBearer
         }
         $token = substr($header, 7);
         $token = trim($token);
+
         return $token === '' ? null : $token;
     }
 }

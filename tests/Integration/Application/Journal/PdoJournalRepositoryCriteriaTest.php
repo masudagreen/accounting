@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Application\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Journal\JournalSearchCriteria;
@@ -36,8 +32,9 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
     private string $dbname = '';
     private string $username = '';
     private string $password = '';
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
 
+    #[\Override]
     protected function setUp(): void
     {
         $user = getenv('RUCARO_TEST_DB_USER');
@@ -46,18 +43,18 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
         }
 
         $this->username = (string) $user;
-        $this->host     = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
-        $portEnv        = getenv('RUCARO_TEST_DB_PORT');
-        $this->port     = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
-        $this->dbname   = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
-        $pwEnv          = getenv('RUCARO_TEST_DB_PASSWORD');
+        $this->host = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
+        $portEnv = getenv('RUCARO_TEST_DB_PORT');
+        $this->port = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
+        $this->dbname = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
+        $pwEnv = getenv('RUCARO_TEST_DB_PASSWORD');
         $this->password = $pwEnv === false ? '' : (string) $pwEnv;
 
-        $root = new PDO(
+        $root = new \PDO(
             sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
             $this->username,
             $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
         );
         $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
         $root->exec(sprintf(
@@ -69,20 +66,21 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
         $this->migrate($this->pdo);
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->dbname === '' || $this->username === '') {
             return;
         }
         try {
-            $root = new PDO(
+            $root = new \PDO(
                 sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
                 $this->username,
                 $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
             );
             $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
-        } catch (PDOException) {
+        } catch (\PDOException) {
             // best-effort cleanup
         }
     }
@@ -114,7 +112,7 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
 
         $draft = $this->journal('01HW7K9B2QV7C8Y4ZJRNL000001', $entity, '2026-04-01');
         $approved = $this->journal('01HW7K9B2QV7C8Y4ZJRNL000002', $entity, '2026-04-02')
-            ->approve(new DateTimeImmutable('2026-04-03T00:00:00Z'), '01HW7K9B2QV7C8Y4ZUSER000002');
+            ->approve(new \DateTimeImmutable('2026-04-03T00:00:00Z'), '01HW7K9B2QV7C8Y4ZUSER000002');
         $repo->save($draft);
         $repo->save($approved);
 
@@ -164,7 +162,7 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
 
         $j = $this->journal('01HW7K9B2QV7C8Y4ZJRNL000001', $entity, '2026-04-01');
         $repo->save($j);
-        $repo->delete($j->id, new DateTimeImmutable('2026-04-02T00:00:00Z'), '01HW7K9B2QV7C8Y4ZUSER000001');
+        $repo->delete($j->id, new \DateTimeImmutable('2026-04-02T00:00:00Z'), '01HW7K9B2QV7C8Y4ZUSER000001');
 
         $defaultResult = $repo->findByCriteria(new JournalSearchCriteria(entityId: $entity));
         self::assertSame(0, $defaultResult->total);
@@ -176,9 +174,10 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
         self::assertSame(1, $inclusiveResult->total);
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         self::assertNotNull($this->pdo);
+
         return $this->pdo;
     }
 
@@ -193,7 +192,7 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
         );
     }
 
-    private function migrate(PDO $pdo): void
+    private function migrate(\PDO $pdo): void
     {
         // Minimal DDL sufficient for the Journal fixture. Kept inline so the
         // test does not depend on the Migration runner, which is still
@@ -257,11 +256,11 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
         string $debitAccount = '01HW7K9B2QV7C8Y4ZACCTTL001',
         string $creditAccount = '01HW7K9B2QV7C8Y4ZACCTTL002',
     ): Journal {
-        $tz = new DateTimeZone('UTC');
-        $ts = new DateTimeImmutable($date . 'T12:00:00', $tz);
+        $tz = new \DateTimeZone('UTC');
+        $ts = new \DateTimeImmutable($date.'T12:00:00', $tz);
         $lines = [
             new JournalLine(
-                id: '01HW7K9B2QV7C8Y4ZLINE' . substr($id, -4) . 'D',
+                id: '01HW7K9B2QV7C8Y4ZLINE'.substr($id, -4).'D',
                 lineNo: 1,
                 side: 'debit',
                 accountTitleId: $debitAccount,
@@ -274,7 +273,7 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
                 bookedAt: $ts,
             ),
             new JournalLine(
-                id: '01HW7K9B2QV7C8Y4ZLINE' . substr($id, -4) . 'C',
+                id: '01HW7K9B2QV7C8Y4ZLINE'.substr($id, -4).'C',
                 lineNo: 2,
                 side: 'credit',
                 accountTitleId: $creditAccount,
@@ -287,13 +286,14 @@ final class PdoJournalRepositoryCriteriaTest extends TestCase
                 bookedAt: $ts,
             ),
         ];
+
         return new Journal(
             id: $id,
             entityId: $entityId,
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable($date, $tz),
+            journalDate: new \DateTimeImmutable($date, $tz),
             bookedAt: $ts,
-            summary: 'Test ' . $id,
+            summary: 'Test '.$id,
             totalAmount: '100.0000',
             currencyCode: 'JPY',
             status: 'draft',

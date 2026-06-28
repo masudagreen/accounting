@@ -31,6 +31,7 @@ final readonly class ListAccountTitlesUseCase
             $input->isActive,
             $input->search,
         );
+
         return new ListAccountTitlesUseCaseOutput(
             items: $items,
             total: $total,

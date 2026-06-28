@@ -17,16 +17,19 @@ final class InMemoryFsNoteTemplateRepository implements FsNoteTemplateRepository
         $this->byCode[$tpl->code] = $tpl;
     }
 
+    #[\Override]
     public function findAll(): array
     {
         return array_values($this->byCode);
     }
 
+    #[\Override]
     public function findByCode(string $code): ?FsNoteTemplate
     {
         return $this->byCode[$code] ?? null;
     }
 
+    #[\Override]
     public function findByCodes(array $codes): array
     {
         $out = [];
@@ -38,6 +41,7 @@ final class InMemoryFsNoteTemplateRepository implements FsNoteTemplateRepository
                 $out[] = $this->byCode[$c];
             }
         }
-        return array_values($out);
+
+        return $out;
     }
 }

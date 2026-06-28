@@ -78,8 +78,10 @@ final class GenerateFinancialStatementUseCase
                 csDefinitions: $this->csDefinitions,
                 csBuilder: $this->csBuilder,
             );
+
             return $port->execute($input);
         }
+
         return $this->simplified->execute($input);
     }
 
@@ -88,6 +90,7 @@ final class GenerateFinancialStatementUseCase
         if ($this->mappings === null || $this->definitions === null || $this->builder === null) {
             return false;
         }
+
         return $this->mappings->findAllByEntity($entityId) !== [];
     }
 }

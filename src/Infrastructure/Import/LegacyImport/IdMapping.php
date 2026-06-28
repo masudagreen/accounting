@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
-use RuntimeException;
 
 /**
  * In-memory + DB-persisted legacy INT id <-> new ULID BINARY(16) mapping.
@@ -43,11 +41,11 @@ final class IdMapping
 
     /**
      * @param bool $inMemoryOnly When true, no row is ever written to
-     *   `legacy_id_mapping`. Used during `--dry-run` so previews don't
-     *   leave artefacts in the target DB.
+     *                           `legacy_id_mapping`. Used during `--dry-run` so previews don't
+     *                           leave artefacts in the target DB.
      */
     public function __construct(
-        private readonly PDO $target,
+        private readonly \PDO $target,
         private readonly UlidGenerator $ulids,
         private readonly bool $inMemoryOnly = false,
     ) {
@@ -85,7 +83,7 @@ final class IdMapping
 
         $stmt = $this->target->prepare(
             'SELECT new_ulid FROM legacy_id_mapping
-              WHERE legacy_table = :t AND legacy_id = :i LIMIT 1'
+              WHERE legacy_table = :t AND legacy_id = :i LIMIT 1',
         );
         $stmt->execute([':t' => $legacyTable, ':i' => (string) $legacyId]);
         /** @var string|false $bin */
@@ -94,6 +92,7 @@ final class IdMapping
             return null;
         }
         $this->cache[$key] = (string) $bin;
+
         return (string) $bin;
     }
 
@@ -108,6 +107,7 @@ final class IdMapping
         }
         $binary = $this->ulids->binary();
         $this->persist($legacyTable, $legacyId, $binary);
+
         return $binary;
     }
 
@@ -119,12 +119,9 @@ final class IdMapping
     {
         $bin = $this->lookup($legacyTable, $legacyId);
         if ($bin === null) {
-            throw new RuntimeException(sprintf(
-                'IdMapping: no mapping for %s#%s. Run the upstream stage first.',
-                $legacyTable,
-                (string) $legacyId,
-            ));
+            throw new \RuntimeException(sprintf('IdMapping: no mapping for %s#%s. Run the upstream stage first.', $legacyTable, (string) $legacyId));
         }
+
         return $bin;
     }
 
@@ -137,13 +134,14 @@ final class IdMapping
     public function persist(string $legacyTable, int|string $legacyId, string $binaryUlid): void
     {
         if (strlen($binaryUlid) !== 16) {
-            throw new RuntimeException('IdMapping: new_ulid must be exactly 16 bytes');
+            throw new \RuntimeException('IdMapping: new_ulid must be exactly 16 bytes');
         }
 
         $key = $this->cacheKey($legacyTable, $legacyId);
 
         if ($this->inMemoryOnly) {
             $this->cache[$key] = $binaryUlid;
+
             return;
         }
 
@@ -156,11 +154,11 @@ final class IdMapping
 
         $stmt = $this->target->prepare(
             'INSERT INTO legacy_id_mapping (legacy_table, legacy_id, new_ulid)
-             VALUES (:t, :i, :u)'
+             VALUES (:t, :i, :u)',
         );
         $stmt->bindValue(':t', $legacyTable);
         $stmt->bindValue(':i', (string) $legacyId);
-        $stmt->bindValue(':u', $binaryUlid, PDO::PARAM_LOB);
+        $stmt->bindValue(':u', $binaryUlid, \PDO::PARAM_LOB);
         $stmt->execute();
 
         $this->cache[$key] = $binaryUlid;
@@ -185,7 +183,7 @@ final class IdMapping
         $stmt = $this->target->prepare('DELETE FROM legacy_id_mapping WHERE legacy_table = :t');
         $stmt->execute([':t' => $legacyTable]);
         foreach (array_keys($this->cache) as $k) {
-            if (str_starts_with($k, $legacyTable . ':')) {
+            if (str_starts_with($k, $legacyTable.':')) {
                 unset($this->cache[$k]);
             }
         }
@@ -207,7 +205,7 @@ final class IdMapping
 
         // Cache first — covers dry-run-only data.
         foreach ($this->cache as $k => $bin) {
-            if (str_starts_with($k, $legacyTable . ':')) {
+            if (str_starts_with($k, $legacyTable.':')) {
                 $out[substr($k, strlen($legacyTable) + 1)] = $bin;
             }
         }
@@ -218,7 +216,7 @@ final class IdMapping
 
         $this->ensureSchema();
         $stmt = $this->target->prepare(
-            'SELECT legacy_id, new_ulid FROM legacy_id_mapping WHERE legacy_table = :t'
+            'SELECT legacy_id, new_ulid FROM legacy_id_mapping WHERE legacy_table = :t',
         );
         $stmt->execute([':t' => $legacyTable]);
         foreach ($stmt as $row) {
@@ -228,6 +226,7 @@ final class IdMapping
                 $out[$id] = (string) $row['new_ulid'];
             }
         }
+
         return $out;
     }
 
@@ -241,6 +240,7 @@ final class IdMapping
         // production re-runs see it from prior invocations) we skip DDL.
         if ($this->tableExists('legacy_id_mapping')) {
             $this->schemaEnsured = true;
+
             return;
         }
 
@@ -255,7 +255,7 @@ final class IdMapping
             ) ENGINE=InnoDB
               DEFAULT CHARACTER SET utf8mb4
               COLLATE utf8mb4_unicode_ci
-              COMMENT="Legacy INT id -> new ULID mapping (migration artefact)"'
+              COMMENT="Legacy INT id -> new ULID mapping (migration artefact)"',
         );
         $this->schemaEnsured = true;
     }
@@ -266,16 +266,18 @@ final class IdMapping
             $stmt = $this->target->query(sprintf('SELECT 1 FROM %s LIMIT 1', $table));
             if ($stmt !== false) {
                 $stmt->closeCursor();
+
                 return true;
             }
         } catch (\PDOException) {
             return false;
         }
+
         return false;
     }
 
     private function cacheKey(string $legacyTable, int|string $legacyId): string
     {
-        return $legacyTable . ':' . (string) $legacyId;
+        return $legacyTable.':'.(string) $legacyId;
     }
 }

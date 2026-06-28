@@ -56,6 +56,7 @@ final readonly class UpsertInvoiceRegistrationController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::ok(
             ConsumptionTaxSettlementJsonSerializer::invoiceRegistrationToArray($reg),
             null,

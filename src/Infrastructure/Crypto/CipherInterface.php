@@ -21,12 +21,13 @@ interface CipherInterface
     /**
      * Encrypt $plaintext and return a self-contained ciphertext token.
      *
-     * @param string $plaintext Binary-safe plaintext.
-     * @param string $aad       Additional Authenticated Data. Recommended
-     *                          format: "{table}/{column}/{primaryKey}".
+     * @param string $plaintext binary-safe plaintext
+     * @param string $aad Additional Authenticated Data. Recommended
+     *                    format: "{table}/{column}/{primaryKey}".
+     *
      * @return string Encrypted token (e.g. "v2:k1:<base64url>").
      *
-     * @throws CryptoException When the underlying primitive fails.
+     * @throws CryptoException when the underlying primitive fails
      */
     public function encrypt(string $plaintext, string $aad = ''): string;
 
@@ -34,11 +35,12 @@ interface CipherInterface
      * Decrypt a token produced by {@see encrypt()} (or a legacy variant when
      * wrapped by VersionedCipher) and return the original plaintext.
      *
-     * @param string $ciphertext Token as returned by encrypt() or legacy blob.
-     * @param string $aad        Must match the AAD passed to encrypt().
-     * @return string Original plaintext, byte-for-byte.
+     * @param string $ciphertext token as returned by encrypt() or legacy blob
+     * @param string $aad must match the AAD passed to encrypt()
      *
-     * @throws CryptoException On tampering, wrong key, wrong AAD, or malformed input.
+     * @return string original plaintext, byte-for-byte
+     *
+     * @throws CryptoException on tampering, wrong key, wrong AAD, or malformed input
      */
     public function decrypt(string $ciphertext, string $aad = ''): string;
 }

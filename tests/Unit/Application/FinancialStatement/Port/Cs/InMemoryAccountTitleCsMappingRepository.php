@@ -38,6 +38,7 @@ final class InMemoryAccountTitleCsMappingRepository implements AccountTitleCsMap
         );
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return $this->byEntity[$entityId] ?? [];

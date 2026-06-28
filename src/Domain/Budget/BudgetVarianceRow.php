@@ -46,6 +46,7 @@ final readonly class BudgetVarianceRow
         $actual = Decimal::normalize($actualAmount);
         $variance = self::subtract($actual, $budget);
         $usage = self::safeUsage($budget, $actual);
+
         return new self(
             accountTitleId: $accountTitleId,
             accountTitleCode: $accountTitleCode,
@@ -76,10 +77,11 @@ final readonly class BudgetVarianceRow
     private static function subtract(string $a, string $b): string
     {
         if (function_exists('bcsub')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion BudgetVarianceRow only sees Decimal-normalised numeric strings */
             return bcsub($a, $b, Decimal::SCALE);
         }
-        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-' . $b);
+        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-'.$b);
+
         return Decimal::add($a, $negated);
     }
 
@@ -93,14 +95,16 @@ final readonly class BudgetVarianceRow
         // (acceptable because the output is a presentation string, not an
         // accounting amount).
         if (function_exists('bcdiv') && function_exists('bcmul')) {
-            /** @var string $div */
+            /** @psalm-suppress ArgumentTypeCoercion BudgetVarianceRow only sees Decimal-normalised numeric strings */
             $div = bcdiv($actual, $budget, 6);
-            /** @var string $pct */
+            /** @psalm-suppress ArgumentTypeCoercion bcdiv result is also a numeric string */
             $pct = bcmul($div, '100', 2);
+
             return $pct;
         }
         $b = (float) $budget;
         $a = (float) $actual;
+
         return number_format(($a / $b) * 100.0, 2, '.', '');
     }
 }

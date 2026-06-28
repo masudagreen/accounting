@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Entity;
 
-use DateTimeZone;
 use Rucaro\Application\Entity\ListEntitiesUseCase;
 use Rucaro\Application\Entity\ListEntitiesUseCaseInput;
 use Rucaro\Domain\Entity\Entity;
@@ -41,21 +40,21 @@ final readonly class ListEntityController
         ));
 
         $items = array_map(static fn (Entity $e): array => [
-            'id'               => $e->id,
-            'ownerUserId'      => $e->ownerUserId,
-            'name'             => $e->name,
-            'nationCode'       => $e->nationCode,
-            'currencyCode'     => $e->currencyCode,
-            'fiscalStartMmDd'  => $e->fiscalStartMmDd,
-            'isActive'         => $e->isActive,
-            'createdAt'        => $e->createdAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
-            'updatedAt'        => $e->updatedAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
-            'deletedAt'        => $e->deletedAt?->setTimezone(new DateTimeZone('UTC'))?->format('Y-m-d\TH:i:s.u\Z'),
+            'id' => $e->id,
+            'ownerUserId' => $e->ownerUserId,
+            'name' => $e->name,
+            'nationCode' => $e->nationCode,
+            'currencyCode' => $e->currencyCode,
+            'fiscalStartMmDd' => $e->fiscalStartMmDd,
+            'isActive' => $e->isActive,
+            'createdAt' => $e->createdAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'updatedAt' => $e->updatedAt->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'),
+            'deletedAt' => $e->deletedAt?->setTimezone(new \DateTimeZone('UTC'))?->format('Y-m-d\TH:i:s.u\Z'),
         ], $output->items);
 
         return EnvelopeResponse::list($items, [
-            'total'    => $output->total,
-            'page'     => $output->page,
+            'total' => $output->total,
+            'page' => $output->page,
             'pageSize' => $output->pageSize,
         ]);
     }

@@ -38,10 +38,10 @@ final class CashFlowStatementBuilderTest extends TestCase
         self::assertSame('100000.0000', $cs['operating_cf']->subtotal);
         self::assertSame('100000.0000', $cs['operating_cf_subtotal']->subtotal);
         self::assertSame('100000.0000', $cs['operating_cf_total']->subtotal);
-        self::assertSame('0.0000',      $cs['investing_cf_total']->subtotal);
-        self::assertSame('0.0000',      $cs['financing_cf_total']->subtotal);
+        self::assertSame('0.0000', $cs['investing_cf_total']->subtotal);
+        self::assertSame('0.0000', $cs['financing_cf_total']->subtotal);
         self::assertSame('100000.0000', $cs['net_change_in_cash']->subtotal);
-        self::assertSame('0.0000',      $cs['beginning_cash']->subtotal);
+        self::assertSame('0.0000', $cs['beginning_cash']->subtotal);
         self::assertSame('100000.0000', $cs['ending_cash']->subtotal);
     }
 
@@ -61,8 +61,8 @@ final class CashFlowStatementBuilderTest extends TestCase
         $cs = $builder->build($rows, [], $mappings, $defs, '1000', '0');
 
         self::assertSame('-500.0000', $cs['wc_receivables']->subtotal);
-        self::assertSame('500.0000',  $cs['operating_cf']->subtotal);       // 1000 - 500
-        self::assertSame('500.0000',  $cs['operating_cf_total']->subtotal);
+        self::assertSame('500.0000', $cs['operating_cf']->subtotal);       // 1000 - 500
+        self::assertSame('500.0000', $cs['operating_cf_total']->subtotal);
     }
 
     public function testNonCashDepreciationIsAddedBack(): void
@@ -80,7 +80,7 @@ final class CashFlowStatementBuilderTest extends TestCase
 
         $cs = $builder->build($rows, [], $mappings, $defs, '1000', '0');
 
-        self::assertSame('200.0000',  $cs['depreciation']->subtotal);
+        self::assertSame('200.0000', $cs['depreciation']->subtotal);
         self::assertSame('1200.0000', $cs['operating_cf']->subtotal);
         self::assertSame('1200.0000', $cs['operating_cf_total']->subtotal);
     }
@@ -105,8 +105,8 @@ final class CashFlowStatementBuilderTest extends TestCase
         self::assertSame('-3000.0000', $cs['investing_cf_total']->subtotal);
         // Beginning cash 5000 + change -3000 → 2000 ending.
         self::assertSame('-3000.0000', $cs['net_change_in_cash']->subtotal);
-        self::assertSame('5000.0000',  $cs['beginning_cash']->subtotal);
-        self::assertSame('2000.0000',  $cs['ending_cash']->subtotal);
+        self::assertSame('5000.0000', $cs['beginning_cash']->subtotal);
+        self::assertSame('2000.0000', $cs['ending_cash']->subtotal);
     }
 
     public function testFinancingDebtProceedsInflow(): void
@@ -155,23 +155,23 @@ final class CashFlowStatementBuilderTest extends TestCase
 
         $rows = [
             self::row('IR', '411', '受取利息', 'revenue', 'credit', '0', '300'),
-            self::row('IP', '511', '支払利息', 'expense', 'debit',  '200', '0'),
-            self::row('TAX','591', '法人税等',  'expense', 'debit',  '500', '0'),
+            self::row('IP', '511', '支払利息', 'expense', 'debit', '200', '0'),
+            self::row('TAX', '591', '法人税等', 'expense', 'debit', '500', '0'),
         ];
         $mappings = [
             // Interest & tax feed section codes directly (not through a parent),
             // because these live below the 小計 line in the legal template.
-            new AccountTitleCsMapping('IR',  'interest_received', CsFlowCategory::Operating, 1, false, 10, null),
-            new AccountTitleCsMapping('IP',  'interest_paid',     CsFlowCategory::Operating, 1, false, 10, null),
-            new AccountTitleCsMapping('TAX', 'tax_paid',          CsFlowCategory::Operating, 1, false, 10, null),
+            new AccountTitleCsMapping('IR', 'interest_received', CsFlowCategory::Operating, 1, false, 10, null),
+            new AccountTitleCsMapping('IP', 'interest_paid', CsFlowCategory::Operating, 1, false, 10, null),
+            new AccountTitleCsMapping('TAX', 'tax_paid', CsFlowCategory::Operating, 1, false, 10, null),
         ];
 
         $cs = $builder->build($rows, [], $mappings, $defs, '1000', '0');
 
         self::assertSame('1000.0000', $cs['operating_cf_subtotal']->subtotal);
-        self::assertSame('300.0000',  $cs['interest_received']->subtotal);
-        self::assertSame('200.0000',  $cs['interest_paid']->subtotal);
-        self::assertSame('500.0000',  $cs['tax_paid']->subtotal);
+        self::assertSame('300.0000', $cs['interest_received']->subtotal);
+        self::assertSame('200.0000', $cs['interest_paid']->subtotal);
+        self::assertSame('500.0000', $cs['tax_paid']->subtotal);
         // 1000 (小計) + 300 - 200 - 500 = 600
         self::assertSame('600.0000', $cs['operating_cf_total']->subtotal);
     }
@@ -182,14 +182,14 @@ final class CashFlowStatementBuilderTest extends TestCase
         $defs = InMemoryCsSectionDefinitionRepository::jgaapStandard();
 
         $rows = [
-            self::row('DEP',  '531', '減価償却費',   'expense',  'debit', '100', '0'),
-            self::row('PPE',  '201', '建物',         'asset',    'debit', '300', '0'),
-            self::row('DEBT', '301', '短期借入金',   'liability','credit', '0',  '150'),
+            self::row('DEP', '531', '減価償却費', 'expense', 'debit', '100', '0'),
+            self::row('PPE', '201', '建物', 'asset', 'debit', '300', '0'),
+            self::row('DEBT', '301', '短期借入金', 'liability', 'credit', '0', '150'),
         ];
         $mappings = [
-            new AccountTitleCsMapping('DEP',  'depreciation',             CsFlowCategory::Operating, 1, false, 10, null),
-            new AccountTitleCsMapping('PPE',  'investing_ppe_purchase',   CsFlowCategory::Investing, -1, false, 10, null),
-            new AccountTitleCsMapping('DEBT', 'financing_debt_proceeds',  CsFlowCategory::Financing, 1, false, 10, null),
+            new AccountTitleCsMapping('DEP', 'depreciation', CsFlowCategory::Operating, 1, false, 10, null),
+            new AccountTitleCsMapping('PPE', 'investing_ppe_purchase', CsFlowCategory::Investing, -1, false, 10, null),
+            new AccountTitleCsMapping('DEBT', 'financing_debt_proceeds', CsFlowCategory::Financing, 1, false, 10, null),
         ];
 
         $cs = $builder->build($rows, [], $mappings, $defs, '500', '1000');
@@ -198,10 +198,10 @@ final class CashFlowStatementBuilderTest extends TestCase
         // Investing: -300, Financing: +150
         // Net change = 600 - 300 + 150 = 450
         // Ending = 1000 + 450 = 1450
-        self::assertSame('600.0000',  $cs['operating_cf_total']->subtotal);
+        self::assertSame('600.0000', $cs['operating_cf_total']->subtotal);
         self::assertSame('-300.0000', $cs['investing_cf_total']->subtotal);
-        self::assertSame('150.0000',  $cs['financing_cf_total']->subtotal);
-        self::assertSame('450.0000',  $cs['net_change_in_cash']->subtotal);
+        self::assertSame('150.0000', $cs['financing_cf_total']->subtotal);
+        self::assertSame('450.0000', $cs['net_change_in_cash']->subtotal);
         self::assertSame('1000.0000', $cs['beginning_cash']->subtotal);
         self::assertSame('1450.0000', $cs['ending_cash']->subtotal);
     }

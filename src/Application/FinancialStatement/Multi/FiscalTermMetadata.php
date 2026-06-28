@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-
 /**
  * Minimal read model describing one fiscal term — id, period label, date range.
  *
@@ -19,8 +17,8 @@ final readonly class FiscalTermMetadata
     public function __construct(
         public string $id,
         public string $label,
-        public DateTimeImmutable $startDate,
-        public DateTimeImmutable $endDate,
+        public \DateTimeImmutable $startDate,
+        public \DateTimeImmutable $endDate,
     ) {
     }
 }

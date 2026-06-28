@@ -16,16 +16,19 @@ final class InMemorySsManualAdjustmentRepository implements SsManualAdjustmentRe
     /** @var array<string, SsManualAdjustment> */
     private array $byId = [];
 
+    #[\Override]
     public function save(SsManualAdjustment $adjustment): void
     {
         $this->byId[$adjustment->id] = $adjustment;
     }
 
+    #[\Override]
     public function findById(string $id): ?SsManualAdjustment
     {
         return $this->byId[$id] ?? null;
     }
 
+    #[\Override]
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): array
     {
         $matches = [];
@@ -38,11 +41,14 @@ final class InMemorySsManualAdjustmentRepository implements SsManualAdjustmentRe
             if ($a->sortOrder !== $b->sortOrder) {
                 return $a->sortOrder <=> $b->sortOrder;
             }
+
             return $a->id <=> $b->id;
         });
-        return array_values($matches);
+
+        return $matches;
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
         unset($this->byId[$id]);

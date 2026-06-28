@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Ledger;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Ledger\LedgerEntry;
@@ -47,7 +46,7 @@ final class LedgerEntryTest extends TestCase
         return new LedgerEntry(
             journalEntryId: 'E-01',
             journalEntryLineId: 'L-01',
-            entryDate: new DateTimeImmutable('2026-04-10'),
+            entryDate: new \DateTimeImmutable('2026-04-10'),
             summary: '現金売上',
             memo: 'レジNo.1',
             counterAccountCode: '401',

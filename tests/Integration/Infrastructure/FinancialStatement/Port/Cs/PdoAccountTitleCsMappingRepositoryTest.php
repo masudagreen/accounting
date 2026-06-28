@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rucaro\Tests\Integration\Infrastructure\FinancialStatement\Port\Cs;
 
 use PDO;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FinancialStatement\Port\Cs\CsFlowCategory;
@@ -30,9 +29,10 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
     private string $dbname = '';
     private string $username = '';
     private string $password = '';
-    private ?PDO $pdo = null;
+    private ?\PDO $pdo = null;
     private UlidGenerator $ulids;
 
+    #[\Override]
     protected function setUp(): void
     {
         $user = getenv('RUCARO_TEST_DB_USER');
@@ -40,18 +40,18 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
             $this->markTestSkipped('RUCARO_TEST_DB_USER is not set; skipping DB integration test.');
         }
         $this->username = (string) $user;
-        $this->host     = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
-        $portEnv        = getenv('RUCARO_TEST_DB_PORT');
-        $this->port     = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
-        $this->dbname   = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
-        $pwEnv          = getenv('RUCARO_TEST_DB_PASSWORD');
+        $this->host = ((string) getenv('RUCARO_TEST_DB_HOST')) ?: '127.0.0.1';
+        $portEnv = getenv('RUCARO_TEST_DB_PORT');
+        $this->port = $portEnv !== false && $portEnv !== '' ? (int) $portEnv : 3306;
+        $this->dbname = ((string) getenv('RUCARO_TEST_DB_NAME')) ?: 'rucaro_test';
+        $pwEnv = getenv('RUCARO_TEST_DB_PASSWORD');
         $this->password = $pwEnv === false ? '' : (string) $pwEnv;
 
-        $root = new PDO(
+        $root = new \PDO(
             sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
             $this->username,
             $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
         );
         $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
         $root->exec(sprintf(
@@ -72,16 +72,16 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
         $this->ulids = new UlidGenerator();
     }
 
-    private function applyFile(PDO $pdo, string $name): void
+    private function applyFile(\PDO $pdo, string $name): void
     {
-        $path = $this->migrationsDir() . DIRECTORY_SEPARATOR . $name;
+        $path = $this->migrationsDir().\DIRECTORY_SEPARATOR.$name;
         if (!is_file($path)) {
             return;
         }
         $sql = (string) file_get_contents($path);
         try {
             $pdo->exec($sql);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // If the table already exists, ignore — the runner may have
             // actually applied it first.
             if (!str_contains($e->getMessage(), 'already exists')) {
@@ -90,20 +90,21 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
         }
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         if ($this->dbname === '' || $this->username === '') {
             return;
         }
         try {
-            $root = new PDO(
+            $root = new \PDO(
                 sprintf('mysql:host=%s;port=%d;charset=utf8mb4', $this->host, $this->port),
                 $this->username,
                 $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
             );
             $root->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->dbname));
-        } catch (PDOException) {
+        } catch (\PDOException) {
             // best-effort
         }
     }
@@ -171,26 +172,26 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
         self::assertSame('売上債権の増減', $rows[0]->displayLabel);
     }
 
-    private function seedUser(PDO $pdo, string $ulid, string $email): void
+    private function seedUser(\PDO $pdo, string $ulid, string $email): void
     {
         $pdo->prepare(
             'INSERT INTO users (id, email, email_normalized, password_hash, display_name, role, is_active, created_at, updated_at)
-             VALUES (:id, :em, :emn, :pw, :dn, :role, 1, NOW(6), NOW(6))'
+             VALUES (:id, :em, :emn, :pw, :dn, :role, 1, NOW(6), NOW(6))',
         )->execute([
-            ':id'   => UlidGenerator::decode($ulid),
-            ':em'   => $email,
-            ':emn'  => $email,
-            ':pw'   => 'x',
-            ':dn'   => 'CS test user',
+            ':id' => UlidGenerator::decode($ulid),
+            ':em' => $email,
+            ':emn' => $email,
+            ':pw' => 'x',
+            ':dn' => 'CS test user',
             ':role' => 'owner',
         ]);
     }
 
-    private function seedEntity(PDO $pdo, string $ulid, string $ownerUlid): void
+    private function seedEntity(\PDO $pdo, string $ulid, string $ownerUlid): void
     {
         $pdo->prepare(
             'INSERT INTO entities (id, owner_user_id, name, nation_code, currency_code, fiscal_start_mmdd, is_active, created_at, updated_at)
-             VALUES (:id, :ow, :nm, "JPN", "JPY", "0401", 1, NOW(6), NOW(6))'
+             VALUES (:id, :ow, :nm, "JPN", "JPY", "0401", 1, NOW(6), NOW(6))',
         )->execute([
             ':id' => UlidGenerator::decode($ulid),
             ':ow' => UlidGenerator::decode($ownerUlid),
@@ -199,7 +200,7 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
     }
 
     private function seedAccountTitle(
-        PDO $pdo,
+        \PDO $pdo,
         string $entityUlid,
         string $accountUlid,
         string $code,
@@ -207,19 +208,19 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
     ): void {
         $pdo->prepare(
             'INSERT INTO account_titles (id, entity_id, code, name, category, normal_side, sort_order, is_active, created_at, updated_at)
-             VALUES (:id, :ent, :c, :n, :cat, :ns, 0, 1, NOW(6), NOW(6))'
+             VALUES (:id, :ent, :c, :n, :cat, :ns, 0, 1, NOW(6), NOW(6))',
         )->execute([
-            ':id'  => UlidGenerator::decode($accountUlid),
+            ':id' => UlidGenerator::decode($accountUlid),
             ':ent' => UlidGenerator::decode($entityUlid),
-            ':c'   => $code,
-            ':n'   => $name,
+            ':c' => $code,
+            ':n' => $name,
             ':cat' => 'asset',
-            ':ns'  => 'debit',
+            ':ns' => 'debit',
         ]);
     }
 
     private function seedMapping(
-        PDO $pdo,
+        \PDO $pdo,
         string $entityUlid,
         string $accountUlid,
         string $sectionCode,
@@ -233,24 +234,25 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
             'INSERT INTO account_title_cs_mappings
              (id, entity_id, account_title_id, cs_section_code, sort_order, display_label,
               sign, flow_category, is_working_capital)
-             VALUES (:id, :eid, :aid, :sec, :so, :dl, :sign, :flow, :wc)'
+             VALUES (:id, :eid, :aid, :sec, :so, :dl, :sign, :flow, :wc)',
         );
         $stmt->execute([
-            ':id'   => UlidGenerator::decode($this->ulids->generate()),
-            ':eid'  => UlidGenerator::decode($entityUlid),
-            ':aid'  => UlidGenerator::decode($accountUlid),
-            ':sec'  => $sectionCode,
-            ':so'   => $sortOrder,
-            ':dl'   => $displayLabel,
+            ':id' => UlidGenerator::decode($this->ulids->generate()),
+            ':eid' => UlidGenerator::decode($entityUlid),
+            ':aid' => UlidGenerator::decode($accountUlid),
+            ':sec' => $sectionCode,
+            ':so' => $sortOrder,
+            ':dl' => $displayLabel,
             ':sign' => $sign,
             ':flow' => $flowCategory,
-            ':wc'   => $isWorkingCapital,
+            ':wc' => $isWorkingCapital,
         ]);
     }
 
-    private function requirePdo(): PDO
+    private function requirePdo(): \PDO
     {
         self::assertNotNull($this->pdo);
+
         return $this->pdo;
     }
 
@@ -267,7 +269,7 @@ final class PdoAccountTitleCsMappingRepositoryTest extends TestCase
 
     private function migrationsDir(): string
     {
-        return dirname(__DIR__, 6) . DIRECTORY_SEPARATOR
-            . 'scripts' . DIRECTORY_SEPARATOR . 'migrate';
+        return dirname(__DIR__, 6).\DIRECTORY_SEPARATOR
+            .'scripts'.\DIRECTORY_SEPARATOR.'migrate';
     }
 }

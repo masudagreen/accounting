@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Decimal;
 
-use InvalidArgumentException;
-
 /**
  * Tiny fixed-scale decimal helper used where the full `bcmath` extension is
  * not guaranteed to be present (e.g. stock `php:8.3-cli` containers used in CI).
@@ -28,11 +26,12 @@ final class Decimal
     public static function add(string $a, string $b): string
     {
         if (function_exists('bcadd')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion guarded by Decimal contract: callers MUST pass numeric strings */
             return bcadd($a, $b, self::SCALE);
         }
         $ai = self::toScaledInt($a, self::SCALE);
         $bi = self::toScaledInt($b, self::SCALE);
+
         return self::fromScaledInt($ai + $bi, self::SCALE);
     }
 
@@ -42,10 +41,12 @@ final class Decimal
     public static function compare(string $a, string $b): int
     {
         if (function_exists('bccomp')) {
+            /** @psalm-suppress ArgumentTypeCoercion guarded by Decimal contract: callers MUST pass numeric strings */
             return bccomp($a, $b, self::SCALE);
         }
         $ai = self::toScaledInt($a, self::SCALE);
         $bi = self::toScaledInt($b, self::SCALE);
+
         return $ai <=> $bi;
     }
 
@@ -55,16 +56,17 @@ final class Decimal
     public static function normalize(string $v): string
     {
         if (function_exists('bcadd')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion guarded by Decimal contract: callers MUST pass numeric strings */
             return bcadd($v, '0', self::SCALE);
         }
+
         return self::fromScaledInt(self::toScaledInt($v, self::SCALE), self::SCALE);
     }
 
     private static function toScaledInt(string $v, int $scale): int
     {
         if (!preg_match('/^-?\d+(\.\d+)?$/', $v)) {
-            throw new InvalidArgumentException(sprintf('Invalid decimal: %s', $v));
+            throw new \InvalidArgumentException(sprintf('Invalid decimal: %s', $v));
         }
         $negative = str_starts_with($v, '-');
         $abs = ltrim($v, '-');
@@ -78,15 +80,16 @@ final class Decimal
         }
         $fracPart = substr(str_pad($fracPart, $scale, '0'), 0, $scale);
 
-        $combined = $intPart . $fracPart;
+        $combined = $intPart.$fracPart;
         // Guard against int overflow at our domain scale (DECIMAL(18,4) fits
         // comfortably below PHP_INT_MAX on 64-bit runtimes — we only run PHP
         // 8.3 in tested contexts).
-        if (PHP_INT_SIZE < 8) {
+        if (\PHP_INT_SIZE < 8) {
             throw new \RuntimeException('Decimal fallback requires 64-bit PHP.');
         }
         /** @var int $n */
         $n = (int) $combined;
+
         return $negative ? -$n : $n;
     }
 
@@ -94,10 +97,11 @@ final class Decimal
     {
         $negative = $n < 0;
         $abs = (string) ($negative ? -$n : $n);
-        $abs = str_pad($abs, $scale + 1, '0', STR_PAD_LEFT);
+        $abs = str_pad($abs, $scale + 1, '0', \STR_PAD_LEFT);
         $intPart = substr($abs, 0, strlen($abs) - $scale);
         $fracPart = substr($abs, strlen($abs) - $scale);
-        $result = $intPart . '.' . $fracPart;
-        return $negative ? '-' . $result : $result;
+        $result = $intPart.'.'.$fracPart;
+
+        return $negative ? '-'.$result : $result;
     }
 }

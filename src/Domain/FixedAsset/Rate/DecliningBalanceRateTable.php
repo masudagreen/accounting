@@ -33,14 +33,14 @@ final class DecliningBalanceRateTable
      * @var array<int, array{rate: float, updateRate: float, assuredRate: float}>
      */
     private const TABLE_200 = [
-        2  => ['rate' => 1.000, 'updateRate' => 0.000, 'assuredRate' => 0.00000],
-        3  => ['rate' => 0.667, 'updateRate' => 1.000, 'assuredRate' => 0.11089],
-        4  => ['rate' => 0.500, 'updateRate' => 1.000, 'assuredRate' => 0.12499],
-        5  => ['rate' => 0.400, 'updateRate' => 0.500, 'assuredRate' => 0.10800],
-        6  => ['rate' => 0.333, 'updateRate' => 0.334, 'assuredRate' => 0.09911],
-        7  => ['rate' => 0.286, 'updateRate' => 0.334, 'assuredRate' => 0.08680],
-        8  => ['rate' => 0.250, 'updateRate' => 0.334, 'assuredRate' => 0.07909],
-        9  => ['rate' => 0.222, 'updateRate' => 0.250, 'assuredRate' => 0.07126],
+        2 => ['rate' => 1.000, 'updateRate' => 0.000, 'assuredRate' => 0.00000],
+        3 => ['rate' => 0.667, 'updateRate' => 1.000, 'assuredRate' => 0.11089],
+        4 => ['rate' => 0.500, 'updateRate' => 1.000, 'assuredRate' => 0.12499],
+        5 => ['rate' => 0.400, 'updateRate' => 0.500, 'assuredRate' => 0.10800],
+        6 => ['rate' => 0.333, 'updateRate' => 0.334, 'assuredRate' => 0.09911],
+        7 => ['rate' => 0.286, 'updateRate' => 0.334, 'assuredRate' => 0.08680],
+        8 => ['rate' => 0.250, 'updateRate' => 0.334, 'assuredRate' => 0.07909],
+        9 => ['rate' => 0.222, 'updateRate' => 0.250, 'assuredRate' => 0.07126],
         10 => ['rate' => 0.200, 'updateRate' => 0.250, 'assuredRate' => 0.06552],
         11 => ['rate' => 0.182, 'updateRate' => 0.200, 'assuredRate' => 0.05992],
         12 => ['rate' => 0.167, 'updateRate' => 0.200, 'assuredRate' => 0.05566],
@@ -64,14 +64,14 @@ final class DecliningBalanceRateTable
      * @var array<int, array{rate: float, updateRate: float, assuredRate: float}>
      */
     private const TABLE_250 = [
-        2  => ['rate' => 1.000, 'updateRate' => 0.000, 'assuredRate' => 0.00000],
-        3  => ['rate' => 0.833, 'updateRate' => 1.000, 'assuredRate' => 0.02789],
-        4  => ['rate' => 0.625, 'updateRate' => 1.000, 'assuredRate' => 0.05274],
-        5  => ['rate' => 0.500, 'updateRate' => 1.000, 'assuredRate' => 0.06249],
-        6  => ['rate' => 0.417, 'updateRate' => 0.500, 'assuredRate' => 0.05776],
-        7  => ['rate' => 0.357, 'updateRate' => 0.500, 'assuredRate' => 0.05496],
-        8  => ['rate' => 0.313, 'updateRate' => 0.334, 'assuredRate' => 0.05111],
-        9  => ['rate' => 0.278, 'updateRate' => 0.334, 'assuredRate' => 0.04731],
+        2 => ['rate' => 1.000, 'updateRate' => 0.000, 'assuredRate' => 0.00000],
+        3 => ['rate' => 0.833, 'updateRate' => 1.000, 'assuredRate' => 0.02789],
+        4 => ['rate' => 0.625, 'updateRate' => 1.000, 'assuredRate' => 0.05274],
+        5 => ['rate' => 0.500, 'updateRate' => 1.000, 'assuredRate' => 0.06249],
+        6 => ['rate' => 0.417, 'updateRate' => 0.500, 'assuredRate' => 0.05776],
+        7 => ['rate' => 0.357, 'updateRate' => 0.500, 'assuredRate' => 0.05496],
+        8 => ['rate' => 0.313, 'updateRate' => 0.334, 'assuredRate' => 0.05111],
+        9 => ['rate' => 0.278, 'updateRate' => 0.334, 'assuredRate' => 0.04731],
         10 => ['rate' => 0.250, 'updateRate' => 0.334, 'assuredRate' => 0.04448],
         15 => ['rate' => 0.167, 'updateRate' => 0.200, 'assuredRate' => 0.02755],
         20 => ['rate' => 0.125, 'updateRate' => 0.143, 'assuredRate' => 0.02061],
@@ -83,11 +83,13 @@ final class DecliningBalanceRateTable
      * Returns the rate bundle for a given useful life and method.
      *
      * @param 'declining_balance'|'declining_balance_2007'|'declining_balance_2012'|'declining_balance_2016' $method
+     *
      * @return array{rate: float, updateRate: float, assuredRate: float}|null
      */
     public static function lookup(string $method, int $usefulLifeYears): ?array
     {
         $table = $method === 'declining_balance_2007' ? self::TABLE_250 : self::TABLE_200;
+
         return $table[$usefulLifeYears] ?? null;
     }
 }

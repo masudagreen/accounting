@@ -18,6 +18,7 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class OldStraightLineDepreciationCalculator implements DepreciationCalculatorInterface
 {
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         // 旧法残存価額 = 取得価額 × 10%

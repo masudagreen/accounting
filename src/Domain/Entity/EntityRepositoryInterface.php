@@ -12,10 +12,11 @@ interface EntityRepositoryInterface
     /**
      * List entities belonging to the given owner with pagination.
      *
-     * @param int<1, max> $page     1-based page number
+     * @param int<1, max> $page 1-based page number
      * @param int<1, max> $pageSize 1..200 per the OpenAPI spec
-     * @param string|null $search   Optional fragment matched against name
-     * @param bool|null   $isActive Optional filter flag
+     * @param string|null $search Optional fragment matched against name
+     * @param bool|null $isActive Optional filter flag
+     *
      * @return list<Entity>
      */
     public function listByOwner(

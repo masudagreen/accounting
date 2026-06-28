@@ -7,7 +7,6 @@ namespace Rucaro\Tests\Unit\Domain\Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\Exception\DomainException;
-use RuntimeException;
 
 #[CoversClass(DomainException::class)]
 final class DomainExceptionTest extends TestCase
@@ -16,7 +15,7 @@ final class DomainExceptionTest extends TestCase
     {
         $exception = new ConcreteDomainException('something went wrong');
 
-        self::assertInstanceOf(RuntimeException::class, $exception);
+        self::assertInstanceOf(\RuntimeException::class, $exception);
     }
 
     public function testStoresDomainCodeAsString(): void

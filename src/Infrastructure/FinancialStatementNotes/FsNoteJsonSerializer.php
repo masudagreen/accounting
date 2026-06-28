@@ -18,28 +18,29 @@ final class FsNoteJsonSerializer
     public static function toArray(FinancialStatementNote $note): array
     {
         return [
-            'id'             => $note->id,
-            'entityId'       => $note->entityId,
-            'fiscalTermId'   => $note->fiscalTermId,
-            'templateCode'   => $note->templateCode,
-            'category'       => $note->category->value,
-            'categoryLabel'  => $note->category->jaLabel(),
-            'label'          => $note->label,
-            'body'           => $note->body,
-            'sortOrder'      => $note->sortOrder,
-            'isActive'       => $note->isActive,
-            'createdAt'      => $note->createdAt->format(DATE_ATOM),
-            'updatedAt'      => $note->updatedAt->format(DATE_ATOM),
+            'id' => $note->id,
+            'entityId' => $note->entityId,
+            'fiscalTermId' => $note->fiscalTermId,
+            'templateCode' => $note->templateCode,
+            'category' => $note->category->value,
+            'categoryLabel' => $note->category->jaLabel(),
+            'label' => $note->label,
+            'body' => $note->body,
+            'sortOrder' => $note->sortOrder,
+            'isActive' => $note->isActive,
+            'createdAt' => $note->createdAt->format(\DATE_ATOM),
+            'updatedAt' => $note->updatedAt->format(\DATE_ATOM),
         ];
     }
 
     /**
      * @param list<FinancialStatementNote> $notes
+     *
      * @return list<array<string, mixed>>
      */
     public static function toArrayList(array $notes): array
     {
-        return array_values(array_map([self::class, 'toArray'], $notes));
+        return array_map([self::class, 'toArray'], $notes);
     }
 
     /**
@@ -48,22 +49,23 @@ final class FsNoteJsonSerializer
     public static function templateToArray(FsNoteTemplate $tpl): array
     {
         return [
-            'id'            => $tpl->id,
-            'code'          => $tpl->code,
-            'category'      => $tpl->category->value,
+            'id' => $tpl->id,
+            'code' => $tpl->code,
+            'category' => $tpl->category->value,
             'categoryLabel' => $tpl->category->jaLabel(),
-            'label'         => $tpl->label,
-            'defaultBody'   => $tpl->defaultBody,
-            'sortOrder'     => $tpl->sortOrder,
+            'label' => $tpl->label,
+            'defaultBody' => $tpl->defaultBody,
+            'sortOrder' => $tpl->sortOrder,
         ];
     }
 
     /**
      * @param list<FsNoteTemplate> $templates
+     *
      * @return list<array<string, mixed>>
      */
     public static function templateList(array $templates): array
     {
-        return array_values(array_map([self::class, 'templateToArray'], $templates));
+        return array_map([self::class, 'templateToArray'], $templates);
     }
 }

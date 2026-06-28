@@ -12,6 +12,7 @@ final class InMemoryAccountTitleConsumptionTaxDefaultRepository implements Accou
     /** @var array<string, AccountTitleConsumptionTaxDefault> */
     private array $byKey = [];
 
+    #[\Override]
     public function findByEntity(string $entityId): array
     {
         /** @var list<AccountTitleConsumptionTaxDefault> $out */
@@ -21,19 +22,23 @@ final class InMemoryAccountTitleConsumptionTaxDefaultRepository implements Accou
                 $out[] = $row;
             }
         }
+
         return $out;
     }
 
+    #[\Override]
     public function findByAccountTitle(string $entityId, string $accountTitleId): ?AccountTitleConsumptionTaxDefault
     {
         return $this->byKey[$this->key($entityId, $accountTitleId)] ?? null;
     }
 
+    #[\Override]
     public function save(AccountTitleConsumptionTaxDefault $row): void
     {
         $this->byKey[$this->key($row->entityId, $row->accountTitleId)] = $row;
     }
 
+    #[\Override]
     public function saveAll(array $rows): void
     {
         foreach ($rows as $row) {
@@ -41,6 +46,7 @@ final class InMemoryAccountTitleConsumptionTaxDefaultRepository implements Accou
         }
     }
 
+    #[\Override]
     public function delete(string $entityId, string $accountTitleId): void
     {
         unset($this->byKey[$this->key($entityId, $accountTitleId)]);
@@ -48,6 +54,6 @@ final class InMemoryAccountTitleConsumptionTaxDefaultRepository implements Accou
 
     private function key(string $entityId, string $accountTitleId): string
     {
-        return $entityId . '#' . $accountTitleId;
+        return $entityId.'#'.$accountTitleId;
     }
 }

@@ -23,8 +23,9 @@ final readonly class ReorderFsNotesUseCase
     }
 
     /**
-     * @param list<string> $orderedIds Ids in the new presentation order.
-     * @return int Number of notes whose sort order was updated.
+     * @param list<string> $orderedIds ids in the new presentation order
+     *
+     * @return int number of notes whose sort order was updated
      */
     public function execute(
         string $entityId,
@@ -37,9 +38,7 @@ final readonly class ReorderFsNotesUseCase
         $seen = [];
         foreach ($orderedIds as $id) {
             if (!is_string($id) || $id === '' || isset($seen[$id])) {
-                throw ValidationException::withErrors([
-                    'orderedIds' => ['orderedIds must contain unique, non-empty strings.'],
-                ]);
+                throw ValidationException::withErrors(['orderedIds' => ['orderedIds must contain unique, non-empty strings.']]);
             }
             $seen[$id] = true;
         }
@@ -58,8 +57,9 @@ final readonly class ReorderFsNotesUseCase
                 continue;
             }
             $this->notes->save($note->withSortOrder($idx, $now));
-            $updated++;
+            ++$updated;
         }
+
         return $updated;
     }
 }

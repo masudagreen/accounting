@@ -60,6 +60,7 @@ final readonly class PutCvpClassificationController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::list(
             BreakEvenPointJsonSerializer::classificationsToArray($built),
             ['total' => count($built)],

@@ -117,10 +117,11 @@ final readonly class LedgerBook
     private static function subtract(string $a, string $b): string
     {
         if (function_exists('bcsub')) {
-            /** @var string */
+            /** @psalm-suppress ArgumentTypeCoercion LedgerBook only sees Decimal-normalised numeric strings */
             return bcsub($a, $b, Decimal::SCALE);
         }
-        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-' . $b);
+        $negated = str_starts_with($b, '-') ? substr($b, 1) : ('-'.$b);
+
         return Decimal::add($a, $negated);
     }
 }

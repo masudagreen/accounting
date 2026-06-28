@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PDO;
 use Rucaro\Domain\TrialBalance\TrialBalanceSnapshot;
 use Rucaro\Domain\TrialBalance\TrialBalanceSnapshotRepositoryInterface;
@@ -21,10 +19,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function saveAll(array $snapshots): void
     {
         if ($snapshots === []) {
@@ -46,16 +45,16 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
             );
             foreach ($snapshots as $s) {
                 $stmt->execute([
-                    ':id'               => UlidGenerator::decode($s->id),
-                    ':entity_id'        => UlidGenerator::decode($s->entityId),
-                    ':fiscal_term_id'   => UlidGenerator::decode($s->fiscalTermId),
-                    ':snapshot_date'    => $s->snapshotDate->format('Y-m-d'),
+                    ':id' => UlidGenerator::decode($s->id),
+                    ':entity_id' => UlidGenerator::decode($s->entityId),
+                    ':fiscal_term_id' => UlidGenerator::decode($s->fiscalTermId),
+                    ':snapshot_date' => $s->snapshotDate->format('Y-m-d'),
                     ':account_title_id' => UlidGenerator::decode($s->accountTitleId),
-                    ':debit_total'      => $s->debitTotal,
-                    ':credit_total'     => $s->creditTotal,
-                    ':balance'          => $s->balance,
-                    ':line_count'       => $s->lineCount,
-                    ':generated_at'     => self::fmtTs($s->generatedAt),
+                    ':debit_total' => $s->debitTotal,
+                    ':credit_total' => $s->creditTotal,
+                    ':balance' => $s->balance,
+                    ':line_count' => $s->lineCount,
+                    ':generated_at' => self::fmtTs($s->generatedAt),
                 ]);
             }
             if ($needsTransaction) {
@@ -69,10 +68,11 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
         }
     }
 
+    #[\Override]
     public function deleteByMonth(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $monthEnd,
+        \DateTimeImmutable $monthEnd,
     ): void {
         $stmt = $this->pdo->prepare(
             'DELETE FROM trial_balance_snapshots
@@ -81,16 +81,17 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
                AND snapshot_date = :snapshot_date',
         );
         $stmt->execute([
-            ':entity_id'      => UlidGenerator::decode($entityId),
+            ':entity_id' => UlidGenerator::decode($entityId),
             ':fiscal_term_id' => UlidGenerator::decode($fiscalTermId),
-            ':snapshot_date'  => $monthEnd->format('Y-m-d'),
+            ':snapshot_date' => $monthEnd->format('Y-m-d'),
         ]);
     }
 
+    #[\Override]
     public function findByMonth(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $monthEnd,
+        \DateTimeImmutable $monthEnd,
     ): array {
         $stmt = $this->pdo->prepare(
             'SELECT id, entity_id, fiscal_term_id, snapshot_date, account_title_id,
@@ -102,12 +103,12 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
              ORDER BY account_title_id ASC',
         );
         $stmt->execute([
-            ':entity_id'      => UlidGenerator::decode($entityId),
+            ':entity_id' => UlidGenerator::decode($entityId),
             ':fiscal_term_id' => UlidGenerator::decode($fiscalTermId),
-            ':snapshot_date'  => $monthEnd->format('Y-m-d'),
+            ':snapshot_date' => $monthEnd->format('Y-m-d'),
         ]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         $out = [];
         foreach ($rows as $r) {
             $out[] = new TrialBalanceSnapshot(
@@ -121,9 +122,10 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
                 balance: (string) ($r['balance'] ?? '0.0000'),
                 lineCount: (int) ($r['line_count'] ?? 0),
                 generatedAt: self::parseTs($r['generated_at'] ?? null)
-                    ?? new DateTimeImmutable('now', new DateTimeZone('UTC')),
+                    ?? new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
             );
         }
+
         return $out;
     }
 
@@ -132,35 +134,36 @@ final class PdoTrialBalanceSnapshotRepository implements TrialBalanceSnapshotRep
         if (!is_string($raw) || $raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
-    private static function parseDate(mixed $raw): ?DateTimeImmutable
+    private static function parseDate(mixed $raw): ?\DateTimeImmutable
     {
         if (!is_string($raw) || $raw === '') {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function parseTs(mixed $raw): ?DateTimeImmutable
+    private static function parseTs(mixed $raw): ?\DateTimeImmutable
     {
         if (!is_string($raw) || $raw === '') {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }
     }
 
-    private static function fmtTs(DateTimeImmutable $t): string
+    private static function fmtTs(\DateTimeImmutable $t): string
     {
-        return $t->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
+        return $t->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
     }
 }

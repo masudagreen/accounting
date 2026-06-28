@@ -54,8 +54,8 @@ final readonly class ListJournalController
         );
 
         return EnvelopeResponse::list($items, [
-            'total'    => $output->total,
-            'page'     => $output->page,
+            'total' => $output->total,
+            'page' => $output->page,
             'pageSize' => $output->pageSize,
         ]);
     }

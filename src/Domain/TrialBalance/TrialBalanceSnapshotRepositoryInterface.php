@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\TrialBalance;
 
-use DateTimeImmutable;
-
 /**
  * Repository port for the `trial_balance_snapshots` table.
  *
@@ -25,7 +23,7 @@ interface TrialBalanceSnapshotRepositoryInterface
     public function deleteByMonth(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $monthEnd,
+        \DateTimeImmutable $monthEnd,
     ): void;
 
     /**
@@ -36,6 +34,6 @@ interface TrialBalanceSnapshotRepositoryInterface
     public function findByMonth(
         string $entityId,
         string $fiscalTermId,
-        DateTimeImmutable $monthEnd,
+        \DateTimeImmutable $monthEnd,
     ): array;
 }

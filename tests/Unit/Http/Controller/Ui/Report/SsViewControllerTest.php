@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\StatementOfChangesInEquity\GenerateStatementOfChangesInEquityUseCase;
@@ -25,11 +24,13 @@ use Rucaro\Tests\Support\Fake\FrozenClock;
 #[CoversClass(SsViewController::class)]
 final class SsViewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -86,8 +87,8 @@ final class SsViewControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new SsViewController(
             useCase: new GenerateStatementOfChangesInEquityUseCase(
@@ -104,31 +105,36 @@ final class SsViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
 
 final class StubSsAdjustmentRepo implements SsManualAdjustmentRepositoryInterface
 {
+    #[\Override]
     public function save(SsManualAdjustment $adjustment): void
     {
     }
 
+    #[\Override]
     public function findById(string $id): ?SsManualAdjustment
     {
         return null;
     }
 
+    #[\Override]
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): array
     {
         return [];
     }
 
+    #[\Override]
     public function delete(string $id): void
     {
     }
@@ -140,9 +146,11 @@ final class StubSsGenerator implements StatementOfChangesInEquityPdfGeneratorInt
     {
     }
 
+    #[\Override]
     public function render(StatementOfChangesInEquity $statement): string
     {
         unset($statement);
+
         return $this->emitStub ? "%PDF-STUB\nfake ss pdf\n%%EOF" : '';
     }
 }

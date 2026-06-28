@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\E2E;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -37,13 +35,13 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
 {
     public function testConsumptionTaxReportPdfRoundTrip(): void
     {
-        $now = new DateTimeImmutable('2026-04-21T12:00:00Z', new DateTimeZone('UTC'));
+        $now = new \DateTimeImmutable('2026-04-21T12:00:00Z', new \DateTimeZone('UTC'));
         $period = new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAB0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAB1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAB2',
-            periodFrom: new DateTimeImmutable('2026-04-01'),
-            periodTo: new DateTimeImmutable('2027-03-31'),
+            periodFrom: new \DateTimeImmutable('2026-04-01'),
+            periodTo: new \DateTimeImmutable('2027-03-31'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,
@@ -58,7 +56,7 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
         // Seeded scenario: 売上 1,600,000 / 仕入 200,000 / 販管費 17,000
         $transactions = new InMemoryTaxableTransactionQuery([
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-05-15'),
+                bookedOn: new \DateTimeImmutable('2026-05-15'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxableSales,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -66,7 +64,7 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
                 taxAmount: '160000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-05-20'),
+                bookedOn: new \DateTimeImmutable('2026-05-20'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxablePurchase,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -74,7 +72,7 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
                 taxAmount: '20000.0000',
             ),
             new TaxableTransaction(
-                bookedOn: new DateTimeImmutable('2026-05-25'),
+                bookedOn: new \DateTimeImmutable('2026-05-25'),
                 categoryCode: ConsumptionTaxCategoryCode::TaxablePurchase,
                 ratePercent: '10.00',
                 isReduced: false,
@@ -96,9 +94,9 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
         self::assertSame('138300.0000', $settlement->netTaxPayable);
 
         $repoRoot = dirname(__DIR__, 2);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'consumption_tax';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'smarty_consumption_tax_e2e';
-        $fontDir     = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'fonts';
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'consumption_tax';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'smarty_consumption_tax_e2e';
+        $fontDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'fonts';
         if (!is_dir($compileDir)) {
             @mkdir($compileDir, 0775, true);
         }
@@ -113,10 +111,10 @@ final class ConsumptionTaxReportSmokeTest extends TestCase
         self::assertNotSame('', $pdf);
         self::assertStringStartsWith('%PDF-', $pdf);
 
-        $outDir = (string) (getenv('RUCARO_E2E_PDF_OUT') ?: '');
+        $outDir = getenv('RUCARO_E2E_PDF_OUT') ?: '';
         if ($outDir !== '' && is_dir($outDir)) {
             file_put_contents(
-                rtrim($outDir, DIRECTORY_SEPARATOR . '/') . DIRECTORY_SEPARATOR . 'consumption-tax-report.pdf',
+                rtrim($outDir, \DIRECTORY_SEPARATOR.'/').\DIRECTORY_SEPARATOR.'consumption-tax-report.pdf',
                 $pdf,
             );
         }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\TrialBalance;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\TrialBalance\TrialBalance;
@@ -37,14 +35,14 @@ final class TrialBalanceTest extends TestCase
         $tb = new TrialBalance(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
             currencyCode: 'JPY',
             rows: [
-                TrialBalanceRow::compute('A', '101', 'a', 'asset',   'debit',  '100', '0', 1),
-                TrialBalanceRow::compute('B', '401', 'b', 'revenue', 'credit', '0', '50',  1),
+                TrialBalanceRow::compute('A', '101', 'a', 'asset', 'debit', '100', '0', 1),
+                TrialBalanceRow::compute('B', '401', 'b', 'revenue', 'credit', '0', '50', 1),
             ],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
 
         self::assertFalse($tb->isBalanced());
@@ -55,11 +53,11 @@ final class TrialBalanceTest extends TestCase
         $tb = new TrialBalance(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
             currencyCode: 'JPY',
             rows: [],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
 
         self::assertSame('0.0000', $tb->debitTotal());
@@ -72,15 +70,15 @@ final class TrialBalanceTest extends TestCase
         return new TrialBalance(
             entityId: 'ENT',
             fiscalTermId: 'TRM',
-            fromDate: new DateTimeImmutable('2026-04-01'),
-            toDate: new DateTimeImmutable('2026-04-30'),
+            fromDate: new \DateTimeImmutable('2026-04-01'),
+            toDate: new \DateTimeImmutable('2026-04-30'),
             currencyCode: 'JPY',
             rows: [
-                TrialBalanceRow::compute('A', '101', '現金', 'asset',   'debit',  '12000', '3000',  4),
-                TrialBalanceRow::compute('B', '401', '売上', 'revenue', 'credit', '0',     '12000', 1),
-                TrialBalanceRow::compute('C', '501', '仕入', 'expense', 'debit',  '3000',  '0',     1),
+                TrialBalanceRow::compute('A', '101', '現金', 'asset', 'debit', '12000', '3000', 4),
+                TrialBalanceRow::compute('B', '401', '売上', 'revenue', 'credit', '0', '12000', 1),
+                TrialBalanceRow::compute('C', '501', '仕入', 'expense', 'debit', '3000', '0', 1),
             ],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 }

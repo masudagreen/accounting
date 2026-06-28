@@ -19,7 +19,7 @@ use Rucaro\Support\Decimal\Decimal;
 final readonly class SsChange
 {
     public const SOURCE_JOURNAL_AUTO = 'journal_auto';
-    public const SOURCE_MANUAL       = 'manual';
+    public const SOURCE_MANUAL = 'manual';
 
     public function __construct(
         public SsChangeType $changeType,

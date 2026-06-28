@@ -35,6 +35,11 @@ return (new PhpCsFixer\Config())
         'native_function_invocation' => false,
         'phpdoc_align' => ['align' => 'left'],
         'phpdoc_summary' => false,
+        // Preserve `/** @psalm-suppress ... */` inline annotations on bc-math
+        // / numeric-string call sites; without this, cs-fixer downgrades them
+        // to `/* ... */` single-asterisk comments and psalm stops seeing the
+        // suppress directives.
+        'phpdoc_to_comment' => ['ignored_tags' => ['psalm-suppress', 'psalm-var', 'var']],
         'yoda_style' => false,
     ])
     ->setFinder($finder)

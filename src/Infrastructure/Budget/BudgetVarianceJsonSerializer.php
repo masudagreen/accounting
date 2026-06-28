@@ -18,21 +18,21 @@ final class BudgetVarianceJsonSerializer
     public static function toArray(BudgetVarianceAnalysis $analysis): array
     {
         return [
-            'budgetId'     => $analysis->budgetId,
-            'entityId'     => $analysis->entityId,
+            'budgetId' => $analysis->budgetId,
+            'entityId' => $analysis->entityId,
             'fiscalTermId' => $analysis->fiscalTermId,
-            'budgetName'   => $analysis->budgetName,
-            'status'       => $analysis->status->value,
-            'periodFrom'   => $analysis->periodFrom->format('Y-m-d'),
-            'periodTo'     => $analysis->periodTo->format('Y-m-d'),
+            'budgetName' => $analysis->budgetName,
+            'status' => $analysis->status->value,
+            'periodFrom' => $analysis->periodFrom->format('Y-m-d'),
+            'periodTo' => $analysis->periodTo->format('Y-m-d'),
             'currencyCode' => $analysis->currencyCode,
-            'rows'         => array_map([self::class, 'rowToArray'], $analysis->rows),
-            'totals'       => [
-                'budget'   => $analysis->totalBudget(),
-                'actual'   => $analysis->totalActual(),
+            'rows' => array_map([self::class, 'rowToArray'], $analysis->rows),
+            'totals' => [
+                'budget' => $analysis->totalBudget(),
+                'actual' => $analysis->totalActual(),
                 'variance' => $analysis->totalVariance(),
             ],
-            'generatedAt'  => $analysis->generatedAt->format(DATE_ATOM),
+            'generatedAt' => $analysis->generatedAt->format(\DATE_ATOM),
         ];
     }
 
@@ -42,15 +42,15 @@ final class BudgetVarianceJsonSerializer
     public static function rowToArray(BudgetVarianceRow $row): array
     {
         return [
-            'accountTitleId'    => $row->accountTitleId,
-            'accountTitleCode'  => $row->accountTitleCode,
-            'accountTitleName'  => $row->accountTitleName,
-            'budgetAmount'      => $row->budgetAmount,
-            'actualAmount'      => $row->actualAmount,
-            'varianceAmount'    => $row->varianceAmount,
-            'usageRatePercent'  => $row->usageRatePercent,
-            'isOverBudget'      => $row->isOverBudget(),
-            'isUnderBudget'     => $row->isUnderBudget(),
+            'accountTitleId' => $row->accountTitleId,
+            'accountTitleCode' => $row->accountTitleCode,
+            'accountTitleName' => $row->accountTitleName,
+            'budgetAmount' => $row->budgetAmount,
+            'actualAmount' => $row->actualAmount,
+            'varianceAmount' => $row->varianceAmount,
+            'usageRatePercent' => $row->usageRatePercent,
+            'isOverBudget' => $row->isOverBudget(),
+            'isUnderBudget' => $row->isUnderBudget(),
         ];
     }
 }

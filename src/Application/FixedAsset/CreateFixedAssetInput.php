@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FixedAsset;
 
-use DateTimeImmutable;
-
 final readonly class CreateFixedAssetInput
 {
     public function __construct(
@@ -16,8 +14,8 @@ final readonly class CreateFixedAssetInput
         public ?string $assetAccountTitleId,
         public ?string $accumulatedDepreciationAccountTitleId,
         public ?string $depreciationExpenseAccountTitleId,
-        public DateTimeImmutable $acquisitionDate,
-        public DateTimeImmutable $serviceStartDate,
+        public \DateTimeImmutable $acquisitionDate,
+        public \DateTimeImmutable $serviceStartDate,
         public string $acquisitionCost,
         public string $residualValue,
         public int $usefulLifeYears,

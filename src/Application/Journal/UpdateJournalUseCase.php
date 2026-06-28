@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use DateTimeZone;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Domain\Exception\InvariantViolationException;
 use Rucaro\Domain\Journal\Journal;
@@ -35,7 +34,7 @@ final readonly class UpdateJournalUseCase
             throw new EntityNotFoundException(sprintf('Journal %s not found.', $input->journalId));
         }
 
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
 
         /** @var list<JournalLine> $lines */
         $lines = [];
@@ -54,10 +53,12 @@ final readonly class UpdateJournalUseCase
                 memo: $raw->memo,
                 bookedAt: $now,
             );
-            $lineNo++;
+            ++$lineNo;
         }
 
-        $updated = $existing->withLines($lines);
+        $updated = $input->bypassMutabilityCheck
+            ? $existing->withLinesForced($lines)
+            : $existing->withLines($lines);
         // Refresh updatedAt on the header regardless of whether any other
         // header-level fields changed, so stale caches downstream invalidate.
         $refreshed = new Journal(
@@ -82,6 +83,7 @@ final readonly class UpdateJournalUseCase
         );
 
         $this->journals->save($refreshed);
+
         return $refreshed;
     }
 }

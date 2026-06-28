@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Support\Container;
 
-use Closure;
 use Psr\Container\ContainerInterface;
 use Rucaro\Support\Container\Exception\ContainerException;
 use Rucaro\Support\Container\Exception\NotFoundException;
@@ -22,7 +21,7 @@ use Rucaro\Support\Container\Exception\NotFoundException;
  */
 final class Container implements ContainerInterface
 {
-    /** @var array<string, Closure(self):mixed> */
+    /** @var array<string, \Closure(self):mixed> */
     private array $factories = [];
 
     /** @var array<string, mixed> */
@@ -32,9 +31,9 @@ final class Container implements ContainerInterface
      * Register a factory. Factories are called lazily and cached (singleton
      * semantics by default).
      *
-     * @param Closure(self):mixed $factory
+     * @param \Closure(self):mixed $factory
      */
-    public function set(string $id, Closure $factory): void
+    public function set(string $id, \Closure $factory): void
     {
         $this->factories[$id] = $factory;
         unset($this->resolved[$id]);
@@ -43,17 +42,19 @@ final class Container implements ContainerInterface
     /**
      * Eagerly bind a pre-built instance.
      */
-    public function setInstance(string $id, mixed $instance): void
+    public function setInstance(string $id, \PDO|\stdClass $instance): void
     {
         $this->resolved[$id] = $instance;
     }
 
+    #[\Override]
     public function has(string $id): bool
     {
         return array_key_exists($id, $this->resolved)
             || array_key_exists($id, $this->factories);
     }
 
+    #[\Override]
     public function get(string $id): mixed
     {
         if (array_key_exists($id, $this->resolved)) {
@@ -66,23 +67,22 @@ final class Container implements ContainerInterface
 
         try {
             $value = ($this->factories[$id])($this);
-        } catch (NotFoundException | ContainerException $e) {
+        } catch (NotFoundException|ContainerException $e) {
             throw $e;
         } catch (\Throwable $e) {
-            throw new ContainerException(
-                sprintf("Failed to build service '%s': %s", $id, $e->getMessage()),
-                0,
-                $e,
-            );
+            throw new ContainerException(sprintf("Failed to build service '%s': %s", $id, $e->getMessage()), 0, $e);
         }
 
         $this->resolved[$id] = $value;
+
         return $value;
     }
 
     /**
      * @template T of object
+     *
      * @param class-string<T> $id
+     *
      * @return T
      */
     public function getTyped(string $id): object
@@ -90,12 +90,10 @@ final class Container implements ContainerInterface
         /** @var object $instance */
         $instance = $this->get($id);
         if (!$instance instanceof $id) {
-            throw new ContainerException(sprintf(
-                "Service '%s' resolved to an instance that is not of the expected type.",
-                $id,
-            ));
+            throw new ContainerException(sprintf("Service '%s' resolved to an instance that is not of the expected type.", $id));
         }
-        /** @var T $instance */
+
+        /* @var T $instance */
         return $instance;
     }
 }

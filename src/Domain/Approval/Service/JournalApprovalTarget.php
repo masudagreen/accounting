@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Approval\Service;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Approval\ApprovalTargetInterface;
 use Rucaro\Domain\Approval\ApprovalTargetKind;
 use Rucaro\Domain\Journal\Journal;
@@ -26,55 +25,62 @@ final class JournalApprovalTarget implements ApprovalTargetInterface
     ) {
     }
 
+    #[\Override]
     public function kind(): ApprovalTargetKind
     {
         return ApprovalTargetKind::Journal;
     }
 
+    #[\Override]
     public function id(): string
     {
         return $this->journal->id;
     }
 
+    #[\Override]
     public function summary(): string
     {
         $summary = trim($this->journal->summary);
         if ($summary === '') {
             return sprintf('Journal %s', $this->journal->id);
         }
+
         return $summary;
     }
 
+    #[\Override]
     public function details(): array
     {
         return [
-            'journal_id'    => $this->journal->id,
-            'journal_date'  => $this->journal->journalDate->format('Y-m-d'),
-            'total_amount'  => $this->journal->totalAmount,
+            'journal_id' => $this->journal->id,
+            'journal_date' => $this->journal->journalDate->format('Y-m-d'),
+            'total_amount' => $this->journal->totalAmount,
             'currency_code' => $this->journal->currencyCode,
-            'status'        => $this->journal->status,
-            'source'        => $this->journal->source,
-            'lines'         => array_map(
+            'status' => $this->journal->status,
+            'source' => $this->journal->source,
+            'lines' => array_map(
                 static fn ($line): array => [
-                    'line_no'          => $line->lineNo,
-                    'side'             => $line->side,
+                    'line_no' => $line->lineNo,
+                    'side' => $line->side,
                     'account_title_id' => $line->accountTitleId,
-                    'amount'           => $line->amount,
-                    'memo'             => $line->memo,
+                    'amount' => $line->amount,
+                    'memo' => $line->memo,
                 ],
                 $this->journal->lines,
             ),
         ];
     }
 
-    public function applyApproval(string $actorUserId, DateTimeImmutable $at): void
+    #[\Override]
+    public function applyApproval(string $actorUserId, \DateTimeImmutable $at): void
     {
         $approved = $this->journal->approve($at, $actorUserId);
         $this->journals->save($approved);
         $this->journal = $approved;
     }
 
-    public function applyRejection(string $actorUserId, DateTimeImmutable $at, string $reason): void
+    #[\Override]
+    public function applyRejection(string $actorUserId, \DateTimeImmutable $at, string $reason): void
     {
         $rejected = $this->journal->reject($at, $actorUserId, $reason);
         $this->journals->save($rejected);

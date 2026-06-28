@@ -37,7 +37,7 @@
           {foreach $lines as $line}
             <tr>
               <td>{if $line.side == 'debit'}借方{else}貸方{/if}</td>
-              <td><code>{$line.account_title_id|escape}</code></td>
+              <td>{if isset($account_name_by_id[$line.account_title_id])}{$account_name_by_id[$line.account_title_id]|escape}{else}<code class="text-muted">{$line.account_title_id|truncate:10:""|escape}…</code>{/if}</td>
               <td class="text-end">{$line.amount|escape}</td>
               <td>{$line.memo|escape}</td>
             </tr>

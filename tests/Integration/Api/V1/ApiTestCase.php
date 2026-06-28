@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Integration\Api\V1;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Http\ApiKernel;
 use Rucaro\Http\ServerRequest;
@@ -21,10 +20,11 @@ use Rucaro\Support\Container\ContainerBootstrap;
  */
 abstract class ApiTestCase extends TestCase
 {
-    protected ?PDO $pdo = null;
+    protected ?\PDO $pdo = null;
     protected ?Container $container = null;
     protected ?ApiKernel $kernel = null;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,8 +35,8 @@ abstract class ApiTestCase extends TestCase
         }
 
         $this->pdo = ConnectionFactory::createFromArray([
-            'host'     => $host,
-            'port'     => (int) (getenv('RUCARO_TEST_DB_PORT') ?: 3306),
+            'host' => $host,
+            'port' => (int) (getenv('RUCARO_TEST_DB_PORT') ?: 3306),
             'database' => getenv('RUCARO_TEST_DB_NAME') ?: 'rucaro_test',
             'username' => getenv('RUCARO_TEST_DB_USER') ?: 'root',
             'password' => getenv('RUCARO_TEST_DB_PASSWORD') ?: '',
@@ -47,8 +47,8 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
-     * @param array<string, string>             $headers  Lowercased keys.
-     * @param array<string, string|int|bool>    $query
+     * @param array<string, string> $headers lowercased keys
+     * @param array<string, string|int|bool> $query
      * @param array<string, mixed>|list<mixed>|null $json
      */
     protected function dispatch(
@@ -56,7 +56,7 @@ abstract class ApiTestCase extends TestCase
         string $path,
         array $headers = [],
         array $query = [],
-        array|null $json = null,
+        ?array $json = null,
     ): string {
         self::assertNotNull($this->kernel);
         /** @var array<string, string|int|bool|list<string>|null> $normalizedQuery */
@@ -73,6 +73,7 @@ abstract class ApiTestCase extends TestCase
             rawBody: $json !== null ? (string) json_encode($json) : '',
         );
         $response = $this->kernel->handle($request);
+
         return $response->body;
     }
 }

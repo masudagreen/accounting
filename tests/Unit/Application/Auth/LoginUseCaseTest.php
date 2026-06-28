@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Auth;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Auth\LoginUseCase;
@@ -125,9 +124,10 @@ final class LoginUseCaseTest extends TestCase
             passwordHash: $hasher->hash('correct-horse'),
             isActive: $isActive,
             lastLoginAt: null,
-            createdAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            updatedAt: new DateTimeImmutable('2026-04-01T00:00:00Z'),
+            createdAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            updatedAt: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
         ));
+
         return [$users, $tokens, $hasher, $clock];
     }
 }

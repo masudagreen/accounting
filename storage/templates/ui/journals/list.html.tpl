@@ -78,33 +78,41 @@
       <table class="table table-striped align-middle mb-0">
         <thead class="table-light">
           <tr>
+            {* sortable columns only (date / total_amount / status) — the
+               貸借科目 / 摘要 / 起票者 columns are display-only. *}
             {assign var="cols" value=[
-              ['id' => 'journal_date', 'label' => '発生日'],
-              ['id' => 'summary',      'label' => '摘要'],
-              ['id' => 'total_amount', 'label' => '合計金額'],
-              ['id' => 'created_by',   'label' => '起票者'],
-              ['id' => 'status',       'label' => 'ステータス']
+              ['id' => 'journal_date', 'label' => '発生日',  'sortable' => true,  'class' => ''],
+              ['id' => 'debit',        'label' => '借方科目','sortable' => false, 'class' => ''],
+              ['id' => 'credit',       'label' => '貸方科目','sortable' => false, 'class' => ''],
+              ['id' => 'summary',      'label' => '摘要',    'sortable' => true,  'class' => ''],
+              ['id' => 'total_amount', 'label' => '合計金額','sortable' => true,  'class' => 'text-end'],
+              ['id' => 'created_by',   'label' => '起票者',  'sortable' => true,  'class' => ''],
+              ['id' => 'status',       'label' => 'ステータス','sortable' => true,'class' => '']
             ]}
             {foreach $cols as $col}
-              {assign var="next_order" value="asc"}
-              {if $sort_by == $col.id && $sort_order == "asc"}{assign var="next_order" value="desc"}{/if}
-              {capture name="link"}?sortBy={$col.id}&sortOrder={$next_order}&{$query_string_base}&page={$page}{/capture}
-              <th scope="col"{if $col.id == 'total_amount'} class="text-end"{/if}>
-                <a class="text-decoration-none text-reset" href="/ui/journals{$smarty.capture.link}">
-                  {$col.label|escape}
-                  {if $sort_by == $col.id}
-                    {if $sort_order == "asc"}<i class="bi bi-caret-up-fill text-primary"></i>{else}<i class="bi bi-caret-down-fill text-primary"></i>{/if}
-                  {/if}
-                </a>
-              </th>
+              {if $col.sortable}
+                {assign var="next_order" value="asc"}
+                {if $sort_by == $col.id && $sort_order == "asc"}{assign var="next_order" value="desc"}{/if}
+                {capture name="link"}?sortBy={$col.id}&sortOrder={$next_order}&{$query_string_base nofilter}&page={$page}{/capture}
+                <th scope="col"{if $col.class != ''} class="{$col.class}"{/if}>
+                  <a class="text-decoration-none text-reset" href="/ui/journals{$smarty.capture.link}">
+                    {$col.label|escape}
+                    {if $sort_by == $col.id}
+                      {if $sort_order == "asc"}<i class="bi bi-caret-up-fill text-primary"></i>{else}<i class="bi bi-caret-down-fill text-primary"></i>{/if}
+                    {/if}
+                  </a>
+                </th>
+              {else}
+                <th scope="col"{if $col.class != ''} class="{$col.class}"{/if}>{$col.label|escape}</th>
+              {/if}
             {/foreach}
-            <th scope="col" class="text-end" style="min-width: 160px">アクション</th>
+            <th scope="col" class="text-end" style="min-width: 200px">アクション</th>
           </tr>
         </thead>
         <tbody>
           {if count($items) == 0}
             <tr>
-              <td colspan="6" class="text-center text-muted py-5">
+              <td colspan="8" class="text-center text-muted py-5">
                 条件に合致する仕訳はありません。<br>
                 <a class="btn btn-sm btn-outline-primary mt-3" href="/ui/journals/new">
                   <i class="bi bi-plus-lg"></i> 新規仕訳を作成する
@@ -113,15 +121,17 @@
             </tr>
           {else}
             {foreach $items as $j}
-              <tr>
+              {* Whole-row link to /ui/journals/{id} — the same pattern as
+                 the 総勘定元帳 (ledger view). The action-cell anchors and
+                 buttons stay clickable individually thanks to the closest()
+                 guard in the row-click handler below. *}
+              <tr class="journal-row-clickable" data-href="/ui/journals/{$j.id|escape}" tabindex="0">
                 <td><code>{$j.journalDate|escape}</code></td>
-                <td>
-                  <a class="text-decoration-none" href="/ui/journals/{$j.id|escape}">
-                    {$j.summary|default:'（摘要なし）'|escape}
-                  </a>
-                </td>
+                <td>{$j.debitLabel|escape}</td>
+                <td>{$j.creditLabel|escape}</td>
+                <td>{$j.summary|default:'（摘要なし）'|escape}</td>
                 <td class="text-end">{$j.totalAmount|escape}</td>
-                <td class="text-muted small"><code>{$j.createdBy|truncate:8:""|escape}…</code></td>
+                <td class="small">{if $j.createdByName != ''}{$j.createdByName|escape}{else}<code class="text-muted">{$j.createdBy|truncate:8:""|escape}…</code>{/if}</td>
                 <td>
                   {assign var="badge" value="text-bg-secondary"}
                   {if $j.status == 'draft'}{assign var="badge" value="text-bg-warning"}{/if}
@@ -130,10 +140,17 @@
                   {if $j.status == 'rejected'}{assign var="badge" value="text-bg-danger"}{/if}
                   <span class="badge {$badge}">{$j.status|escape}</span>
                 </td>
-                <td class="text-end">
-                  <a class="btn btn-sm btn-outline-secondary" href="/ui/journals/{$j.id|escape}">詳細</a>
+                <td class="text-end text-nowrap">
+                  <a class="btn btn-sm btn-outline-secondary" href="/ui/journals/{$j.id|escape}" title="詳細">
+                    <i class="bi bi-search"></i>
+                  </a>
+                  <a class="btn btn-sm btn-outline-primary" href="/ui/journals/new?duplicate_from={$j.id|escape}" title="この仕訳を複製して新規作成">
+                    <i class="bi bi-files"></i> 複製
+                  </a>
                   {if $j.status == 'draft'}
-                    <a class="btn btn-sm btn-outline-danger" href="/ui/journals/{$j.id|escape}/delete">削除</a>
+                    <a class="btn btn-sm btn-outline-danger" href="/ui/journals/{$j.id|escape}/delete" title="削除">
+                      <i class="bi bi-trash"></i>
+                    </a>
                   {/if}
                 </td>
               </tr>
@@ -143,26 +160,51 @@
       </table>
     </div>
 
+    <style>
+      .journal-row-clickable { cursor: pointer; }
+      .journal-row-clickable:hover { background-color: rgba(13, 110, 253, 0.06); }
+      .journal-row-clickable:focus-visible { outline: 2px solid #0d6efd; outline-offset: -2px; }
+    </style>
+    <script>
+      (function () {
+        'use strict';
+        document.querySelectorAll('tr.journal-row-clickable').forEach(function (row) {
+          row.addEventListener('click', function (e) {
+            if (e.target.closest('a, button, input, select, textarea, label')) return;
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+            if (window.getSelection && String(window.getSelection() || '') !== '') return;
+            var href = row.getAttribute('data-href');
+            if (href) window.location.href = href;
+          });
+          row.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            var href = row.getAttribute('data-href');
+            if (href) { e.preventDefault(); window.location.href = href; }
+          });
+        });
+      })();
+    </script>
+
     {if $total_pages > 1}
       <nav aria-label="journal pagination" class="p-3 border-top">
         <ul class="pagination pagination-sm mb-0 justify-content-end">
           {assign var="prev_page" value=$page-1}
           {assign var="next_page" value=$page+1}
           <li class="page-item{if $page <= 1} disabled{/if}">
-            <a class="page-link" href="/ui/journals?{$query_string_base}&page={$prev_page}">前へ</a>
+            <a class="page-link" href="/ui/journals?{$query_string_base nofilter}&page={$prev_page}">前へ</a>
           </li>
           {section name=p loop=$total_pages start=0 step=1}
             {assign var="p" value=$smarty.section.p.index+1}
             {if $p == 1 || $p == $total_pages || ($p >= $page-2 && $p <= $page+2)}
               <li class="page-item{if $p == $page} active{/if}">
-                <a class="page-link" href="/ui/journals?{$query_string_base}&page={$p}">{$p}</a>
+                <a class="page-link" href="/ui/journals?{$query_string_base nofilter}&page={$p}">{$p}</a>
               </li>
             {elseif $p == $page-3 || $p == $page+3}
               <li class="page-item disabled"><span class="page-link">…</span></li>
             {/if}
           {/section}
           <li class="page-item{if $page >= $total_pages} disabled{/if}">
-            <a class="page-link" href="/ui/journals?{$query_string_base}&page={$next_page}">次へ</a>
+            <a class="page-link" href="/ui/journals?{$query_string_base nofilter}&page={$next_page}">次へ</a>
           </li>
         </ul>
         <div class="text-end small text-muted mt-2">全 {$total} 件 / {$page} / {$total_pages} ページ</div>

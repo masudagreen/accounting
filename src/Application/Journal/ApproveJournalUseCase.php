@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use DateTimeZone;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Domain\Journal\Journal;
 use Rucaro\Domain\Journal\JournalRepositoryInterface;
@@ -30,9 +29,10 @@ final readonly class ApproveJournalUseCase
         if ($existing === null) {
             throw new EntityNotFoundException(sprintf('Journal %s not found.', $journalId));
         }
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $approved = $existing->approve($now, $approvedBy);
         $this->journals->save($approved);
+
         return $approved;
     }
 }

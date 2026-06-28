@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\StatementOfChangesInEquity;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\StatementOfChangesInEquity\Service\StatementOfChangesInEquityBuilder;
@@ -29,17 +27,17 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [
-                SsSectionCode::CapitalStock->value        => '50000000.0000',
-                SsSectionCode::RetainedEarnings->value    => '180000000.0000',
-                SsSectionCode::TreasuryStock->value       => '-2000000.0000',
+                SsSectionCode::CapitalStock->value => '50000000.0000',
+                SsSectionCode::RetainedEarnings->value => '180000000.0000',
+                SsSectionCode::TreasuryStock->value => '-2000000.0000',
             ],
             adjustments: $adjustments,
             netIncome: '45000000.0000',
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
 
         $capitalStock = $ss->sectionByCode(SsSectionCode::CapitalStock);
@@ -63,13 +61,13 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [SsSectionCode::RetainedEarnings->value => '0.0000'],
             adjustments: [],
             netIncome: '10000000.0000',
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
 
         $retained = $ss->sectionByCode(SsSectionCode::RetainedEarnings);
@@ -86,13 +84,13 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [SsSectionCode::RetainedEarnings->value => '100000000.0000'],
             adjustments: [],
             netIncome: null,
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
 
         $retained = $ss->sectionByCode(SsSectionCode::RetainedEarnings);
@@ -111,13 +109,13 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [],
             adjustments: $adjustments,
             netIncome: null,
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
         $capitalStock = $ss->sectionByCode(SsSectionCode::CapitalStock);
         self::assertNotNull($capitalStock);
@@ -132,11 +130,11 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         $ss = $builder->build(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            fromDate: new DateTimeImmutable('2026-04-01', new DateTimeZone('UTC')),
-            toDate: new DateTimeImmutable('2027-03-31', new DateTimeZone('UTC')),
+            fromDate: new \DateTimeImmutable('2026-04-01', new \DateTimeZone('UTC')),
+            toDate: new \DateTimeImmutable('2027-03-31', new \DateTimeZone('UTC')),
             currencyCode: 'JPY',
             openingBalances: [
-                SsSectionCode::CapitalStock->value     => '50000000.0000',
+                SsSectionCode::CapitalStock->value => '50000000.0000',
                 SsSectionCode::RetainedEarnings->value => '100000000.0000',
             ],
             adjustments: [
@@ -144,7 +142,7 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
                 $this->makeAdj(SsSectionCode::RetainedEarnings, SsChangeType::Dividend, '-3000000.0000', 1, 'Divvy'),
             ],
             netIncome: '10000000.0000',
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
         $totals = $ss->totals();
         // opening = 50M + 100M = 150M
@@ -163,8 +161,9 @@ final class StatementOfChangesInEquityBuilderTest extends TestCase
         string $label,
     ): SsManualAdjustment {
         static $seq = 0;
-        $seq++;
+        ++$seq;
         $id = sprintf('01HAAAAAAAAAAAAAAAAAAAAA%02d', $seq);
+
         return new SsManualAdjustment(
             id: $id,
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',

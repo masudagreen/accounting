@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\FinancialStatement\Multi;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
@@ -20,12 +17,12 @@ final class MultiPeriodFinancialStatementTest extends TestCase
 {
     public function testConstructRequiresAtLeastOnePeriod(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new MultiPeriodFinancialStatement(
             entityId: 'ENT',
             kind: FinancialStatementKind::All,
             periods: [],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 
@@ -34,12 +31,12 @@ final class MultiPeriodFinancialStatementTest extends TestCase
         $later = $this->makeEntry('T2', '2026-04-01', '2027-03-31');
         $earlier = $this->makeEntry('T1', '2025-04-01', '2026-03-31');
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new MultiPeriodFinancialStatement(
             entityId: 'ENT',
             kind: FinancialStatementKind::All,
             periods: [$later, $earlier],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
     }
 
@@ -53,7 +50,7 @@ final class MultiPeriodFinancialStatementTest extends TestCase
             entityId: 'ENT',
             kind: FinancialStatementKind::All,
             periods: [$a, $b, $c],
-            generatedAt: new DateTimeImmutable('2028-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2028-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
 
         self::assertSame(3, $multi->periodCount());
@@ -70,7 +67,7 @@ final class MultiPeriodFinancialStatementTest extends TestCase
             entityId: 'ENT',
             kind: FinancialStatementKind::All,
             periods: [$a],
-            generatedAt: new DateTimeImmutable('2026-04-21T00:00:00Z', new DateTimeZone('UTC')),
+            generatedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z', new \DateTimeZone('UTC')),
         );
         self::assertSame(1, $multi->periodCount());
         self::assertNull($multi->previousPeriod());
@@ -79,9 +76,9 @@ final class MultiPeriodFinancialStatementTest extends TestCase
 
     private function makeEntry(string $termId, string $from, string $to): MultiPeriodEntry
     {
-        $tz = new DateTimeZone('UTC');
-        $fromDt = new DateTimeImmutable($from, $tz);
-        $toDt = new DateTimeImmutable($to, $tz);
+        $tz = new \DateTimeZone('UTC');
+        $fromDt = new \DateTimeImmutable($from, $tz);
+        $toDt = new \DateTimeImmutable($to, $tz);
         $fs = new FinancialStatement(
             entityId: 'ENT',
             fiscalTermId: $termId,
@@ -95,6 +92,7 @@ final class MultiPeriodFinancialStatementTest extends TestCase
             totals: [],
             generatedAt: $toDt,
         );
+
         return new MultiPeriodEntry(
             fiscalTermId: $termId,
             fiscalTermLabel: '第 X 期',

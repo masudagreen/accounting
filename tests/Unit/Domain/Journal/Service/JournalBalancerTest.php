@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Journal\Service;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +20,7 @@ final class JournalBalancerTest extends TestCase
      * line sets. Serves as a lightweight property-based check — each case
      * verifies the service computes the same total both sides of the ledger.
      *
-     * @param list<array{0: string, 1: string}> $debits  [accountId, amount]
+     * @param list<array{0: string, 1: string}> $debits [accountId, amount]
      * @param list<array{0: string, 1: string}> $credits [accountId, amount]
      */
     #[DataProvider('balancedCases')]
@@ -41,18 +40,19 @@ final class JournalBalancerTest extends TestCase
         $seed = 20260421;
         mt_srand($seed);
 
-        for ($i = 0; $i < 32; $i++) {
-            $numDebits  = mt_rand(1, 4);
+        for ($i = 0; $i < 32; ++$i) {
+            $numDebits = mt_rand(1, 4);
             $numCredits = mt_rand(1, 4);
             // Pick a total first, then split into random shares on each side
             $total = mt_rand(100, 99999);
 
-            $debits  = self::splitAmount($total, $numDebits, '01HW7K9B2QV7C8Y4ZACCTTL00D');
+            $debits = self::splitAmount($total, $numDebits, '01HW7K9B2QV7C8Y4ZACCTTL00D');
             $credits = self::splitAmount($total, $numCredits, '01HW7K9B2QV7C8Y4ZACCTTL00C');
 
             $cases[] = [$debits, $credits, Decimal::normalize(sprintf('%d.0000', $total))];
         }
         mt_srand();
+
         return $cases;
     }
 
@@ -64,7 +64,7 @@ final class JournalBalancerTest extends TestCase
         /** @var list<array{0: string, 1: string}> $out */
         $out = [];
         $remaining = $total;
-        for ($k = 0; $k < $parts; $k++) {
+        for ($k = 0; $k < $parts; ++$k) {
             if ($k === $parts - 1) {
                 $share = $remaining;
             } else {
@@ -73,6 +73,7 @@ final class JournalBalancerTest extends TestCase
             $remaining -= $share;
             $out[] = [$accountId, sprintf('%d.0000', $share)];
         }
+
         return $out;
     }
 
@@ -100,9 +101,9 @@ final class JournalBalancerTest extends TestCase
         $cases = [];
         $seed = 20260422;
         mt_srand($seed);
-        for ($i = 0; $i < 32; $i++) {
-            $debit  = mt_rand(100, 9999);
-            $delta  = mt_rand(1, 500);
+        for ($i = 0; $i < 32; ++$i) {
+            $debit = mt_rand(100, 9999);
+            $delta = mt_rand(1, 500);
             $credit = $debit + $delta; // guaranteed non-equal
             $cases[] = [
                 [['01HW7K9B2QV7C8Y4ZACCTTL00D', sprintf('%d.0000', $debit)]],
@@ -110,6 +111,7 @@ final class JournalBalancerTest extends TestCase
             ];
         }
         mt_srand();
+
         return $cases;
     }
 
@@ -146,6 +148,7 @@ final class JournalBalancerTest extends TestCase
     /**
      * @param list<array{0: string, 1: string}> $debits
      * @param list<array{0: string, 1: string}> $credits
+     *
      * @return list<JournalLine>
      */
     private function buildLines(array $debits, array $credits): array
@@ -154,13 +157,14 @@ final class JournalBalancerTest extends TestCase
         /** @var list<JournalLine> $out */
         $out = [];
         foreach ($debits as [$_, $amount]) {
-            $lineNo++;
+            ++$lineNo;
             $out[] = $this->line($lineNo, 'debit', $amount);
         }
         foreach ($credits as [$_, $amount]) {
-            $lineNo++;
+            ++$lineNo;
             $out[] = $this->line($lineNo, 'credit', $amount);
         }
+
         return $out;
     }
 
@@ -177,7 +181,7 @@ final class JournalBalancerTest extends TestCase
             taxAmount: '0.0000',
             isTaxReduced: false,
             memo: '',
-            bookedAt: new DateTimeImmutable('2026-04-21T00:00:00Z'),
+            bookedAt: new \DateTimeImmutable('2026-04-21T00:00:00Z'),
         );
     }
 }

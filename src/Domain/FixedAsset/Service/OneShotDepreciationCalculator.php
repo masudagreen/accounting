@@ -14,6 +14,7 @@ use Rucaro\Support\Decimal\Decimal;
  */
 final class OneShotDepreciationCalculator implements DepreciationCalculatorInterface
 {
+    #[\Override]
     public function calculate(DepreciationCalculationRequest $request): DepreciationCalculationResult
     {
         $floor = StraightLineDepreciationCalculator::memoFloor($request);
@@ -21,6 +22,7 @@ final class OneShotDepreciationCalculator implements DepreciationCalculatorInter
         if (Decimal::compare($dep, '0.0000') < 0) {
             $dep = '0.0000';
         }
+
         return StraightLineDepreciationCalculator::finalize($request, $dep);
     }
 }

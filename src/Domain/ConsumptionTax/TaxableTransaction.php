@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Decimal\Decimal;
 
@@ -23,7 +22,7 @@ use Rucaro\Support\Decimal\Decimal;
 final readonly class TaxableTransaction
 {
     public function __construct(
-        public DateTimeImmutable $bookedOn,
+        public \DateTimeImmutable $bookedOn,
         public ConsumptionTaxCategoryCode $categoryCode,
         public string $ratePercent,
         public bool $isReduced,
@@ -32,19 +31,13 @@ final readonly class TaxableTransaction
         public ?string $counterpartyRegistrationNumber = null,
     ) {
         if (Decimal::compare($amountExcludingTax, '0.0000') < 0) {
-            throw ValidationException::withErrors([
-                'amountExcludingTax' => ['amountExcludingTax must be >= 0.'],
-            ]);
+            throw ValidationException::withErrors(['amountExcludingTax' => ['amountExcludingTax must be >= 0.']]);
         }
         if (Decimal::compare($taxAmount, '0.0000') < 0) {
-            throw ValidationException::withErrors([
-                'taxAmount' => ['taxAmount must be >= 0.'],
-            ]);
+            throw ValidationException::withErrors(['taxAmount' => ['taxAmount must be >= 0.']]);
         }
         if (!$categoryCode->isTaxable() && Decimal::compare($taxAmount, '0.0000') !== 0) {
-            throw ValidationException::withErrors([
-                'taxAmount' => ['taxAmount must be 0 for non-taxable categories.'],
-            ]);
+            throw ValidationException::withErrors(['taxAmount' => ['taxAmount must be 0 for non-taxable categories.']]);
         }
     }
 }

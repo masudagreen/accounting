@@ -40,6 +40,7 @@ final readonly class ListSsAdjustmentsController
         } catch (\InvalidArgumentException $e) {
             return ErrorResponse::badRequest($e->getMessage());
         }
+
         return EnvelopeResponse::list(
             StatementOfChangesInEquityJsonSerializer::adjustmentListToArray($rows),
             ['total' => count($rows)],

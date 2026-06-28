@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Http\Controller\Ui\Report;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\BreakEvenPoint\AnalyzeBreakEvenPointUseCase;
@@ -28,11 +25,13 @@ use Rucaro\Tests\Support\Fake\FrozenClock;
 #[CoversClass(BepViewController::class)]
 final class BepViewControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -91,8 +90,8 @@ final class BepViewControllerTest extends TestCase
     {
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
 
         return new BepViewController(
             useCase: new AnalyzeBreakEvenPointUseCase(
@@ -114,35 +113,41 @@ final class BepViewControllerTest extends TestCase
         );
     }
 
-    private static function inMemoryPdo(): PDO
+    private static function inMemoryPdo(): \PDO
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->exec('CREATE TABLE fiscal_terms (id BLOB PRIMARY KEY, entity_id BLOB, start_date TEXT, end_date TEXT)');
+
         return $pdo;
     }
 }
 
 final class StubCvpClassificationRepo implements AccountTitleCvpClassificationRepositoryInterface
 {
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         return [];
     }
 
+    #[\Override]
     public function findByAccountTitle(string $entityId, string $accountTitleId): ?AccountTitleCvpClassification
     {
         return null;
     }
 
+    #[\Override]
     public function save(AccountTitleCvpClassification $classification): void
     {
     }
 
+    #[\Override]
     public function saveMany(array $classifications): void
     {
     }
 
+    #[\Override]
     public function delete(string $entityId, string $accountTitleId): void
     {
     }
@@ -154,9 +159,11 @@ final class StubBepGenerator implements BreakEvenPointPdfGeneratorInterface
     {
     }
 
+    #[\Override]
     public function render(BreakEvenPointAnalysis $analysis): string
     {
         unset($analysis);
+
         return $this->emitStub ? "%PDF-STUB\nfake bep pdf\n%%EOF" : '';
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\Import\LegacyImport;
 
-use PDO;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
 
 /**
@@ -29,7 +28,7 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class LegacyFsMappingImporter
 {
     public function __construct(
-        private readonly PDO $target,
+        private readonly \PDO $target,
         private readonly IdMapping $idMap,
         private readonly UlidGenerator $ulids,
         private readonly bool $dryRun,
@@ -49,7 +48,7 @@ final class LegacyFsMappingImporter
                  (id, entity_id, account_title_id, fs_kind, fs_section_code,
                   sort_order, display_label, sign)
              VALUES
-                 (:id, :ent, :at, :kind, :sec, :sort, NULL, 1)'
+                 (:id, :ent, :at, :kind, :sec, :sort, NULL, 1)',
         );
 
         // Iterate every known account_title mapping and generate one
@@ -70,7 +69,7 @@ final class LegacyFsMappingImporter
                 ++$skipped;
                 continue;
             }
-            [$entityIdStr, $legacyCode] = explode(':', $legacyKey, 2);
+            [$entityIdStr, $legacyCode] = array_pad(explode(':', $legacyKey, 2), 2, '');
             $entityId = (int) $entityIdStr;
             $entityBin = $this->idMap->lookup(IdMapping::TABLE_ENTITIES, $entityId);
             if ($entityBin === null) {
@@ -78,7 +77,7 @@ final class LegacyFsMappingImporter
                 continue;
             }
 
-            [$category, , ] = AccountTitleClassifier::classify($legacyCode);
+            [$category] = AccountTitleClassifier::classify($legacyCode);
             [$kind, $section] = $this->mapSection($category, $legacyCode);
 
             if ($this->dryRun) {
@@ -87,12 +86,12 @@ final class LegacyFsMappingImporter
                 continue;
             }
 
-            $insert->bindValue(':id', $this->ulids->binary(), PDO::PARAM_LOB);
-            $insert->bindValue(':ent', $entityBin, PDO::PARAM_LOB);
-            $insert->bindValue(':at', $atBin, PDO::PARAM_LOB);
+            $insert->bindValue(':id', $this->ulids->binary(), \PDO::PARAM_LOB);
+            $insert->bindValue(':ent', $entityBin, \PDO::PARAM_LOB);
+            $insert->bindValue(':at', $atBin, \PDO::PARAM_LOB);
             $insert->bindValue(':kind', $kind);
             $insert->bindValue(':sec', $section);
-            $insert->bindValue(':sort', $sort, PDO::PARAM_INT);
+            $insert->bindValue(':sort', $sort, \PDO::PARAM_INT);
             $insert->execute();
             ++$inserted;
             ++$sort;

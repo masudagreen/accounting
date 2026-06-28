@@ -26,6 +26,7 @@ final readonly class EmailAddress extends AbstractValueObject
         return $this->value;
     }
 
+    #[\Override]
     public function toPrimitive(): string
     {
         return $this->value;

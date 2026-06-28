@@ -36,16 +36,12 @@ final readonly class CreateFixedAssetUseCase
 
         $existing = $this->assets->findByEntityAndCode($input->entityId, $input->assetCode);
         if ($existing !== null) {
-            throw ValidationException::withErrors([
-                'assetCode' => [sprintf('assetCode "%s" is already in use for this entity.', $input->assetCode)],
-            ]);
+            throw ValidationException::withErrors(['assetCode' => [sprintf('assetCode "%s" is already in use for this entity.', $input->assetCode)]]);
         }
 
         $method = DepreciationMethod::tryFrom($input->method);
         if ($method === null) {
-            throw ValidationException::withErrors([
-                'method' => [sprintf('method "%s" is not a supported depreciation method.', $input->method)],
-            ]);
+            throw ValidationException::withErrors(['method' => [sprintf('method "%s" is not a supported depreciation method.', $input->method)]]);
         }
 
         $now = $this->clock->getCurrentTime();

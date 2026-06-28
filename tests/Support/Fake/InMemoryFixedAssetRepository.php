@@ -12,16 +12,19 @@ final class InMemoryFixedAssetRepository implements FixedAssetRepositoryInterfac
     /** @var array<string, FixedAsset> */
     private array $byId = [];
 
+    #[\Override]
     public function save(FixedAsset $asset): void
     {
         $this->byId[$asset->id] = $asset;
     }
 
+    #[\Override]
     public function findById(string $id): ?FixedAsset
     {
         return $this->byId[$id] ?? null;
     }
 
+    #[\Override]
     public function findByEntityAndCode(string $entityId, string $assetCode): ?FixedAsset
     {
         foreach ($this->byId as $a) {
@@ -29,9 +32,11 @@ final class InMemoryFixedAssetRepository implements FixedAssetRepositoryInterfac
                 return $a;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findByEntity(string $entityId, bool $includeDisposed = false): array
     {
         $out = [];
@@ -44,6 +49,7 @@ final class InMemoryFixedAssetRepository implements FixedAssetRepositoryInterfac
             }
             $out[] = $a;
         }
-        return array_values($out);
+
+        return $out;
     }
 }

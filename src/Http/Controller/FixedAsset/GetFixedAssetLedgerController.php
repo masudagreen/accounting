@@ -52,16 +52,18 @@ final readonly class GetFixedAssetLedgerController
 
         if ($format === 'pdf') {
             $pdf = $this->generator->render($out);
+
             return new JsonResponse(
                 status: 200,
                 headers: [
-                    'Content-Type'        => 'application/pdf',
+                    'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment; filename="fixed-assets.pdf"',
-                    'Content-Length'      => (string) strlen($pdf),
+                    'Content-Length' => (string) strlen($pdf),
                 ],
                 body: $pdf,
             );
         }
+
         return EnvelopeResponse::ok(FixedAssetJsonSerializer::ledgerToArray($out));
     }
 }

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Infrastructure\AccountTitle;
 
-use DateTimeImmutable;
-use DateTimeZone;
-use PDO;
 use Rucaro\Domain\AccountTitle\AccountTitle;
 use Rucaro\Domain\AccountTitle\AccountTitleRepositoryInterface;
 use Rucaro\Infrastructure\Ulid\UlidGenerator;
@@ -14,10 +11,11 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $pdo,
+        private readonly \PDO $pdo,
     ) {
     }
 
+    #[\Override]
     public function listByEntity(
         string $entityId,
         int $page,
@@ -31,21 +29,23 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         $sql = 'SELECT id, entity_id, code, name, category, normal_side, parent_id,
                        sort_order, is_active, created_at, updated_at
                 FROM account_titles
-                WHERE ' . $where . '
+                WHERE '.$where.'
                 ORDER BY sort_order ASC, code ASC
                 LIMIT :_limit OFFSET :_offset';
         $stmt = $this->pdo->prepare($sql);
         foreach ($params as $k => $v) {
             $stmt->bindValue($k, $v);
         }
-        $stmt->bindValue(':_limit', $pageSize, PDO::PARAM_INT);
-        $stmt->bindValue(':_offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':_limit', $pageSize, \PDO::PARAM_INT);
+        $stmt->bindValue(':_offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $category = null,
@@ -53,14 +53,16 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         ?string $search = null,
     ): int {
         [$where, $params] = $this->buildFilter($entityId, $category, $isActive, $search);
-        $sql = 'SELECT COUNT(*) FROM account_titles WHERE ' . $where;
+        $sql = 'SELECT COUNT(*) FROM account_titles WHERE '.$where;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         /** @var string|false $c */
         $c = $stmt->fetchColumn();
+
         return $c === false ? 0 : (int) $c;
     }
 
+    #[\Override]
     public function findAllByEntity(string $entityId): array
     {
         $sql = 'SELECT id, entity_id, code, name, category, normal_side, parent_id,
@@ -71,10 +73,12 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':entity' => UlidGenerator::decode($entityId)]);
         /** @var list<array<string, mixed>> $rows */
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
         return array_map([$this, 'hydrate'], $rows);
     }
 
+    #[\Override]
     public function findById(string $id): ?AccountTitle
     {
         $sql = 'SELECT id, entity_id, code, name, category, normal_side, parent_id,
@@ -85,10 +89,12 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => UlidGenerator::decode($id)]);
         /** @var array<string, mixed>|false $row */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         return $row === false ? null : $this->hydrate($row);
     }
 
+    #[\Override]
     public function save(AccountTitle $title): void
     {
         $sql = 'INSERT INTO account_titles
@@ -108,20 +114,21 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
                     updated_at = VALUES(updated_at)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':id'           => UlidGenerator::decode($title->id),
-            ':entity'       => UlidGenerator::decode($title->entityId),
-            ':code'         => $title->code,
-            ':name'         => $title->name,
-            ':category'     => $title->category,
-            ':normal_side'  => $title->normalSide,
-            ':parent'       => $title->parentId !== null ? UlidGenerator::decode($title->parentId) : null,
-            ':sort_order'   => $title->sortOrder,
-            ':is_active'    => $title->isActive ? 1 : 0,
-            ':created_at'   => $title->createdAt->format('Y-m-d H:i:s.u'),
-            ':updated_at'   => $title->updatedAt->format('Y-m-d H:i:s.u'),
+            ':id' => UlidGenerator::decode($title->id),
+            ':entity' => UlidGenerator::decode($title->entityId),
+            ':code' => $title->code,
+            ':name' => $title->name,
+            ':category' => $title->category,
+            ':normal_side' => $title->normalSide,
+            ':parent' => $title->parentId !== null ? UlidGenerator::decode($title->parentId) : null,
+            ':sort_order' => $title->sortOrder,
+            ':is_active' => $title->isActive ? 1 : 0,
+            ':created_at' => $title->createdAt->format('Y-m-d H:i:s.u'),
+            ':updated_at' => $title->updatedAt->format('Y-m-d H:i:s.u'),
         ]);
     }
 
+    #[\Override]
     public function softDelete(string $id, \DateTimeImmutable $deletedAt): void
     {
         $stmt = $this->pdo->prepare(
@@ -132,17 +139,18 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         $stmt->execute([
             ':deleted_at' => $deletedAt->format('Y-m-d H:i:s.u'),
             ':updated_at' => $deletedAt->format('Y-m-d H:i:s.u'),
-            ':id'         => UlidGenerator::decode($id),
+            ':id' => UlidGenerator::decode($id),
         ]);
     }
 
+    #[\Override]
     public function existsByCode(string $entityId, string $code, ?string $excludeId = null): bool
     {
         $sql = 'SELECT 1 FROM account_titles
                  WHERE entity_id = :entity AND code = :code AND deleted_at IS NULL';
         $params = [
             ':entity' => UlidGenerator::decode($entityId),
-            ':code'   => $code,
+            ':code' => $code,
         ];
         if ($excludeId !== null && $excludeId !== '') {
             $sql .= ' AND id <> :exclude';
@@ -151,6 +159,7 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         $sql .= ' LIMIT 1';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
+
         return $stmt->fetchColumn() !== false;
     }
 
@@ -176,8 +185,9 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         }
         if ($search !== null && $search !== '') {
             $clauses[] = '(name LIKE :search OR code LIKE :search)';
-            $params[':search'] = '%' . $search . '%';
+            $params[':search'] = '%'.$search.'%';
         }
+
         return [implode(' AND ', $clauses), $params];
     }
 
@@ -198,16 +208,17 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
                 : null,
             sortOrder: (int) ($row['sort_order'] ?? 0),
             isActive: self::toBool($row['is_active'] ?? true),
-            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new DateTimeImmutable('@0'),
-            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new DateTimeImmutable('@0'),
+            createdAt: self::parseTimestamp($row['created_at'] ?? null) ?? new \DateTimeImmutable('@0'),
+            updatedAt: self::parseTimestamp($row['updated_at'] ?? null) ?? new \DateTimeImmutable('@0'),
         );
     }
 
-    private static function stringifyId(mixed $raw): string
+    private static function stringifyId(string $raw): string
     {
-        if (!is_string($raw) || $raw === '') {
+        if ($raw === '') {
             return '';
         }
+
         return strlen($raw) === 16 ? UlidGenerator::encode($raw) : $raw;
     }
 
@@ -222,16 +233,17 @@ final class PdoAccountTitleRepository implements AccountTitleRepositoryInterface
         if (is_string($v)) {
             return $v !== '' && $v !== '0';
         }
+
         return (bool) $v;
     }
 
-    private static function parseTimestamp(mixed $raw): ?DateTimeImmutable
+    private static function parseTimestamp(mixed $raw): ?\DateTimeImmutable
     {
         if ($raw === null || $raw === '' || !is_string($raw)) {
             return null;
         }
         try {
-            return new DateTimeImmutable($raw, new DateTimeZone('UTC'));
+            return new \DateTimeImmutable($raw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
             return null;
         }

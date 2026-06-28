@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\E2E;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\Approval\FindApprovalByTokenUseCase;
 use Rucaro\Application\Approval\IssueApprovalTokenUseCase;
 use Rucaro\Application\Approval\IssueApprovalTokenUseCaseInput;
+use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 use Rucaro\Application\Approval\RespondToApprovalUseCase;
 use Rucaro\Application\Approval\RespondToApprovalUseCaseInput;
 use Rucaro\Domain\Approval\ApprovalChannel;
@@ -30,7 +29,6 @@ use Rucaro\Infrastructure\Ulid\UlidGenerator;
 use Rucaro\Tests\Support\Fake\FrozenClock;
 use Rucaro\Tests\Support\Fake\InMemoryApprovalTokenRepository;
 use Rucaro\Tests\Support\Fake\InMemoryJournalRepository;
-use Rucaro\Application\Approval\Port\ApprovalTargetResolverInterface;
 
 /**
  * End-to-end smoke for the Phase 5.2 approval pipeline.
@@ -113,14 +111,18 @@ final class ApprovalPipelineSmokeTest extends TestCase
      */
     private function wire(): array
     {
-        $tz = new DateTimeZone('UTC');
+        $tz = new \DateTimeZone('UTC');
         $clock = new FrozenClock('2026-04-21T12:00:00.000Z');
         $journals = new InMemoryJournalRepository();
         $journal = $this->makeJournal($tz);
         $journals->save($journal);
 
-        $resolver = new class ($journals) implements ApprovalTargetResolverInterface {
-            public function __construct(private readonly JournalRepositoryInterface $journals) {}
+        $resolver = new class($journals) implements ApprovalTargetResolverInterface {
+            public function __construct(private readonly JournalRepositoryInterface $journals)
+            {
+            }
+
+            #[\Override]
             public function resolve(ApprovalTargetKind $kind, string $id): ApprovalTargetInterface
             {
                 if ($kind !== ApprovalTargetKind::Journal) {
@@ -130,6 +132,7 @@ final class ApprovalPipelineSmokeTest extends TestCase
                 if ($j === null) {
                     throw \Rucaro\Domain\Exception\EntityNotFoundException::for('Journal', $id);
                 }
+
                 return new JournalApprovalTarget($j, $this->journals);
             }
         };
@@ -137,8 +140,8 @@ final class ApprovalPipelineSmokeTest extends TestCase
         $mail = new InMemoryMailSender();
         $messaging = new NullMessagingChannel();
         $repoRoot = dirname(__DIR__, 2);
-        $templateDir = $repoRoot . '/storage/templates/mail/approval';
-        $compileDir = $repoRoot . '/storage/cache/smarty_compile';
+        $templateDir = $repoRoot.'/storage/templates/mail/approval';
+        $compileDir = $repoRoot.'/storage/cache/smarty_compile';
         if (!is_dir($compileDir)) {
             @mkdir($compileDir, 0775, true);
         }
@@ -165,18 +168,18 @@ final class ApprovalPipelineSmokeTest extends TestCase
         $respond = new RespondToApprovalUseCase($tokens, $resolver, $clock);
 
         return [
-            'issue'    => $issue,
-            'find'     => $find,
-            'respond'  => $respond,
+            'issue' => $issue,
+            'find' => $find,
+            'respond' => $respond,
             'journals' => $journals,
-            'mail'     => $mail,
+            'mail' => $mail,
             'journalId' => $journal->id,
         ];
     }
 
-    private function makeJournal(DateTimeZone $tz): Journal
+    private function makeJournal(\DateTimeZone $tz): Journal
     {
-        $ts = new DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
+        $ts = new \DateTimeImmutable('2026-04-21T12:00:00Z', $tz);
         $lines = [
             new JournalLine(
                 id: '01HW7K9B2QV7C8Y4ZLINEE2EAAA',
@@ -210,7 +213,7 @@ final class ApprovalPipelineSmokeTest extends TestCase
             id: '01HW7K9B2QV7C8Y4ZJRNLE2E001',
             entityId: '01HW7K9B2QV7C8Y4ZENTITY0001',
             fiscalTermId: '01HW7K9B2QV7C8Y4ZFTTERM0001',
-            journalDate: new DateTimeImmutable('2026-04-21', $tz),
+            journalDate: new \DateTimeImmutable('2026-04-21', $tz),
             bookedAt: $ts,
             summary: 'E2E approval smoke',
             totalAmount: '500.0000',

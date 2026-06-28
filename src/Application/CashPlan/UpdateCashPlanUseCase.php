@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\CashPlan;
 
-use Rucaro\Domain\CashPlan\CashPlan;
 use Rucaro\Domain\CashPlan\CashPlanCategory;
 use Rucaro\Domain\CashPlan\CashPlanEntry;
 use Rucaro\Domain\CashPlan\CashPlanRepositoryInterface;
@@ -25,9 +24,7 @@ final readonly class UpdateCashPlanUseCase
     {
         $existing = $this->plans->findById($input->id);
         if ($existing === null) {
-            throw ValidationException::withErrors([
-                'id' => [sprintf('cash plan %s was not found.', $input->id)],
-            ]);
+            throw ValidationException::withErrors(['id' => [sprintf('cash plan %s was not found.', $input->id)]]);
         }
 
         $now = $this->clock->getCurrentTime();
@@ -50,9 +47,7 @@ final readonly class UpdateCashPlanUseCase
             foreach ($input->entries as $idx => $e) {
                 $category = CashPlanCategory::tryFrom($e->category);
                 if ($category === null) {
-                    throw ValidationException::withErrors([
-                        "entries.$idx.category" => [sprintf('unknown cash plan category "%s".', $e->category)],
-                    ]);
+                    throw ValidationException::withErrors(["entries.$idx.category" => [sprintf('unknown cash plan category "%s".', $e->category)]]);
                 }
                 $entries[] = new CashPlanEntry(
                     id: $e->id ?? $this->ulids->generate(),
@@ -68,6 +63,7 @@ final readonly class UpdateCashPlanUseCase
         }
 
         $this->plans->save($plan);
+
         return new CreateCashPlanOutput($plan);
     }
 }

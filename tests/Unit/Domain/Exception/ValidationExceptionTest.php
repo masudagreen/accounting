@@ -23,7 +23,7 @@ final class ValidationExceptionTest extends TestCase
     {
         $errors = [
             'email' => ['Email is not a valid address'],
-            'age'   => ['Age must be at least 0', 'Age must be at most 150'],
+            'age' => ['Age must be at least 0', 'Age must be at most 150'],
         ];
 
         $exception = ValidationException::withErrors($errors);

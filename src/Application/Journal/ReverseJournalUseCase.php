@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\Journal;
 
-use DateTimeZone;
 use Rucaro\Domain\Exception\EntityNotFoundException;
 use Rucaro\Domain\Journal\JournalRepositoryInterface;
 use Rucaro\Domain\Journal\Service\JournalReverser;
@@ -35,7 +34,7 @@ final readonly class ReverseJournalUseCase
             throw new EntityNotFoundException(sprintf('Journal %s not found.', $input->journalId));
         }
 
-        $now = $this->clock->getCurrentTime()->setTimezone(new DateTimeZone('UTC'));
+        $now = $this->clock->getCurrentTime()->setTimezone(new \DateTimeZone('UTC'));
         $reversedSource = $source->reverse($now, $input->reversedBy, $input->reason);
         $reversalEntry = $this->reverser->reverse($source, $now, $input->reversedBy, $input->reason);
 

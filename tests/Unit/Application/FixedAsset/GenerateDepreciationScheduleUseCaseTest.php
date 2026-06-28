@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\FixedAsset;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Application\FixedAsset\CreateFixedAssetInput;
@@ -36,8 +35,8 @@ final class GenerateDepreciationScheduleUseCaseTest extends TestCase
                 assetAccountTitleId: null,
                 accumulatedDepreciationAccountTitleId: null,
                 depreciationExpenseAccountTitleId: null,
-                acquisitionDate: new DateTimeImmutable('2025-04-01'),
-                serviceStartDate: new DateTimeImmutable('2025-04-01'),
+                acquisitionDate: new \DateTimeImmutable('2025-04-01'),
+                serviceStartDate: new \DateTimeImmutable('2025-04-01'),
                 acquisitionCost: '1000000.0000',
                 residualValue: '0.0000',
                 usefulLifeYears: 10,
@@ -59,8 +58,8 @@ final class GenerateDepreciationScheduleUseCaseTest extends TestCase
         $out = $uc->execute(new GenerateDepreciationScheduleInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAAB',
             fiscalTermId: '01HBBBBBBBBBBBBBBBBBBBBBBB',
-            fiscalTermStart: new DateTimeImmutable('2025-04-01'),
-            fiscalTermEnd: new DateTimeImmutable('2026-03-31'),
+            fiscalTermStart: new \DateTimeImmutable('2025-04-01'),
+            fiscalTermEnd: new \DateTimeImmutable('2026-03-31'),
         ));
         self::assertCount(1, $out->entries);
         self::assertSame('100000.0000', $out->entries[0]->depreciationAmount);
@@ -83,8 +82,8 @@ final class GenerateDepreciationScheduleUseCaseTest extends TestCase
                 assetAccountTitleId: null,
                 accumulatedDepreciationAccountTitleId: null,
                 depreciationExpenseAccountTitleId: null,
-                acquisitionDate: new DateTimeImmutable('2025-04-01'),
-                serviceStartDate: new DateTimeImmutable('2025-04-01'),
+                acquisitionDate: new \DateTimeImmutable('2025-04-01'),
+                serviceStartDate: new \DateTimeImmutable('2025-04-01'),
                 acquisitionCost: '600000.0000',
                 residualValue: '0.0000',
                 usefulLifeYears: 6,
@@ -106,16 +105,16 @@ final class GenerateDepreciationScheduleUseCaseTest extends TestCase
         $out1 = $uc->execute(new GenerateDepreciationScheduleInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAAB',
             fiscalTermId: '01HBBBBBBBBBBBBBBBBBBBBBBB',
-            fiscalTermStart: new DateTimeImmutable('2025-04-01'),
-            fiscalTermEnd: new DateTimeImmutable('2026-03-31'),
+            fiscalTermStart: new \DateTimeImmutable('2025-04-01'),
+            fiscalTermEnd: new \DateTimeImmutable('2026-03-31'),
         ));
         $firstId = $out1->entries[0]->id;
         // Re-run should reuse the same row.
         $out2 = $uc->execute(new GenerateDepreciationScheduleInput(
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAAB',
             fiscalTermId: '01HBBBBBBBBBBBBBBBBBBBBBBB',
-            fiscalTermStart: new DateTimeImmutable('2025-04-01'),
-            fiscalTermEnd: new DateTimeImmutable('2026-03-31'),
+            fiscalTermStart: new \DateTimeImmutable('2025-04-01'),
+            fiscalTermEnd: new \DateTimeImmutable('2026-03-31'),
         ));
         self::assertSame($firstId, $out2->entries[0]->id);
     }

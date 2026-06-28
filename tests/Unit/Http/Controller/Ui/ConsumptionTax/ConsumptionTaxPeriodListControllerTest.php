@@ -20,11 +20,13 @@ use Rucaro\Tests\Support\Fake\InMemoryConsumptionTaxPeriodRepository;
 #[CoversClass(ConsumptionTaxPeriodListController::class)]
 final class ConsumptionTaxPeriodListControllerTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $_SESSION = [];
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         $_SESSION = [];
@@ -38,14 +40,14 @@ final class ConsumptionTaxPeriodListControllerTest extends TestCase
 
         $clock = new FrozenClock();
         $repoRoot = dirname(__DIR__, 6);
-        $templateDir = $repoRoot . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'ui';
-        $compileDir  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'rucaro-test-smarty-' . uniqid();
+        $templateDir = $repoRoot.\DIRECTORY_SEPARATOR.'storage'.\DIRECTORY_SEPARATOR.'templates'.\DIRECTORY_SEPARATOR.'ui';
+        $compileDir = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'rucaro-test-smarty-'.uniqid();
         $controller = new ConsumptionTaxPeriodListController(
             listPeriods: new ListConsumptionTaxPeriodsUseCase(new InMemoryConsumptionTaxPeriodRepository()),
-            session:     $session,
-            csrf:        new CsrfTokenManager($clock),
-            flash:       new FlashMessageBag(),
-            view:        new SmartyViewRenderer($templateDir, $compileDir),
+            session: $session,
+            csrf: new CsrfTokenManager($clock),
+            flash: new FlashMessageBag(),
+            view: new SmartyViewRenderer($templateDir, $compileDir),
         );
 
         $response = $controller->invoke(new ServerRequest('GET', '/ui/consumption-tax/periods', [], [], null, ''));

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\Journal\ValueObject;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +27,7 @@ final class JournalDateTest extends TestCase
 
     public function testConstructorNormalisesTimezoneToUtc(): void
     {
-        $jst = new DateTimeImmutable('2026-04-21T23:45:00+09:00');
+        $jst = new \DateTimeImmutable('2026-04-21T23:45:00+09:00');
         $d = new JournalDate($jst);
         // Taking just the date portion should preserve the original local date.
         self::assertSame('2026-04-21', $d->toPrimitive());
@@ -88,7 +86,7 @@ final class JournalDateTest extends TestCase
 
     public function testConstructorIgnoresTimeOfDay(): void
     {
-        $utc = new DateTimeImmutable('2026-04-21T13:37:42.123456Z', new DateTimeZone('UTC'));
+        $utc = new \DateTimeImmutable('2026-04-21T13:37:42.123456Z', new \DateTimeZone('UTC'));
         $d = new JournalDate($utc);
         self::assertSame('2026-04-21', $d->toPrimitive());
         self::assertSame('00:00:00', $d->toDateTime()->format('H:i:s'));

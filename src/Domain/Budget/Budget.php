@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Budget;
 
-use DateTimeImmutable;
 use Rucaro\Domain\Exception\InvariantViolationException;
 use Rucaro\Domain\Exception\ValidationException;
 use Rucaro\Support\Decimal\Decimal;
@@ -36,32 +35,26 @@ final readonly class Budget
         public string $name,
         public BudgetStatus $status,
         public ?string $approvedBy,
-        public ?DateTimeImmutable $approvedAt,
+        public ?\DateTimeImmutable $approvedAt,
         public ?string $notes,
         public array $lineItems,
         public string $createdBy,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
-        public ?DateTimeImmutable $deletedAt = null,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt = null,
     ) {
         if ($name === '' || mb_strlen($name) > 128) {
-            throw ValidationException::withErrors([
-                'name' => ['name must be 1..128 characters.'],
-            ]);
+            throw ValidationException::withErrors(['name' => ['name must be 1..128 characters.']]);
         }
         // approvedBy / approvedAt must be set together and only when status
         // is past Draft.
         if ($status === BudgetStatus::Draft) {
             if ($approvedBy !== null || $approvedAt !== null) {
-                throw ValidationException::withErrors([
-                    'status' => ['approvedBy / approvedAt must be null while draft.'],
-                ]);
+                throw ValidationException::withErrors(['status' => ['approvedBy / approvedAt must be null while draft.']]);
             }
         } else {
             if ($approvedBy === null || $approvedAt === null) {
-                throw ValidationException::withErrors([
-                    'status' => ['approvedBy / approvedAt are required once approved.'],
-                ]);
+                throw ValidationException::withErrors(['status' => ['approvedBy / approvedAt are required once approved.']]);
             }
         }
     }
@@ -75,6 +68,7 @@ final readonly class Budget
         foreach ($this->lineItems as $li) {
             $sum = Decimal::add($sum, $li->amountForMonth($month));
         }
+
         return Decimal::normalize($sum);
     }
 
@@ -87,6 +81,7 @@ final readonly class Budget
         foreach ($this->lineItems as $li) {
             $sum = Decimal::add($sum, $li->totalAmount());
         }
+
         return Decimal::normalize($sum);
     }
 
@@ -94,14 +89,12 @@ final readonly class Budget
      * Promote Draft → Approved. Rejects any other source state so the
      * state machine stays one-way.
      */
-    public function approve(string $approverId, DateTimeImmutable $now): self
+    public function approve(string $approverId, \DateTimeImmutable $now): self
     {
         if ($this->status !== BudgetStatus::Draft) {
-            throw InvariantViolationException::for('budget.approve.wrong_status', [
-                'budgetId' => $this->id,
-                'status'   => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('budget.approve.wrong_status', ['budgetId' => $this->id, 'status' => $this->status->value]);
         }
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -123,14 +116,12 @@ final readonly class Budget
      * Promote Approved → Locked. Intended for use once the fiscal term
      * closes and the variance report has been signed off.
      */
-    public function lock(DateTimeImmutable $now): self
+    public function lock(\DateTimeImmutable $now): self
     {
         if ($this->status !== BudgetStatus::Approved) {
-            throw InvariantViolationException::for('budget.lock.wrong_status', [
-                'budgetId' => $this->id,
-                'status'   => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('budget.lock.wrong_status', ['budgetId' => $this->id, 'status' => $this->status->value]);
         }
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -151,9 +142,10 @@ final readonly class Budget
     public function withHeader(
         string $name,
         ?string $notes,
-        DateTimeImmutable $now,
+        \DateTimeImmutable $now,
     ): self {
         $this->assertEditable('header');
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -176,9 +168,10 @@ final readonly class Budget
      *
      * @param list<BudgetLineItem> $lineItems
      */
-    public function withLineItems(array $lineItems, DateTimeImmutable $now): self
+    public function withLineItems(array $lineItems, \DateTimeImmutable $now): self
     {
         $this->assertEditable('lineItems');
+
         return new self(
             id: $this->id,
             entityId: $this->entityId,
@@ -199,11 +192,7 @@ final readonly class Budget
     private function assertEditable(string $field): void
     {
         if (!$this->status->isEditable()) {
-            throw InvariantViolationException::for('budget.not_editable', [
-                'budgetId' => $this->id,
-                'field'    => $field,
-                'status'   => $this->status->value,
-            ]);
+            throw InvariantViolationException::for('budget.not_editable', ['budgetId' => $this->id, 'field' => $field, 'status' => $this->status->value]);
         }
     }
 }

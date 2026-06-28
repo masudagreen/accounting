@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\FinancialStatement\Multi;
 
-use DateTimeImmutable;
 use Rucaro\Domain\FinancialStatement\FinancialStatement;
 
 /**
@@ -21,8 +20,8 @@ final readonly class MultiPeriodEntry
     public function __construct(
         public string $fiscalTermId,
         public string $fiscalTermLabel,
-        public DateTimeImmutable $fromDate,
-        public DateTimeImmutable $toDate,
+        public \DateTimeImmutable $fromDate,
+        public \DateTimeImmutable $toDate,
         public FinancialStatement $statement,
     ) {
     }

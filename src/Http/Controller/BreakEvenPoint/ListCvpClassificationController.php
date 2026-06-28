@@ -32,6 +32,7 @@ final readonly class ListCvpClassificationController
             return ErrorResponse::badRequest('entityId must be a ULID.');
         }
         $rows = $this->useCase->execute($entityId);
+
         return EnvelopeResponse::list(
             BreakEvenPointJsonSerializer::classificationsToArray($rows),
             ['total' => count($rows)],

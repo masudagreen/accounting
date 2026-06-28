@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Domain\Approval;
 
-use DateTimeImmutable;
-
 /**
  * Persisted approval token aggregate (see `approval_tokens` table, ADR-002).
  *
@@ -25,18 +23,18 @@ final readonly class ApprovalToken
         public string $tokenPrefix,
         public ApprovalChannel $channel,
         public string $recipient,
-        public DateTimeImmutable $issuedAt,
-        public DateTimeImmutable $expiresAt,
-        public ?DateTimeImmutable $respondedAt,
+        public \DateTimeImmutable $issuedAt,
+        public \DateTimeImmutable $expiresAt,
+        public ?\DateTimeImmutable $respondedAt,
         public ?ApprovalDecision $decision,
         public string $responseDetail,
         public string $issuedByUserId,
-        public DateTimeImmutable $createdAt,
-        public DateTimeImmutable $updatedAt,
+        public \DateTimeImmutable $createdAt,
+        public \DateTimeImmutable $updatedAt,
     ) {
     }
 
-    public function isExpired(DateTimeImmutable $now): bool
+    public function isExpired(\DateTimeImmutable $now): bool
     {
         return $this->expiresAt <= $now;
     }
@@ -46,7 +44,7 @@ final readonly class ApprovalToken
         return $this->respondedAt !== null;
     }
 
-    public function isActive(DateTimeImmutable $now): bool
+    public function isActive(\DateTimeImmutable $now): bool
     {
         return !$this->isResponded() && !$this->isExpired($now);
     }
@@ -55,7 +53,7 @@ final readonly class ApprovalToken
      * Returns a new aggregate with the response fields populated. Pure:
      * the existing instance is not mutated.
      */
-    public function respond(ApprovalDecision $decision, string $detail, DateTimeImmutable $at): self
+    public function respond(ApprovalDecision $decision, string $detail, \DateTimeImmutable $at): self
     {
         return new self(
             id: $this->id,

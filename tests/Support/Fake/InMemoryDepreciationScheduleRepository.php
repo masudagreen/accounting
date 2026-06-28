@@ -12,11 +12,13 @@ final class InMemoryDepreciationScheduleRepository implements DepreciationSchedu
     /** @var array<string, DepreciationScheduleEntry> */
     private array $byId = [];
 
+    #[\Override]
     public function save(DepreciationScheduleEntry $entry): void
     {
         $this->byId[$entry->id] = $entry;
     }
 
+    #[\Override]
     public function findByAssetAndFiscalTerm(string $fixedAssetId, string $fiscalTermId): ?DepreciationScheduleEntry
     {
         foreach ($this->byId as $e) {
@@ -24,9 +26,11 @@ final class InMemoryDepreciationScheduleRepository implements DepreciationSchedu
                 return $e;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findByAsset(string $fixedAssetId): array
     {
         $out = [];
@@ -35,9 +39,11 @@ final class InMemoryDepreciationScheduleRepository implements DepreciationSchedu
                 $out[] = $e;
             }
         }
-        return array_values($out);
+
+        return $out;
     }
 
+    #[\Override]
     public function findByEntityAndFiscalTerm(string $entityId, string $fiscalTermId): array
     {
         // We don't track entity here — tests pass asset ids and filter externally.
@@ -47,6 +53,7 @@ final class InMemoryDepreciationScheduleRepository implements DepreciationSchedu
                 $out[] = $e;
             }
         }
-        return array_values($out);
+
+        return $out;
     }
 }

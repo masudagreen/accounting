@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Application\FixedAsset;
 
-use DateTimeImmutable;
 use Rucaro\Domain\FixedAsset\DepreciationScheduleEntry;
 use Rucaro\Domain\FixedAsset\DepreciationScheduleRepositoryInterface;
 use Rucaro\Domain\FixedAsset\FixedAsset;
@@ -110,10 +109,11 @@ final readonly class GenerateDepreciationScheduleUseCase
             $this->schedules->save($entry);
             $results[] = $entry;
         }
+
         return new GenerateDepreciationScheduleOutput($results);
     }
 
-    private function inferPeriodNumber(FixedAsset $asset, DateTimeImmutable $fiscalTermStart): int
+    private function inferPeriodNumber(FixedAsset $asset, \DateTimeImmutable $fiscalTermStart): int
     {
         $prior = $this->schedules->findByAsset($asset->id);
         if ($prior === []) {
@@ -125,6 +125,7 @@ final readonly class GenerateDepreciationScheduleUseCase
                 $max = $e->periodNumber;
             }
         }
+
         return $max + 1;
     }
 
@@ -145,6 +146,7 @@ final readonly class GenerateDepreciationScheduleUseCase
         if ($previous === null) {
             return Decimal::normalize($asset->acquisitionCost);
         }
+
         return $previous->closingBookValue;
     }
 
@@ -160,13 +162,14 @@ final readonly class GenerateDepreciationScheduleUseCase
                 return $e->accumulatedDepreciation;
             }
         }
+
         return '0.0000';
     }
 
     private function inferMonthsInService(
         FixedAsset $asset,
-        DateTimeImmutable $termStart,
-        DateTimeImmutable $termEnd,
+        \DateTimeImmutable $termStart,
+        \DateTimeImmutable $termEnd,
     ): int {
         $effectiveStart = $asset->serviceStartDate > $termStart ? $asset->serviceStartDate : $termStart;
         if ($effectiveStart > $termEnd) {
@@ -175,16 +178,18 @@ final readonly class GenerateDepreciationScheduleUseCase
         $effectiveEnd = $asset->disposalDate !== null && $asset->disposalDate < $termEnd
             ? $asset->disposalDate
             : $termEnd;
+
         return max(0, self::monthsBetween($effectiveStart, $effectiveEnd));
     }
 
-    private static function monthsBetween(DateTimeImmutable $start, DateTimeImmutable $end): int
+    private static function monthsBetween(\DateTimeImmutable $start, \DateTimeImmutable $end): int
     {
         $diff = $start->diff($end);
         $months = $diff->y * 12 + $diff->m;
         if ($diff->d > 0) {
-            $months += 1;
+            ++$months;
         }
+
         return max(1, $months);
     }
 }

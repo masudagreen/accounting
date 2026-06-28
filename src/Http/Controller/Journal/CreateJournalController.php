@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Http\Controller\Journal;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Rucaro\Application\Journal\CreateJournalUseCase;
 use Rucaro\Application\Journal\CreateJournalUseCaseInput;
 use Rucaro\Application\Journal\JournalLineInput;
@@ -52,7 +50,7 @@ final readonly class CreateJournalController
         } catch (InvariantViolationException $e) {
             return ErrorResponse::of(422, $e->domainCode() ?? 'INVARIANT_VIOLATION', $e->getMessage(), [
                 'invariant' => (string) ($e->context()['invariant'] ?? 'unknown'),
-                'context'   => $e->context(),
+                'context' => $e->context(),
             ]);
         }
 
@@ -69,11 +67,9 @@ final readonly class CreateJournalController
         $journalDateRaw = self::requireString($body, 'journalDate');
 
         try {
-            $journalDate = new DateTimeImmutable($journalDateRaw, new DateTimeZone('UTC'));
+            $journalDate = new \DateTimeImmutable($journalDateRaw, new \DateTimeZone('UTC'));
         } catch (\Exception) {
-            throw ValidationException::withErrors([
-                'journalDate' => ['journalDate must be an ISO 8601 date (YYYY-MM-DD)'],
-            ]);
+            throw ValidationException::withErrors(['journalDate' => ['journalDate must be an ISO 8601 date (YYYY-MM-DD)']]);
         }
 
         $summary = isset($body['summary']) && is_string($body['summary']) ? $body['summary'] : '';
@@ -87,17 +83,13 @@ final readonly class CreateJournalController
 
         $linesRaw = $body['lines'] ?? null;
         if (!is_array($linesRaw) || $linesRaw === []) {
-            throw ValidationException::withErrors([
-                'lines' => ['lines must be a non-empty array'],
-            ]);
+            throw ValidationException::withErrors(['lines' => ['lines must be a non-empty array']]);
         }
 
         $lines = [];
         foreach (array_values($linesRaw) as $idx => $line) {
             if (!is_array($line)) {
-                throw ValidationException::withErrors([
-                    sprintf('lines[%d]', $idx) => ['line must be a JSON object'],
-                ]);
+                throw ValidationException::withErrors([sprintf('lines[%d]', $idx) => ['line must be a JSON object']]);
             }
             $lines[] = new JournalLineInput(
                 side: self::requireString($line, 'side'),
@@ -139,10 +131,9 @@ final readonly class CreateJournalController
     {
         $v = $body[$field] ?? null;
         if (!is_string($v) || $v === '') {
-            throw ValidationException::withErrors([
-                $field => [sprintf("'%s' is required and must be a non-empty string", $field)],
-            ]);
+            throw ValidationException::withErrors([$field => [sprintf("'%s' is required and must be a non-empty string", $field)]]);
         }
+
         return $v;
     }
 }

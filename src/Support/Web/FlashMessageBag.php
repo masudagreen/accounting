@@ -14,8 +14,8 @@ namespace Rucaro\Support\Web;
 final class FlashMessageBag
 {
     public const KIND_SUCCESS = 'success';
-    public const KIND_ERROR   = 'error';
-    public const KIND_INFO    = 'info';
+    public const KIND_ERROR = 'error';
+    public const KIND_INFO = 'info';
     public const KIND_WARNING = 'warning';
 
     public function addSuccess(string $message): void
@@ -47,6 +47,7 @@ final class FlashMessageBag
     {
         $messages = $this->current();
         $_SESSION[SessionStore::KEY_FLASH_MESSAGES] = [];
+
         return $messages;
     }
 
@@ -71,11 +72,12 @@ final class FlashMessageBag
             $msg = $entry['message'] ?? null;
             if (is_string($kind) && is_string($msg) && $msg !== '') {
                 $out[] = [
-                    'kind'    => self::normaliseKind($kind),
+                    'kind' => self::normaliseKind($kind),
                     'message' => $msg,
                 ];
             }
         }
+
         return $out;
     }
 
@@ -83,7 +85,7 @@ final class FlashMessageBag
     {
         $bag = $this->current();
         $bag[] = [
-            'kind'    => self::normaliseKind($kind),
+            'kind' => self::normaliseKind($kind),
             'message' => $message,
         ];
         $_SESSION[SessionStore::KEY_FLASH_MESSAGES] = $bag;

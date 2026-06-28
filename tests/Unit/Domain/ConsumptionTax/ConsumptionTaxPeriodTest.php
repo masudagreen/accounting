@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Domain\ConsumptionTax;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Rucaro\Domain\ConsumptionTax\ConsumptionTaxCalculationMethod;
@@ -38,21 +37,21 @@ final class ConsumptionTaxPeriodTest extends TestCase
     public function testContainsChecksRange(): void
     {
         $p = $this->build();
-        self::assertTrue($p->contains(new DateTimeImmutable('2026-10-01T00:00:00Z')));
-        self::assertFalse($p->contains(new DateTimeImmutable('2025-01-01T00:00:00Z')));
-        self::assertFalse($p->contains(new DateTimeImmutable('2028-01-01T00:00:00Z')));
+        self::assertTrue($p->contains(new \DateTimeImmutable('2026-10-01T00:00:00Z')));
+        self::assertFalse($p->contains(new \DateTimeImmutable('2025-01-01T00:00:00Z')));
+        self::assertFalse($p->contains(new \DateTimeImmutable('2028-01-01T00:00:00Z')));
     }
 
     public function testRejectsInvertedPeriod(): void
     {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
         $this->expectException(ValidationException::class);
         new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2027-03-31T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
             calculationMethod: ConsumptionTaxCalculationMethod::Principle,
             simplifiedBusinessCategory: null,
             isInterim: false,
@@ -76,7 +75,7 @@ final class ConsumptionTaxPeriodTest extends TestCase
     public function testWithStatusReturnsNewInstance(): void
     {
         $p = $this->build();
-        $now = new DateTimeImmutable('2027-05-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2027-05-01T00:00:00Z');
         $updated = $p->withStatus('filed', $now, $now);
         self::assertSame('filed', $updated->settlementStatus);
         self::assertNotSame($p, $updated);
@@ -87,13 +86,14 @@ final class ConsumptionTaxPeriodTest extends TestCase
         ConsumptionTaxCalculationMethod $method = ConsumptionTaxCalculationMethod::Principle,
         ?SimplifiedBusinessCategory $sbc = null,
     ): ConsumptionTaxPeriod {
-        $now = new DateTimeImmutable('2026-04-01T00:00:00Z');
+        $now = new \DateTimeImmutable('2026-04-01T00:00:00Z');
+
         return new ConsumptionTaxPeriod(
             id: '01HAAAAAAAAAAAAAAAAAAAAAA0',
             entityId: '01HAAAAAAAAAAAAAAAAAAAAAA1',
             fiscalTermId: '01HAAAAAAAAAAAAAAAAAAAAAA2',
-            periodFrom: new DateTimeImmutable('2026-04-01T00:00:00Z'),
-            periodTo: new DateTimeImmutable('2027-03-31T00:00:00Z'),
+            periodFrom: new \DateTimeImmutable('2026-04-01T00:00:00Z'),
+            periodTo: new \DateTimeImmutable('2027-03-31T00:00:00Z'),
             calculationMethod: $method,
             simplifiedBusinessCategory: $sbc,
             isInterim: false,

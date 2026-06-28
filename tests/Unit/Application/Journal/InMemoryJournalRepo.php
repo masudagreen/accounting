@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rucaro\Tests\Unit\Application\Journal;
 
-use DateTimeImmutable;
 use Rucaro\Application\Journal\JournalSearchCriteria;
 use Rucaro\Application\Journal\JournalSearchResult;
 use Rucaro\Domain\Exception\EntityNotFoundException;
@@ -25,17 +24,20 @@ final class InMemoryJournalRepo implements JournalRepositoryInterface
     /** @var list<Journal> */
     public array $saved = [];
 
+    #[\Override]
     public function save(Journal $journal): void
     {
         foreach ($this->saved as $idx => $existing) {
             if ($existing->id === $journal->id) {
                 $this->saved[$idx] = $journal;
+
                 return;
             }
         }
         $this->saved[] = $journal;
     }
 
+    #[\Override]
     public function findById(string $id): ?Journal
     {
         foreach ($this->saved as $j) {
@@ -43,9 +45,11 @@ final class InMemoryJournalRepo implements JournalRepositoryInterface
                 return $j;
             }
         }
+
         return null;
     }
 
+    #[\Override]
     public function findByCriteria(JournalSearchCriteria $criteria): JournalSearchResult
     {
         $matches = array_values(array_filter(
@@ -55,26 +59,30 @@ final class InMemoryJournalRepo implements JournalRepositoryInterface
         ));
         $offset = ($criteria->page - 1) * $criteria->pageSize;
         $paged = array_slice($matches, $offset, $criteria->pageSize);
+
         return new JournalSearchResult(
-            items: array_values($paged),
+            items: $paged,
             total: count($matches),
             page: $criteria->page,
             pageSize: $criteria->pageSize,
         );
     }
 
-    public function delete(string $id, DateTimeImmutable $at, string $deletedBy): void
+    #[\Override]
+    public function delete(string $id, \DateTimeImmutable $at, string $deletedBy): void
     {
         foreach ($this->saved as $idx => $j) {
             if ($j->id === $id && $j->deletedAt === null) {
                 $this->saved[$idx] = $j->softDelete($at);
                 unset($deletedBy);
+
                 return;
             }
         }
         throw new EntityNotFoundException(sprintf('Journal %s not found.', $id));
     }
 
+    #[\Override]
     public function searchByEntity(
         string $entityId,
         int $page,
@@ -92,9 +100,11 @@ final class InMemoryJournalRepo implements JournalRepositoryInterface
             $this->saved,
             static fn (Journal $j): bool => $j->entityId === $entityId,
         ));
+
         return array_slice($matches, ($page - 1) * $pageSize, $pageSize);
     }
 
+    #[\Override]
     public function countByEntity(
         string $entityId,
         ?string $fiscalTermId = null,

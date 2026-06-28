@@ -14,6 +14,6 @@ use RuntimeException;
  * Extends RuntimeException so callers may catch it uniformly as an
  * infrastructure-level runtime error.
  */
-final class CryptoException extends RuntimeException
+final class CryptoException extends \RuntimeException
 {
 }
