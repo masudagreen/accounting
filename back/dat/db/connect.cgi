@@ -1,4 +1,4 @@
 "dbtype","dbname","username","password","host","driver"
-"master","rucaro","rucaro","rucaro","db","mysql"
-"slave","rucaro","rucaro","rucaro","db","mysql"
-"log","rucaro","rucaro","rucaro","db","mysql"
+"master","rucaro_legacy","rucaro","rucaro","db","mysql"
+"slave","rucaro_legacy","rucaro","rucaro","db","mysql"
+"log","rucaro_legacy","rucaro","rucaro","db","mysql"
